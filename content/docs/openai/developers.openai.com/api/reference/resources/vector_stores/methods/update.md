@@ -22,9 +22,11 @@ Modifies a vector store.
 
     - `"last_active_at"`
 
-  - `days: number`
+  - `days: integer`
 
     The number of days after the anchor time that the vector store will expire.
+
+    `minimum: 1`, `maximum: 365`
 
 - `metadata: optional Metadata or null`
 
@@ -49,35 +51,39 @@ Modifies a vector store.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store was created.
 
+    `format: unixtime`
+
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
-    - `cancelled: number`
+    - `cancelled: integer`
 
       The number of files that were cancelled.
 
-    - `completed: number`
+    - `completed: integer`
 
       The number of files that have been successfully processed.
 
-    - `failed: number`
+    - `failed: integer`
 
       The number of files that have failed to process.
 
-    - `in_progress: number`
+    - `in_progress: integer`
 
       The number of files that are currently being processed.
 
-    - `total: number`
+    - `total: integer`
 
       The total number of files.
 
-  - `last_active_at: number or null`
+  - `last_active_at: integer or null`
 
     The Unix timestamp (in seconds) for when the vector store was last active.
+
+    `format: unixtime`
 
   - `metadata: Metadata or null`
 
@@ -108,7 +114,7 @@ Modifies a vector store.
 
     - `"completed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total number of bytes used by the files in the vector store.
 
@@ -122,13 +128,17 @@ Modifies a vector store.
 
       - `"last_active_at"`
 
-    - `days: number`
+    - `days: integer`
 
       The number of days after the anchor time that the vector store will expire.
 
-  - `expires_at: optional number or null`
+      `minimum: 1`, `maximum: 365`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the vector store will expire.
+
+    `format: unixtime`
 
 ### Example
 
@@ -140,7 +150,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID \
     -d '{}'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -181,7 +191,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

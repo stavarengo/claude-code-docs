@@ -30,15 +30,17 @@ Create a vector store.
 
     - `static: StaticFileChunkingStrategy`
 
-      - `chunk_overlap_tokens: number`
+      - `chunk_overlap_tokens: integer`
 
         The number of tokens that overlap between chunks. The default value is `400`.
 
         Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-      - `max_chunk_size_tokens: number`
+      - `max_chunk_size_tokens: integer`
 
         The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+        `minimum: 100`, `maximum: 4096`
 
     - `type: "static"`
 
@@ -60,13 +62,17 @@ Create a vector store.
 
     - `"last_active_at"`
 
-  - `days: number`
+  - `days: integer`
 
     The number of days after the anchor time that the vector store will expire.
+
+    `minimum: 1`, `maximum: 365`
 
 - `file_ids: optional array of string`
 
   A list of [File](/api/reference/resources/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files.
+
+  `maxItems: 500`
 
 - `metadata: optional Metadata or null`
 
@@ -91,35 +97,39 @@ Create a vector store.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store was created.
 
+    `format: unixtime`
+
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
-    - `cancelled: number`
+    - `cancelled: integer`
 
       The number of files that were cancelled.
 
-    - `completed: number`
+    - `completed: integer`
 
       The number of files that have been successfully processed.
 
-    - `failed: number`
+    - `failed: integer`
 
       The number of files that have failed to process.
 
-    - `in_progress: number`
+    - `in_progress: integer`
 
       The number of files that are currently being processed.
 
-    - `total: number`
+    - `total: integer`
 
       The total number of files.
 
-  - `last_active_at: number or null`
+  - `last_active_at: integer or null`
 
     The Unix timestamp (in seconds) for when the vector store was last active.
+
+    `format: unixtime`
 
   - `metadata: Metadata or null`
 
@@ -150,7 +160,7 @@ Create a vector store.
 
     - `"completed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total number of bytes used by the files in the vector store.
 
@@ -164,13 +174,17 @@ Create a vector store.
 
       - `"last_active_at"`
 
-    - `days: number`
+    - `days: integer`
 
       The number of days after the anchor time that the vector store will expire.
 
-  - `expires_at: optional number or null`
+      `minimum: 1`, `maximum: 365`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the vector store will expire.
+
+    `format: unixtime`
 
 ### Example
 
@@ -182,7 +196,7 @@ curl https://api.openai.com/v1/vector_stores \
     -d '{}'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -223,7 +237,7 @@ curl https://api.openai.com/v1/vector_stores \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -277,7 +291,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -297,7 +311,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
   -X DELETE
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -323,11 +337,11 @@ Returns a list of vector stores.
 
   A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
 
-- `order: optional "asc" or "desc"`
+- `order: optional "asc" or "desc" (default: "desc")`
 
   Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
 
@@ -343,35 +357,39 @@ Returns a list of vector stores.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store was created.
 
+    `format: unixtime`
+
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
-    - `cancelled: number`
+    - `cancelled: integer`
 
       The number of files that were cancelled.
 
-    - `completed: number`
+    - `completed: integer`
 
       The number of files that have been successfully processed.
 
-    - `failed: number`
+    - `failed: integer`
 
       The number of files that have failed to process.
 
-    - `in_progress: number`
+    - `in_progress: integer`
 
       The number of files that are currently being processed.
 
-    - `total: number`
+    - `total: integer`
 
       The total number of files.
 
-  - `last_active_at: number or null`
+  - `last_active_at: integer or null`
 
     The Unix timestamp (in seconds) for when the vector store was last active.
+
+    `format: unixtime`
 
   - `metadata: Metadata or null`
 
@@ -402,7 +420,7 @@ Returns a list of vector stores.
 
     - `"completed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total number of bytes used by the files in the vector store.
 
@@ -416,13 +434,17 @@ Returns a list of vector stores.
 
       - `"last_active_at"`
 
-    - `days: number`
+    - `days: integer`
 
       The number of days after the anchor time that the vector store will expire.
 
-  - `expires_at: optional number or null`
+      `minimum: 1`, `maximum: 365`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the vector store will expire.
+
+    `format: unixtime`
 
 - `first_id: string`
 
@@ -440,7 +462,7 @@ curl https://api.openai.com/v1/vector_stores \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -486,7 +508,7 @@ curl https://api.openai.com/v1/vector_stores \
   -H "OpenAI-Beta: assistants=v2"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -554,35 +576,39 @@ Retrieves a vector store.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store was created.
 
+    `format: unixtime`
+
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
-    - `cancelled: number`
+    - `cancelled: integer`
 
       The number of files that were cancelled.
 
-    - `completed: number`
+    - `completed: integer`
 
       The number of files that have been successfully processed.
 
-    - `failed: number`
+    - `failed: integer`
 
       The number of files that have failed to process.
 
-    - `in_progress: number`
+    - `in_progress: integer`
 
       The number of files that are currently being processed.
 
-    - `total: number`
+    - `total: integer`
 
       The total number of files.
 
-  - `last_active_at: number or null`
+  - `last_active_at: integer or null`
 
     The Unix timestamp (in seconds) for when the vector store was last active.
+
+    `format: unixtime`
 
   - `metadata: Metadata or null`
 
@@ -613,7 +639,7 @@ Retrieves a vector store.
 
     - `"completed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total number of bytes used by the files in the vector store.
 
@@ -627,13 +653,17 @@ Retrieves a vector store.
 
       - `"last_active_at"`
 
-    - `days: number`
+    - `days: integer`
 
       The number of days after the anchor time that the vector store will expire.
 
-  - `expires_at: optional number or null`
+      `minimum: 1`, `maximum: 365`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the vector store will expire.
+
+    `format: unixtime`
 
 ### Example
 
@@ -643,7 +673,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -681,7 +711,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
   -H "OpenAI-Beta: assistants=v2"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -735,7 +765,7 @@ Search a vector store for relevant chunks based on a query and file attributes f
 
       The key to compare against the value.
 
-    - `type: "eq" or "ne" or "gt" or 5 more`
+    - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
       Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -804,15 +834,17 @@ Search a vector store for relevant chunks based on a query and file attributes f
 
       - `"or"`
 
-- `max_num_results: optional number`
+- `max_num_results: optional integer (default: 10)`
 
   The maximum number of results to return. This number should be between 1 and 50 inclusive.
+
+  `minimum: 1`, `maximum: 50`
 
 - `ranking_options: optional object { ranker, score_threshold }`
 
   Ranking options for search.
 
-  - `ranker: optional "none" or "auto" or "default-2024-11-15"`
+  - `ranker: optional "none" or "auto" or "default-2024-11-15" (default: "auto")`
 
     Enable re-ranking; set to `none` to disable, which can help reduce latency.
 
@@ -822,9 +854,11 @@ Search a vector store for relevant chunks based on a query and file attributes f
 
     - `"default-2024-11-15"`
 
-  - `score_threshold: optional number`
+  - `score_threshold: optional number (default: 0)`
 
-- `rewrite_query: optional boolean`
+    `minimum: 0`, `maximum: 1`
+
+- `rewrite_query: optional boolean (default: false)`
 
   Whether to rewrite the natural language query for vector search.
 
@@ -843,6 +877,8 @@ Search a vector store for relevant chunks based on a query and file attributes f
     length of 512 characters, booleans, or numbers.
 
     - `string`
+
+      `maxLength: 512`
 
     - `number`
 
@@ -874,6 +910,8 @@ Search a vector store for relevant chunks based on a query and file attributes f
 
     The similarity score for the result.
 
+    `minimum: 0`, `maximum: 1`
+
 - `has_more: boolean`
 
   Indicates if there are more results to fetch.
@@ -902,7 +940,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/search \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -941,7 +979,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 -d '{"query": "What is the return policy?", "filters": {...}}'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1006,9 +1044,11 @@ Modifies a vector store.
 
     - `"last_active_at"`
 
-  - `days: number`
+  - `days: integer`
 
     The number of days after the anchor time that the vector store will expire.
+
+    `minimum: 1`, `maximum: 365`
 
 - `metadata: optional Metadata or null`
 
@@ -1033,35 +1073,39 @@ Modifies a vector store.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store was created.
 
+    `format: unixtime`
+
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
-    - `cancelled: number`
+    - `cancelled: integer`
 
       The number of files that were cancelled.
 
-    - `completed: number`
+    - `completed: integer`
 
       The number of files that have been successfully processed.
 
-    - `failed: number`
+    - `failed: integer`
 
       The number of files that have failed to process.
 
-    - `in_progress: number`
+    - `in_progress: integer`
 
       The number of files that are currently being processed.
 
-    - `total: number`
+    - `total: integer`
 
       The total number of files.
 
-  - `last_active_at: number or null`
+  - `last_active_at: integer or null`
 
     The Unix timestamp (in seconds) for when the vector store was last active.
+
+    `format: unixtime`
 
   - `metadata: Metadata or null`
 
@@ -1092,7 +1136,7 @@ Modifies a vector store.
 
     - `"completed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total number of bytes used by the files in the vector store.
 
@@ -1106,13 +1150,17 @@ Modifies a vector store.
 
       - `"last_active_at"`
 
-    - `days: number`
+    - `days: integer`
 
       The number of days after the anchor time that the vector store will expire.
 
-  - `expires_at: optional number or null`
+      `minimum: 1`, `maximum: 365`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the vector store will expire.
+
+    `format: unixtime`
 
 ### Example
 
@@ -1124,7 +1172,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID \
     -d '{}'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1165,7 +1213,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1224,15 +1272,17 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     - `static: StaticFileChunkingStrategy`
 
-      - `chunk_overlap_tokens: number`
+      - `chunk_overlap_tokens: integer`
 
         The number of tokens that overlap between chunks. The default value is `400`.
 
         Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-      - `max_chunk_size_tokens: number`
+      - `max_chunk_size_tokens: integer`
 
         The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+        `minimum: 100`, `maximum: 4096`
 
     - `type: "static"`
 
@@ -1256,15 +1306,17 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 - `StaticFileChunkingStrategy object { chunk_overlap_tokens, max_chunk_size_tokens }`
 
-  - `chunk_overlap_tokens: number`
+  - `chunk_overlap_tokens: integer`
 
     The number of tokens that overlap between chunks. The default value is `400`.
 
     Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-  - `max_chunk_size_tokens: number`
+  - `max_chunk_size_tokens: integer`
 
     The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+    `minimum: 100`, `maximum: 4096`
 
 ### Static File Chunking Strategy Object
 
@@ -1272,15 +1324,17 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `static: StaticFileChunkingStrategy`
 
-    - `chunk_overlap_tokens: number`
+    - `chunk_overlap_tokens: integer`
 
       The number of tokens that overlap between chunks. The default value is `400`.
 
       Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-    - `max_chunk_size_tokens: number`
+    - `max_chunk_size_tokens: integer`
 
       The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+      `minimum: 100`, `maximum: 4096`
 
   - `type: "static"`
 
@@ -1296,15 +1350,17 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
   - `static: StaticFileChunkingStrategy`
 
-    - `chunk_overlap_tokens: number`
+    - `chunk_overlap_tokens: integer`
 
       The number of tokens that overlap between chunks. The default value is `400`.
 
       Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-    - `max_chunk_size_tokens: number`
+    - `max_chunk_size_tokens: integer`
 
       The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+      `minimum: 100`, `maximum: 4096`
 
   - `type: "static"`
 
@@ -1322,35 +1378,39 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store was created.
 
+    `format: unixtime`
+
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
-    - `cancelled: number`
+    - `cancelled: integer`
 
       The number of files that were cancelled.
 
-    - `completed: number`
+    - `completed: integer`
 
       The number of files that have been successfully processed.
 
-    - `failed: number`
+    - `failed: integer`
 
       The number of files that have failed to process.
 
-    - `in_progress: number`
+    - `in_progress: integer`
 
       The number of files that are currently being processed.
 
-    - `total: number`
+    - `total: integer`
 
       The total number of files.
 
-  - `last_active_at: number or null`
+  - `last_active_at: integer or null`
 
     The Unix timestamp (in seconds) for when the vector store was last active.
+
+    `format: unixtime`
 
   - `metadata: Metadata or null`
 
@@ -1381,7 +1441,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     - `"completed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total number of bytes used by the files in the vector store.
 
@@ -1395,13 +1455,17 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
       - `"last_active_at"`
 
-    - `days: number`
+    - `days: integer`
 
       The number of days after the anchor time that the vector store will expire.
 
-  - `expires_at: optional number or null`
+      `minimum: 1`, `maximum: 365`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the vector store will expire.
+
+    `format: unixtime`
 
 ### Vector Store Deleted
 
@@ -1428,6 +1492,8 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
     length of 512 characters, booleans, or numbers.
 
     - `string`
+
+      `maxLength: 512`
 
     - `number`
 
@@ -1459,6 +1525,8 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
     The similarity score for the result.
 
+    `minimum: 0`, `maximum: 1`
+
 # File Batches
 
 ## Cancel vector store file batch
@@ -1483,29 +1551,31 @@ Cancel a vector store file batch. This attempts to cancel the processing of file
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store files batch was created.
 
+    `format: unixtime`
+
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
-    - `cancelled: number`
+    - `cancelled: integer`
 
       The number of files that where cancelled.
 
-    - `completed: number`
+    - `completed: integer`
 
       The number of files that have been processed.
 
-    - `failed: number`
+    - `failed: integer`
 
       The number of files that have failed to process.
 
-    - `in_progress: number`
+    - `in_progress: integer`
 
       The number of files that are currently being processed.
 
-    - `total: number`
+    - `total: integer`
 
       The total number of files.
 
@@ -1540,7 +1610,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/file_batches/$BATC
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1569,7 +1639,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
   -X POST
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1610,6 +1680,8 @@ Create a vector store file batch.
 
   - `string`
 
+    `maxLength: 512`
+
   - `number`
 
   - `boolean`
@@ -1634,15 +1706,17 @@ Create a vector store file batch.
 
     - `static: StaticFileChunkingStrategy`
 
-      - `chunk_overlap_tokens: number`
+      - `chunk_overlap_tokens: integer`
 
         The number of tokens that overlap between chunks. The default value is `400`.
 
         Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-      - `max_chunk_size_tokens: number`
+      - `max_chunk_size_tokens: integer`
 
         The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+        `minimum: 100`, `maximum: 4096`
 
     - `type: "static"`
 
@@ -1654,9 +1728,13 @@ Create a vector store file batch.
 
   A list of [File](/api/reference/resources/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files. If `attributes` or `chunking_strategy` are provided, they will be applied to all files in the batch. The maximum batch size is 2000 files. This endpoint is recommended for multi-file ingestion and helps reduce per-vector-store write request pressure. Mutually exclusive with `files`.
 
+  `minItems: 1`, `maxItems: 2000`
+
 - `files: optional array of object { file_id, attributes, chunking_strategy }`
 
   A list of objects that each include a `file_id` plus optional `attributes` or `chunking_strategy`. Use this when you need to override metadata for specific files. The global `attributes` or `chunking_strategy` will be ignored and must be specified for each file. The maximum batch size is 2000 files. This endpoint is recommended for multi-file ingestion and helps reduce per-vector-store write request pressure. Mutually exclusive with `file_ids`.
+
+  `minItems: 1`, `maxItems: 2000`
 
   - `file_id: string`
 
@@ -1671,6 +1749,8 @@ Create a vector store file batch.
     length of 512 characters, booleans, or numbers.
 
     - `string`
+
+      `maxLength: 512`
 
     - `number`
 
@@ -1690,29 +1770,31 @@ Create a vector store file batch.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store files batch was created.
 
+    `format: unixtime`
+
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
-    - `cancelled: number`
+    - `cancelled: integer`
 
       The number of files that where cancelled.
 
-    - `completed: number`
+    - `completed: integer`
 
       The number of files that have been processed.
 
-    - `failed: number`
+    - `failed: integer`
 
       The number of files that have failed to process.
 
-    - `in_progress: number`
+    - `in_progress: integer`
 
       The number of files that are currently being processed.
 
-    - `total: number`
+    - `total: integer`
 
       The total number of files.
 
@@ -1752,7 +1834,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/file_batches \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1796,7 +1878,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches \
     }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1849,11 +1931,11 @@ Returns a list of vector store files in a batch.
 
   - `"cancelled"`
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
 
-- `order: optional "asc" or "desc"`
+- `order: optional "asc" or "desc" (default: "desc")`
 
   Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
 
@@ -1869,9 +1951,11 @@ Returns a list of vector store files in a batch.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store file was created.
+
+    `format: unixtime`
 
   - `last_error: object { code, message }  or null`
 
@@ -1909,7 +1993,7 @@ Returns a list of vector store files in a batch.
 
     - `"failed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total vector store usage in bytes. Note that this may be different from the original file size.
 
@@ -1927,6 +2011,8 @@ Returns a list of vector store files in a batch.
 
     - `string`
 
+      `maxLength: 512`
+
     - `number`
 
     - `boolean`
@@ -1939,15 +2025,17 @@ Returns a list of vector store files in a batch.
 
       - `static: StaticFileChunkingStrategy`
 
-        - `chunk_overlap_tokens: number`
+        - `chunk_overlap_tokens: integer`
 
           The number of tokens that overlap between chunks. The default value is `400`.
 
           Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-        - `max_chunk_size_tokens: number`
+        - `max_chunk_size_tokens: integer`
 
           The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+          `minimum: 100`, `maximum: 4096`
 
       - `type: "static"`
 
@@ -1981,7 +2069,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/file_batches/$BATC
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2025,7 +2113,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
   -H "OpenAI-Beta: assistants=v2"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2078,29 +2166,31 @@ Retrieves a vector store file batch.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store files batch was created.
 
+    `format: unixtime`
+
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
-    - `cancelled: number`
+    - `cancelled: integer`
 
       The number of files that where cancelled.
 
-    - `completed: number`
+    - `completed: integer`
 
       The number of files that have been processed.
 
-    - `failed: number`
+    - `failed: integer`
 
       The number of files that have failed to process.
 
-    - `in_progress: number`
+    - `in_progress: integer`
 
       The number of files that are currently being processed.
 
-    - `total: number`
+    - `total: integer`
 
       The total number of files.
 
@@ -2134,7 +2224,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/file_batches/$BATC
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2162,7 +2252,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches/vsfb_abc123 
   -H "OpenAI-Beta: assistants=v2"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2193,29 +2283,31 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches/vsfb_abc123 
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store files batch was created.
 
+    `format: unixtime`
+
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
-    - `cancelled: number`
+    - `cancelled: integer`
 
       The number of files that where cancelled.
 
-    - `completed: number`
+    - `completed: integer`
 
       The number of files that have been processed.
 
-    - `failed: number`
+    - `failed: integer`
 
       The number of files that have failed to process.
 
-    - `in_progress: number`
+    - `in_progress: integer`
 
       The number of files that are currently being processed.
 
-    - `total: number`
+    - `total: integer`
 
       The total number of files.
 
@@ -2291,7 +2383,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID/con
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2315,7 +2407,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2354,6 +2446,8 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
   - `string`
 
+    `maxLength: 512`
+
   - `number`
 
   - `boolean`
@@ -2378,15 +2472,17 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
     - `static: StaticFileChunkingStrategy`
 
-      - `chunk_overlap_tokens: number`
+      - `chunk_overlap_tokens: integer`
 
         The number of tokens that overlap between chunks. The default value is `400`.
 
         Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-      - `max_chunk_size_tokens: number`
+      - `max_chunk_size_tokens: integer`
 
         The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+        `minimum: 100`, `maximum: 4096`
 
     - `type: "static"`
 
@@ -2404,9 +2500,11 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store file was created.
+
+    `format: unixtime`
 
   - `last_error: object { code, message }  or null`
 
@@ -2444,7 +2542,7 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
     - `"failed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total vector store usage in bytes. Note that this may be different from the original file size.
 
@@ -2462,6 +2560,8 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
     - `string`
 
+      `maxLength: 512`
+
     - `number`
 
     - `boolean`
@@ -2474,15 +2574,17 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
       - `static: StaticFileChunkingStrategy`
 
-        - `chunk_overlap_tokens: number`
+        - `chunk_overlap_tokens: integer`
 
           The number of tokens that overlap between chunks. The default value is `400`.
 
           Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-        - `max_chunk_size_tokens: number`
+        - `max_chunk_size_tokens: integer`
 
           The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+          `minimum: 100`, `maximum: 4096`
 
       - `type: "static"`
 
@@ -2512,7 +2614,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2551,7 +2653,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
     }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2598,7 +2700,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2618,7 +2720,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
   -X DELETE
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2660,11 +2762,11 @@ Returns a list of vector store files.
 
   - `"cancelled"`
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
 
-- `order: optional "asc" or "desc"`
+- `order: optional "asc" or "desc" (default: "desc")`
 
   Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
 
@@ -2680,9 +2782,11 @@ Returns a list of vector store files.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store file was created.
+
+    `format: unixtime`
 
   - `last_error: object { code, message }  or null`
 
@@ -2720,7 +2824,7 @@ Returns a list of vector store files.
 
     - `"failed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total vector store usage in bytes. Note that this may be different from the original file size.
 
@@ -2738,6 +2842,8 @@ Returns a list of vector store files.
 
     - `string`
 
+      `maxLength: 512`
+
     - `number`
 
     - `boolean`
@@ -2750,15 +2856,17 @@ Returns a list of vector store files.
 
       - `static: StaticFileChunkingStrategy`
 
-        - `chunk_overlap_tokens: number`
+        - `chunk_overlap_tokens: integer`
 
           The number of tokens that overlap between chunks. The default value is `400`.
 
           Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-        - `max_chunk_size_tokens: number`
+        - `max_chunk_size_tokens: integer`
 
           The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+          `minimum: 100`, `maximum: 4096`
 
       - `type: "static"`
 
@@ -2792,7 +2900,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2836,7 +2944,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
   -H "OpenAI-Beta: assistants=v2"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2889,9 +2997,11 @@ Retrieves a vector store file.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store file was created.
+
+    `format: unixtime`
 
   - `last_error: object { code, message }  or null`
 
@@ -2929,7 +3039,7 @@ Retrieves a vector store file.
 
     - `"failed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total vector store usage in bytes. Note that this may be different from the original file size.
 
@@ -2947,6 +3057,8 @@ Retrieves a vector store file.
 
     - `string`
 
+      `maxLength: 512`
+
     - `number`
 
     - `boolean`
@@ -2959,15 +3071,17 @@ Retrieves a vector store file.
 
       - `static: StaticFileChunkingStrategy`
 
-        - `chunk_overlap_tokens: number`
+        - `chunk_overlap_tokens: integer`
 
           The number of tokens that overlap between chunks. The default value is `400`.
 
           Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-        - `max_chunk_size_tokens: number`
+        - `max_chunk_size_tokens: integer`
 
           The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+          `minimum: 100`, `maximum: 4096`
 
       - `type: "static"`
 
@@ -2993,7 +3107,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -3029,7 +3143,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
   -H "OpenAI-Beta: assistants=v2"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -3067,6 +3181,8 @@ Update attributes on a vector store file.
 
   - `string`
 
+    `maxLength: 512`
+
   - `number`
 
   - `boolean`
@@ -3081,9 +3197,11 @@ Update attributes on a vector store file.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store file was created.
+
+    `format: unixtime`
 
   - `last_error: object { code, message }  or null`
 
@@ -3121,7 +3239,7 @@ Update attributes on a vector store file.
 
     - `"failed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total vector store usage in bytes. Note that this may be different from the original file size.
 
@@ -3139,6 +3257,8 @@ Update attributes on a vector store file.
 
     - `string`
 
+      `maxLength: 512`
+
     - `number`
 
     - `boolean`
@@ -3151,15 +3271,17 @@ Update attributes on a vector store file.
 
       - `static: StaticFileChunkingStrategy`
 
-        - `chunk_overlap_tokens: number`
+        - `chunk_overlap_tokens: integer`
 
           The number of tokens that overlap between chunks. The default value is `400`.
 
           Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-        - `max_chunk_size_tokens: number`
+        - `max_chunk_size_tokens: integer`
 
           The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+          `minimum: 100`, `maximum: 4096`
 
       - `type: "static"`
 
@@ -3191,7 +3313,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -3227,7 +3349,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
   -d '{"attributes": {"key1": "value1", "key2": 2}}'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -3273,9 +3395,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store file was created.
+
+    `format: unixtime`
 
   - `last_error: object { code, message }  or null`
 
@@ -3313,7 +3437,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
     - `"failed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total vector store usage in bytes. Note that this may be different from the original file size.
 
@@ -3331,6 +3455,8 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
     - `string`
 
+      `maxLength: 512`
+
     - `number`
 
     - `boolean`
@@ -3343,15 +3469,17 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
       - `static: StaticFileChunkingStrategy`
 
-        - `chunk_overlap_tokens: number`
+        - `chunk_overlap_tokens: integer`
 
           The number of tokens that overlap between chunks. The default value is `400`.
 
           Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-        - `max_chunk_size_tokens: number`
+        - `max_chunk_size_tokens: integer`
 
           The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+          `minimum: 100`, `maximum: 4096`
 
       - `type: "static"`
 

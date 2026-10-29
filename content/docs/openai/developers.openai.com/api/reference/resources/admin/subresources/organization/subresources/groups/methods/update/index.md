@@ -14,15 +14,19 @@ Updates a group's information.
 
   New display name for the group.
 
+  `minLength: 1`, `maxLength: 255`
+
 ### Returns
 
 - `id: string`
 
   Identifier for the group.
 
-- `created_at: number`
+- `created_at: integer`
 
   Unix timestamp (in seconds) when the group was created.
+
+  `format: unixtime`
 
 - `is_scim_managed: boolean`
 
@@ -43,7 +47,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -65,7 +69,7 @@ curl -X POST https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

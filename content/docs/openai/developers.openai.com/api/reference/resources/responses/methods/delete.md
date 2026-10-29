@@ -16,7 +16,7 @@ Deletes a model response with the given ID.
 
 - `deleted: boolean`
 
-- `object: "response.deleted"`
+- `object: "response.deleted" (default: "response.deleted")`
 
   - `"response.deleted"`
 
@@ -28,7 +28,7 @@ curl https://api.openai.com/v1/responses/$RESPONSE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -46,7 +46,7 @@ curl -X DELETE https://api.openai.com/v1/responses/resp_123 \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

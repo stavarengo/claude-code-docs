@@ -111,6 +111,8 @@ handle it.
 
         Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+        `minItems: 1`
+
       - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
         The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -160,19 +162,19 @@ handle it.
 
         Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-        - `type: "server_vad"`
+        - `type: "server_vad" (default: "server_vad")`
 
           Type of turn detection, `server_vad` to turn on simple Server VAD.
 
           - `"server_vad"`
 
-        - `create_response: optional boolean`
+        - `create_response: optional boolean (default: true)`
 
           Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
           If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-        - `idle_timeout_ms: optional number or null`
+        - `idle_timeout_ms: optional integer or null`
 
           Optional timeout after which a model response will be triggered automatically. This is
           useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -186,19 +188,21 @@ handle it.
           associated with the Response) will be emitted when the timeout is reached.
           Idle timeout is currently only supported for `server_vad` mode.
 
-        - `interrupt_response: optional boolean`
+          `minimum: 5000`, `maximum: 30000`
+
+        - `interrupt_response: optional boolean (default: true)`
 
           Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
           conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
           If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-        - `prefix_padding_ms: optional number`
+        - `prefix_padding_ms: optional integer`
 
           Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
           milliseconds). Defaults to 300ms.
 
-        - `silence_duration_ms: optional number`
+        - `silence_duration_ms: optional integer`
 
           Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
           to 500ms. With shorter values the model will respond more quickly,
@@ -220,11 +224,11 @@ handle it.
 
           - `"semantic_vad"`
 
-        - `create_response: optional boolean`
+        - `create_response: optional boolean (default: true)`
 
           Whether or not to automatically generate a response when a VAD stop event occurs.
 
-        - `eagerness: optional "low" or "medium" or "high" or "auto"`
+        - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
           Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -236,7 +240,7 @@ handle it.
 
           - `"auto"`
 
-        - `interrupt_response: optional boolean`
+        - `interrupt_response: optional boolean (default: true)`
 
           Whether or not to automatically interrupt any ongoing response with output to the default
           conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -247,7 +251,7 @@ handle it.
 
       The format of the output audio.
 
-    - `speed: optional number`
+    - `speed: optional number (default: 1)`
 
       The speed of the model's spoken response as a multiple of the original speed.
       1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -255,7 +259,9 @@ handle it.
       This parameter is a post-processing adjustment to the audio after it is generated, it's
       also possible to prompt the model to speak faster or slower.
 
-    - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+      `minimum: 0.25`, `maximum: 1.5`
+
+    - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
       The voice the model uses to respond. Supported built-in voices are
       `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -372,7 +378,7 @@ handle it.
 
     - `"gpt-audio-mini-2025-12-15"`
 
-- `output_modalities: optional array of "text" or "audio"`
+- `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
   The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
   that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -412,7 +418,7 @@ handle it.
 
         The text input to the model.
 
-      - `type: "input_text"`
+      - `type: "input_text" (default: "input_text")`
 
         The type of the input item. Always `input_text`.
 
@@ -422,7 +428,7 @@ handle it.
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -452,7 +458,7 @@ handle it.
 
         - `"original"`
 
-      - `type: "input_image"`
+      - `type: "input_image" (default: "input_image")`
 
         The type of the input item. Always `input_image`.
 
@@ -466,11 +472,13 @@ handle it.
 
         The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+        `format: uri`
+
       - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -488,7 +496,7 @@ handle it.
 
       A file input to the model.
 
-      - `type: "input_file"`
+      - `type: "input_file" (default: "input_file")`
 
         The type of the input item. Always `input_file`.
 
@@ -516,6 +524,8 @@ handle it.
 
         The URL of the file to be sent to the model.
 
+        `format: uri`
+
       - `filename: optional string`
 
         The name of the file to be sent to the model.
@@ -524,7 +534,7 @@ handle it.
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -546,7 +556,7 @@ handle it.
 
   Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-  - `effort: optional RealtimeReasoningEffort`
+  - `effort: optional RealtimeReasoningEffort (default: "low")`
 
     Constrains effort on reasoning for reasoning-capable Realtime models such as
     `gpt-realtime-2`.
@@ -561,7 +571,7 @@ handle it.
 
     - `"xhigh"`
 
-- `tool_choice: optional RealtimeToolChoiceConfig`
+- `tool_choice: optional RealtimeToolChoiceConfig (default: "auto")`
 
   How the model chooses tools. Provide one of the string modes or force a specific
   function/MCP tool.
@@ -660,6 +670,8 @@ handle it.
 
       The tool invocation context(s).
 
+      `minItems: 1`
+
       - `"direct"`
 
       - `"programmatic"`
@@ -738,7 +750,7 @@ handle it.
       Optional HTTP headers to send to the MCP server. Use for authentication
       or other purposes.
 
-    - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+    - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
       Specify which of the MCP server's tools require approval.
 
@@ -795,12 +807,16 @@ handle it.
       The URL for the MCP server. One of `server_url`, `connector_id`, or
       `tunnel_id` must be provided.
 
+      `format: uri`
+
     - `tunnel_id: optional string`
 
       The Secure MCP Tunnel ID to use instead of a direct server URL. One of
       `server_url`, `connector_id`, or `tunnel_id` must be provided.
 
-- `tracing: optional RealtimeTracingConfig or null`
+      `pattern: ^tunnel_[a-z0-9]{32}$`
+
+- `tracing: optional RealtimeTracingConfig or null (default: null)`
 
   Realtime API can write session traces to the [Traces Dashboard](https://platform.openai.com/logs?api=traces). Set to null to disable tracing. Once
   tracing is enabled for a session, the configuration cannot be modified.
@@ -859,6 +875,8 @@ handle it.
 
       Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+      `minimum: 0`, `maximum: 1`
+
     - `type: "retention_ratio"`
 
       Use retention ratio truncation.
@@ -869,9 +887,11 @@ handle it.
 
       Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-      - `post_instructions: optional number`
+      - `post_instructions: optional integer`
 
         Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+        `minimum: 0`
 
 ### Example
 

@@ -2,6 +2,40 @@
 title: Vision
 url: https://platform.claude.com/docs/en/build-with-claude/vision
 description: Claude's vision capabilities allow it to process and analyze images, opening up exciting possibilities for multimodal interaction.
+featureMetadata:
+  status: ga
+  supportedModels:
+    - claude-fable-5-1
+    - claude-mythos-5-1
+    - claude-fable-5
+    - claude-mythos-5
+    - claude-mythos-preview
+    - claude-opus-5-5
+    - claude-opus-5
+    - claude-sonnet-5-5
+    - claude-sonnet-5
+    - claude-haiku-5-5
+    - claude-haiku-4-5-20251001
+    - claude-opus-4-8
+    - claude-opus-4-7
+    - claude-opus-4-6
+    - claude-sonnet-4-6
+    - claude-opus-4-5-20251101
+    - claude-sonnet-4-5-20250929
+  supportedPlatforms:
+    Claude API: ga
+    Claude Platform on AWS: ga
+    Claude Models on Google Cloud (Anthropic managed): ga
+    Amazon Bedrock:
+      availability: ga
+      note: Only base64 image sources; per-image limit 5 MB (base64-encoded) and a lower total request size.
+    Amazon Bedrock (InvokeModel):
+      availability: ga
+      note: Only base64 image sources; per-image limit 5 MB (base64-encoded) and a lower total request size.
+    Claude Models on Google Cloud (Google managed):
+      availability: ga
+      note: Only base64 image sources; per-image limit 5 MB (base64-encoded) and a lower total request size.
+    Microsoft Foundry: ga
 ---
 
 This guide describes how to send images to Claude, the limits and costs that apply, and where to find guidance for [coordinate-based workflows](https://platform.claude.com/docs/en/build-with-claude/vision-coordinates?sdk_languages=cli).
@@ -166,7 +200,7 @@ The maximum size per image is:
 * 10 MB on [claude.ai](https://claude.ai/).
 
 <Note>
-  Although the API supports up to 600 images for each request, [request size limits](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli#request-size-limits) can be reached first: 32 MB for standard endpoints, and lower on some partner-operated platforms, such as Amazon Bedrock and Claude Models on Google Cloud (Google managed). For many images, consider [uploading with the Files API](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#files-api-image-example) and referencing by `file_id` to keep request payloads small.
+  Although the API supports up to 600 images for each request, [request size limits](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli#request-size-limits) can be reached first. The limit is 128 MB on the first-party Claude API, and other platforms have their own limits. For many images, consider [uploading with the Files API](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#files-api-image-example) and referencing by `file_id` to keep request payloads small.
 
   Even when using the Files API, requests with many large images can fail before reaching the 600-image count. Reduce image dimensions or file sizes (for example, by downsampling) before uploading (see [Resolution and token cost](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#evaluate-image-size)).
 </Note>
@@ -297,3 +331,28 @@ Always carefully review and verify Claude’s image interpretations, especially 
     See the Messages API documentation, including example API calls involving images.
   </Card>
 </CardGroup>
+
+## Availability
+
+Vision (images) is available on every model.
+
+### API support
+
+#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli)
+
+* Availability: Always on
+
+| Status                | Cloud platforms                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Available             | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
+| Available<sup>1</sup> | [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli), [Amazon Bedrock (InvokeModel)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli), [Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=cli)          |
+
+1. Only base64 image sources; per-image limit 5 MB (base64-encoded) and a lower total request size.
+
+#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli)
+
+* Availability: Always on
+
+| Status    | Cloud platforms         |
+| --------- | ----------------------- |
+| Available | All supported platforms |

@@ -16,9 +16,11 @@ Upload a voice consent recording.
 
     The consent recording identifier.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the consent recording was created.
+
+    `format: unixtime`
 
   - `language: string`
 
@@ -45,7 +47,7 @@ curl https://api.openai.com/v1/audio/voice_consents \
     -F 'recording=@/path/to/recording'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {

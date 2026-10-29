@@ -1,0 +1,142 @@
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
+## Retrieve admin API key
+
+**get** `/organization/admin_api_keys/{key_id}`
+
+Retrieve a single organization API key
+
+### Path Parameters
+
+- `key_id: string`
+
+  The ID of the API key.
+
+### Returns
+
+- `AdminAPIKey object { id, created_at, expires_at, 5 more }`
+
+  Represents an individual Admin API key in an org.
+
+  - `id: string`
+
+    The identifier, which can be referenced in API endpoints
+
+  - `created_at: integer`
+
+    The Unix timestamp (in seconds) of when the API key was created
+
+    `format: unixtime`
+
+  - `expires_at: integer or null`
+
+    The Unix timestamp (in seconds) of when the API key expires
+
+    `format: unixtime`
+
+  - `object: "organization.admin_api_key"`
+
+    The object type, which is always `organization.admin_api_key`
+
+    - `"organization.admin_api_key"`
+
+  - `owner: object { id, created_at, name, 3 more }`
+
+    - `id: optional string`
+
+      The identifier, which can be referenced in API endpoints
+
+    - `created_at: optional integer`
+
+      The Unix timestamp (in seconds) of when the user was created
+
+      `format: unixtime`
+
+    - `name: optional string`
+
+      The name of the user
+
+    - `object: optional string`
+
+      The object type, which is always organization.user
+
+    - `role: optional string`
+
+      Always `owner`
+
+    - `type: optional string`
+
+      Always `user`
+
+  - `redacted_value: string`
+
+    The redacted value of the API key
+
+  - `last_used_at: optional integer or null`
+
+    The Unix timestamp (in seconds) of when the API key was last used
+
+    `format: unixtime`
+
+  - `name: optional string or null`
+
+    The name of the API key
+
+### Example
+
+```http
+curl https://api.openai.com/v1/organization/admin_api_keys/$KEY_ID \
+    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
+```
+
+#### 200 — Example
+
+```json
+{
+  "id": "key_abc",
+  "created_at": 1711471533,
+  "expires_at": 1714063533,
+  "object": "organization.admin_api_key",
+  "owner": {
+    "id": "sa_456",
+    "created_at": 1711471533,
+    "name": "My Service Account",
+    "object": "organization.user",
+    "role": "owner",
+    "type": "user"
+  },
+  "redacted_value": "sk-admin...def",
+  "last_used_at": 1711471534,
+  "name": "Administration Key"
+}
+```
+
+### Example
+
+```http
+curl https://api.openai.com/v1/organization/admin_api_keys/key_abc \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "Content-Type: application/json"
+```
+
+#### Response example
+
+```json
+{
+  "object": "organization.admin_api_key",
+  "id": "key_abc",
+  "name": "Main Admin Key",
+  "redacted_value": "sk-admin...xyz",
+  "created_at": 1711471533,
+  "expires_at": null,
+  "last_used_at": 1711471534,
+  "owner": {
+    "type": "user",
+    "object": "organization.user",
+    "id": "user_123",
+    "name": "John Doe",
+    "created_at": 1711471533,
+    "role": "owner"
+  }
+}
+```

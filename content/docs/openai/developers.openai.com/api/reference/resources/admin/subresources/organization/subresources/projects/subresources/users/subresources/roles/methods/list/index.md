@@ -16,9 +16,11 @@ Lists the project roles assigned to a user within a project.
 
   Cursor for pagination. Provide the value from the previous response's `next` field to continue listing project roles.
 
-- `limit: optional number`
+- `limit: optional integer`
 
   A limit on the number of project role assignments to return.
+
+  `minimum: 0`, `maximum: 1000`
 
 - `order: optional "asc" or "desc"`
 
@@ -46,9 +48,11 @@ Lists the project roles assigned to a user within a project.
 
     - `principal_type: string`
 
-  - `created_at: number or null`
+  - `created_at: integer or null`
 
     When the role was created.
+
+    `format: unixtime`
 
   - `created_by: string or null`
 
@@ -82,9 +86,11 @@ Lists the project roles assigned to a user within a project.
 
     Resource type the role applies to.
 
-  - `updated_at: number or null`
+  - `updated_at: integer or null`
 
     When the role was last updated.
+
+    `format: unixtime`
 
 - `has_more: boolean`
 
@@ -107,7 +113,7 @@ curl https://api.openai.com/v1/projects/$PROJECT_ID/users/$USER_ID/roles \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -152,7 +158,7 @@ curl https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

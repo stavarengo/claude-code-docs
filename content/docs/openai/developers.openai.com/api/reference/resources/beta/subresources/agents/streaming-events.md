@@ -20,6 +20,8 @@ Schema name: `SessionEventAgentSessionEnvironmentReady`
 
     The public ID of the environment.
 
+    `minLength: 0`
+
   - `error: object { code, message, type }  or null`
 
     The error reported while preparing the environment, if any.
@@ -28,13 +30,19 @@ Schema name: `SessionEventAgentSessionEnvironmentReady`
 
       A machine-readable error code.
 
+      `minLength: 0`
+
     - `message: string`
 
       A human-readable error message.
 
+      `minLength: 0`
+
     - `type: string`
 
       The error type.
+
+      `minLength: 0`
 
   - `status: "pending" or "ready" or "connected" or 4 more`
 
@@ -72,19 +80,27 @@ Schema name: `SessionEventAgentSessionEnvironmentReady`
 
     The environment type.
 
+    `minLength: 0`
+
 - `event_id: string`
 
   The unique ID of the event.
+
+  `minLength: 0`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.environment.ready"`
+  `minLength: 0`
+
+- `type: "agent.session.environment.ready" (default: "agent.session.environment.ready")`
 
   The type of the object. Always `agent.session.environment.ready`.
 
@@ -129,6 +145,8 @@ Schema name: `SessionEventAgentSessionEnvironmentSuspended`
 
     The public ID of the environment.
 
+    `minLength: 0`
+
   - `error: object { code, message, type }  or null`
 
     The error reported while preparing the environment, if any.
@@ -137,13 +155,19 @@ Schema name: `SessionEventAgentSessionEnvironmentSuspended`
 
       A machine-readable error code.
 
+      `minLength: 0`
+
     - `message: string`
 
       A human-readable error message.
 
+      `minLength: 0`
+
     - `type: string`
 
       The error type.
+
+      `minLength: 0`
 
   - `status: "pending" or "ready" or "connected" or 4 more`
 
@@ -181,19 +205,27 @@ Schema name: `SessionEventAgentSessionEnvironmentSuspended`
 
     The environment type.
 
+    `minLength: 0`
+
 - `event_id: string`
 
   The unique ID of the event.
+
+  `minLength: 0`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.environment.suspended"`
+  `minLength: 0`
+
+- `type: "agent.session.environment.suspended" (default: "agent.session.environment.suspended")`
 
   The type of the object. Always `agent.session.environment.suspended`.
 
@@ -238,6 +270,8 @@ Schema name: `SessionEventAgentSessionEnvironmentExpired`
 
     The public ID of the environment.
 
+    `minLength: 0`
+
   - `error: object { code, message, type }  or null`
 
     The error reported while preparing the environment, if any.
@@ -246,13 +280,19 @@ Schema name: `SessionEventAgentSessionEnvironmentExpired`
 
       A machine-readable error code.
 
+      `minLength: 0`
+
     - `message: string`
 
       A human-readable error message.
 
+      `minLength: 0`
+
     - `type: string`
 
       The error type.
+
+      `minLength: 0`
 
   - `status: "pending" or "ready" or "connected" or 4 more`
 
@@ -290,19 +330,27 @@ Schema name: `SessionEventAgentSessionEnvironmentExpired`
 
     The environment type.
 
+    `minLength: 0`
+
 - `event_id: string`
 
   The unique ID of the event.
+
+  `minLength: 0`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.environment.expired"`
+  `minLength: 0`
+
+- `type: "agent.session.environment.expired" (default: "agent.session.environment.expired")`
 
   The type of the object. Always `agent.session.environment.expired`.
 
@@ -343,23 +391,33 @@ Schema name: `SessionEventAgentSessionEnvironmentReset`
 
   The stable environment ID, retained across sandbox replacements.
 
+  `minLength: 0`
+
 - `event_id: string`
 
   The unique ID of the event.
 
-- `reset_count: number`
+  `minLength: 0`
+
+- `reset_count: integer`
 
   Monotonically increasing reset number. Repeated notifications share this number.
+
+  `format: int64`, `minimum: 0`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The associated turn, when applicable.
 
-- `type: "agent.session.environment.reset"`
+  `minLength: 0`
+
+- `type: "agent.session.environment.reset" (default: "agent.session.environment.reset")`
 
   The type of the object. Always `agent.session.environment.reset`.
 
@@ -392,27 +450,39 @@ Schema name: `SessionEventAgentOutputCommandExecutionOutputDelta`
 
   The output text that was appended.
 
+  `minLength: 0`
+
 - `event_id: string`
 
   The unique ID of the event.
+
+  `minLength: 0`
 
 - `item_id: string`
 
   The ID of the command execution item.
 
-- `output_index: number`
+  `minLength: 0`
+
+- `output_index: integer`
 
   The index of the item in the turn output.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.output.command_execution_output.delta"`
+  `minLength: 0`
+
+- `type: "agent.output.command_execution_output.delta" (default: "agent.output.command_execution_output.delta")`
 
   The type of the object. Always `agent.output.command_execution_output.delta`.
 
@@ -446,6 +516,8 @@ Schema name: `SessionEventAgentSessionCreated`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `session: AgentSession`
 
   The session that was created.
@@ -454,7 +526,9 @@ Schema name: `SessionEventAgentSessionCreated`
 
     The ID of the session.
 
-  - `agent: object { id, instructions, model, 6 more }`
+    `minLength: 0`
+
+  - `agent: object { id, instructions, model, 8 more }`
 
     The agent running in the session.
 
@@ -462,13 +536,19 @@ Schema name: `SessionEventAgentSessionCreated`
 
       The ID of the agent.
 
+      `minLength: 0`
+
     - `instructions: string or null`
 
       Custom instructions appended to the agent's default base instructions.
 
+      `minLength: 0`
+
     - `model: string`
 
       The model used by the agent.
+
+      `minLength: 0`
 
     - `multi_agent: MultiAgentConfig`
 
@@ -478,13 +558,17 @@ Schema name: `SessionEventAgentSessionCreated`
 
         Whether subagent tools are enabled. Defaults to false.
 
-      - `max_concurrent_subagents: number or null`
+      - `max_concurrent_subagents: integer or null`
 
         Maximum number of subagents that may run concurrently, or null when disabled. Defaults to 6 when enabled.
+
+        `format: int64`, `minimum: 1`, `maximum: 4294967295`
 
     - `name: string or null`
 
       The reusable agent's name when the session was created, or null if no name was saved. Later changes to the agent's name do not affect this value.
+
+      `minLength: 0`
 
     - `reasoning: AgentReasoning`
 
@@ -552,7 +636,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           Generates ordinary text without a structured-output constraint.
 
-          - `type: "text"`
+          - `type: "text" (default: "text")`
 
             The type of the object. Always `text`.
 
@@ -566,7 +650,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
             The JSON Schema that generated text must match.
 
-          - `type: "json_schema"`
+          - `type: "json_schema" (default: "json_schema")`
 
             The type of the object. Always `json_schema`.
 
@@ -586,6 +670,8 @@ Schema name: `SessionEventAgentSessionCreated`
 
       Tools available to the agent.
 
+      `minItems: 0`, `maxItems: 2000`
+
       - `Function object { defer_loading, description, name, 2 more }`
 
         A function defined by the application.
@@ -598,15 +684,19 @@ Schema name: `SessionEventAgentSessionCreated`
 
           A description of what the function does.
 
+          `minLength: 0`
+
         - `name: string`
 
           The name of the function.
+
+          `minLength: 0`
 
         - `parameters: map[unknown]`
 
           A JSON Schema object describing the function's arguments.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the object. Always `function`.
 
@@ -620,7 +710,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           Whether tools can be called from model-generated code.
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the object. Always `programmatic_tool_calling`.
 
@@ -634,6 +724,8 @@ Schema name: `SessionEventAgentSessionCreated`
 
           The MCP tools the agent may call.
 
+          `minItems: 0`, `maxItems: 2000`
+
         - `connection_origin: "service" or "environment"`
 
           Where outbound MCP HTTP connections originate.
@@ -645,6 +737,8 @@ Schema name: `SessionEventAgentSessionCreated`
         - `credential_id: string or null`
 
           The attached vault credential selected for this MCP server, if any. Optional when exactly one attached credential matches the server URL.
+
+          `minLength: 0`
 
         - `request_metadata: map[unknown]`
 
@@ -658,6 +752,8 @@ Schema name: `SessionEventAgentSessionCreated`
 
           A label used to identify the MCP server in tool calls.
 
+          `minLength: 0`
+
         - `transport: McpTransport`
 
           The transport used to connect to the MCP server.
@@ -670,7 +766,9 @@ Schema name: `SessionEventAgentSessionCreated`
 
               The URL of the MCP server.
 
-            - `type: "http"`
+              `minLength: 0`
+
+            - `type: "http" (default: "http")`
 
               The type of the object. Always `http`.
 
@@ -684,25 +782,33 @@ Schema name: `SessionEventAgentSessionCreated`
 
               Arguments passed to the MCP server command.
 
+              `minItems: 0`, `maxItems: 2000`
+
             - `command: string`
 
               The command used to start the MCP server.
+
+              `minLength: 0`
 
             - `cwd: string`
 
               The working directory used to start the MCP server.
 
+              `minLength: 0`
+
             - `env_vars: array of string`
 
               Environment variable names inherited from the execution environment.
 
-            - `type: "stdio"`
+              `minItems: 0`, `maxItems: 2000`
+
+            - `type: "stdio" (default: "stdio")`
 
               The type of the object. Always `stdio`.
 
               - `"stdio"`
 
-        - `type: "mcp"`
+        - `type: "mcp" (default: "mcp")`
 
           The type of the object. Always `mcp`.
 
@@ -715,6 +821,8 @@ Schema name: `SessionEventAgentSessionCreated`
         - `allowed_domains: array of string or null`
 
           Allowed search domains, or `null` when the search is unrestricted.
+
+          `minItems: 0`, `maxItems: 2000`
 
         - `context_size: "low" or "medium" or "high"`
 
@@ -734,17 +842,25 @@ Schema name: `SessionEventAgentSessionCreated`
 
             The city name.
 
+            `minLength: 0`
+
           - `country: string or null`
 
             The two-letter ISO country code, such as `US`.
+
+            `minLength: 0`
 
           - `region: string or null`
 
             The region or state name.
 
+            `minLength: 0`
+
           - `timezone: string or null`
 
             The IANA timezone, such as `America/Los_Angeles`.
+
+            `minLength: 0`
 
         - `mode: "disabled" or "cached" or "live"`
 
@@ -756,7 +872,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `"live"`
 
-        - `type: "web_search"`
+        - `type: "web_search" (default: "web_search")`
 
           The type of the object. Always `web_search`.
 
@@ -770,7 +886,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           Whether computer tool outputs include screenshots.
 
-        - `type: "computer_use"`
+        - `type: "computer_use" (default: "computer_use")`
 
           The type of the object. Always `computer_use`.
 
@@ -780,15 +896,33 @@ Schema name: `SessionEventAgentSessionCreated`
 
         Lets the agent manage its own scheduled wakeups.
 
-        - `type: "automations"`
+        - `type: "automations" (default: "automations")`
 
           The type of the object. Always `automations`.
 
           - `"automations"`
 
-  - `created_at: number`
+    - `compaction: optional object { async }`
+
+      The effective context compaction settings.
+
+      - `async: boolean`
+
+        Whether context is compacted in the background. Defaults to true.
+
+    - `experimental: optional object { time_awareness }`
+
+      The effective experimental settings for the agent.
+
+      - `time_awareness: boolean`
+
+        Whether the model receives periodic current-time reminders.
+
+  - `created_at: integer`
 
     The Unix timestamp, in seconds, when the session was created.
+
+    `format: int64`
 
   - `environment: Environment`
 
@@ -798,7 +932,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
       The session talks to CCA without selecting or provisioning an execution environment.
 
-      - `type: "none"`
+      - `type: "none" (default: "none")`
 
         The type of the object. Always `none`.
 
@@ -812,9 +946,13 @@ Schema name: `SessionEventAgentSessionCreated`
 
         The public ID of the environment.
 
+        `minLength: 0`
+
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
 
       - `desktop: object { enabled }`
 
@@ -828,6 +966,8 @@ Schema name: `SessionEventAgentSessionCreated`
 
         Files available in the environment, excluding their contents.
 
+        `minItems: 0`, `maxItems: 50`
+
         - `HostedEnvironmentFileID object { id, file_id, path, 2 more }`
 
           A file copied from the OpenAI Files API.
@@ -836,19 +976,27 @@ Schema name: `SessionEventAgentSessionCreated`
 
             The session-scoped ID of the file in the execution environment.
 
+            `minLength: 0`
+
           - `file_id: string`
 
             The ID of the uploaded file.
+
+            `minLength: 0`
 
           - `path: string`
 
             The file's absolute path inside the environment.
 
-          - `size_bytes: number`
+            `minLength: 0`
+
+          - `size_bytes: integer`
 
             The decoded file size in bytes.
 
-          - `type: "file_id"`
+            `format: int64`, `minimum: 0`
+
+          - `type: "file_id" (default: "file_id")`
 
             The type of the object. Always `file_id`.
 
@@ -862,15 +1010,21 @@ Schema name: `SessionEventAgentSessionCreated`
 
             The session-scoped ID of the file in the execution environment.
 
+            `minLength: 0`
+
           - `path: string`
 
             The file's absolute path inside the environment.
 
-          - `size_bytes: number`
+            `minLength: 0`
+
+          - `size_bytes: integer`
 
             The decoded file size in bytes.
 
-          - `type: "inline"`
+            `format: int64`, `minimum: 0`
+
+          - `type: "inline" (default: "inline")`
 
             The type of the object. Always `inline`.
 
@@ -900,6 +1054,8 @@ Schema name: `SessionEventAgentSessionCreated`
 
           Domains the environment may access when network access is restricted.
 
+          `minItems: 0`, `maxItems: 2000`
+
       - `packages: object { npm, python, system }`
 
         Packages installed in the environment.
@@ -908,27 +1064,39 @@ Schema name: `SessionEventAgentSessionCreated`
 
           npm packages installed globally in the environment.
 
+          `minItems: 0`, `maxItems: 16384`
+
         - `python: array of string`
 
           Python packages installed in the environment.
+
+          `minItems: 0`, `maxItems: 16384`
 
         - `system: array of string`
 
           System packages installed in the environment.
 
+          `minItems: 0`, `maxItems: 16384`
+
       - `plugins: array of HostedPlugin`
 
         Plugins installed in the environment, excluding their archive contents.
+
+        `minItems: 0`, `maxItems: 2000`
 
         - `description: string`
 
           The installed plugin description.
 
+          `minLength: 0`
+
         - `name: string`
 
           The installed plugin name.
 
-        - `type: "inline"`
+          `minLength: 0`
+
+        - `type: "inline" (default: "inline")`
 
           The type of the object. Always `inline`.
 
@@ -938,6 +1106,8 @@ Schema name: `SessionEventAgentSessionCreated`
 
         Skills installed in the environment, excluding their archive contents.
 
+        `minItems: 0`, `maxItems: 2000`
+
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
           A skill installed from the Skills API.
@@ -946,15 +1116,21 @@ Schema name: `SessionEventAgentSessionCreated`
 
             The installed skill description.
 
+            `minLength: 0`
+
           - `name: string`
 
             The installed skill name.
+
+            `minLength: 0`
 
           - `skill_id: string`
 
             The referenced skill ID.
 
-          - `type: "skill_reference"`
+            `minLength: 0`
+
+          - `type: "skill_reference" (default: "skill_reference")`
 
             The type of the object. Always `skill_reference`.
 
@@ -964,6 +1140,8 @@ Schema name: `SessionEventAgentSessionCreated`
 
             The concrete skill version installed for this session.
 
+            `minLength: 0`
+
         - `Inline object { description, name, type }`
 
           A skill installed from an inline ZIP archive.
@@ -972,17 +1150,21 @@ Schema name: `SessionEventAgentSessionCreated`
 
             The installed skill description.
 
+            `minLength: 0`
+
           - `name: string`
 
             The installed skill name.
 
-          - `type: "inline"`
+            `minLength: 0`
+
+          - `type: "inline" (default: "inline")`
 
             The type of the object. Always `inline`.
 
             - `"inline"`
 
-      - `type: "openai_hosted"`
+      - `type: "openai_hosted" (default: "openai_hosted")`
 
         The type of the object. Always `openai_hosted`.
 
@@ -1006,15 +1188,21 @@ Schema name: `SessionEventAgentSessionCreated`
 
         The public ID of the environment.
 
+        `minLength: 0`
+
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
 
       - `remote_url: string`
 
         Pass this URL unchanged to `codex exec-server --remote` when connecting this environment.
 
-      - `type: "self_hosted"`
+        `minLength: 0`
+
+      - `type: "self_hosted" (default: "self_hosted")`
 
         The type of the object. Always `self_hosted`.
 
@@ -1024,19 +1212,25 @@ Schema name: `SessionEventAgentSessionCreated`
 
         The absolute project directory inside the environment. Defaults to `/workspace`.
 
+        `minLength: 0`
+
   - `error: string or null`
 
     The error that caused the session to fail, if any.
 
-  - `last_active_at: number`
+    `minLength: 0`
+
+  - `last_active_at: integer`
 
     The Unix timestamp, in seconds, when the session was last active.
+
+    `format: int64`
 
   - `metadata: map[string]`
 
     Custom string key-value pairs attached to the session.
 
-  - `object: "agent.session"`
+  - `object: "agent.session" (default: "agent.session")`
 
     The object type. Always `agent.session`.
 
@@ -1045,6 +1239,8 @@ Schema name: `SessionEventAgentSessionCreated`
   - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
+
+    `minItems: 0`, `maxItems: 2000`
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -1062,17 +1258,25 @@ Schema name: `SessionEventAgentSessionCreated`
 
             The registered form or frame origin where values will be entered.
 
+            `minLength: 0`
+
           - `fields: array of object { id, label, required, type }`
 
             Controls to render. All submitted values are sensitive.
+
+            `minItems: 0`, `maxItems: 2000`
 
             - `id: string`
 
               The field ID to submit as field_id in a fields entry.
 
+              `minLength: 0`
+
             - `label: string`
 
               The label to display beside the control.
+
+              `minLength: 0`
 
             - `required: boolean`
 
@@ -1082,27 +1286,39 @@ Schema name: `SessionEventAgentSessionCreated`
 
               The rendering type, such as email, password, or text.
 
+              `minLength: 0`
+
           - `options: array of object { id, field_ids, label }`
 
             Sign-in methods. Empty for a plain form.
+
+            `minItems: 0`, `maxItems: 2000`
 
             - `id: string`
 
               The option ID to submit as selected_option.
 
+              `minLength: 0`
+
             - `field_ids: array of string`
 
               IDs from the registered fields that this method accepts.
+
+              `minItems: 0`, `maxItems: 2000`
 
             - `label: string`
 
               The method label to display.
 
+              `minLength: 0`
+
           - `reason: string or null`
 
             Why the agent needs the user to sign in.
 
-          - `type: "browser_authentication"`
+            `minLength: 0`
+
+          - `type: "browser_authentication" (default: "browser_authentication")`
 
             The type of the object. Always `browser_authentication`.
 
@@ -1116,11 +1332,15 @@ Schema name: `SessionEventAgentSessionCreated`
 
             The origin the browser needs permission to access.
 
+            `minLength: 0`
+
           - `reason: string or null`
 
             The browser's explanation for this request, or null when unavailable.
 
-          - `type: "browser_origin_access"`
+            `minLength: 0`
+
+          - `type: "browser_origin_access" (default: "browser_origin_access")`
 
             The type of the object. Always `browser_origin_access`.
 
@@ -1130,11 +1350,15 @@ Schema name: `SessionEventAgentSessionCreated`
 
         The registered request ID to echo when responding.
 
+        `minLength: 0`
+
       - `turn_id: string`
 
         The turn that requested approval.
 
-      - `type: "computer_use_approval_request"`
+        `minLength: 0`
+
+      - `type: "computer_use_approval_request" (default: "computer_use_approval_request")`
 
         The type of the object. Always `computer_use_approval_request`.
 
@@ -1152,15 +1376,21 @@ Schema name: `SessionEventAgentSessionCreated`
 
         The ID to include when submitting the function result.
 
+        `minLength: 0`
+
       - `name: string`
 
         The function name.
+
+        `minLength: 0`
 
       - `turn_id: string`
 
         The ID of the turn that requested the function call.
 
-      - `type: "function_call"`
+        `minLength: 0`
+
+      - `type: "function_call" (default: "function_call")`
 
         The type of the object. Always `function_call`.
 
@@ -1174,7 +1404,9 @@ Schema name: `SessionEventAgentSessionCreated`
 
         The ID of the environment to reconnect.
 
-      - `type: "environment_connection"`
+        `minLength: 0`
+
+      - `type: "environment_connection" (default: "environment_connection")`
 
         The type of the object. Always `environment_connection`.
 
@@ -1204,39 +1436,51 @@ Schema name: `SessionEventAgentSessionCreated`
 
     Best-effort token usage for the session, or null if unknown. Recorded usage may change.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens used by the agent.
+
+      `format: int64`
 
     - `input_tokens_details: object { cached_tokens }`
 
       A breakdown of the agent's input token usage.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of input tokens retrieved from the prompt cache.
 
-    - `output_tokens: number`
+        `format: int64`
+
+    - `output_tokens: integer`
 
       The number of output tokens generated by the agent.
+
+      `format: int64`
 
     - `output_tokens_details: object { reasoning_tokens }`
 
       A breakdown of the agent's output token usage.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of output tokens used for reasoning.
 
-    - `total_tokens: number`
+        `format: int64`
+
+    - `total_tokens: integer`
 
       The total number of input and output tokens used by the agent.
+
+      `format: int64`
 
   - `vault_ids: array of string`
 
     The IDs of vaults made available to the session.
 
-- `type: "agent.session.created"`
+    `minItems: 0`, `maxItems: 2000`
+
+- `type: "agent.session.created" (default: "agent.session.created")`
 
   The type of the object. Always `agent.session.created`.
 
@@ -1317,6 +1561,12 @@ Schema name: `SessionEventAgentSessionCreated`
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -1354,9 +1604,13 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `session_id: string`
 
   The ID of the session associated with the event.
+
+  `minLength: 0`
 
 - `turn: Turn`
 
@@ -1366,17 +1620,25 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
     The ID of the turn.
 
+    `minLength: 0`
+
   - `agent_id: string`
 
     The ID of the agent that ran the turn.
 
-  - `completed_at: number or null`
+    `minLength: 0`
+
+  - `completed_at: integer or null`
 
     The Unix timestamp, in seconds, when the turn reached a terminal state.
 
-  - `created_at: number`
+    `format: int64`
+
+  - `created_at: integer`
 
     The Unix timestamp, in seconds, used to order the turn by creation time. Subagent turns use their start time, falling back to completion time or the subagent opening time when the preceding timestamps are unavailable.
+
+    `format: int64`
 
   - `error: SessionTurnError or null`
 
@@ -1482,7 +1744,9 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
       A customer-safe explanation of the failure.
 
-  - `object: "agent.session.turn"`
+      `minLength: 0`
+
+  - `object: "agent.session.turn" (default: "agent.session.turn")`
 
     The object type. Always `agent.session.turn`.
 
@@ -1492,9 +1756,13 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
     The ID of the session that owns the turn.
 
-  - `started_at: number or null`
+    `minLength: 0`
+
+  - `started_at: integer or null`
 
     The Unix timestamp, in seconds, when the turn started.
+
+    `format: int64`
 
   - `status: "queued" or "in_progress" or "waiting" or 3 more`
 
@@ -1528,43 +1796,57 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
     The ID of the subagent that ran the turn, if applicable.
 
+    `minLength: 0`
+
   - `usage: TokenUsage or null`
 
     Best-effort token usage for the turn, or null if unknown. Recorded usage may change.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens used by the agent.
+
+      `format: int64`
 
     - `input_tokens_details: object { cached_tokens }`
 
       A breakdown of the agent's input token usage.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of input tokens retrieved from the prompt cache.
 
-    - `output_tokens: number`
+        `format: int64`
+
+    - `output_tokens: integer`
 
       The number of output tokens generated by the agent.
+
+      `format: int64`
 
     - `output_tokens_details: object { reasoning_tokens }`
 
       A breakdown of the agent's output token usage.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of output tokens used for reasoning.
 
-    - `total_tokens: number`
+        `format: int64`
+
+    - `total_tokens: integer`
 
       The total number of input and output tokens used by the agent.
+
+      `format: int64`
 
 - `turn_id: string`
 
   The ID of the turn associated with the event.
 
-- `type: "agent.session.turn.created"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.created" (default: "agent.session.turn.created")`
 
   The type of the object. Always `agent.session.turn.created`.
 
@@ -1621,9 +1903,13 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `session_id: string`
 
   The ID of the session associated with the event.
+
+  `minLength: 0`
 
 - `turn: Turn`
 
@@ -1633,17 +1919,25 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
     The ID of the turn.
 
+    `minLength: 0`
+
   - `agent_id: string`
 
     The ID of the agent that ran the turn.
 
-  - `completed_at: number or null`
+    `minLength: 0`
+
+  - `completed_at: integer or null`
 
     The Unix timestamp, in seconds, when the turn reached a terminal state.
 
-  - `created_at: number`
+    `format: int64`
+
+  - `created_at: integer`
 
     The Unix timestamp, in seconds, used to order the turn by creation time. Subagent turns use their start time, falling back to completion time or the subagent opening time when the preceding timestamps are unavailable.
+
+    `format: int64`
 
   - `error: SessionTurnError or null`
 
@@ -1749,7 +2043,9 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
       A customer-safe explanation of the failure.
 
-  - `object: "agent.session.turn"`
+      `minLength: 0`
+
+  - `object: "agent.session.turn" (default: "agent.session.turn")`
 
     The object type. Always `agent.session.turn`.
 
@@ -1759,9 +2055,13 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
     The ID of the session that owns the turn.
 
-  - `started_at: number or null`
+    `minLength: 0`
+
+  - `started_at: integer or null`
 
     The Unix timestamp, in seconds, when the turn started.
+
+    `format: int64`
 
   - `status: "queued" or "in_progress" or "waiting" or 3 more`
 
@@ -1795,43 +2095,57 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
     The ID of the subagent that ran the turn, if applicable.
 
+    `minLength: 0`
+
   - `usage: TokenUsage or null`
 
     Best-effort token usage for the turn, or null if unknown. Recorded usage may change.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens used by the agent.
+
+      `format: int64`
 
     - `input_tokens_details: object { cached_tokens }`
 
       A breakdown of the agent's input token usage.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of input tokens retrieved from the prompt cache.
 
-    - `output_tokens: number`
+        `format: int64`
+
+    - `output_tokens: integer`
 
       The number of output tokens generated by the agent.
+
+      `format: int64`
 
     - `output_tokens_details: object { reasoning_tokens }`
 
       A breakdown of the agent's output token usage.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of output tokens used for reasoning.
 
-    - `total_tokens: number`
+        `format: int64`
+
+    - `total_tokens: integer`
 
       The total number of input and output tokens used by the agent.
+
+      `format: int64`
 
 - `turn_id: string`
 
   The ID of the turn associated with the event.
 
-- `type: "agent.session.turn.in_progress"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.in_progress" (default: "agent.session.turn.in_progress")`
 
   The type of the object. Always `agent.session.turn.in_progress`.
 
@@ -1888,9 +2202,13 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `session_id: string`
 
   The ID of the session associated with the event.
+
+  `minLength: 0`
 
 - `turn: Turn`
 
@@ -1900,17 +2218,25 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
     The ID of the turn.
 
+    `minLength: 0`
+
   - `agent_id: string`
 
     The ID of the agent that ran the turn.
 
-  - `completed_at: number or null`
+    `minLength: 0`
+
+  - `completed_at: integer or null`
 
     The Unix timestamp, in seconds, when the turn reached a terminal state.
 
-  - `created_at: number`
+    `format: int64`
+
+  - `created_at: integer`
 
     The Unix timestamp, in seconds, used to order the turn by creation time. Subagent turns use their start time, falling back to completion time or the subagent opening time when the preceding timestamps are unavailable.
+
+    `format: int64`
 
   - `error: SessionTurnError or null`
 
@@ -2016,7 +2342,9 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
       A customer-safe explanation of the failure.
 
-  - `object: "agent.session.turn"`
+      `minLength: 0`
+
+  - `object: "agent.session.turn" (default: "agent.session.turn")`
 
     The object type. Always `agent.session.turn`.
 
@@ -2026,9 +2354,13 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
     The ID of the session that owns the turn.
 
-  - `started_at: number or null`
+    `minLength: 0`
+
+  - `started_at: integer or null`
 
     The Unix timestamp, in seconds, when the turn started.
+
+    `format: int64`
 
   - `status: "queued" or "in_progress" or "waiting" or 3 more`
 
@@ -2062,43 +2394,57 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
     The ID of the subagent that ran the turn, if applicable.
 
+    `minLength: 0`
+
   - `usage: TokenUsage or null`
 
     Best-effort token usage for the turn, or null if unknown. Recorded usage may change.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens used by the agent.
+
+      `format: int64`
 
     - `input_tokens_details: object { cached_tokens }`
 
       A breakdown of the agent's input token usage.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of input tokens retrieved from the prompt cache.
 
-    - `output_tokens: number`
+        `format: int64`
+
+    - `output_tokens: integer`
 
       The number of output tokens generated by the agent.
+
+      `format: int64`
 
     - `output_tokens_details: object { reasoning_tokens }`
 
       A breakdown of the agent's output token usage.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of output tokens used for reasoning.
 
-    - `total_tokens: number`
+        `format: int64`
+
+    - `total_tokens: integer`
 
       The total number of input and output tokens used by the agent.
+
+      `format: int64`
 
 - `turn_id: string`
 
   The ID of the turn associated with the event.
 
-- `type: "agent.session.turn.completed"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.completed" (default: "agent.session.turn.completed")`
 
   The type of the object. Always `agent.session.turn.completed`.
 
@@ -2170,9 +2516,13 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `session_id: string`
 
   The ID of the session associated with the event.
+
+  `minLength: 0`
 
 - `turn: Turn`
 
@@ -2182,17 +2532,25 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
     The ID of the turn.
 
+    `minLength: 0`
+
   - `agent_id: string`
 
     The ID of the agent that ran the turn.
 
-  - `completed_at: number or null`
+    `minLength: 0`
+
+  - `completed_at: integer or null`
 
     The Unix timestamp, in seconds, when the turn reached a terminal state.
 
-  - `created_at: number`
+    `format: int64`
+
+  - `created_at: integer`
 
     The Unix timestamp, in seconds, used to order the turn by creation time. Subagent turns use their start time, falling back to completion time or the subagent opening time when the preceding timestamps are unavailable.
+
+    `format: int64`
 
   - `error: SessionTurnError or null`
 
@@ -2298,7 +2656,9 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
       A customer-safe explanation of the failure.
 
-  - `object: "agent.session.turn"`
+      `minLength: 0`
+
+  - `object: "agent.session.turn" (default: "agent.session.turn")`
 
     The object type. Always `agent.session.turn`.
 
@@ -2308,9 +2668,13 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
     The ID of the session that owns the turn.
 
-  - `started_at: number or null`
+    `minLength: 0`
+
+  - `started_at: integer or null`
 
     The Unix timestamp, in seconds, when the turn started.
+
+    `format: int64`
 
   - `status: "queued" or "in_progress" or "waiting" or 3 more`
 
@@ -2344,43 +2708,57 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
     The ID of the subagent that ran the turn, if applicable.
 
+    `minLength: 0`
+
   - `usage: TokenUsage or null`
 
     Best-effort token usage for the turn, or null if unknown. Recorded usage may change.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens used by the agent.
+
+      `format: int64`
 
     - `input_tokens_details: object { cached_tokens }`
 
       A breakdown of the agent's input token usage.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of input tokens retrieved from the prompt cache.
 
-    - `output_tokens: number`
+        `format: int64`
+
+    - `output_tokens: integer`
 
       The number of output tokens generated by the agent.
+
+      `format: int64`
 
     - `output_tokens_details: object { reasoning_tokens }`
 
       A breakdown of the agent's output token usage.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of output tokens used for reasoning.
 
-    - `total_tokens: number`
+        `format: int64`
+
+    - `total_tokens: integer`
 
       The total number of input and output tokens used by the agent.
+
+      `format: int64`
 
 - `turn_id: string`
 
   The ID of the turn associated with the event.
 
-- `type: "agent.session.turn.failed"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.failed" (default: "agent.session.turn.failed")`
 
   The type of the object. Always `agent.session.turn.failed`.
 
@@ -2452,9 +2830,13 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `session_id: string`
 
   The ID of the session associated with the event.
+
+  `minLength: 0`
 
 - `turn: Turn`
 
@@ -2464,17 +2846,25 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
     The ID of the turn.
 
+    `minLength: 0`
+
   - `agent_id: string`
 
     The ID of the agent that ran the turn.
 
-  - `completed_at: number or null`
+    `minLength: 0`
+
+  - `completed_at: integer or null`
 
     The Unix timestamp, in seconds, when the turn reached a terminal state.
 
-  - `created_at: number`
+    `format: int64`
+
+  - `created_at: integer`
 
     The Unix timestamp, in seconds, used to order the turn by creation time. Subagent turns use their start time, falling back to completion time or the subagent opening time when the preceding timestamps are unavailable.
+
+    `format: int64`
 
   - `error: SessionTurnError or null`
 
@@ -2580,7 +2970,9 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
       A customer-safe explanation of the failure.
 
-  - `object: "agent.session.turn"`
+      `minLength: 0`
+
+  - `object: "agent.session.turn" (default: "agent.session.turn")`
 
     The object type. Always `agent.session.turn`.
 
@@ -2590,9 +2982,13 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
     The ID of the session that owns the turn.
 
-  - `started_at: number or null`
+    `minLength: 0`
+
+  - `started_at: integer or null`
 
     The Unix timestamp, in seconds, when the turn started.
+
+    `format: int64`
 
   - `status: "queued" or "in_progress" or "waiting" or 3 more`
 
@@ -2626,43 +3022,57 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
     The ID of the subagent that ran the turn, if applicable.
 
+    `minLength: 0`
+
   - `usage: TokenUsage or null`
 
     Best-effort token usage for the turn, or null if unknown. Recorded usage may change.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens used by the agent.
+
+      `format: int64`
 
     - `input_tokens_details: object { cached_tokens }`
 
       A breakdown of the agent's input token usage.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of input tokens retrieved from the prompt cache.
 
-    - `output_tokens: number`
+        `format: int64`
+
+    - `output_tokens: integer`
 
       The number of output tokens generated by the agent.
+
+      `format: int64`
 
     - `output_tokens_details: object { reasoning_tokens }`
 
       A breakdown of the agent's output token usage.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of output tokens used for reasoning.
 
-    - `total_tokens: number`
+        `format: int64`
+
+    - `total_tokens: integer`
 
       The total number of input and output tokens used by the agent.
+
+      `format: int64`
 
 - `turn_id: string`
 
   The ID of the turn associated with the event.
 
-- `type: "agent.session.turn.cancelled"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.cancelled" (default: "agent.session.turn.cancelled")`
 
   The type of the object. Always `agent.session.turn.cancelled`.
 
@@ -2734,6 +3144,8 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `item: AgentSessionItem`
 
   The item that was added.
@@ -2746,9 +3158,13 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of this item, or null for legacy user messages whose ID was not recorded.
 
+      `minLength: 0`
+
     - `content: array of AgentSessionMessageContent`
 
       The content of the message. User messages contain input text or images; assistant messages contain output text.
+
+      `minItems: 0`, `maxItems: 2000`
 
       - `InputText object { text, type }`
 
@@ -2758,7 +3174,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           The text supplied by the user.
 
-        - `type: "input_text"`
+          `minLength: 0`
+
+        - `type: "input_text" (default: "input_text")`
 
           The type of the object. Always `input_text`.
 
@@ -2772,7 +3190,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           The URL of the image supplied by the user, which may be a base64-encoded data URL.
 
-        - `type: "input_image"`
+          `minLength: 0`
+
+        - `type: "input_image" (default: "input_image")`
 
           The type of the object. Always `input_image`.
 
@@ -2786,7 +3206,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           The text produced by the assistant.
 
-        - `type: "output_text"`
+          `minLength: 0`
+
+        - `type: "output_text" (default: "output_text")`
 
           The type of the object. Always `output_text`.
 
@@ -2832,7 +3254,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "message"`
+      `minLength: 0`
+
+    - `type: "message" (default: "message")`
 
       The item type. Always `message`.
 
@@ -2846,6 +3270,8 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the reasoning item.
 
+      `minLength: 0`
+
     - `status: AgentOutputItemStatus or null`
 
       The status of the reasoning item.
@@ -2854,11 +3280,15 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The reasoning summaries produced by the agent.
 
+      `minItems: 0`, `maxItems: 2000`
+
       - `text: string`
 
         The reasoning summary text.
 
-      - `type: "summary_text"`
+        `minLength: 0`
+
+      - `type: "summary_text" (default: "summary_text")`
 
         The content type. Always `summary_text`.
 
@@ -2868,7 +3298,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "reasoning"`
+      `minLength: 0`
+
+    - `type: "reasoning" (default: "reasoning")`
 
       The item type. Always `reasoning`.
 
@@ -2882,6 +3314,8 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the function call item.
 
+      `minLength: 0`
+
     - `arguments: unknown`
 
       The arguments to pass to the function.
@@ -2890,9 +3324,13 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID used to submit the function result.
 
+      `minLength: 0`
+
     - `name: string`
 
       The name of the function to call.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -2918,7 +3356,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "function_call"`
+      `minLength: 0`
+
+    - `type: "function_call" (default: "function_call")`
 
       The item type. Always `function_call`.
 
@@ -2932,13 +3372,19 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the function call output item.
 
+      `minLength: 0`
+
     - `call_id: string`
 
       The ID of the function call that produced this output.
 
+      `minLength: 0`
+
     - `error: string or null`
 
       The error message, if the call failed.
+
+      `minLength: 0`
 
     - `output: AgentFunctionCallOutput or null`
 
@@ -2946,7 +3392,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `string`
 
+        `minLength: 0`
+
       - `array of InputContent`
+
+        `minItems: 0`, `maxItems: 2000`
 
         - `InputText object { text, type }`
 
@@ -2956,7 +3406,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
             The text supplied to the agent.
 
-          - `type: "input_text"`
+            `minLength: 0`
+
+          - `type: "input_text" (default: "input_text")`
 
             The type of the object. Always `input_text`.
 
@@ -2970,7 +3422,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
             The URL of the image supplied to the agent, which may be a base64-encoded data URL.
 
-          - `type: "input_image"`
+            `minLength: 0`
+
+          - `type: "input_image" (default: "input_image")`
 
             The type of the object. Always `input_image`.
 
@@ -2984,7 +3438,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "function_call_output"`
+      `minLength: 0`
+
+    - `type: "function_call_output" (default: "function_call_output")`
 
       The item type. Always `function_call_output`.
 
@@ -2998,9 +3454,13 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the message.
 
+      `minLength: 0`
+
     - `content: array of AgentContent`
 
       The content exchanged between the agents.
+
+      `minItems: 0`, `maxItems: 2000`
 
       - `OutputText object { text, type }`
 
@@ -3010,7 +3470,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           The text produced by the agent.
 
-        - `type: "output_text"`
+          `minLength: 0`
+
+        - `type: "output_text" (default: "output_text")`
 
           The content type. Always `output_text`.
 
@@ -3024,7 +3486,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           The encrypted content payload.
 
-        - `type: "encrypted_content"`
+          `minLength: 0`
+
+        - `type: "encrypted_content" (default: "encrypted_content")`
 
           The content type. Always `encrypted_content`.
 
@@ -3034,15 +3498,21 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID or name of the receiving agent.
 
+      `minLength: 0`
+
     - `sender_agent_id: string`
 
       The ID or name of the sending agent.
+
+      `minLength: 0`
 
     - `turn_id: string`
 
       The ID of the turn that contains this item.
 
-    - `type: "agent_message"`
+      `minLength: 0`
+
+    - `type: "agent_message" (default: "agent_message")`
 
       The item type. Always `agent_message`.
 
@@ -3056,6 +3526,8 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the MCP call item.
 
+      `minLength: 0`
+
     - `arguments: unknown`
 
       The arguments passed to the MCP tool.
@@ -3068,6 +3540,8 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The name of the MCP tool.
 
+      `minLength: 0`
+
     - `output: unknown`
 
       The output returned by the MCP tool, if any.
@@ -3075,6 +3549,8 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
     - `server_label: string`
 
       The label of the MCP server.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -3084,7 +3560,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "mcp_call"`
+      `minLength: 0`
+
+    - `type: "mcp_call" (default: "mcp_call")`
 
       The item type. Always `mcp_call`.
 
@@ -3098,6 +3576,8 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the activity item.
 
+      `minLength: 0`
+
     - `output: object { image_url, type }  or null`
 
       The last screenshot emitted by the model. Null when screenshot inclusion is disabled or the call emitted no screenshot.
@@ -3106,7 +3586,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
         The complete JPEG image as a base64 data URL.
 
-      - `type: "computer_screenshot"`
+        `minLength: 0`
+
+      - `type: "computer_screenshot" (default: "computer_screenshot")`
 
         The content type. Always `computer_screenshot`.
 
@@ -3120,11 +3602,15 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       A model-generated description of the activity, when available.
 
+      `minLength: 0`
+
     - `turn_id: string`
 
       The ID of the turn that contains this item.
 
-    - `type: "computer_use_call"`
+      `minLength: 0`
+
+    - `type: "computer_use_call" (default: "computer_use_call")`
 
       The item type. Always `computer_use_call`.
 
@@ -3138,6 +3624,8 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The stable history item ID.
 
+      `minLength: 0`
+
     - `request: object { credential_origin, fields, options, 2 more }`
 
       A registered form awaiting the application's response.
@@ -3146,17 +3634,25 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
         The registered form or frame origin where values will be entered.
 
+        `minLength: 0`
+
       - `fields: array of object { id, label, required, type }`
 
         Controls to render. All submitted values are sensitive.
+
+        `minItems: 0`, `maxItems: 2000`
 
         - `id: string`
 
           The field ID to submit as field_id in a fields entry.
 
+          `minLength: 0`
+
         - `label: string`
 
           The label to display beside the control.
+
+          `minLength: 0`
 
         - `required: boolean`
 
@@ -3166,27 +3662,39 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           The rendering type, such as email, password, or text.
 
+          `minLength: 0`
+
       - `options: array of object { id, field_ids, label }`
 
         Sign-in methods. Empty for a plain form.
+
+        `minItems: 0`, `maxItems: 2000`
 
         - `id: string`
 
           The option ID to submit as selected_option.
 
+          `minLength: 0`
+
         - `field_ids: array of string`
 
           IDs from the registered fields that this method accepts.
+
+          `minItems: 0`, `maxItems: 2000`
 
         - `label: string`
 
           The method label to display.
 
+          `minLength: 0`
+
       - `reason: string or null`
 
         Why the agent needs the user to sign in.
 
-      - `type: "browser_authentication"`
+        `minLength: 0`
+
+      - `type: "browser_authentication" (default: "browser_authentication")`
 
         The type of the object. Always `browser_authentication`.
 
@@ -3194,9 +3702,13 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `request_id: string`
 
+      `minLength: 0`
+
     - `turn_id: string`
 
-    - `type: "computer_use_approval_request"`
+      `minLength: 0`
+
+    - `type: "computer_use_approval_request" (default: "computer_use_approval_request")`
 
       The item type. Always computer_use_approval_request.
 
@@ -3210,9 +3722,13 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The stable history item ID.
 
+      `minLength: 0`
+
     - `request_id: string`
 
       The registered request answered by this item.
+
+      `minLength: 0`
 
     - `response: Submit { action, selected_option, type }  or Cancel { action, type }`
 
@@ -3220,7 +3736,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `Submit object { action, selected_option, type }`
 
-        - `action: "submit"`
+        - `action: "submit" (default: "submit")`
 
           - `"submit"`
 
@@ -3228,17 +3744,19 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           The chosen sign-in method, or null when no options were offered.
 
-        - `type: "browser_authentication"`
+          `minLength: 0`
+
+        - `type: "browser_authentication" (default: "browser_authentication")`
 
           - `"browser_authentication"`
 
       - `Cancel object { action, type }`
 
-        - `action: "cancel"`
+        - `action: "cancel" (default: "cancel")`
 
           - `"cancel"`
 
-        - `type: "browser_authentication"`
+        - `type: "browser_authentication" (default: "browser_authentication")`
 
           - `"browser_authentication"`
 
@@ -3246,7 +3764,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "computer_use_approval_request_result"`
+      `minLength: 0`
+
+    - `type: "computer_use_approval_request_result" (default: "computer_use_approval_request_result")`
 
       - `"computer_use_approval_request_result"`
 
@@ -3257,6 +3777,8 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
     - `id: string`
 
       The ID of the web search call.
+
+      `minLength: 0`
 
     - `action: WebSearchAction or null`
 
@@ -3270,11 +3792,15 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           The search queries, when multiple queries were used.
 
+          `minItems: 0`, `maxItems: 2000`
+
         - `query: string or null`
 
           The search query, when a single query was used.
 
-        - `type: "search"`
+          `minLength: 0`
+
+        - `type: "search" (default: "search")`
 
           The type of the object. Always `search`.
 
@@ -3284,7 +3810,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
         Opens a web page.
 
-        - `type: "open_page"`
+        - `type: "open_page" (default: "open_page")`
 
           The type of the object. Always `open_page`.
 
@@ -3294,6 +3820,8 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           The URL of the page that was opened.
 
+          `minLength: 0`
+
       - `FindInPage object { pattern, type, url }`
 
         Finds text within a web page.
@@ -3302,7 +3830,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           The text pattern that was searched for.
 
-        - `type: "find_in_page"`
+          `minLength: 0`
+
+        - `type: "find_in_page" (default: "find_in_page")`
 
           The type of the object. Always `find_in_page`.
 
@@ -3312,11 +3842,13 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           The URL of the page that was searched.
 
+          `minLength: 0`
+
       - `Other object { type }`
 
         Another web search action.
 
-        - `type: "other"`
+        - `type: "other" (default: "other")`
 
           The type of the object. Always `other`.
 
@@ -3330,7 +3862,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "web_search_call"`
+      `minLength: 0`
+
+    - `type: "web_search_call" (default: "web_search_call")`
 
       The item type. Always `web_search_call`.
 
@@ -3344,25 +3878,37 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the command execution item.
 
+      `minLength: 0`
+
     - `command: string`
 
       The command that was executed.
+
+      `minLength: 0`
 
     - `cwd: string or null`
 
       The working directory used to execute the command.
 
-    - `duration_ms: number or null`
+      `minLength: 0`
+
+    - `duration_ms: integer or null`
 
       The command duration in milliseconds.
 
-    - `exit_code: number or null`
+      `format: int64`
+
+    - `exit_code: integer or null`
 
       The process exit code, if the command completed.
+
+      `format: int64`
 
     - `output: string or null`
 
       The command output, if available.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -3372,7 +3918,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "command_execution"`
+      `minLength: 0`
+
+    - `type: "command_execution" (default: "command_execution")`
 
       The item type. Always `command_execution`.
 
@@ -3386,13 +3934,19 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `agent_id: string`
 
       The ID of the agent that requested the subagent.
 
+      `minLength: 0`
+
     - `content: array of AgentContent`
 
       The task given to the spawned agent.
+
+      `minItems: 0`, `maxItems: 2000`
 
       - `OutputText object { text, type }`
 
@@ -3406,9 +3960,13 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The model requested for the spawned agent.
 
+      `minLength: 0`
+
     - `reasoning_effort: string or null`
 
       The reasoning effort requested for the spawned agent.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -3418,7 +3976,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "create_subagent_call"`
+      `minLength: 0`
+
+    - `type: "create_subagent_call" (default: "create_subagent_call")`
 
       The item type. Always `create_subagent_call`.
 
@@ -3434,9 +3994,13 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `content: array of AgentContent`
 
       The input sent to the receiving agent.
+
+      `minItems: 0`, `maxItems: 2000`
 
       - `OutputText object { text, type }`
 
@@ -3450,9 +4014,13 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the agent receiving the input.
 
+      `minLength: 0`
+
     - `sender_agent_id: string`
 
       The ID of the agent sending the input.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -3462,7 +4030,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "send_subagent_input_call"`
+      `minLength: 0`
+
+    - `type: "send_subagent_input_call" (default: "send_subagent_input_call")`
 
       The item type. Always `send_subagent_input_call`.
 
@@ -3478,13 +4048,19 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `recipient_agent_id: string`
 
       The ID of the agent to resume.
 
+      `minLength: 0`
+
     - `sender_agent_id: string`
 
       The ID of the agent requesting the resume.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -3494,7 +4070,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "resume_subagent_call"`
+      `minLength: 0`
+
+    - `type: "resume_subagent_call" (default: "resume_subagent_call")`
 
       The item type. Always `resume_subagent_call`.
 
@@ -3510,13 +4088,19 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `recipient_agent_ids: array of string`
 
       The IDs of the agents to wait for.
 
+      `minItems: 0`, `maxItems: 2000`
+
     - `sender_agent_id: string`
 
       The ID of the agent waiting for results.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -3526,7 +4110,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "wait_for_subagents_call"`
+      `minLength: 0`
+
+    - `type: "wait_for_subagents_call" (default: "wait_for_subagents_call")`
 
       The item type. Always `wait_for_subagents_call`.
 
@@ -3542,13 +4128,19 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `recipient_agent_id: string`
 
       The ID of the agent to interrupt.
 
+      `minLength: 0`
+
     - `sender_agent_id: string`
 
       The ID of the agent requesting the interrupt.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -3558,7 +4150,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "interrupt_subagent_call"`
+      `minLength: 0`
+
+    - `type: "interrupt_subagent_call" (default: "interrupt_subagent_call")`
 
       The item type. Always `interrupt_subagent_call`.
 
@@ -3574,13 +4168,19 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `recipient_agent_id: string`
 
       The ID of the agent to close.
 
+      `minLength: 0`
+
     - `sender_agent_id: string`
 
       The ID of the agent requesting the close.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -3590,7 +4190,9 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The ID of the turn that contains this item.
 
-    - `type: "close_subagent_call"`
+      `minLength: 0`
+
+    - `type: "close_subagent_call" (default: "close_subagent_call")`
 
       The item type. Always `close_subagent_call`.
 
@@ -3598,19 +4200,25 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
         The current public item type.
 
-- `output_index: number or null`
+- `output_index: integer or null`
 
   The index of the item in the turn output, when the item is agent output.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.turn.item.added"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.item.added" (default: "agent.session.turn.item.added")`
 
   The type of the object. Always `agent.session.turn.item.added`.
 
@@ -3656,6 +4264,8 @@ Schema name: `SessionEventAgentSessionIdle`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `session: AgentSession`
 
   The session that became idle.
@@ -3664,7 +4274,9 @@ Schema name: `SessionEventAgentSessionIdle`
 
     The ID of the session.
 
-  - `agent: object { id, instructions, model, 6 more }`
+    `minLength: 0`
+
+  - `agent: object { id, instructions, model, 8 more }`
 
     The agent running in the session.
 
@@ -3672,13 +4284,19 @@ Schema name: `SessionEventAgentSessionIdle`
 
       The ID of the agent.
 
+      `minLength: 0`
+
     - `instructions: string or null`
 
       Custom instructions appended to the agent's default base instructions.
 
+      `minLength: 0`
+
     - `model: string`
 
       The model used by the agent.
+
+      `minLength: 0`
 
     - `multi_agent: MultiAgentConfig`
 
@@ -3688,13 +4306,17 @@ Schema name: `SessionEventAgentSessionIdle`
 
         Whether subagent tools are enabled. Defaults to false.
 
-      - `max_concurrent_subagents: number or null`
+      - `max_concurrent_subagents: integer or null`
 
         Maximum number of subagents that may run concurrently, or null when disabled. Defaults to 6 when enabled.
+
+        `format: int64`, `minimum: 1`, `maximum: 4294967295`
 
     - `name: string or null`
 
       The reusable agent's name when the session was created, or null if no name was saved. Later changes to the agent's name do not affect this value.
+
+      `minLength: 0`
 
     - `reasoning: AgentReasoning`
 
@@ -3762,7 +4384,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           Generates ordinary text without a structured-output constraint.
 
-          - `type: "text"`
+          - `type: "text" (default: "text")`
 
             The type of the object. Always `text`.
 
@@ -3776,7 +4398,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
             The JSON Schema that generated text must match.
 
-          - `type: "json_schema"`
+          - `type: "json_schema" (default: "json_schema")`
 
             The type of the object. Always `json_schema`.
 
@@ -3796,6 +4418,8 @@ Schema name: `SessionEventAgentSessionIdle`
 
       Tools available to the agent.
 
+      `minItems: 0`, `maxItems: 2000`
+
       - `Function object { defer_loading, description, name, 2 more }`
 
         A function defined by the application.
@@ -3808,15 +4432,19 @@ Schema name: `SessionEventAgentSessionIdle`
 
           A description of what the function does.
 
+          `minLength: 0`
+
         - `name: string`
 
           The name of the function.
+
+          `minLength: 0`
 
         - `parameters: map[unknown]`
 
           A JSON Schema object describing the function's arguments.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the object. Always `function`.
 
@@ -3830,7 +4458,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           Whether tools can be called from model-generated code.
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the object. Always `programmatic_tool_calling`.
 
@@ -3844,6 +4472,8 @@ Schema name: `SessionEventAgentSessionIdle`
 
           The MCP tools the agent may call.
 
+          `minItems: 0`, `maxItems: 2000`
+
         - `connection_origin: "service" or "environment"`
 
           Where outbound MCP HTTP connections originate.
@@ -3855,6 +4485,8 @@ Schema name: `SessionEventAgentSessionIdle`
         - `credential_id: string or null`
 
           The attached vault credential selected for this MCP server, if any. Optional when exactly one attached credential matches the server URL.
+
+          `minLength: 0`
 
         - `request_metadata: map[unknown]`
 
@@ -3868,6 +4500,8 @@ Schema name: `SessionEventAgentSessionIdle`
 
           A label used to identify the MCP server in tool calls.
 
+          `minLength: 0`
+
         - `transport: McpTransport`
 
           The transport used to connect to the MCP server.
@@ -3880,7 +4514,9 @@ Schema name: `SessionEventAgentSessionIdle`
 
               The URL of the MCP server.
 
-            - `type: "http"`
+              `minLength: 0`
+
+            - `type: "http" (default: "http")`
 
               The type of the object. Always `http`.
 
@@ -3894,25 +4530,33 @@ Schema name: `SessionEventAgentSessionIdle`
 
               Arguments passed to the MCP server command.
 
+              `minItems: 0`, `maxItems: 2000`
+
             - `command: string`
 
               The command used to start the MCP server.
+
+              `minLength: 0`
 
             - `cwd: string`
 
               The working directory used to start the MCP server.
 
+              `minLength: 0`
+
             - `env_vars: array of string`
 
               Environment variable names inherited from the execution environment.
 
-            - `type: "stdio"`
+              `minItems: 0`, `maxItems: 2000`
+
+            - `type: "stdio" (default: "stdio")`
 
               The type of the object. Always `stdio`.
 
               - `"stdio"`
 
-        - `type: "mcp"`
+        - `type: "mcp" (default: "mcp")`
 
           The type of the object. Always `mcp`.
 
@@ -3925,6 +4569,8 @@ Schema name: `SessionEventAgentSessionIdle`
         - `allowed_domains: array of string or null`
 
           Allowed search domains, or `null` when the search is unrestricted.
+
+          `minItems: 0`, `maxItems: 2000`
 
         - `context_size: "low" or "medium" or "high"`
 
@@ -3944,17 +4590,25 @@ Schema name: `SessionEventAgentSessionIdle`
 
             The city name.
 
+            `minLength: 0`
+
           - `country: string or null`
 
             The two-letter ISO country code, such as `US`.
+
+            `minLength: 0`
 
           - `region: string or null`
 
             The region or state name.
 
+            `minLength: 0`
+
           - `timezone: string or null`
 
             The IANA timezone, such as `America/Los_Angeles`.
+
+            `minLength: 0`
 
         - `mode: "disabled" or "cached" or "live"`
 
@@ -3966,7 +4620,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `"live"`
 
-        - `type: "web_search"`
+        - `type: "web_search" (default: "web_search")`
 
           The type of the object. Always `web_search`.
 
@@ -3980,7 +4634,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           Whether computer tool outputs include screenshots.
 
-        - `type: "computer_use"`
+        - `type: "computer_use" (default: "computer_use")`
 
           The type of the object. Always `computer_use`.
 
@@ -3990,15 +4644,33 @@ Schema name: `SessionEventAgentSessionIdle`
 
         Lets the agent manage its own scheduled wakeups.
 
-        - `type: "automations"`
+        - `type: "automations" (default: "automations")`
 
           The type of the object. Always `automations`.
 
           - `"automations"`
 
-  - `created_at: number`
+    - `compaction: optional object { async }`
+
+      The effective context compaction settings.
+
+      - `async: boolean`
+
+        Whether context is compacted in the background. Defaults to true.
+
+    - `experimental: optional object { time_awareness }`
+
+      The effective experimental settings for the agent.
+
+      - `time_awareness: boolean`
+
+        Whether the model receives periodic current-time reminders.
+
+  - `created_at: integer`
 
     The Unix timestamp, in seconds, when the session was created.
+
+    `format: int64`
 
   - `environment: Environment`
 
@@ -4008,7 +4680,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
       The session talks to CCA without selecting or provisioning an execution environment.
 
-      - `type: "none"`
+      - `type: "none" (default: "none")`
 
         The type of the object. Always `none`.
 
@@ -4022,9 +4694,13 @@ Schema name: `SessionEventAgentSessionIdle`
 
         The public ID of the environment.
 
+        `minLength: 0`
+
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
 
       - `desktop: object { enabled }`
 
@@ -4038,6 +4714,8 @@ Schema name: `SessionEventAgentSessionIdle`
 
         Files available in the environment, excluding their contents.
 
+        `minItems: 0`, `maxItems: 50`
+
         - `HostedEnvironmentFileID object { id, file_id, path, 2 more }`
 
           A file copied from the OpenAI Files API.
@@ -4046,19 +4724,27 @@ Schema name: `SessionEventAgentSessionIdle`
 
             The session-scoped ID of the file in the execution environment.
 
+            `minLength: 0`
+
           - `file_id: string`
 
             The ID of the uploaded file.
+
+            `minLength: 0`
 
           - `path: string`
 
             The file's absolute path inside the environment.
 
-          - `size_bytes: number`
+            `minLength: 0`
+
+          - `size_bytes: integer`
 
             The decoded file size in bytes.
 
-          - `type: "file_id"`
+            `format: int64`, `minimum: 0`
+
+          - `type: "file_id" (default: "file_id")`
 
             The type of the object. Always `file_id`.
 
@@ -4072,15 +4758,21 @@ Schema name: `SessionEventAgentSessionIdle`
 
             The session-scoped ID of the file in the execution environment.
 
+            `minLength: 0`
+
           - `path: string`
 
             The file's absolute path inside the environment.
 
-          - `size_bytes: number`
+            `minLength: 0`
+
+          - `size_bytes: integer`
 
             The decoded file size in bytes.
 
-          - `type: "inline"`
+            `format: int64`, `minimum: 0`
+
+          - `type: "inline" (default: "inline")`
 
             The type of the object. Always `inline`.
 
@@ -4110,6 +4802,8 @@ Schema name: `SessionEventAgentSessionIdle`
 
           Domains the environment may access when network access is restricted.
 
+          `minItems: 0`, `maxItems: 2000`
+
       - `packages: object { npm, python, system }`
 
         Packages installed in the environment.
@@ -4118,27 +4812,39 @@ Schema name: `SessionEventAgentSessionIdle`
 
           npm packages installed globally in the environment.
 
+          `minItems: 0`, `maxItems: 16384`
+
         - `python: array of string`
 
           Python packages installed in the environment.
+
+          `minItems: 0`, `maxItems: 16384`
 
         - `system: array of string`
 
           System packages installed in the environment.
 
+          `minItems: 0`, `maxItems: 16384`
+
       - `plugins: array of HostedPlugin`
 
         Plugins installed in the environment, excluding their archive contents.
+
+        `minItems: 0`, `maxItems: 2000`
 
         - `description: string`
 
           The installed plugin description.
 
+          `minLength: 0`
+
         - `name: string`
 
           The installed plugin name.
 
-        - `type: "inline"`
+          `minLength: 0`
+
+        - `type: "inline" (default: "inline")`
 
           The type of the object. Always `inline`.
 
@@ -4148,6 +4854,8 @@ Schema name: `SessionEventAgentSessionIdle`
 
         Skills installed in the environment, excluding their archive contents.
 
+        `minItems: 0`, `maxItems: 2000`
+
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
           A skill installed from the Skills API.
@@ -4156,15 +4864,21 @@ Schema name: `SessionEventAgentSessionIdle`
 
             The installed skill description.
 
+            `minLength: 0`
+
           - `name: string`
 
             The installed skill name.
+
+            `minLength: 0`
 
           - `skill_id: string`
 
             The referenced skill ID.
 
-          - `type: "skill_reference"`
+            `minLength: 0`
+
+          - `type: "skill_reference" (default: "skill_reference")`
 
             The type of the object. Always `skill_reference`.
 
@@ -4174,6 +4888,8 @@ Schema name: `SessionEventAgentSessionIdle`
 
             The concrete skill version installed for this session.
 
+            `minLength: 0`
+
         - `Inline object { description, name, type }`
 
           A skill installed from an inline ZIP archive.
@@ -4182,17 +4898,21 @@ Schema name: `SessionEventAgentSessionIdle`
 
             The installed skill description.
 
+            `minLength: 0`
+
           - `name: string`
 
             The installed skill name.
 
-          - `type: "inline"`
+            `minLength: 0`
+
+          - `type: "inline" (default: "inline")`
 
             The type of the object. Always `inline`.
 
             - `"inline"`
 
-      - `type: "openai_hosted"`
+      - `type: "openai_hosted" (default: "openai_hosted")`
 
         The type of the object. Always `openai_hosted`.
 
@@ -4216,15 +4936,21 @@ Schema name: `SessionEventAgentSessionIdle`
 
         The public ID of the environment.
 
+        `minLength: 0`
+
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
 
       - `remote_url: string`
 
         Pass this URL unchanged to `codex exec-server --remote` when connecting this environment.
 
-      - `type: "self_hosted"`
+        `minLength: 0`
+
+      - `type: "self_hosted" (default: "self_hosted")`
 
         The type of the object. Always `self_hosted`.
 
@@ -4234,19 +4960,25 @@ Schema name: `SessionEventAgentSessionIdle`
 
         The absolute project directory inside the environment. Defaults to `/workspace`.
 
+        `minLength: 0`
+
   - `error: string or null`
 
     The error that caused the session to fail, if any.
 
-  - `last_active_at: number`
+    `minLength: 0`
+
+  - `last_active_at: integer`
 
     The Unix timestamp, in seconds, when the session was last active.
+
+    `format: int64`
 
   - `metadata: map[string]`
 
     Custom string key-value pairs attached to the session.
 
-  - `object: "agent.session"`
+  - `object: "agent.session" (default: "agent.session")`
 
     The object type. Always `agent.session`.
 
@@ -4255,6 +4987,8 @@ Schema name: `SessionEventAgentSessionIdle`
   - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
+
+    `minItems: 0`, `maxItems: 2000`
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -4272,17 +5006,25 @@ Schema name: `SessionEventAgentSessionIdle`
 
             The registered form or frame origin where values will be entered.
 
+            `minLength: 0`
+
           - `fields: array of object { id, label, required, type }`
 
             Controls to render. All submitted values are sensitive.
+
+            `minItems: 0`, `maxItems: 2000`
 
             - `id: string`
 
               The field ID to submit as field_id in a fields entry.
 
+              `minLength: 0`
+
             - `label: string`
 
               The label to display beside the control.
+
+              `minLength: 0`
 
             - `required: boolean`
 
@@ -4292,27 +5034,39 @@ Schema name: `SessionEventAgentSessionIdle`
 
               The rendering type, such as email, password, or text.
 
+              `minLength: 0`
+
           - `options: array of object { id, field_ids, label }`
 
             Sign-in methods. Empty for a plain form.
+
+            `minItems: 0`, `maxItems: 2000`
 
             - `id: string`
 
               The option ID to submit as selected_option.
 
+              `minLength: 0`
+
             - `field_ids: array of string`
 
               IDs from the registered fields that this method accepts.
+
+              `minItems: 0`, `maxItems: 2000`
 
             - `label: string`
 
               The method label to display.
 
+              `minLength: 0`
+
           - `reason: string or null`
 
             Why the agent needs the user to sign in.
 
-          - `type: "browser_authentication"`
+            `minLength: 0`
+
+          - `type: "browser_authentication" (default: "browser_authentication")`
 
             The type of the object. Always `browser_authentication`.
 
@@ -4326,11 +5080,15 @@ Schema name: `SessionEventAgentSessionIdle`
 
             The origin the browser needs permission to access.
 
+            `minLength: 0`
+
           - `reason: string or null`
 
             The browser's explanation for this request, or null when unavailable.
 
-          - `type: "browser_origin_access"`
+            `minLength: 0`
+
+          - `type: "browser_origin_access" (default: "browser_origin_access")`
 
             The type of the object. Always `browser_origin_access`.
 
@@ -4340,11 +5098,15 @@ Schema name: `SessionEventAgentSessionIdle`
 
         The registered request ID to echo when responding.
 
+        `minLength: 0`
+
       - `turn_id: string`
 
         The turn that requested approval.
 
-      - `type: "computer_use_approval_request"`
+        `minLength: 0`
+
+      - `type: "computer_use_approval_request" (default: "computer_use_approval_request")`
 
         The type of the object. Always `computer_use_approval_request`.
 
@@ -4362,15 +5124,21 @@ Schema name: `SessionEventAgentSessionIdle`
 
         The ID to include when submitting the function result.
 
+        `minLength: 0`
+
       - `name: string`
 
         The function name.
+
+        `minLength: 0`
 
       - `turn_id: string`
 
         The ID of the turn that requested the function call.
 
-      - `type: "function_call"`
+        `minLength: 0`
+
+      - `type: "function_call" (default: "function_call")`
 
         The type of the object. Always `function_call`.
 
@@ -4384,7 +5152,9 @@ Schema name: `SessionEventAgentSessionIdle`
 
         The ID of the environment to reconnect.
 
-      - `type: "environment_connection"`
+        `minLength: 0`
+
+      - `type: "environment_connection" (default: "environment_connection")`
 
         The type of the object. Always `environment_connection`.
 
@@ -4414,39 +5184,51 @@ Schema name: `SessionEventAgentSessionIdle`
 
     Best-effort token usage for the session, or null if unknown. Recorded usage may change.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens used by the agent.
+
+      `format: int64`
 
     - `input_tokens_details: object { cached_tokens }`
 
       A breakdown of the agent's input token usage.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of input tokens retrieved from the prompt cache.
 
-    - `output_tokens: number`
+        `format: int64`
+
+    - `output_tokens: integer`
 
       The number of output tokens generated by the agent.
+
+      `format: int64`
 
     - `output_tokens_details: object { reasoning_tokens }`
 
       A breakdown of the agent's output token usage.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of output tokens used for reasoning.
 
-    - `total_tokens: number`
+        `format: int64`
+
+    - `total_tokens: integer`
 
       The total number of input and output tokens used by the agent.
+
+      `format: int64`
 
   - `vault_ids: array of string`
 
     The IDs of vaults made available to the session.
 
-- `type: "agent.session.idle"`
+    `minItems: 0`, `maxItems: 2000`
+
+- `type: "agent.session.idle" (default: "agent.session.idle")`
 
   The type of the object. Always `agent.session.idle`.
 
@@ -4527,6 +5309,12 @@ Schema name: `SessionEventAgentSessionIdle`
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -4564,6 +5352,8 @@ Schema name: `SessionEventAgentSessionInProgress`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `session: AgentSession`
 
   The session that started processing.
@@ -4572,7 +5362,9 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     The ID of the session.
 
-  - `agent: object { id, instructions, model, 6 more }`
+    `minLength: 0`
+
+  - `agent: object { id, instructions, model, 8 more }`
 
     The agent running in the session.
 
@@ -4580,13 +5372,19 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       The ID of the agent.
 
+      `minLength: 0`
+
     - `instructions: string or null`
 
       Custom instructions appended to the agent's default base instructions.
 
+      `minLength: 0`
+
     - `model: string`
 
       The model used by the agent.
+
+      `minLength: 0`
 
     - `multi_agent: MultiAgentConfig`
 
@@ -4596,13 +5394,17 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         Whether subagent tools are enabled. Defaults to false.
 
-      - `max_concurrent_subagents: number or null`
+      - `max_concurrent_subagents: integer or null`
 
         Maximum number of subagents that may run concurrently, or null when disabled. Defaults to 6 when enabled.
+
+        `format: int64`, `minimum: 1`, `maximum: 4294967295`
 
     - `name: string or null`
 
       The reusable agent's name when the session was created, or null if no name was saved. Later changes to the agent's name do not affect this value.
+
+      `minLength: 0`
 
     - `reasoning: AgentReasoning`
 
@@ -4670,7 +5472,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           Generates ordinary text without a structured-output constraint.
 
-          - `type: "text"`
+          - `type: "text" (default: "text")`
 
             The type of the object. Always `text`.
 
@@ -4684,7 +5486,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
             The JSON Schema that generated text must match.
 
-          - `type: "json_schema"`
+          - `type: "json_schema" (default: "json_schema")`
 
             The type of the object. Always `json_schema`.
 
@@ -4704,6 +5506,8 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       Tools available to the agent.
 
+      `minItems: 0`, `maxItems: 2000`
+
       - `Function object { defer_loading, description, name, 2 more }`
 
         A function defined by the application.
@@ -4716,15 +5520,19 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           A description of what the function does.
 
+          `minLength: 0`
+
         - `name: string`
 
           The name of the function.
+
+          `minLength: 0`
 
         - `parameters: map[unknown]`
 
           A JSON Schema object describing the function's arguments.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the object. Always `function`.
 
@@ -4738,7 +5546,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           Whether tools can be called from model-generated code.
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the object. Always `programmatic_tool_calling`.
 
@@ -4752,6 +5560,8 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           The MCP tools the agent may call.
 
+          `minItems: 0`, `maxItems: 2000`
+
         - `connection_origin: "service" or "environment"`
 
           Where outbound MCP HTTP connections originate.
@@ -4763,6 +5573,8 @@ Schema name: `SessionEventAgentSessionInProgress`
         - `credential_id: string or null`
 
           The attached vault credential selected for this MCP server, if any. Optional when exactly one attached credential matches the server URL.
+
+          `minLength: 0`
 
         - `request_metadata: map[unknown]`
 
@@ -4776,6 +5588,8 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           A label used to identify the MCP server in tool calls.
 
+          `minLength: 0`
+
         - `transport: McpTransport`
 
           The transport used to connect to the MCP server.
@@ -4788,7 +5602,9 @@ Schema name: `SessionEventAgentSessionInProgress`
 
               The URL of the MCP server.
 
-            - `type: "http"`
+              `minLength: 0`
+
+            - `type: "http" (default: "http")`
 
               The type of the object. Always `http`.
 
@@ -4802,25 +5618,33 @@ Schema name: `SessionEventAgentSessionInProgress`
 
               Arguments passed to the MCP server command.
 
+              `minItems: 0`, `maxItems: 2000`
+
             - `command: string`
 
               The command used to start the MCP server.
+
+              `minLength: 0`
 
             - `cwd: string`
 
               The working directory used to start the MCP server.
 
+              `minLength: 0`
+
             - `env_vars: array of string`
 
               Environment variable names inherited from the execution environment.
 
-            - `type: "stdio"`
+              `minItems: 0`, `maxItems: 2000`
+
+            - `type: "stdio" (default: "stdio")`
 
               The type of the object. Always `stdio`.
 
               - `"stdio"`
 
-        - `type: "mcp"`
+        - `type: "mcp" (default: "mcp")`
 
           The type of the object. Always `mcp`.
 
@@ -4833,6 +5657,8 @@ Schema name: `SessionEventAgentSessionInProgress`
         - `allowed_domains: array of string or null`
 
           Allowed search domains, or `null` when the search is unrestricted.
+
+          `minItems: 0`, `maxItems: 2000`
 
         - `context_size: "low" or "medium" or "high"`
 
@@ -4852,17 +5678,25 @@ Schema name: `SessionEventAgentSessionInProgress`
 
             The city name.
 
+            `minLength: 0`
+
           - `country: string or null`
 
             The two-letter ISO country code, such as `US`.
+
+            `minLength: 0`
 
           - `region: string or null`
 
             The region or state name.
 
+            `minLength: 0`
+
           - `timezone: string or null`
 
             The IANA timezone, such as `America/Los_Angeles`.
+
+            `minLength: 0`
 
         - `mode: "disabled" or "cached" or "live"`
 
@@ -4874,7 +5708,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           - `"live"`
 
-        - `type: "web_search"`
+        - `type: "web_search" (default: "web_search")`
 
           The type of the object. Always `web_search`.
 
@@ -4888,7 +5722,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           Whether computer tool outputs include screenshots.
 
-        - `type: "computer_use"`
+        - `type: "computer_use" (default: "computer_use")`
 
           The type of the object. Always `computer_use`.
 
@@ -4898,15 +5732,33 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         Lets the agent manage its own scheduled wakeups.
 
-        - `type: "automations"`
+        - `type: "automations" (default: "automations")`
 
           The type of the object. Always `automations`.
 
           - `"automations"`
 
-  - `created_at: number`
+    - `compaction: optional object { async }`
+
+      The effective context compaction settings.
+
+      - `async: boolean`
+
+        Whether context is compacted in the background. Defaults to true.
+
+    - `experimental: optional object { time_awareness }`
+
+      The effective experimental settings for the agent.
+
+      - `time_awareness: boolean`
+
+        Whether the model receives periodic current-time reminders.
+
+  - `created_at: integer`
 
     The Unix timestamp, in seconds, when the session was created.
+
+    `format: int64`
 
   - `environment: Environment`
 
@@ -4916,7 +5768,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       The session talks to CCA without selecting or provisioning an execution environment.
 
-      - `type: "none"`
+      - `type: "none" (default: "none")`
 
         The type of the object. Always `none`.
 
@@ -4930,9 +5782,13 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         The public ID of the environment.
 
+        `minLength: 0`
+
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
 
       - `desktop: object { enabled }`
 
@@ -4946,6 +5802,8 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         Files available in the environment, excluding their contents.
 
+        `minItems: 0`, `maxItems: 50`
+
         - `HostedEnvironmentFileID object { id, file_id, path, 2 more }`
 
           A file copied from the OpenAI Files API.
@@ -4954,19 +5812,27 @@ Schema name: `SessionEventAgentSessionInProgress`
 
             The session-scoped ID of the file in the execution environment.
 
+            `minLength: 0`
+
           - `file_id: string`
 
             The ID of the uploaded file.
+
+            `minLength: 0`
 
           - `path: string`
 
             The file's absolute path inside the environment.
 
-          - `size_bytes: number`
+            `minLength: 0`
+
+          - `size_bytes: integer`
 
             The decoded file size in bytes.
 
-          - `type: "file_id"`
+            `format: int64`, `minimum: 0`
+
+          - `type: "file_id" (default: "file_id")`
 
             The type of the object. Always `file_id`.
 
@@ -4980,15 +5846,21 @@ Schema name: `SessionEventAgentSessionInProgress`
 
             The session-scoped ID of the file in the execution environment.
 
+            `minLength: 0`
+
           - `path: string`
 
             The file's absolute path inside the environment.
 
-          - `size_bytes: number`
+            `minLength: 0`
+
+          - `size_bytes: integer`
 
             The decoded file size in bytes.
 
-          - `type: "inline"`
+            `format: int64`, `minimum: 0`
+
+          - `type: "inline" (default: "inline")`
 
             The type of the object. Always `inline`.
 
@@ -5018,6 +5890,8 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           Domains the environment may access when network access is restricted.
 
+          `minItems: 0`, `maxItems: 2000`
+
       - `packages: object { npm, python, system }`
 
         Packages installed in the environment.
@@ -5026,27 +5900,39 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           npm packages installed globally in the environment.
 
+          `minItems: 0`, `maxItems: 16384`
+
         - `python: array of string`
 
           Python packages installed in the environment.
+
+          `minItems: 0`, `maxItems: 16384`
 
         - `system: array of string`
 
           System packages installed in the environment.
 
+          `minItems: 0`, `maxItems: 16384`
+
       - `plugins: array of HostedPlugin`
 
         Plugins installed in the environment, excluding their archive contents.
+
+        `minItems: 0`, `maxItems: 2000`
 
         - `description: string`
 
           The installed plugin description.
 
+          `minLength: 0`
+
         - `name: string`
 
           The installed plugin name.
 
-        - `type: "inline"`
+          `minLength: 0`
+
+        - `type: "inline" (default: "inline")`
 
           The type of the object. Always `inline`.
 
@@ -5056,6 +5942,8 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         Skills installed in the environment, excluding their archive contents.
 
+        `minItems: 0`, `maxItems: 2000`
+
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
           A skill installed from the Skills API.
@@ -5064,15 +5952,21 @@ Schema name: `SessionEventAgentSessionInProgress`
 
             The installed skill description.
 
+            `minLength: 0`
+
           - `name: string`
 
             The installed skill name.
+
+            `minLength: 0`
 
           - `skill_id: string`
 
             The referenced skill ID.
 
-          - `type: "skill_reference"`
+            `minLength: 0`
+
+          - `type: "skill_reference" (default: "skill_reference")`
 
             The type of the object. Always `skill_reference`.
 
@@ -5082,6 +5976,8 @@ Schema name: `SessionEventAgentSessionInProgress`
 
             The concrete skill version installed for this session.
 
+            `minLength: 0`
+
         - `Inline object { description, name, type }`
 
           A skill installed from an inline ZIP archive.
@@ -5090,17 +5986,21 @@ Schema name: `SessionEventAgentSessionInProgress`
 
             The installed skill description.
 
+            `minLength: 0`
+
           - `name: string`
 
             The installed skill name.
 
-          - `type: "inline"`
+            `minLength: 0`
+
+          - `type: "inline" (default: "inline")`
 
             The type of the object. Always `inline`.
 
             - `"inline"`
 
-      - `type: "openai_hosted"`
+      - `type: "openai_hosted" (default: "openai_hosted")`
 
         The type of the object. Always `openai_hosted`.
 
@@ -5124,15 +6024,21 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         The public ID of the environment.
 
+        `minLength: 0`
+
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
 
       - `remote_url: string`
 
         Pass this URL unchanged to `codex exec-server --remote` when connecting this environment.
 
-      - `type: "self_hosted"`
+        `minLength: 0`
+
+      - `type: "self_hosted" (default: "self_hosted")`
 
         The type of the object. Always `self_hosted`.
 
@@ -5142,19 +6048,25 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         The absolute project directory inside the environment. Defaults to `/workspace`.
 
+        `minLength: 0`
+
   - `error: string or null`
 
     The error that caused the session to fail, if any.
 
-  - `last_active_at: number`
+    `minLength: 0`
+
+  - `last_active_at: integer`
 
     The Unix timestamp, in seconds, when the session was last active.
+
+    `format: int64`
 
   - `metadata: map[string]`
 
     Custom string key-value pairs attached to the session.
 
-  - `object: "agent.session"`
+  - `object: "agent.session" (default: "agent.session")`
 
     The object type. Always `agent.session`.
 
@@ -5163,6 +6075,8 @@ Schema name: `SessionEventAgentSessionInProgress`
   - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
+
+    `minItems: 0`, `maxItems: 2000`
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -5180,17 +6094,25 @@ Schema name: `SessionEventAgentSessionInProgress`
 
             The registered form or frame origin where values will be entered.
 
+            `minLength: 0`
+
           - `fields: array of object { id, label, required, type }`
 
             Controls to render. All submitted values are sensitive.
+
+            `minItems: 0`, `maxItems: 2000`
 
             - `id: string`
 
               The field ID to submit as field_id in a fields entry.
 
+              `minLength: 0`
+
             - `label: string`
 
               The label to display beside the control.
+
+              `minLength: 0`
 
             - `required: boolean`
 
@@ -5200,27 +6122,39 @@ Schema name: `SessionEventAgentSessionInProgress`
 
               The rendering type, such as email, password, or text.
 
+              `minLength: 0`
+
           - `options: array of object { id, field_ids, label }`
 
             Sign-in methods. Empty for a plain form.
+
+            `minItems: 0`, `maxItems: 2000`
 
             - `id: string`
 
               The option ID to submit as selected_option.
 
+              `minLength: 0`
+
             - `field_ids: array of string`
 
               IDs from the registered fields that this method accepts.
+
+              `minItems: 0`, `maxItems: 2000`
 
             - `label: string`
 
               The method label to display.
 
+              `minLength: 0`
+
           - `reason: string or null`
 
             Why the agent needs the user to sign in.
 
-          - `type: "browser_authentication"`
+            `minLength: 0`
+
+          - `type: "browser_authentication" (default: "browser_authentication")`
 
             The type of the object. Always `browser_authentication`.
 
@@ -5234,11 +6168,15 @@ Schema name: `SessionEventAgentSessionInProgress`
 
             The origin the browser needs permission to access.
 
+            `minLength: 0`
+
           - `reason: string or null`
 
             The browser's explanation for this request, or null when unavailable.
 
-          - `type: "browser_origin_access"`
+            `minLength: 0`
+
+          - `type: "browser_origin_access" (default: "browser_origin_access")`
 
             The type of the object. Always `browser_origin_access`.
 
@@ -5248,11 +6186,15 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         The registered request ID to echo when responding.
 
+        `minLength: 0`
+
       - `turn_id: string`
 
         The turn that requested approval.
 
-      - `type: "computer_use_approval_request"`
+        `minLength: 0`
+
+      - `type: "computer_use_approval_request" (default: "computer_use_approval_request")`
 
         The type of the object. Always `computer_use_approval_request`.
 
@@ -5270,15 +6212,21 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         The ID to include when submitting the function result.
 
+        `minLength: 0`
+
       - `name: string`
 
         The function name.
+
+        `minLength: 0`
 
       - `turn_id: string`
 
         The ID of the turn that requested the function call.
 
-      - `type: "function_call"`
+        `minLength: 0`
+
+      - `type: "function_call" (default: "function_call")`
 
         The type of the object. Always `function_call`.
 
@@ -5292,7 +6240,9 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         The ID of the environment to reconnect.
 
-      - `type: "environment_connection"`
+        `minLength: 0`
+
+      - `type: "environment_connection" (default: "environment_connection")`
 
         The type of the object. Always `environment_connection`.
 
@@ -5322,39 +6272,51 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     Best-effort token usage for the session, or null if unknown. Recorded usage may change.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens used by the agent.
+
+      `format: int64`
 
     - `input_tokens_details: object { cached_tokens }`
 
       A breakdown of the agent's input token usage.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of input tokens retrieved from the prompt cache.
 
-    - `output_tokens: number`
+        `format: int64`
+
+    - `output_tokens: integer`
 
       The number of output tokens generated by the agent.
+
+      `format: int64`
 
     - `output_tokens_details: object { reasoning_tokens }`
 
       A breakdown of the agent's output token usage.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of output tokens used for reasoning.
 
-    - `total_tokens: number`
+        `format: int64`
+
+    - `total_tokens: integer`
 
       The total number of input and output tokens used by the agent.
+
+      `format: int64`
 
   - `vault_ids: array of string`
 
     The IDs of vaults made available to the session.
 
-- `type: "agent.session.in_progress"`
+    `minItems: 0`, `maxItems: 2000`
+
+- `type: "agent.session.in_progress" (default: "agent.session.in_progress")`
 
   The type of the object. Always `agent.session.in_progress`.
 
@@ -5435,6 +6397,12 @@ Schema name: `SessionEventAgentSessionInProgress`
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -5472,6 +6440,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `session: AgentSession`
 
   The session and its current required actions.
@@ -5480,7 +6450,9 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     The ID of the session.
 
-  - `agent: object { id, instructions, model, 6 more }`
+    `minLength: 0`
+
+  - `agent: object { id, instructions, model, 8 more }`
 
     The agent running in the session.
 
@@ -5488,13 +6460,19 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       The ID of the agent.
 
+      `minLength: 0`
+
     - `instructions: string or null`
 
       Custom instructions appended to the agent's default base instructions.
 
+      `minLength: 0`
+
     - `model: string`
 
       The model used by the agent.
+
+      `minLength: 0`
 
     - `multi_agent: MultiAgentConfig`
 
@@ -5504,13 +6482,17 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         Whether subagent tools are enabled. Defaults to false.
 
-      - `max_concurrent_subagents: number or null`
+      - `max_concurrent_subagents: integer or null`
 
         Maximum number of subagents that may run concurrently, or null when disabled. Defaults to 6 when enabled.
+
+        `format: int64`, `minimum: 1`, `maximum: 4294967295`
 
     - `name: string or null`
 
       The reusable agent's name when the session was created, or null if no name was saved. Later changes to the agent's name do not affect this value.
+
+      `minLength: 0`
 
     - `reasoning: AgentReasoning`
 
@@ -5578,7 +6560,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           Generates ordinary text without a structured-output constraint.
 
-          - `type: "text"`
+          - `type: "text" (default: "text")`
 
             The type of the object. Always `text`.
 
@@ -5592,7 +6574,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
             The JSON Schema that generated text must match.
 
-          - `type: "json_schema"`
+          - `type: "json_schema" (default: "json_schema")`
 
             The type of the object. Always `json_schema`.
 
@@ -5612,6 +6594,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       Tools available to the agent.
 
+      `minItems: 0`, `maxItems: 2000`
+
       - `Function object { defer_loading, description, name, 2 more }`
 
         A function defined by the application.
@@ -5624,15 +6608,19 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           A description of what the function does.
 
+          `minLength: 0`
+
         - `name: string`
 
           The name of the function.
+
+          `minLength: 0`
 
         - `parameters: map[unknown]`
 
           A JSON Schema object describing the function's arguments.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the object. Always `function`.
 
@@ -5646,7 +6634,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           Whether tools can be called from model-generated code.
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the object. Always `programmatic_tool_calling`.
 
@@ -5660,6 +6648,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           The MCP tools the agent may call.
 
+          `minItems: 0`, `maxItems: 2000`
+
         - `connection_origin: "service" or "environment"`
 
           Where outbound MCP HTTP connections originate.
@@ -5671,6 +6661,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
         - `credential_id: string or null`
 
           The attached vault credential selected for this MCP server, if any. Optional when exactly one attached credential matches the server URL.
+
+          `minLength: 0`
 
         - `request_metadata: map[unknown]`
 
@@ -5684,6 +6676,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           A label used to identify the MCP server in tool calls.
 
+          `minLength: 0`
+
         - `transport: McpTransport`
 
           The transport used to connect to the MCP server.
@@ -5696,7 +6690,9 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
               The URL of the MCP server.
 
-            - `type: "http"`
+              `minLength: 0`
+
+            - `type: "http" (default: "http")`
 
               The type of the object. Always `http`.
 
@@ -5710,25 +6706,33 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
               Arguments passed to the MCP server command.
 
+              `minItems: 0`, `maxItems: 2000`
+
             - `command: string`
 
               The command used to start the MCP server.
+
+              `minLength: 0`
 
             - `cwd: string`
 
               The working directory used to start the MCP server.
 
+              `minLength: 0`
+
             - `env_vars: array of string`
 
               Environment variable names inherited from the execution environment.
 
-            - `type: "stdio"`
+              `minItems: 0`, `maxItems: 2000`
+
+            - `type: "stdio" (default: "stdio")`
 
               The type of the object. Always `stdio`.
 
               - `"stdio"`
 
-        - `type: "mcp"`
+        - `type: "mcp" (default: "mcp")`
 
           The type of the object. Always `mcp`.
 
@@ -5741,6 +6745,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
         - `allowed_domains: array of string or null`
 
           Allowed search domains, or `null` when the search is unrestricted.
+
+          `minItems: 0`, `maxItems: 2000`
 
         - `context_size: "low" or "medium" or "high"`
 
@@ -5760,17 +6766,25 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
             The city name.
 
+            `minLength: 0`
+
           - `country: string or null`
 
             The two-letter ISO country code, such as `US`.
+
+            `minLength: 0`
 
           - `region: string or null`
 
             The region or state name.
 
+            `minLength: 0`
+
           - `timezone: string or null`
 
             The IANA timezone, such as `America/Los_Angeles`.
+
+            `minLength: 0`
 
         - `mode: "disabled" or "cached" or "live"`
 
@@ -5782,7 +6796,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `"live"`
 
-        - `type: "web_search"`
+        - `type: "web_search" (default: "web_search")`
 
           The type of the object. Always `web_search`.
 
@@ -5796,7 +6810,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           Whether computer tool outputs include screenshots.
 
-        - `type: "computer_use"`
+        - `type: "computer_use" (default: "computer_use")`
 
           The type of the object. Always `computer_use`.
 
@@ -5806,15 +6820,33 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         Lets the agent manage its own scheduled wakeups.
 
-        - `type: "automations"`
+        - `type: "automations" (default: "automations")`
 
           The type of the object. Always `automations`.
 
           - `"automations"`
 
-  - `created_at: number`
+    - `compaction: optional object { async }`
+
+      The effective context compaction settings.
+
+      - `async: boolean`
+
+        Whether context is compacted in the background. Defaults to true.
+
+    - `experimental: optional object { time_awareness }`
+
+      The effective experimental settings for the agent.
+
+      - `time_awareness: boolean`
+
+        Whether the model receives periodic current-time reminders.
+
+  - `created_at: integer`
 
     The Unix timestamp, in seconds, when the session was created.
+
+    `format: int64`
 
   - `environment: Environment`
 
@@ -5824,7 +6856,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       The session talks to CCA without selecting or provisioning an execution environment.
 
-      - `type: "none"`
+      - `type: "none" (default: "none")`
 
         The type of the object. Always `none`.
 
@@ -5838,9 +6870,13 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         The public ID of the environment.
 
+        `minLength: 0`
+
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
 
       - `desktop: object { enabled }`
 
@@ -5854,6 +6890,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         Files available in the environment, excluding their contents.
 
+        `minItems: 0`, `maxItems: 50`
+
         - `HostedEnvironmentFileID object { id, file_id, path, 2 more }`
 
           A file copied from the OpenAI Files API.
@@ -5862,19 +6900,27 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
             The session-scoped ID of the file in the execution environment.
 
+            `minLength: 0`
+
           - `file_id: string`
 
             The ID of the uploaded file.
+
+            `minLength: 0`
 
           - `path: string`
 
             The file's absolute path inside the environment.
 
-          - `size_bytes: number`
+            `minLength: 0`
+
+          - `size_bytes: integer`
 
             The decoded file size in bytes.
 
-          - `type: "file_id"`
+            `format: int64`, `minimum: 0`
+
+          - `type: "file_id" (default: "file_id")`
 
             The type of the object. Always `file_id`.
 
@@ -5888,15 +6934,21 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
             The session-scoped ID of the file in the execution environment.
 
+            `minLength: 0`
+
           - `path: string`
 
             The file's absolute path inside the environment.
 
-          - `size_bytes: number`
+            `minLength: 0`
+
+          - `size_bytes: integer`
 
             The decoded file size in bytes.
 
-          - `type: "inline"`
+            `format: int64`, `minimum: 0`
+
+          - `type: "inline" (default: "inline")`
 
             The type of the object. Always `inline`.
 
@@ -5926,6 +6978,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           Domains the environment may access when network access is restricted.
 
+          `minItems: 0`, `maxItems: 2000`
+
       - `packages: object { npm, python, system }`
 
         Packages installed in the environment.
@@ -5934,27 +6988,39 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           npm packages installed globally in the environment.
 
+          `minItems: 0`, `maxItems: 16384`
+
         - `python: array of string`
 
           Python packages installed in the environment.
+
+          `minItems: 0`, `maxItems: 16384`
 
         - `system: array of string`
 
           System packages installed in the environment.
 
+          `minItems: 0`, `maxItems: 16384`
+
       - `plugins: array of HostedPlugin`
 
         Plugins installed in the environment, excluding their archive contents.
+
+        `minItems: 0`, `maxItems: 2000`
 
         - `description: string`
 
           The installed plugin description.
 
+          `minLength: 0`
+
         - `name: string`
 
           The installed plugin name.
 
-        - `type: "inline"`
+          `minLength: 0`
+
+        - `type: "inline" (default: "inline")`
 
           The type of the object. Always `inline`.
 
@@ -5964,6 +7030,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         Skills installed in the environment, excluding their archive contents.
 
+        `minItems: 0`, `maxItems: 2000`
+
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
           A skill installed from the Skills API.
@@ -5972,15 +7040,21 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
             The installed skill description.
 
+            `minLength: 0`
+
           - `name: string`
 
             The installed skill name.
+
+            `minLength: 0`
 
           - `skill_id: string`
 
             The referenced skill ID.
 
-          - `type: "skill_reference"`
+            `minLength: 0`
+
+          - `type: "skill_reference" (default: "skill_reference")`
 
             The type of the object. Always `skill_reference`.
 
@@ -5990,6 +7064,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
             The concrete skill version installed for this session.
 
+            `minLength: 0`
+
         - `Inline object { description, name, type }`
 
           A skill installed from an inline ZIP archive.
@@ -5998,17 +7074,21 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
             The installed skill description.
 
+            `minLength: 0`
+
           - `name: string`
 
             The installed skill name.
 
-          - `type: "inline"`
+            `minLength: 0`
+
+          - `type: "inline" (default: "inline")`
 
             The type of the object. Always `inline`.
 
             - `"inline"`
 
-      - `type: "openai_hosted"`
+      - `type: "openai_hosted" (default: "openai_hosted")`
 
         The type of the object. Always `openai_hosted`.
 
@@ -6032,15 +7112,21 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         The public ID of the environment.
 
+        `minLength: 0`
+
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
 
       - `remote_url: string`
 
         Pass this URL unchanged to `codex exec-server --remote` when connecting this environment.
 
-      - `type: "self_hosted"`
+        `minLength: 0`
+
+      - `type: "self_hosted" (default: "self_hosted")`
 
         The type of the object. Always `self_hosted`.
 
@@ -6050,19 +7136,25 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         The absolute project directory inside the environment. Defaults to `/workspace`.
 
+        `minLength: 0`
+
   - `error: string or null`
 
     The error that caused the session to fail, if any.
 
-  - `last_active_at: number`
+    `minLength: 0`
+
+  - `last_active_at: integer`
 
     The Unix timestamp, in seconds, when the session was last active.
+
+    `format: int64`
 
   - `metadata: map[string]`
 
     Custom string key-value pairs attached to the session.
 
-  - `object: "agent.session"`
+  - `object: "agent.session" (default: "agent.session")`
 
     The object type. Always `agent.session`.
 
@@ -6071,6 +7163,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
   - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
+
+    `minItems: 0`, `maxItems: 2000`
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -6088,17 +7182,25 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
             The registered form or frame origin where values will be entered.
 
+            `minLength: 0`
+
           - `fields: array of object { id, label, required, type }`
 
             Controls to render. All submitted values are sensitive.
+
+            `minItems: 0`, `maxItems: 2000`
 
             - `id: string`
 
               The field ID to submit as field_id in a fields entry.
 
+              `minLength: 0`
+
             - `label: string`
 
               The label to display beside the control.
+
+              `minLength: 0`
 
             - `required: boolean`
 
@@ -6108,27 +7210,39 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
               The rendering type, such as email, password, or text.
 
+              `minLength: 0`
+
           - `options: array of object { id, field_ids, label }`
 
             Sign-in methods. Empty for a plain form.
+
+            `minItems: 0`, `maxItems: 2000`
 
             - `id: string`
 
               The option ID to submit as selected_option.
 
+              `minLength: 0`
+
             - `field_ids: array of string`
 
               IDs from the registered fields that this method accepts.
+
+              `minItems: 0`, `maxItems: 2000`
 
             - `label: string`
 
               The method label to display.
 
+              `minLength: 0`
+
           - `reason: string or null`
 
             Why the agent needs the user to sign in.
 
-          - `type: "browser_authentication"`
+            `minLength: 0`
+
+          - `type: "browser_authentication" (default: "browser_authentication")`
 
             The type of the object. Always `browser_authentication`.
 
@@ -6142,11 +7256,15 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
             The origin the browser needs permission to access.
 
+            `minLength: 0`
+
           - `reason: string or null`
 
             The browser's explanation for this request, or null when unavailable.
 
-          - `type: "browser_origin_access"`
+            `minLength: 0`
+
+          - `type: "browser_origin_access" (default: "browser_origin_access")`
 
             The type of the object. Always `browser_origin_access`.
 
@@ -6156,11 +7274,15 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         The registered request ID to echo when responding.
 
+        `minLength: 0`
+
       - `turn_id: string`
 
         The turn that requested approval.
 
-      - `type: "computer_use_approval_request"`
+        `minLength: 0`
+
+      - `type: "computer_use_approval_request" (default: "computer_use_approval_request")`
 
         The type of the object. Always `computer_use_approval_request`.
 
@@ -6178,15 +7300,21 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         The ID to include when submitting the function result.
 
+        `minLength: 0`
+
       - `name: string`
 
         The function name.
+
+        `minLength: 0`
 
       - `turn_id: string`
 
         The ID of the turn that requested the function call.
 
-      - `type: "function_call"`
+        `minLength: 0`
+
+      - `type: "function_call" (default: "function_call")`
 
         The type of the object. Always `function_call`.
 
@@ -6200,7 +7328,9 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         The ID of the environment to reconnect.
 
-      - `type: "environment_connection"`
+        `minLength: 0`
+
+      - `type: "environment_connection" (default: "environment_connection")`
 
         The type of the object. Always `environment_connection`.
 
@@ -6230,39 +7360,51 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     Best-effort token usage for the session, or null if unknown. Recorded usage may change.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens used by the agent.
+
+      `format: int64`
 
     - `input_tokens_details: object { cached_tokens }`
 
       A breakdown of the agent's input token usage.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of input tokens retrieved from the prompt cache.
 
-    - `output_tokens: number`
+        `format: int64`
+
+    - `output_tokens: integer`
 
       The number of output tokens generated by the agent.
+
+      `format: int64`
 
     - `output_tokens_details: object { reasoning_tokens }`
 
       A breakdown of the agent's output token usage.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of output tokens used for reasoning.
 
-    - `total_tokens: number`
+        `format: int64`
+
+    - `total_tokens: integer`
 
       The total number of input and output tokens used by the agent.
+
+      `format: int64`
 
   - `vault_ids: array of string`
 
     The IDs of vaults made available to the session.
 
-- `type: "agent.session.requires_action"`
+    `minItems: 0`, `maxItems: 2000`
+
+- `type: "agent.session.requires_action" (default: "agent.session.requires_action")`
 
   The type of the object. Always `agent.session.requires_action`.
 
@@ -6343,6 +7485,12 @@ Schema name: `SessionEventAgentSessionRequiresAction`
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -6380,6 +7528,8 @@ Schema name: `SessionEventAgentSessionFailed`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `session: AgentSession`
 
   The failed session.
@@ -6388,7 +7538,9 @@ Schema name: `SessionEventAgentSessionFailed`
 
     The ID of the session.
 
-  - `agent: object { id, instructions, model, 6 more }`
+    `minLength: 0`
+
+  - `agent: object { id, instructions, model, 8 more }`
 
     The agent running in the session.
 
@@ -6396,13 +7548,19 @@ Schema name: `SessionEventAgentSessionFailed`
 
       The ID of the agent.
 
+      `minLength: 0`
+
     - `instructions: string or null`
 
       Custom instructions appended to the agent's default base instructions.
 
+      `minLength: 0`
+
     - `model: string`
 
       The model used by the agent.
+
+      `minLength: 0`
 
     - `multi_agent: MultiAgentConfig`
 
@@ -6412,13 +7570,17 @@ Schema name: `SessionEventAgentSessionFailed`
 
         Whether subagent tools are enabled. Defaults to false.
 
-      - `max_concurrent_subagents: number or null`
+      - `max_concurrent_subagents: integer or null`
 
         Maximum number of subagents that may run concurrently, or null when disabled. Defaults to 6 when enabled.
+
+        `format: int64`, `minimum: 1`, `maximum: 4294967295`
 
     - `name: string or null`
 
       The reusable agent's name when the session was created, or null if no name was saved. Later changes to the agent's name do not affect this value.
+
+      `minLength: 0`
 
     - `reasoning: AgentReasoning`
 
@@ -6486,7 +7648,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           Generates ordinary text without a structured-output constraint.
 
-          - `type: "text"`
+          - `type: "text" (default: "text")`
 
             The type of the object. Always `text`.
 
@@ -6500,7 +7662,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
             The JSON Schema that generated text must match.
 
-          - `type: "json_schema"`
+          - `type: "json_schema" (default: "json_schema")`
 
             The type of the object. Always `json_schema`.
 
@@ -6520,6 +7682,8 @@ Schema name: `SessionEventAgentSessionFailed`
 
       Tools available to the agent.
 
+      `minItems: 0`, `maxItems: 2000`
+
       - `Function object { defer_loading, description, name, 2 more }`
 
         A function defined by the application.
@@ -6532,15 +7696,19 @@ Schema name: `SessionEventAgentSessionFailed`
 
           A description of what the function does.
 
+          `minLength: 0`
+
         - `name: string`
 
           The name of the function.
+
+          `minLength: 0`
 
         - `parameters: map[unknown]`
 
           A JSON Schema object describing the function's arguments.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the object. Always `function`.
 
@@ -6554,7 +7722,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           Whether tools can be called from model-generated code.
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the object. Always `programmatic_tool_calling`.
 
@@ -6568,6 +7736,8 @@ Schema name: `SessionEventAgentSessionFailed`
 
           The MCP tools the agent may call.
 
+          `minItems: 0`, `maxItems: 2000`
+
         - `connection_origin: "service" or "environment"`
 
           Where outbound MCP HTTP connections originate.
@@ -6579,6 +7749,8 @@ Schema name: `SessionEventAgentSessionFailed`
         - `credential_id: string or null`
 
           The attached vault credential selected for this MCP server, if any. Optional when exactly one attached credential matches the server URL.
+
+          `minLength: 0`
 
         - `request_metadata: map[unknown]`
 
@@ -6592,6 +7764,8 @@ Schema name: `SessionEventAgentSessionFailed`
 
           A label used to identify the MCP server in tool calls.
 
+          `minLength: 0`
+
         - `transport: McpTransport`
 
           The transport used to connect to the MCP server.
@@ -6604,7 +7778,9 @@ Schema name: `SessionEventAgentSessionFailed`
 
               The URL of the MCP server.
 
-            - `type: "http"`
+              `minLength: 0`
+
+            - `type: "http" (default: "http")`
 
               The type of the object. Always `http`.
 
@@ -6618,25 +7794,33 @@ Schema name: `SessionEventAgentSessionFailed`
 
               Arguments passed to the MCP server command.
 
+              `minItems: 0`, `maxItems: 2000`
+
             - `command: string`
 
               The command used to start the MCP server.
+
+              `minLength: 0`
 
             - `cwd: string`
 
               The working directory used to start the MCP server.
 
+              `minLength: 0`
+
             - `env_vars: array of string`
 
               Environment variable names inherited from the execution environment.
 
-            - `type: "stdio"`
+              `minItems: 0`, `maxItems: 2000`
+
+            - `type: "stdio" (default: "stdio")`
 
               The type of the object. Always `stdio`.
 
               - `"stdio"`
 
-        - `type: "mcp"`
+        - `type: "mcp" (default: "mcp")`
 
           The type of the object. Always `mcp`.
 
@@ -6649,6 +7833,8 @@ Schema name: `SessionEventAgentSessionFailed`
         - `allowed_domains: array of string or null`
 
           Allowed search domains, or `null` when the search is unrestricted.
+
+          `minItems: 0`, `maxItems: 2000`
 
         - `context_size: "low" or "medium" or "high"`
 
@@ -6668,17 +7854,25 @@ Schema name: `SessionEventAgentSessionFailed`
 
             The city name.
 
+            `minLength: 0`
+
           - `country: string or null`
 
             The two-letter ISO country code, such as `US`.
+
+            `minLength: 0`
 
           - `region: string or null`
 
             The region or state name.
 
+            `minLength: 0`
+
           - `timezone: string or null`
 
             The IANA timezone, such as `America/Los_Angeles`.
+
+            `minLength: 0`
 
         - `mode: "disabled" or "cached" or "live"`
 
@@ -6690,7 +7884,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           - `"live"`
 
-        - `type: "web_search"`
+        - `type: "web_search" (default: "web_search")`
 
           The type of the object. Always `web_search`.
 
@@ -6704,7 +7898,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           Whether computer tool outputs include screenshots.
 
-        - `type: "computer_use"`
+        - `type: "computer_use" (default: "computer_use")`
 
           The type of the object. Always `computer_use`.
 
@@ -6714,15 +7908,33 @@ Schema name: `SessionEventAgentSessionFailed`
 
         Lets the agent manage its own scheduled wakeups.
 
-        - `type: "automations"`
+        - `type: "automations" (default: "automations")`
 
           The type of the object. Always `automations`.
 
           - `"automations"`
 
-  - `created_at: number`
+    - `compaction: optional object { async }`
+
+      The effective context compaction settings.
+
+      - `async: boolean`
+
+        Whether context is compacted in the background. Defaults to true.
+
+    - `experimental: optional object { time_awareness }`
+
+      The effective experimental settings for the agent.
+
+      - `time_awareness: boolean`
+
+        Whether the model receives periodic current-time reminders.
+
+  - `created_at: integer`
 
     The Unix timestamp, in seconds, when the session was created.
+
+    `format: int64`
 
   - `environment: Environment`
 
@@ -6732,7 +7944,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
       The session talks to CCA without selecting or provisioning an execution environment.
 
-      - `type: "none"`
+      - `type: "none" (default: "none")`
 
         The type of the object. Always `none`.
 
@@ -6746,9 +7958,13 @@ Schema name: `SessionEventAgentSessionFailed`
 
         The public ID of the environment.
 
+        `minLength: 0`
+
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
 
       - `desktop: object { enabled }`
 
@@ -6762,6 +7978,8 @@ Schema name: `SessionEventAgentSessionFailed`
 
         Files available in the environment, excluding their contents.
 
+        `minItems: 0`, `maxItems: 50`
+
         - `HostedEnvironmentFileID object { id, file_id, path, 2 more }`
 
           A file copied from the OpenAI Files API.
@@ -6770,19 +7988,27 @@ Schema name: `SessionEventAgentSessionFailed`
 
             The session-scoped ID of the file in the execution environment.
 
+            `minLength: 0`
+
           - `file_id: string`
 
             The ID of the uploaded file.
+
+            `minLength: 0`
 
           - `path: string`
 
             The file's absolute path inside the environment.
 
-          - `size_bytes: number`
+            `minLength: 0`
+
+          - `size_bytes: integer`
 
             The decoded file size in bytes.
 
-          - `type: "file_id"`
+            `format: int64`, `minimum: 0`
+
+          - `type: "file_id" (default: "file_id")`
 
             The type of the object. Always `file_id`.
 
@@ -6796,15 +8022,21 @@ Schema name: `SessionEventAgentSessionFailed`
 
             The session-scoped ID of the file in the execution environment.
 
+            `minLength: 0`
+
           - `path: string`
 
             The file's absolute path inside the environment.
 
-          - `size_bytes: number`
+            `minLength: 0`
+
+          - `size_bytes: integer`
 
             The decoded file size in bytes.
 
-          - `type: "inline"`
+            `format: int64`, `minimum: 0`
+
+          - `type: "inline" (default: "inline")`
 
             The type of the object. Always `inline`.
 
@@ -6834,6 +8066,8 @@ Schema name: `SessionEventAgentSessionFailed`
 
           Domains the environment may access when network access is restricted.
 
+          `minItems: 0`, `maxItems: 2000`
+
       - `packages: object { npm, python, system }`
 
         Packages installed in the environment.
@@ -6842,27 +8076,39 @@ Schema name: `SessionEventAgentSessionFailed`
 
           npm packages installed globally in the environment.
 
+          `minItems: 0`, `maxItems: 16384`
+
         - `python: array of string`
 
           Python packages installed in the environment.
+
+          `minItems: 0`, `maxItems: 16384`
 
         - `system: array of string`
 
           System packages installed in the environment.
 
+          `minItems: 0`, `maxItems: 16384`
+
       - `plugins: array of HostedPlugin`
 
         Plugins installed in the environment, excluding their archive contents.
+
+        `minItems: 0`, `maxItems: 2000`
 
         - `description: string`
 
           The installed plugin description.
 
+          `minLength: 0`
+
         - `name: string`
 
           The installed plugin name.
 
-        - `type: "inline"`
+          `minLength: 0`
+
+        - `type: "inline" (default: "inline")`
 
           The type of the object. Always `inline`.
 
@@ -6872,6 +8118,8 @@ Schema name: `SessionEventAgentSessionFailed`
 
         Skills installed in the environment, excluding their archive contents.
 
+        `minItems: 0`, `maxItems: 2000`
+
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
           A skill installed from the Skills API.
@@ -6880,15 +8128,21 @@ Schema name: `SessionEventAgentSessionFailed`
 
             The installed skill description.
 
+            `minLength: 0`
+
           - `name: string`
 
             The installed skill name.
+
+            `minLength: 0`
 
           - `skill_id: string`
 
             The referenced skill ID.
 
-          - `type: "skill_reference"`
+            `minLength: 0`
+
+          - `type: "skill_reference" (default: "skill_reference")`
 
             The type of the object. Always `skill_reference`.
 
@@ -6898,6 +8152,8 @@ Schema name: `SessionEventAgentSessionFailed`
 
             The concrete skill version installed for this session.
 
+            `minLength: 0`
+
         - `Inline object { description, name, type }`
 
           A skill installed from an inline ZIP archive.
@@ -6906,17 +8162,21 @@ Schema name: `SessionEventAgentSessionFailed`
 
             The installed skill description.
 
+            `minLength: 0`
+
           - `name: string`
 
             The installed skill name.
 
-          - `type: "inline"`
+            `minLength: 0`
+
+          - `type: "inline" (default: "inline")`
 
             The type of the object. Always `inline`.
 
             - `"inline"`
 
-      - `type: "openai_hosted"`
+      - `type: "openai_hosted" (default: "openai_hosted")`
 
         The type of the object. Always `openai_hosted`.
 
@@ -6940,15 +8200,21 @@ Schema name: `SessionEventAgentSessionFailed`
 
         The public ID of the environment.
 
+        `minLength: 0`
+
       - `capability_directories: array of string`
 
         Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
 
       - `remote_url: string`
 
         Pass this URL unchanged to `codex exec-server --remote` when connecting this environment.
 
-      - `type: "self_hosted"`
+        `minLength: 0`
+
+      - `type: "self_hosted" (default: "self_hosted")`
 
         The type of the object. Always `self_hosted`.
 
@@ -6958,19 +8224,25 @@ Schema name: `SessionEventAgentSessionFailed`
 
         The absolute project directory inside the environment. Defaults to `/workspace`.
 
+        `minLength: 0`
+
   - `error: string or null`
 
     The error that caused the session to fail, if any.
 
-  - `last_active_at: number`
+    `minLength: 0`
+
+  - `last_active_at: integer`
 
     The Unix timestamp, in seconds, when the session was last active.
+
+    `format: int64`
 
   - `metadata: map[string]`
 
     Custom string key-value pairs attached to the session.
 
-  - `object: "agent.session"`
+  - `object: "agent.session" (default: "agent.session")`
 
     The object type. Always `agent.session`.
 
@@ -6979,6 +8251,8 @@ Schema name: `SessionEventAgentSessionFailed`
   - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
+
+    `minItems: 0`, `maxItems: 2000`
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -6996,17 +8270,25 @@ Schema name: `SessionEventAgentSessionFailed`
 
             The registered form or frame origin where values will be entered.
 
+            `minLength: 0`
+
           - `fields: array of object { id, label, required, type }`
 
             Controls to render. All submitted values are sensitive.
+
+            `minItems: 0`, `maxItems: 2000`
 
             - `id: string`
 
               The field ID to submit as field_id in a fields entry.
 
+              `minLength: 0`
+
             - `label: string`
 
               The label to display beside the control.
+
+              `minLength: 0`
 
             - `required: boolean`
 
@@ -7016,27 +8298,39 @@ Schema name: `SessionEventAgentSessionFailed`
 
               The rendering type, such as email, password, or text.
 
+              `minLength: 0`
+
           - `options: array of object { id, field_ids, label }`
 
             Sign-in methods. Empty for a plain form.
+
+            `minItems: 0`, `maxItems: 2000`
 
             - `id: string`
 
               The option ID to submit as selected_option.
 
+              `minLength: 0`
+
             - `field_ids: array of string`
 
               IDs from the registered fields that this method accepts.
+
+              `minItems: 0`, `maxItems: 2000`
 
             - `label: string`
 
               The method label to display.
 
+              `minLength: 0`
+
           - `reason: string or null`
 
             Why the agent needs the user to sign in.
 
-          - `type: "browser_authentication"`
+            `minLength: 0`
+
+          - `type: "browser_authentication" (default: "browser_authentication")`
 
             The type of the object. Always `browser_authentication`.
 
@@ -7050,11 +8344,15 @@ Schema name: `SessionEventAgentSessionFailed`
 
             The origin the browser needs permission to access.
 
+            `minLength: 0`
+
           - `reason: string or null`
 
             The browser's explanation for this request, or null when unavailable.
 
-          - `type: "browser_origin_access"`
+            `minLength: 0`
+
+          - `type: "browser_origin_access" (default: "browser_origin_access")`
 
             The type of the object. Always `browser_origin_access`.
 
@@ -7064,11 +8362,15 @@ Schema name: `SessionEventAgentSessionFailed`
 
         The registered request ID to echo when responding.
 
+        `minLength: 0`
+
       - `turn_id: string`
 
         The turn that requested approval.
 
-      - `type: "computer_use_approval_request"`
+        `minLength: 0`
+
+      - `type: "computer_use_approval_request" (default: "computer_use_approval_request")`
 
         The type of the object. Always `computer_use_approval_request`.
 
@@ -7086,15 +8388,21 @@ Schema name: `SessionEventAgentSessionFailed`
 
         The ID to include when submitting the function result.
 
+        `minLength: 0`
+
       - `name: string`
 
         The function name.
+
+        `minLength: 0`
 
       - `turn_id: string`
 
         The ID of the turn that requested the function call.
 
-      - `type: "function_call"`
+        `minLength: 0`
+
+      - `type: "function_call" (default: "function_call")`
 
         The type of the object. Always `function_call`.
 
@@ -7108,7 +8416,9 @@ Schema name: `SessionEventAgentSessionFailed`
 
         The ID of the environment to reconnect.
 
-      - `type: "environment_connection"`
+        `minLength: 0`
+
+      - `type: "environment_connection" (default: "environment_connection")`
 
         The type of the object. Always `environment_connection`.
 
@@ -7138,39 +8448,51 @@ Schema name: `SessionEventAgentSessionFailed`
 
     Best-effort token usage for the session, or null if unknown. Recorded usage may change.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens used by the agent.
+
+      `format: int64`
 
     - `input_tokens_details: object { cached_tokens }`
 
       A breakdown of the agent's input token usage.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of input tokens retrieved from the prompt cache.
 
-    - `output_tokens: number`
+        `format: int64`
+
+    - `output_tokens: integer`
 
       The number of output tokens generated by the agent.
+
+      `format: int64`
 
     - `output_tokens_details: object { reasoning_tokens }`
 
       A breakdown of the agent's output token usage.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of output tokens used for reasoning.
 
-    - `total_tokens: number`
+        `format: int64`
+
+    - `total_tokens: integer`
 
       The total number of input and output tokens used by the agent.
+
+      `format: int64`
 
   - `vault_ids: array of string`
 
     The IDs of vaults made available to the session.
 
-- `type: "agent.session.failed"`
+    `minItems: 0`, `maxItems: 2000`
+
+- `type: "agent.session.failed" (default: "agent.session.failed")`
 
   The type of the object. Always `agent.session.failed`.
 
@@ -7251,6 +8573,12 @@ Schema name: `SessionEventAgentSessionFailed`
       "multi_agent": {
         "enabled": true,
         "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
       }
     },
     "environment": {
@@ -7292,6 +8620,8 @@ Schema name: `SessionEventAgentSessionEnvironmentPending`
 
     The public ID of the environment.
 
+    `minLength: 0`
+
   - `error: object { code, message, type }  or null`
 
     The error reported while preparing the environment, if any.
@@ -7300,13 +8630,19 @@ Schema name: `SessionEventAgentSessionEnvironmentPending`
 
       A machine-readable error code.
 
+      `minLength: 0`
+
     - `message: string`
 
       A human-readable error message.
 
+      `minLength: 0`
+
     - `type: string`
 
       The error type.
+
+      `minLength: 0`
 
   - `status: "pending" or "ready" or "connected" or 4 more`
 
@@ -7344,19 +8680,27 @@ Schema name: `SessionEventAgentSessionEnvironmentPending`
 
     The environment type.
 
+    `minLength: 0`
+
 - `event_id: string`
 
   The unique ID of the event.
+
+  `minLength: 0`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.environment.pending"`
+  `minLength: 0`
+
+- `type: "agent.session.environment.pending" (default: "agent.session.environment.pending")`
 
   The type of the object. Always `agent.session.environment.pending`.
 
@@ -7401,6 +8745,8 @@ Schema name: `SessionEventAgentSessionEnvironmentConnected`
 
     The public ID of the environment.
 
+    `minLength: 0`
+
   - `error: object { code, message, type }  or null`
 
     The error reported while preparing the environment, if any.
@@ -7409,13 +8755,19 @@ Schema name: `SessionEventAgentSessionEnvironmentConnected`
 
       A machine-readable error code.
 
+      `minLength: 0`
+
     - `message: string`
 
       A human-readable error message.
 
+      `minLength: 0`
+
     - `type: string`
 
       The error type.
+
+      `minLength: 0`
 
   - `status: "pending" or "ready" or "connected" or 4 more`
 
@@ -7453,19 +8805,27 @@ Schema name: `SessionEventAgentSessionEnvironmentConnected`
 
     The environment type.
 
+    `minLength: 0`
+
 - `event_id: string`
 
   The unique ID of the event.
+
+  `minLength: 0`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.environment.connected"`
+  `minLength: 0`
+
+- `type: "agent.session.environment.connected" (default: "agent.session.environment.connected")`
 
   The type of the object. Always `agent.session.environment.connected`.
 
@@ -7510,6 +8870,8 @@ Schema name: `SessionEventAgentSessionEnvironmentDisconnected`
 
     The public ID of the environment.
 
+    `minLength: 0`
+
   - `error: object { code, message, type }  or null`
 
     The error reported while preparing the environment, if any.
@@ -7518,13 +8880,19 @@ Schema name: `SessionEventAgentSessionEnvironmentDisconnected`
 
       A machine-readable error code.
 
+      `minLength: 0`
+
     - `message: string`
 
       A human-readable error message.
 
+      `minLength: 0`
+
     - `type: string`
 
       The error type.
+
+      `minLength: 0`
 
   - `status: "pending" or "ready" or "connected" or 4 more`
 
@@ -7562,19 +8930,27 @@ Schema name: `SessionEventAgentSessionEnvironmentDisconnected`
 
     The environment type.
 
+    `minLength: 0`
+
 - `event_id: string`
 
   The unique ID of the event.
+
+  `minLength: 0`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.environment.disconnected"`
+  `minLength: 0`
+
+- `type: "agent.session.environment.disconnected" (default: "agent.session.environment.disconnected")`
 
   The type of the object. Always `agent.session.environment.disconnected`.
 
@@ -7619,6 +8995,8 @@ Schema name: `SessionEventAgentSessionEnvironmentFailed`
 
     The public ID of the environment.
 
+    `minLength: 0`
+
   - `error: object { code, message, type }  or null`
 
     The error reported while preparing the environment, if any.
@@ -7627,13 +9005,19 @@ Schema name: `SessionEventAgentSessionEnvironmentFailed`
 
       A machine-readable error code.
 
+      `minLength: 0`
+
     - `message: string`
 
       A human-readable error message.
 
+      `minLength: 0`
+
     - `type: string`
 
       The error type.
+
+      `minLength: 0`
 
   - `status: "pending" or "ready" or "connected" or 4 more`
 
@@ -7671,19 +9055,27 @@ Schema name: `SessionEventAgentSessionEnvironmentFailed`
 
     The environment type.
 
+    `minLength: 0`
+
 - `event_id: string`
 
   The unique ID of the event.
+
+  `minLength: 0`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.environment.failed"`
+  `minLength: 0`
+
+- `type: "agent.session.environment.failed" (default: "agent.session.environment.failed")`
 
   The type of the object. Always `agent.session.environment.failed`.
 
@@ -7724,6 +9116,8 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `subagent: Subagent`
 
   The subagent that was created.
@@ -7732,13 +9126,19 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
 
     The ID of the subagent.
 
-  - `closed_at: number or null`
+    `minLength: 0`
+
+  - `closed_at: integer or null`
 
     The Unix timestamp, in seconds, when the subagent was closed. Null while active, including after resume.
+
+    `format: int64`
 
   - `instructions: array of AgentContent or null`
 
     Initial task content, or null when unavailable. Text may contain placeholders for images or audio when only a preview is available.
+
+    `minItems: 0`, `maxItems: 2000`
 
     - `OutputText object { text, type }`
 
@@ -7748,7 +9148,9 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
 
         The text produced by the agent.
 
-      - `type: "output_text"`
+        `minLength: 0`
+
+      - `type: "output_text" (default: "output_text")`
 
         The content type. Always `output_text`.
 
@@ -7762,7 +9164,9 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
 
         The encrypted content payload.
 
-      - `type: "encrypted_content"`
+        `minLength: 0`
+
+      - `type: "encrypted_content" (default: "encrypted_content")`
 
         The content type. Always `encrypted_content`.
 
@@ -7772,23 +9176,31 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
 
     The runner-assigned nickname, or null when unavailable.
 
-  - `object: "agent.session.subagent"`
+    `minLength: 0`
+
+  - `object: "agent.session.subagent" (default: "agent.session.subagent")`
 
     The object type. Always `agent.session.subagent`.
 
     - `"agent.session.subagent"`
 
-  - `opened_at: number`
+  - `opened_at: integer`
 
     The Unix timestamp, in seconds, when the subagent was first opened. Resuming does not change it.
+
+    `format: int64`
 
   - `parent_agent_id: string`
 
     The ID of the agent that created this subagent.
 
+    `minLength: 0`
+
   - `session_id: string`
 
     The ID of the session that owns the subagent.
+
+    `minLength: 0`
 
   - `status: "active" or "closed"`
 
@@ -7802,7 +9214,7 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
 
       The subagent is closed.
 
-- `type: "agent.session.subagent.created"`
+- `type: "agent.session.subagent.created" (default: "agent.session.subagent.created")`
 
   The type of the object. Always `agent.session.subagent.created`.
 
@@ -7847,6 +9259,8 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `subagent: Subagent`
 
   The subagent that resumed.
@@ -7855,13 +9269,19 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
     The ID of the subagent.
 
-  - `closed_at: number or null`
+    `minLength: 0`
+
+  - `closed_at: integer or null`
 
     The Unix timestamp, in seconds, when the subagent was closed. Null while active, including after resume.
+
+    `format: int64`
 
   - `instructions: array of AgentContent or null`
 
     Initial task content, or null when unavailable. Text may contain placeholders for images or audio when only a preview is available.
+
+    `minItems: 0`, `maxItems: 2000`
 
     - `OutputText object { text, type }`
 
@@ -7871,7 +9291,9 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
         The text produced by the agent.
 
-      - `type: "output_text"`
+        `minLength: 0`
+
+      - `type: "output_text" (default: "output_text")`
 
         The content type. Always `output_text`.
 
@@ -7885,7 +9307,9 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
         The encrypted content payload.
 
-      - `type: "encrypted_content"`
+        `minLength: 0`
+
+      - `type: "encrypted_content" (default: "encrypted_content")`
 
         The content type. Always `encrypted_content`.
 
@@ -7895,23 +9319,31 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
     The runner-assigned nickname, or null when unavailable.
 
-  - `object: "agent.session.subagent"`
+    `minLength: 0`
+
+  - `object: "agent.session.subagent" (default: "agent.session.subagent")`
 
     The object type. Always `agent.session.subagent`.
 
     - `"agent.session.subagent"`
 
-  - `opened_at: number`
+  - `opened_at: integer`
 
     The Unix timestamp, in seconds, when the subagent was first opened. Resuming does not change it.
+
+    `format: int64`
 
   - `parent_agent_id: string`
 
     The ID of the agent that created this subagent.
 
+    `minLength: 0`
+
   - `session_id: string`
 
     The ID of the session that owns the subagent.
+
+    `minLength: 0`
 
   - `status: "active" or "closed"`
 
@@ -7925,7 +9357,7 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
       The subagent is closed.
 
-- `type: "agent.session.subagent.active"`
+- `type: "agent.session.subagent.active" (default: "agent.session.subagent.active")`
 
   The type of the object. Always `agent.session.subagent.active`.
 
@@ -7970,6 +9402,8 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `subagent: Subagent`
 
   The subagent that was closed.
@@ -7978,13 +9412,19 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
 
     The ID of the subagent.
 
-  - `closed_at: number or null`
+    `minLength: 0`
+
+  - `closed_at: integer or null`
 
     The Unix timestamp, in seconds, when the subagent was closed. Null while active, including after resume.
+
+    `format: int64`
 
   - `instructions: array of AgentContent or null`
 
     Initial task content, or null when unavailable. Text may contain placeholders for images or audio when only a preview is available.
+
+    `minItems: 0`, `maxItems: 2000`
 
     - `OutputText object { text, type }`
 
@@ -7994,7 +9434,9 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
 
         The text produced by the agent.
 
-      - `type: "output_text"`
+        `minLength: 0`
+
+      - `type: "output_text" (default: "output_text")`
 
         The content type. Always `output_text`.
 
@@ -8008,7 +9450,9 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
 
         The encrypted content payload.
 
-      - `type: "encrypted_content"`
+        `minLength: 0`
+
+      - `type: "encrypted_content" (default: "encrypted_content")`
 
         The content type. Always `encrypted_content`.
 
@@ -8018,23 +9462,31 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
 
     The runner-assigned nickname, or null when unavailable.
 
-  - `object: "agent.session.subagent"`
+    `minLength: 0`
+
+  - `object: "agent.session.subagent" (default: "agent.session.subagent")`
 
     The object type. Always `agent.session.subagent`.
 
     - `"agent.session.subagent"`
 
-  - `opened_at: number`
+  - `opened_at: integer`
 
     The Unix timestamp, in seconds, when the subagent was first opened. Resuming does not change it.
+
+    `format: int64`
 
   - `parent_agent_id: string`
 
     The ID of the agent that created this subagent.
 
+    `minLength: 0`
+
   - `session_id: string`
 
     The ID of the session that owns the subagent.
+
+    `minLength: 0`
 
   - `status: "active" or "closed"`
 
@@ -8048,7 +9500,7 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
 
       The subagent is closed.
 
-- `type: "agent.session.subagent.closed"`
+- `type: "agent.session.subagent.closed" (default: "agent.session.subagent.closed")`
 
   The type of the object. Always `agent.session.subagent.closed`.
 
@@ -8093,6 +9545,8 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `item: AgentOutputItem`
 
   The completed output item.
@@ -8105,15 +9559,21 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the message.
 
+      `minLength: 0`
+
     - `content: array of OutputText`
 
       The content of the message.
+
+      `minItems: 0`, `maxItems: 2000`
 
       - `text: string`
 
         The text produced by the agent.
 
-      - `type: "output_text"`
+        `minLength: 0`
+
+      - `type: "output_text" (default: "output_text")`
 
         The content type. Always `output_text`.
 
@@ -8131,7 +9591,7 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
         The agent's final answer.
 
-    - `role: "assistant"`
+    - `role: "assistant" (default: "assistant")`
 
       The role of the message author. Always `assistant`.
 
@@ -8157,7 +9617,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "message"`
+      `minLength: 0`
+
+    - `type: "message" (default: "message")`
 
       The item type. Always `message`.
 
@@ -8171,6 +9633,8 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the reasoning item.
 
+      `minLength: 0`
+
     - `status: AgentOutputItemStatus or null`
 
       The status of the reasoning item.
@@ -8179,11 +9643,15 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The reasoning summaries produced by the agent.
 
+      `minItems: 0`, `maxItems: 2000`
+
       - `text: string`
 
         The reasoning summary text.
 
-      - `type: "summary_text"`
+        `minLength: 0`
+
+      - `type: "summary_text" (default: "summary_text")`
 
         The content type. Always `summary_text`.
 
@@ -8193,7 +9661,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "reasoning"`
+      `minLength: 0`
+
+    - `type: "reasoning" (default: "reasoning")`
 
       The item type. Always `reasoning`.
 
@@ -8207,6 +9677,8 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the function call item.
 
+      `minLength: 0`
+
     - `arguments: unknown`
 
       The arguments to pass to the function.
@@ -8215,9 +9687,13 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID used to submit the function result.
 
+      `minLength: 0`
+
     - `name: string`
 
       The name of the function to call.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -8243,7 +9719,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "function_call"`
+      `minLength: 0`
+
+    - `type: "function_call" (default: "function_call")`
 
       The item type. Always `function_call`.
 
@@ -8257,6 +9735,8 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the MCP call item.
 
+      `minLength: 0`
+
     - `arguments: unknown`
 
       The arguments passed to the MCP tool.
@@ -8269,6 +9749,8 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The name of the MCP tool.
 
+      `minLength: 0`
+
     - `output: unknown`
 
       The output returned by the MCP tool, if any.
@@ -8276,6 +9758,8 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
     - `server_label: string`
 
       The label of the MCP server.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -8285,7 +9769,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "mcp_call"`
+      `minLength: 0`
+
+    - `type: "mcp_call" (default: "mcp_call")`
 
       The item type. Always `mcp_call`.
 
@@ -8299,6 +9785,8 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the activity item.
 
+      `minLength: 0`
+
     - `output: object { image_url, type }  or null`
 
       The last screenshot emitted by the model. Null when screenshot inclusion is disabled or the call emitted no screenshot.
@@ -8307,7 +9795,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
         The complete JPEG image as a base64 data URL.
 
-      - `type: "computer_screenshot"`
+        `minLength: 0`
+
+      - `type: "computer_screenshot" (default: "computer_screenshot")`
 
         The content type. Always `computer_screenshot`.
 
@@ -8321,11 +9811,15 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       A model-generated description of the activity, when available.
 
+      `minLength: 0`
+
     - `turn_id: string`
 
       The ID of the turn that contains this item.
 
-    - `type: "computer_use_call"`
+      `minLength: 0`
+
+    - `type: "computer_use_call" (default: "computer_use_call")`
 
       The item type. Always `computer_use_call`.
 
@@ -8339,6 +9833,8 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The stable history item ID.
 
+      `minLength: 0`
+
     - `request: object { credential_origin, fields, options, 2 more }`
 
       A registered form awaiting the application's response.
@@ -8347,17 +9843,25 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
         The registered form or frame origin where values will be entered.
 
+        `minLength: 0`
+
       - `fields: array of object { id, label, required, type }`
 
         Controls to render. All submitted values are sensitive.
+
+        `minItems: 0`, `maxItems: 2000`
 
         - `id: string`
 
           The field ID to submit as field_id in a fields entry.
 
+          `minLength: 0`
+
         - `label: string`
 
           The label to display beside the control.
+
+          `minLength: 0`
 
         - `required: boolean`
 
@@ -8367,27 +9871,39 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
           The rendering type, such as email, password, or text.
 
+          `minLength: 0`
+
       - `options: array of object { id, field_ids, label }`
 
         Sign-in methods. Empty for a plain form.
+
+        `minItems: 0`, `maxItems: 2000`
 
         - `id: string`
 
           The option ID to submit as selected_option.
 
+          `minLength: 0`
+
         - `field_ids: array of string`
 
           IDs from the registered fields that this method accepts.
+
+          `minItems: 0`, `maxItems: 2000`
 
         - `label: string`
 
           The method label to display.
 
+          `minLength: 0`
+
       - `reason: string or null`
 
         Why the agent needs the user to sign in.
 
-      - `type: "browser_authentication"`
+        `minLength: 0`
+
+      - `type: "browser_authentication" (default: "browser_authentication")`
 
         The type of the object. Always `browser_authentication`.
 
@@ -8395,9 +9911,13 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `request_id: string`
 
+      `minLength: 0`
+
     - `turn_id: string`
 
-    - `type: "computer_use_approval_request"`
+      `minLength: 0`
+
+    - `type: "computer_use_approval_request" (default: "computer_use_approval_request")`
 
       The item type. Always computer_use_approval_request.
 
@@ -8411,6 +9931,8 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the web search call.
 
+      `minLength: 0`
+
     - `action: WebSearchAction or null`
 
       The action performed by the web search tool.
@@ -8423,11 +9945,15 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
           The search queries, when multiple queries were used.
 
+          `minItems: 0`, `maxItems: 2000`
+
         - `query: string or null`
 
           The search query, when a single query was used.
 
-        - `type: "search"`
+          `minLength: 0`
+
+        - `type: "search" (default: "search")`
 
           The type of the object. Always `search`.
 
@@ -8437,7 +9963,7 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
         Opens a web page.
 
-        - `type: "open_page"`
+        - `type: "open_page" (default: "open_page")`
 
           The type of the object. Always `open_page`.
 
@@ -8447,6 +9973,8 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
           The URL of the page that was opened.
 
+          `minLength: 0`
+
       - `FindInPage object { pattern, type, url }`
 
         Finds text within a web page.
@@ -8455,7 +9983,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
           The text pattern that was searched for.
 
-        - `type: "find_in_page"`
+          `minLength: 0`
+
+        - `type: "find_in_page" (default: "find_in_page")`
 
           The type of the object. Always `find_in_page`.
 
@@ -8465,11 +9995,13 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
           The URL of the page that was searched.
 
+          `minLength: 0`
+
       - `Other object { type }`
 
         Another web search action.
 
-        - `type: "other"`
+        - `type: "other" (default: "other")`
 
           The type of the object. Always `other`.
 
@@ -8483,7 +10015,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "web_search_call"`
+      `minLength: 0`
+
+    - `type: "web_search_call" (default: "web_search_call")`
 
       The item type. Always `web_search_call`.
 
@@ -8497,25 +10031,37 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the command execution item.
 
+      `minLength: 0`
+
     - `command: string`
 
       The command that was executed.
+
+      `minLength: 0`
 
     - `cwd: string or null`
 
       The working directory used to execute the command.
 
-    - `duration_ms: number or null`
+      `minLength: 0`
+
+    - `duration_ms: integer or null`
 
       The command duration in milliseconds.
 
-    - `exit_code: number or null`
+      `format: int64`
+
+    - `exit_code: integer or null`
 
       The process exit code, if the command completed.
+
+      `format: int64`
 
     - `output: string or null`
 
       The command output, if available.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -8525,7 +10071,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "command_execution"`
+      `minLength: 0`
+
+    - `type: "command_execution" (default: "command_execution")`
 
       The item type. Always `command_execution`.
 
@@ -8539,13 +10087,19 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `agent_id: string`
 
       The ID of the agent that requested the subagent.
 
+      `minLength: 0`
+
     - `content: array of AgentContent`
 
       The task given to the spawned agent.
+
+      `minItems: 0`, `maxItems: 2000`
 
       - `OutputText object { text, type }`
 
@@ -8555,7 +10109,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
           The text produced by the agent.
 
-        - `type: "output_text"`
+          `minLength: 0`
+
+        - `type: "output_text" (default: "output_text")`
 
           The content type. Always `output_text`.
 
@@ -8567,7 +10123,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
           The encrypted content payload.
 
-        - `type: "encrypted_content"`
+          `minLength: 0`
+
+        - `type: "encrypted_content" (default: "encrypted_content")`
 
           The content type. Always `encrypted_content`.
 
@@ -8577,9 +10135,13 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The model requested for the spawned agent.
 
+      `minLength: 0`
+
     - `reasoning_effort: string or null`
 
       The reasoning effort requested for the spawned agent.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -8589,7 +10151,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "create_subagent_call"`
+      `minLength: 0`
+
+    - `type: "create_subagent_call" (default: "create_subagent_call")`
 
       The item type. Always `create_subagent_call`.
 
@@ -8605,9 +10169,13 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `content: array of AgentContent`
 
       The input sent to the receiving agent.
+
+      `minItems: 0`, `maxItems: 2000`
 
       - `OutputText object { text, type }`
 
@@ -8621,9 +10189,13 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the agent receiving the input.
 
+      `minLength: 0`
+
     - `sender_agent_id: string`
 
       The ID of the agent sending the input.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -8633,7 +10205,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "send_subagent_input_call"`
+      `minLength: 0`
+
+    - `type: "send_subagent_input_call" (default: "send_subagent_input_call")`
 
       The item type. Always `send_subagent_input_call`.
 
@@ -8649,13 +10223,19 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `recipient_agent_id: string`
 
       The ID of the agent to resume.
 
+      `minLength: 0`
+
     - `sender_agent_id: string`
 
       The ID of the agent requesting the resume.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -8665,7 +10245,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "resume_subagent_call"`
+      `minLength: 0`
+
+    - `type: "resume_subagent_call" (default: "resume_subagent_call")`
 
       The item type. Always `resume_subagent_call`.
 
@@ -8681,13 +10263,19 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `recipient_agent_ids: array of string`
 
       The IDs of the agents to wait for.
 
+      `minItems: 0`, `maxItems: 2000`
+
     - `sender_agent_id: string`
 
       The ID of the agent waiting for results.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -8697,7 +10285,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "wait_for_subagents_call"`
+      `minLength: 0`
+
+    - `type: "wait_for_subagents_call" (default: "wait_for_subagents_call")`
 
       The item type. Always `wait_for_subagents_call`.
 
@@ -8713,13 +10303,19 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `recipient_agent_id: string`
 
       The ID of the agent to interrupt.
 
+      `minLength: 0`
+
     - `sender_agent_id: string`
 
       The ID of the agent requesting the interrupt.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -8729,7 +10325,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "interrupt_subagent_call"`
+      `minLength: 0`
+
+    - `type: "interrupt_subagent_call" (default: "interrupt_subagent_call")`
 
       The item type. Always `interrupt_subagent_call`.
 
@@ -8745,13 +10343,19 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the tool call item.
 
+      `minLength: 0`
+
     - `recipient_agent_id: string`
 
       The ID of the agent to close.
 
+      `minLength: 0`
+
     - `sender_agent_id: string`
 
       The ID of the agent requesting the close.
+
+      `minLength: 0`
 
     - `status: AgentFunctionCallStatus`
 
@@ -8761,7 +10365,9 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       The ID of the turn that contains this item.
 
-    - `type: "close_subagent_call"`
+      `minLength: 0`
+
+    - `type: "close_subagent_call" (default: "close_subagent_call")`
 
       The item type. Always `close_subagent_call`.
 
@@ -8769,19 +10375,25 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
         The current public item type.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the turn output.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.turn.item.done"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.item.done" (default: "agent.session.turn.item.done")`
 
   The type of the object. Always `agent.session.turn.item.done`.
 
@@ -8823,21 +10435,29 @@ Emitted when an output text content part is added.
 
 Schema name: `SessionEventAgentSessionTurnContentPartAdded`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part in the message.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `event_id: string`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `item_id: string`
 
   The ID of the message item.
 
-- `output_index: number`
+  `minLength: 0`
+
+- `output_index: integer`
 
   The index of the item in the turn output.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `part: OutputText`
 
@@ -8847,7 +10467,9 @@ Schema name: `SessionEventAgentSessionTurnContentPartAdded`
 
     The text produced by the agent.
 
-  - `type: "output_text"`
+    `minLength: 0`
+
+  - `type: "output_text" (default: "output_text")`
 
     The content type. Always `output_text`.
 
@@ -8857,11 +10479,15 @@ Schema name: `SessionEventAgentSessionTurnContentPartAdded`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.turn.content_part.added"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.content_part.added" (default: "agent.session.turn.content_part.added")`
 
   The type of the object. Always `agent.session.turn.content_part.added`.
 
@@ -8895,21 +10521,29 @@ Emitted when an output content part is complete.
 
 Schema name: `SessionEventAgentSessionTurnContentPartDone`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part in the message.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `event_id: string`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `item_id: string`
 
   The ID of the message item.
 
-- `output_index: number`
+  `minLength: 0`
+
+- `output_index: integer`
 
   The index of the item in the turn output.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `part: OutputText`
 
@@ -8919,7 +10553,9 @@ Schema name: `SessionEventAgentSessionTurnContentPartDone`
 
     The text produced by the agent.
 
-  - `type: "output_text"`
+    `minLength: 0`
+
+  - `type: "output_text" (default: "output_text")`
 
     The content type. Always `output_text`.
 
@@ -8929,11 +10565,15 @@ Schema name: `SessionEventAgentSessionTurnContentPartDone`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.turn.content_part.done"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.content_part.done" (default: "agent.session.turn.content_part.done")`
 
   The type of the object. Always `agent.session.turn.content_part.done`.
 
@@ -8967,35 +10607,49 @@ Emitted when text is appended to an output text content part.
 
 Schema name: `SessionEventAgentSessionTurnOutputTextDelta`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part in the message.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `delta: string`
 
   The text that was appended.
 
+  `minLength: 0`
+
 - `event_id: string`
 
   The unique ID of the event.
+
+  `minLength: 0`
 
 - `item_id: string`
 
   The ID of the message item.
 
-- `output_index: number`
+  `minLength: 0`
+
+- `output_index: integer`
 
   The index of the item in the turn output.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.turn.output_text.delta"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.output_text.delta" (default: "agent.session.turn.output_text.delta")`
 
   The type of the object. Always `agent.session.turn.output_text.delta`.
 
@@ -9026,35 +10680,49 @@ Emitted when an output text content part is complete.
 
 Schema name: `SessionEventAgentSessionTurnOutputTextDone`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part in the message.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `event_id: string`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `item_id: string`
 
   The ID of the message item.
 
-- `output_index: number`
+  `minLength: 0`
+
+- `output_index: integer`
 
   The index of the item in the turn output.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `text: string`
 
   The complete output text.
+
+  `minLength: 0`
 
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.turn.output_text.done"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.output_text.done" (default: "agent.session.turn.output_text.done")`
 
   The type of the object. Always `agent.session.turn.output_text.done`.
 
@@ -9089,13 +10757,19 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartAdded`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `item_id: string`
 
   The ID of the reasoning item.
 
-- `output_index: number`
+  `minLength: 0`
+
+- `output_index: integer`
 
   The index of the item in the turn output.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `part: SummaryText`
 
@@ -9105,7 +10779,9 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartAdded`
 
     The reasoning summary text.
 
-  - `type: "summary_text"`
+    `minLength: 0`
+
+  - `type: "summary_text" (default: "summary_text")`
 
     The content type. Always `summary_text`.
 
@@ -9115,15 +10791,21 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartAdded`
 
   The ID of the session associated with the event.
 
-- `summary_index: number`
+  `minLength: 0`
+
+- `summary_index: integer`
 
   The index of the summary content part.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.turn.reasoning_summary_part.added"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.reasoning_summary_part.added" (default: "agent.session.turn.reasoning_summary_part.added")`
 
   The type of the object. Always `agent.session.turn.reasoning_summary_part.added`.
 
@@ -9161,13 +10843,19 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartDone`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `item_id: string`
 
   The ID of the reasoning item.
 
-- `output_index: number`
+  `minLength: 0`
+
+- `output_index: integer`
 
   The index of the item in the turn output.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `part: SummaryText`
 
@@ -9177,7 +10865,9 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartDone`
 
     The reasoning summary text.
 
-  - `type: "summary_text"`
+    `minLength: 0`
+
+  - `type: "summary_text" (default: "summary_text")`
 
     The content type. Always `summary_text`.
 
@@ -9187,21 +10877,27 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartDone`
 
   The ID of the session associated with the event.
 
+  `minLength: 0`
+
 - `status: "incomplete" or null`
 
   Present as `incomplete` when summary generation was interrupted.
 
   - `"incomplete"`
 
-- `summary_index: number`
+- `summary_index: integer`
 
   The index of the summary part.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.turn.reasoning_summary_part.done"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.reasoning_summary_part.done" (default: "agent.session.turn.reasoning_summary_part.done")`
 
   The type of the object. Always `agent.session.turn.reasoning_summary_part.done`.
 
@@ -9240,31 +10936,45 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDelta`
 
   The summary text that was appended.
 
+  `minLength: 0`
+
 - `event_id: string`
 
   The unique ID of the event.
+
+  `minLength: 0`
 
 - `item_id: string`
 
   The ID of the reasoning item.
 
-- `output_index: number`
+  `minLength: 0`
+
+- `output_index: integer`
 
   The index of the item in the turn output.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
-- `summary_index: number`
+  `minLength: 0`
+
+- `summary_index: integer`
 
   The index of the summary content part.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.turn.reasoning_summary_text.delta"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.reasoning_summary_text.delta" (default: "agent.session.turn.reasoning_summary_text.delta")`
 
   The type of the object. Always `agent.session.turn.reasoning_summary_text.delta`.
 
@@ -9299,31 +11009,45 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDone`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `item_id: string`
 
   The ID of the reasoning item.
 
-- `output_index: number`
+  `minLength: 0`
+
+- `output_index: integer`
 
   The index of the item in the turn output.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `session_id: string`
 
   The ID of the session associated with the event.
 
-- `summary_index: number`
+  `minLength: 0`
+
+- `summary_index: integer`
 
   The index of the summary content part.
+
+  `format: int64`, `minimum: 0`, `maximum: 4294967295`
 
 - `text: string`
 
   The complete reasoning summary text.
 
+  `minLength: 0`
+
 - `turn_id: string or null`
 
   The ID of the turn associated with the event, when applicable.
 
-- `type: "agent.session.turn.reasoning_summary_text.done"`
+  `minLength: 0`
+
+- `type: "agent.session.turn.reasoning_summary_text.done" (default: "agent.session.turn.reasoning_summary_text.done")`
 
   The type of the object. Always `agent.session.turn.reasoning_summary_text.done`.
 
@@ -9362,27 +11086,39 @@ Schema name: `SessionEventError`
 
     The machine-readable error code, if any.
 
+    `minLength: 0`
+
   - `message: string`
 
     A customer-safe explanation of the error.
+
+    `minLength: 0`
 
   - `param: string or null`
 
     The request parameter associated with the error, if any.
 
+    `minLength: 0`
+
   - `type: string`
 
     The error type.
+
+    `minLength: 0`
 
 - `event_id: string`
 
   The unique ID of the event.
 
+  `minLength: 0`
+
 - `session_id: string`
 
   The ID of the session associated with the event.
 
-- `type: "error"`
+  `minLength: 0`
+
+- `type: "error" (default: "error")`
 
   The type of the object. Always `error`.
 

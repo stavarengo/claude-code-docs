@@ -12,6 +12,8 @@ Creates a new group in the organization.
 
   Human readable name for the group.
 
+  `minLength: 1`, `maxLength: 255`
+
 ### Returns
 
 - `Group object { id, created_at, group_type, 2 more }`
@@ -22,9 +24,11 @@ Creates a new group in the organization.
 
     Identifier for the group.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the group was created.
+
+    `format: unixtime`
 
   - `group_type: "group" or "tenant_group"`
 
@@ -53,7 +57,7 @@ curl https://api.openai.com/v1/organization/groups \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -76,7 +80,7 @@ curl -X POST https://api.openai.com/v1/organization/groups \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -123,7 +127,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -141,7 +145,7 @@ curl -X DELETE https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -163,11 +167,13 @@ Lists all groups in the organization.
 
   A cursor for use in pagination. `after` is a group ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with group_abc, your subsequent call can include `after=group_abc` in order to fetch the next page of the list.
 
-- `limit: optional number`
+- `limit: optional integer (default: 100)`
 
   A limit on the number of groups to be returned. Limit can range between 0 and 1000, and the default is 100.
 
-- `order: optional "asc" or "desc"`
+  `minimum: 0`, `maximum: 1000`
+
+- `order: optional "asc" or "desc" (default: "asc")`
 
   Specifies the sort order of the returned groups.
 
@@ -185,9 +191,11 @@ Lists all groups in the organization.
 
     Identifier for the group.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the group was created.
+
+    `format: unixtime`
 
   - `group_type: "group" or "tenant_group"`
 
@@ -226,7 +234,7 @@ curl https://api.openai.com/v1/organization/groups \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -253,7 +261,7 @@ curl https://api.openai.com/v1/organization/groups?limit=20&order=asc \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -293,9 +301,11 @@ Retrieves a group.
 
     Identifier for the group.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the group was created.
+
+    `format: unixtime`
 
   - `group_type: "group" or "tenant_group"`
 
@@ -320,7 +330,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -340,7 +350,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -368,15 +378,19 @@ Updates a group's information.
 
   New display name for the group.
 
+  `minLength: 1`, `maxLength: 255`
+
 ### Returns
 
 - `id: string`
 
   Identifier for the group.
 
-- `created_at: number`
+- `created_at: integer`
 
   Unix timestamp (in seconds) when the group was created.
+
+  `format: unixtime`
 
 - `is_scim_managed: boolean`
 
@@ -397,7 +411,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -419,7 +433,7 @@ curl -X POST https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -442,9 +456,11 @@ curl -X POST https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ \
 
     Identifier for the group.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the group was created.
+
+    `format: unixtime`
 
   - `group_type: "group" or "tenant_group"`
 
@@ -492,9 +508,11 @@ curl -X POST https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ \
 
     Identifier for the group.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the group was created.
+
+    `format: unixtime`
 
   - `is_scim_managed: boolean`
 
@@ -532,9 +550,11 @@ Assigns an organization role to a group within the organization.
 
     Identifier for the group.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the group was created.
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -601,7 +621,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID/roles \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -638,7 +658,7 @@ curl -X POST https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/r
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -695,7 +715,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID/roles/$ROLE_ID \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -712,7 +732,7 @@ curl -X DELETE https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -737,9 +757,11 @@ Lists the organization roles assigned to a group within the organization.
 
   Cursor for pagination. Provide the value from the previous response's `next` field to continue listing organization roles.
 
-- `limit: optional number`
+- `limit: optional integer`
 
   A limit on the number of organization role assignments to return.
+
+  `minimum: 0`, `maximum: 1000`
 
 - `order: optional "asc" or "desc"`
 
@@ -767,9 +789,11 @@ Lists the organization roles assigned to a group within the organization.
 
     - `principal_type: string`
 
-  - `created_at: number or null`
+  - `created_at: integer or null`
 
     When the role was created.
+
+    `format: unixtime`
 
   - `created_by: string or null`
 
@@ -803,9 +827,11 @@ Lists the organization roles assigned to a group within the organization.
 
     Resource type the role applies to.
 
-  - `updated_at: number or null`
+  - `updated_at: integer or null`
 
     When the role was last updated.
+
+    `format: unixtime`
 
 - `has_more: boolean`
 
@@ -828,7 +854,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID/roles \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -873,7 +899,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -937,9 +963,11 @@ Retrieves an organization role assigned to a group.
 
   - `principal_type: string`
 
-- `created_at: number or null`
+- `created_at: integer or null`
 
   When the role was created.
+
+  `format: unixtime`
 
 - `created_by: string or null`
 
@@ -973,9 +1001,11 @@ Retrieves an organization role assigned to a group.
 
   Resource type the role applies to.
 
-- `updated_at: number or null`
+- `updated_at: integer or null`
 
   When the role was last updated.
+
+  `format: unixtime`
 
 ### Example
 
@@ -984,7 +1014,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID/roles/$ROLE_ID \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1022,7 +1052,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1060,9 +1090,11 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
       Identifier for the group.
 
-    - `created_at: number`
+    - `created_at: integer`
 
       Unix timestamp (in seconds) when the group was created.
+
+      `format: unixtime`
 
     - `name: string`
 
@@ -1150,9 +1182,11 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
     - `principal_type: string`
 
-  - `created_at: number or null`
+  - `created_at: integer or null`
 
     When the role was created.
+
+    `format: unixtime`
 
   - `created_by: string or null`
 
@@ -1186,9 +1220,11 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
     Resource type the role applies to.
 
-  - `updated_at: number or null`
+  - `updated_at: integer or null`
 
     When the role was last updated.
+
+    `format: unixtime`
 
 ### Role Retrieve Response
 
@@ -1208,9 +1244,11 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
     - `principal_type: string`
 
-  - `created_at: number or null`
+  - `created_at: integer or null`
 
     When the role was created.
+
+    `format: unixtime`
 
   - `created_by: string or null`
 
@@ -1244,9 +1282,11 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/roles/rol
 
     Resource type the role applies to.
 
-  - `updated_at: number or null`
+  - `updated_at: integer or null`
 
     When the role was last updated.
+
+    `format: unixtime`
 
 # Users
 
@@ -1293,7 +1333,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID/users \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1314,7 +1354,7 @@ curl -X POST https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/u
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1356,7 +1396,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID/users/$USER_ID \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1373,7 +1413,7 @@ curl -X DELETE https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1398,11 +1438,13 @@ Lists the users assigned to a group.
 
   A cursor for use in pagination. Provide the ID of the last user from the previous list response to retrieve the next page.
 
-- `limit: optional number`
+- `limit: optional integer (default: 100)`
 
   A limit on the number of users to be returned. Limit can range between 0 and 1000, and the default is 100.
 
-- `order: optional "asc" or "desc"`
+  `minimum: 0`, `maximum: 1000`
+
+- `order: optional "asc" or "desc" (default: "desc")`
 
   Specifies the sort order of users in the list.
 
@@ -1449,7 +1491,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID/users \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1474,7 +1516,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users?lim
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1540,7 +1582,7 @@ curl https://api.openai.com/v1/organization/groups/$GROUP_ID/users/$USER_ID \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1561,7 +1603,7 @@ curl https://api.openai.com/v1/organization/groups/group_01J1F8ABCDXYZ/users/use
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

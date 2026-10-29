@@ -403,10 +403,10 @@ input = <<~PROMPT
 PROMPT
 response = client.responses.create(
   model: "gpt-5.3-codex", input: input,
-  tools: [{ type: :apply_patch }], parallel_tool_calls: false
+  tools: [{ type: :apply_patch }], tool_choice: :required, parallel_tool_calls: false
 )
 response.output.each do |item|
-  pp(item.operation) if item.is_a?(OpenAI::Responses::ResponseApplyPatchToolCall)
+  puts(item.operation.to_json) if item.is_a?(OpenAI::Responses::ResponseApplyPatchToolCall)
 end
 
 APPLY_PATCH_GRAMMAR = <<~GRAMMAR
@@ -447,7 +447,7 @@ response = client.responses.create(
       }
     }
   ],
-  parallel_tool_calls: false
+  tool_choice: :required, parallel_tool_calls: false
 )
 response.output.each do |item|
   puts(item.input) if item.is_a?(OpenAI::Responses::ResponseCustomToolCall)

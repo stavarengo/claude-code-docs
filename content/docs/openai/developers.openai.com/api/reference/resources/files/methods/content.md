@@ -1,0 +1,25 @@
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
+## Retrieve file content
+
+**get** `/files/{file_id}/content`
+
+Returns a response containing the contents of the specified file.
+
+### Path Parameters
+
+- `file_id: string`
+
+### Example
+
+```http
+curl https://api.openai.com/v1/files/$FILE_ID/content \
+    -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+### Example
+
+```http
+curl https://api.openai.com/v1/files/file-abc123/content \
+  -H "Authorization: Bearer $OPENAI_API_KEY" > file.jsonl
+```

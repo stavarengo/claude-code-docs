@@ -14,7 +14,7 @@ List checkpoints for a fine-tuning job.
 
   Identifier for the last checkpoint ID from the previous pagination request.
 
-- `limit: optional number`
+- `limit: optional integer (default: 10)`
 
   Number of checkpoints to retrieve.
 
@@ -26,9 +26,11 @@ List checkpoints for a fine-tuning job.
 
     The checkpoint identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the checkpoint was created.
+
+    `format: unixtime`
 
   - `fine_tuned_model_checkpoint: string`
 
@@ -62,7 +64,7 @@ List checkpoints for a fine-tuning job.
 
     - `"fine_tuning.job.checkpoint"`
 
-  - `step_number: number`
+  - `step_number: integer`
 
     The step number that the checkpoint was created at.
 
@@ -83,7 +85,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/$FINE_TUNING_JOB_ID/checkpoints 
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -120,7 +122,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

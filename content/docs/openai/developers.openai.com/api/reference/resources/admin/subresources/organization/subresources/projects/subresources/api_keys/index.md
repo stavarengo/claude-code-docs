@@ -35,7 +35,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/api_keys/$API_K
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -53,7 +53,7 @@ curl -X DELETE https://api.openai.com/v1/organization/projects/proj_abc/api_keys
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -79,7 +79,7 @@ Returns a list of API keys in the project.
 
   A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
 
@@ -101,13 +101,17 @@ Returns a list of API keys in the project.
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the API key was created
 
-  - `last_used_at: number or null`
+    `format: unixtime`
+
+  - `last_used_at: integer or null`
 
     The Unix timestamp (in seconds) of when the API key was last used.
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -129,9 +133,11 @@ Returns a list of API keys in the project.
 
         The identifier, which can be referenced in API endpoints
 
-      - `created_at: number`
+      - `created_at: integer`
 
         The Unix timestamp (in seconds) of when the service account was created.
+
+        `format: unixtime`
 
       - `name: string`
 
@@ -157,9 +163,11 @@ Returns a list of API keys in the project.
 
         The identifier, which can be referenced in API endpoints
 
-      - `created_at: number`
+      - `created_at: integer`
 
         The Unix timestamp (in seconds) of when the user was created.
+
+        `format: unixtime`
 
       - `email: string`
 
@@ -185,9 +193,11 @@ Returns a list of API keys in the project.
 
     The redacted value of the API key
 
-  - `expires_at: optional number or null`
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
+
+    `format: unixtime`
 
 - `has_more: boolean`
 
@@ -206,7 +216,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/api_keys \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -253,7 +263,7 @@ curl https://api.openai.com/v1/organization/projects/proj_abc/api_keys?after=key
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -307,13 +317,17 @@ Retrieves an API key in the project.
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the API key was created
 
-  - `last_used_at: number or null`
+    `format: unixtime`
+
+  - `last_used_at: integer or null`
 
     The Unix timestamp (in seconds) of when the API key was last used.
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -335,9 +349,11 @@ Retrieves an API key in the project.
 
         The identifier, which can be referenced in API endpoints
 
-      - `created_at: number`
+      - `created_at: integer`
 
         The Unix timestamp (in seconds) of when the service account was created.
+
+        `format: unixtime`
 
       - `name: string`
 
@@ -363,9 +379,11 @@ Retrieves an API key in the project.
 
         The identifier, which can be referenced in API endpoints
 
-      - `created_at: number`
+      - `created_at: integer`
 
         The Unix timestamp (in seconds) of when the user was created.
+
+        `format: unixtime`
 
       - `email: string`
 
@@ -391,9 +409,11 @@ Retrieves an API key in the project.
 
     The redacted value of the API key
 
-  - `expires_at: optional number or null`
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
+
+    `format: unixtime`
 
 ### Example
 
@@ -402,7 +422,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/api_keys/$API_K
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -441,7 +461,7 @@ curl https://api.openai.com/v1/organization/projects/proj_abc/api_keys/key_abc \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -495,9 +515,11 @@ the new request. The response contains only the redacted key, not its secret.
 
 ### Body Parameters
 
-- `expires_in_seconds: optional number`
+- `expires_in_seconds: optional integer`
 
   Number of seconds from this request until the API key expires. Must comply with the organization and project expiry policies. Expired keys cannot be updated. Retrying resets the expiry relative to the new request. Omit to keep the current expiration.
+
+  `minimum: 1`, `maximum: 31536000`
 
 - `scopes: optional array of string`
 
@@ -513,13 +535,17 @@ the new request. The response contains only the redacted key, not its secret.
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the API key was created
 
-  - `last_used_at: number or null`
+    `format: unixtime`
+
+  - `last_used_at: integer or null`
 
     The Unix timestamp (in seconds) of when the API key was last used.
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -541,9 +567,11 @@ the new request. The response contains only the redacted key, not its secret.
 
         The identifier, which can be referenced in API endpoints
 
-      - `created_at: number`
+      - `created_at: integer`
 
         The Unix timestamp (in seconds) of when the service account was created.
+
+        `format: unixtime`
 
       - `name: string`
 
@@ -569,9 +597,11 @@ the new request. The response contains only the redacted key, not its secret.
 
         The identifier, which can be referenced in API endpoints
 
-      - `created_at: number`
+      - `created_at: integer`
 
         The Unix timestamp (in seconds) of when the user was created.
+
+        `format: unixtime`
 
       - `email: string`
 
@@ -597,9 +627,11 @@ the new request. The response contains only the redacted key, not its secret.
 
     The redacted value of the API key
 
-  - `expires_at: optional number or null`
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
+
+    `format: unixtime`
 
 ### Example
 
@@ -614,7 +646,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/api_keys/$API_K
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -654,7 +686,7 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/api_keys/k
   -d '{"scopes": ["api.all.read"], "expires_in_seconds": 86400}'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -702,13 +734,17 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/api_keys/k
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the API key was created
 
-  - `last_used_at: number or null`
+    `format: unixtime`
+
+  - `last_used_at: integer or null`
 
     The Unix timestamp (in seconds) of when the API key was last used.
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -730,9 +766,11 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/api_keys/k
 
         The identifier, which can be referenced in API endpoints
 
-      - `created_at: number`
+      - `created_at: integer`
 
         The Unix timestamp (in seconds) of when the service account was created.
+
+        `format: unixtime`
 
       - `name: string`
 
@@ -758,9 +796,11 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/api_keys/k
 
         The identifier, which can be referenced in API endpoints
 
-      - `created_at: number`
+      - `created_at: integer`
 
         The Unix timestamp (in seconds) of when the user was created.
+
+        `format: unixtime`
 
       - `email: string`
 
@@ -786,6 +826,8 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/api_keys/k
 
     The redacted value of the API key
 
-  - `expires_at: optional number or null`
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
+
+    `format: unixtime`

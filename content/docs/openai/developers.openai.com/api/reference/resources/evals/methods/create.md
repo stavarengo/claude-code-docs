@@ -26,13 +26,13 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
       The json schema for each row in the data source.
 
-    - `type: "custom"`
+    - `type: "custom" (default: "custom")`
 
       The type of data source. Always `custom`.
 
       - `"custom"`
 
-    - `include_sample_schema: optional boolean`
+    - `include_sample_schema: optional boolean (default: false)`
 
       Whether the eval should expect you to populate the sample namespace (ie, by generating responses off of your data source)
 
@@ -41,7 +41,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
     A data source config which specifies the metadata property of your logs query.
     This is usually metadata like `usecase=chatbot` or `prompt-version=v2`, etc.
 
-    - `type: "logs"`
+    - `type: "logs" (default: "logs")`
 
       The type of data source. Always `logs`.
 
@@ -55,7 +55,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
     Deprecated in favor of LogsDataSourceConfig.
 
-    - `type: "stored_completions"`
+    - `type: "stored_completions" (default: "stored_completions")`
 
       The type of data source. Always `stored_completions`.
 
@@ -112,7 +112,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -122,7 +122,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -157,6 +157,8 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -227,6 +229,8 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
               - `image_url: string`
 
                 The URL of the image input.
+
+                `format: uri`
 
               - `type: "input_image"`
 
@@ -360,9 +364,11 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
   Unique identifier for the evaluation.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) for when the eval was created.
+
+  `format: unixtime`
 
 - `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
@@ -381,7 +387,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "custom"`
+    - `type: "custom" (default: "custom")`
 
       The type of data source. Always `custom`.
 
@@ -399,7 +405,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "logs"`
+    - `type: "logs" (default: "logs")`
 
       The type of data source. Always `logs`.
 
@@ -423,7 +429,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "stored_completions"`
+    - `type: "stored_completions" (default: "stored_completions")`
 
       The type of data source. Always `stored_completions`.
 
@@ -451,7 +457,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
   The name of the evaluation.
 
-- `object: "eval"`
+- `object: "eval" (default: "eval")`
 
   The object type.
 
@@ -484,7 +490,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -494,7 +500,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -529,6 +535,8 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
           - `image_url: string`
 
             The URL of the image input.
+
+            `format: uri`
 
           - `type: "input_image"`
 
@@ -599,6 +607,8 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -748,7 +758,7 @@ curl https://api.openai.com/v1/evals \
         }'
 ```
 
-#### Response
+#### 201 — Example
 
 ```json
 {
@@ -846,7 +856,7 @@ curl https://api.openai.com/v1/evals \
       }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

@@ -28,7 +28,7 @@ Returns a completion object, or a sequence of completion objects if the request 
 
     - `"babbage-002"`
 
-- `prompt: string or array of string or array of number or array of array of number or null`
+- `prompt: string or array of string or array of number or array of array of number or null (default: "<|endoftext|>")`
 
   The prompt(s) to generate completions for, encoded as a string, array of strings, array of tokens, or array of token arrays.
 
@@ -40,9 +40,13 @@ Returns a completion object, or a sequence of completion objects if the request 
 
   - `array of number`
 
+    `minItems: 1`
+
   - `array of array of number`
 
-- `best_of: optional number or null`
+    `minItems: 1`
+
+- `best_of: optional integer or null (default: 1)`
 
   Generates `best_of` completions server-side and returns the "best" (the one with the highest log probability per token). Results cannot be streamed.
 
@@ -50,17 +54,21 @@ Returns a completion object, or a sequence of completion objects if the request 
 
   **Note:** Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for `max_tokens` and `stop`.
 
-- `echo: optional boolean or null`
+  `minimum: 0`, `maximum: 20`
+
+- `echo: optional boolean or null (default: false)`
 
   Echo back the prompt in addition to the completion
 
-- `frequency_penalty: optional number or null`
+- `frequency_penalty: optional number or null (default: 0)`
 
   Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim.
 
   [See more information about frequency and presence penalties.](/api/docs/guides/text)
 
-- `logit_bias: optional map[number] or null`
+  `minimum: -2`, `maximum: 2`
+
+- `logit_bias: optional map[number] or null (default: null)`
 
   Modify the likelihood of specified tokens appearing in the completion.
 
@@ -68,35 +76,45 @@ Returns a completion object, or a sequence of completion objects if the request 
 
   As an example, you can pass `{"50256": -100}` to prevent the <|endoftext|> token from being generated.
 
-- `logprobs: optional number or null`
+- `logprobs: optional integer or null (default: null)`
 
   Include the log probabilities on the `logprobs` most likely output tokens, as well the chosen tokens. For example, if `logprobs` is 5, the API will return a list of the 5 most likely tokens. The API will always return the `logprob` of the sampled token, so there may be up to `logprobs+1` elements in the response.
 
   The maximum value for `logprobs` is 5.
 
-- `max_tokens: optional number or null`
+  `minimum: 0`, `maximum: 5`
+
+- `max_tokens: optional integer or null (default: 16)`
 
   The maximum number of [tokens](https://platform.openai.com/tokenizer) that can be generated in the completion.
 
   The token count of your prompt plus `max_tokens` cannot exceed the model's context length. [Example Python code](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) for counting tokens.
 
-- `n: optional number or null`
+  `minimum: 0`
+
+- `n: optional integer or null (default: 1)`
 
   How many completions to generate for each prompt.
 
   **Note:** Because this parameter generates many completions, it can quickly consume your token quota. Use carefully and ensure that you have reasonable settings for `max_tokens` and `stop`.
 
-- `presence_penalty: optional number or null`
+  `minimum: 1`, `maximum: 128`
+
+- `presence_penalty: optional number or null (default: 0)`
 
   Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far, increasing the model's likelihood to talk about new topics.
 
   [See more information about frequency and presence penalties.](/api/docs/guides/text)
 
-- `seed: optional number or null`
+  `minimum: -2`, `maximum: 2`
+
+- `seed: optional integer or null`
 
   If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same `seed` and parameters should return the same result.
 
   Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to monitor changes in the backend.
+
+  `format: int64`
 
 - `stop: optional string or array of string or null`
 
@@ -109,7 +127,9 @@ Returns a completion object, or a sequence of completion objects if the request 
 
   - `array of string`
 
-- `stream: optional boolean or null`
+    `minItems: 1`, `maxItems: 4`
+
+- `stream: optional boolean or null (default: false)`
 
   Whether to stream back partial progress. If set, tokens will be sent as data-only [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format) as they become available, with the stream terminated by a `data: [DONE]` message. [Example Python code](https://cookbook.openai.com/examples/how_to_stream_completions).
 
@@ -138,23 +158,27 @@ Returns a completion object, or a sequence of completion objects if the request 
     value. **NOTE:** If the stream is interrupted, you may not receive the
     final usage chunk which contains the total token usage for the request.
 
-- `suffix: optional string or null`
+- `suffix: optional string or null (default: null)`
 
   The suffix that comes after a completion of inserted text.
 
   This parameter is only supported for `gpt-3.5-turbo-instruct`.
 
-- `temperature: optional number or null`
+- `temperature: optional number or null (default: 1)`
 
   What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
 
   We generally recommend altering this or `top_p` but not both.
 
-- `top_p: optional number or null`
+  `minimum: 0`, `maximum: 2`
+
+- `top_p: optional number or null (default: 1)`
 
   An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
 
   We generally recommend altering this or `temperature` but not both.
+
+  `minimum: 0`, `maximum: 1`
 
 - `user: optional string`
 
@@ -186,7 +210,7 @@ Returns a completion object, or a sequence of completion objects if the request 
 
       - `"content_filter"`
 
-    - `index: number`
+    - `index: integer`
 
     - `logprobs: object { text_offset, token_logprobs, tokens, top_logprobs }  or null`
 
@@ -200,9 +224,11 @@ Returns a completion object, or a sequence of completion objects if the request 
 
     - `text: string`
 
-  - `created: number`
+  - `created: integer`
 
     The Unix timestamp (in seconds) of when the completion was created.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -224,15 +250,15 @@ Returns a completion object, or a sequence of completion objects if the request 
 
     Usage statistics for the completion request.
 
-    - `completion_tokens: number`
+    - `completion_tokens: integer (default: 0)`
 
       Number of tokens in the generated completion.
 
-    - `prompt_tokens: number`
+    - `prompt_tokens: integer (default: 0)`
 
       Number of tokens in the prompt.
 
-    - `total_tokens: number`
+    - `total_tokens: integer (default: 0)`
 
       Total number of tokens used in the request (prompt + completion).
 
@@ -240,20 +266,20 @@ Returns a completion object, or a sequence of completion objects if the request 
 
       Breakdown of tokens used in a completion.
 
-      - `accepted_prediction_tokens: optional number`
+      - `accepted_prediction_tokens: optional integer (default: 0)`
 
         When using Predicted Outputs, the number of tokens in the
         prediction that appeared in the completion.
 
-      - `audio_tokens: optional number`
+      - `audio_tokens: optional integer (default: 0)`
 
         Audio input tokens generated by the model.
 
-      - `reasoning_tokens: optional number`
+      - `reasoning_tokens: optional integer (default: 0)`
 
         Tokens generated by the model for reasoning.
 
-      - `rejected_prediction_tokens: optional number`
+      - `rejected_prediction_tokens: optional integer (default: 0)`
 
         When using Predicted Outputs, the number of tokens in the
         prediction that did not appear in the completion. However, like
@@ -261,7 +287,7 @@ Returns a completion object, or a sequence of completion objects if the request 
         completion tokens for purposes of billing, output, and context window
         limits.
 
-      - `text_tokens: optional number`
+      - `text_tokens: optional integer`
 
         Text output tokens generated by the model.
 
@@ -269,23 +295,23 @@ Returns a completion object, or a sequence of completion objects if the request 
 
       Breakdown of tokens used in the prompt.
 
-      - `audio_tokens: optional number`
+      - `audio_tokens: optional integer (default: 0)`
 
         Audio input tokens present in the prompt.
 
-      - `cache_write_tokens: optional number`
+      - `cache_write_tokens: optional integer (default: 0)`
 
         The unadjusted number of prompt tokens written to cache.
 
-      - `cached_tokens: optional number`
+      - `cached_tokens: optional integer (default: 0)`
 
         Cached tokens present in the prompt.
 
-      - `image_tokens: optional number`
+      - `image_tokens: optional integer`
 
         Image input tokens present in the prompt.
 
-      - `text_tokens: optional number`
+      - `text_tokens: optional integer`
 
         Text input tokens present in the prompt.
 
@@ -307,7 +333,7 @@ curl https://api.openai.com/v1/completions \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -375,7 +401,7 @@ curl https://api.openai.com/v1/completions \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -415,7 +441,7 @@ curl https://api.openai.com/v1/completions \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -463,7 +489,7 @@ curl https://api.openai.com/v1/completions \
 
       - `"content_filter"`
 
-    - `index: number`
+    - `index: integer`
 
     - `logprobs: object { text_offset, token_logprobs, tokens, top_logprobs }  or null`
 
@@ -477,9 +503,11 @@ curl https://api.openai.com/v1/completions \
 
     - `text: string`
 
-  - `created: number`
+  - `created: integer`
 
     The Unix timestamp (in seconds) of when the completion was created.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -501,15 +529,15 @@ curl https://api.openai.com/v1/completions \
 
     Usage statistics for the completion request.
 
-    - `completion_tokens: number`
+    - `completion_tokens: integer (default: 0)`
 
       Number of tokens in the generated completion.
 
-    - `prompt_tokens: number`
+    - `prompt_tokens: integer (default: 0)`
 
       Number of tokens in the prompt.
 
-    - `total_tokens: number`
+    - `total_tokens: integer (default: 0)`
 
       Total number of tokens used in the request (prompt + completion).
 
@@ -517,20 +545,20 @@ curl https://api.openai.com/v1/completions \
 
       Breakdown of tokens used in a completion.
 
-      - `accepted_prediction_tokens: optional number`
+      - `accepted_prediction_tokens: optional integer (default: 0)`
 
         When using Predicted Outputs, the number of tokens in the
         prediction that appeared in the completion.
 
-      - `audio_tokens: optional number`
+      - `audio_tokens: optional integer (default: 0)`
 
         Audio input tokens generated by the model.
 
-      - `reasoning_tokens: optional number`
+      - `reasoning_tokens: optional integer (default: 0)`
 
         Tokens generated by the model for reasoning.
 
-      - `rejected_prediction_tokens: optional number`
+      - `rejected_prediction_tokens: optional integer (default: 0)`
 
         When using Predicted Outputs, the number of tokens in the
         prediction that did not appear in the completion. However, like
@@ -538,7 +566,7 @@ curl https://api.openai.com/v1/completions \
         completion tokens for purposes of billing, output, and context window
         limits.
 
-      - `text_tokens: optional number`
+      - `text_tokens: optional integer`
 
         Text output tokens generated by the model.
 
@@ -546,23 +574,23 @@ curl https://api.openai.com/v1/completions \
 
       Breakdown of tokens used in the prompt.
 
-      - `audio_tokens: optional number`
+      - `audio_tokens: optional integer (default: 0)`
 
         Audio input tokens present in the prompt.
 
-      - `cache_write_tokens: optional number`
+      - `cache_write_tokens: optional integer (default: 0)`
 
         The unadjusted number of prompt tokens written to cache.
 
-      - `cached_tokens: optional number`
+      - `cached_tokens: optional integer (default: 0)`
 
         Cached tokens present in the prompt.
 
-      - `image_tokens: optional number`
+      - `image_tokens: optional integer`
 
         Image input tokens present in the prompt.
 
-      - `text_tokens: optional number`
+      - `text_tokens: optional integer`
 
         Text input tokens present in the prompt.
 
@@ -582,7 +610,7 @@ curl https://api.openai.com/v1/completions \
 
     - `"content_filter"`
 
-  - `index: number`
+  - `index: integer`
 
   - `logprobs: object { text_offset, token_logprobs, tokens, top_logprobs }  or null`
 
@@ -602,15 +630,15 @@ curl https://api.openai.com/v1/completions \
 
   Usage statistics for the completion request.
 
-  - `completion_tokens: number`
+  - `completion_tokens: integer (default: 0)`
 
     Number of tokens in the generated completion.
 
-  - `prompt_tokens: number`
+  - `prompt_tokens: integer (default: 0)`
 
     Number of tokens in the prompt.
 
-  - `total_tokens: number`
+  - `total_tokens: integer (default: 0)`
 
     Total number of tokens used in the request (prompt + completion).
 
@@ -618,20 +646,20 @@ curl https://api.openai.com/v1/completions \
 
     Breakdown of tokens used in a completion.
 
-    - `accepted_prediction_tokens: optional number`
+    - `accepted_prediction_tokens: optional integer (default: 0)`
 
       When using Predicted Outputs, the number of tokens in the
       prediction that appeared in the completion.
 
-    - `audio_tokens: optional number`
+    - `audio_tokens: optional integer (default: 0)`
 
       Audio input tokens generated by the model.
 
-    - `reasoning_tokens: optional number`
+    - `reasoning_tokens: optional integer (default: 0)`
 
       Tokens generated by the model for reasoning.
 
-    - `rejected_prediction_tokens: optional number`
+    - `rejected_prediction_tokens: optional integer (default: 0)`
 
       When using Predicted Outputs, the number of tokens in the
       prediction that did not appear in the completion. However, like
@@ -639,7 +667,7 @@ curl https://api.openai.com/v1/completions \
       completion tokens for purposes of billing, output, and context window
       limits.
 
-    - `text_tokens: optional number`
+    - `text_tokens: optional integer`
 
       Text output tokens generated by the model.
 
@@ -647,22 +675,22 @@ curl https://api.openai.com/v1/completions \
 
     Breakdown of tokens used in the prompt.
 
-    - `audio_tokens: optional number`
+    - `audio_tokens: optional integer (default: 0)`
 
       Audio input tokens present in the prompt.
 
-    - `cache_write_tokens: optional number`
+    - `cache_write_tokens: optional integer (default: 0)`
 
       The unadjusted number of prompt tokens written to cache.
 
-    - `cached_tokens: optional number`
+    - `cached_tokens: optional integer (default: 0)`
 
       Cached tokens present in the prompt.
 
-    - `image_tokens: optional number`
+    - `image_tokens: optional integer`
 
       Image input tokens present in the prompt.
 
-    - `text_tokens: optional number`
+    - `text_tokens: optional integer`
 
       Text input tokens present in the prompt.

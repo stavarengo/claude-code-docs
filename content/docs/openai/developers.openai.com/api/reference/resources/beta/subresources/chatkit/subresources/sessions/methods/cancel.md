@@ -42,11 +42,11 @@ Cancelling prevents new requests from using the issued client secret.
 
         Indicates if uploads are enabled for the session.
 
-      - `max_file_size: number or null`
+      - `max_file_size: integer or null`
 
         Maximum upload size in megabytes.
 
-      - `max_files: number or null`
+      - `max_files: integer or null`
 
         Maximum number of uploads allowed during the session.
 
@@ -58,7 +58,7 @@ Cancelling prevents new requests from using the issued client secret.
 
         Indicates if chat history is persisted for the session.
 
-      - `recent_threads: number or null`
+      - `recent_threads: integer or null`
 
         Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -66,15 +66,17 @@ Cancelling prevents new requests from using the issued client secret.
 
     Ephemeral client secret that authenticates session requests.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Unix timestamp (in seconds) for when the session expires.
 
-  - `max_requests_per_1_minute: number`
+    `format: unixtime`
+
+  - `max_requests_per_1_minute: integer`
 
     Convenience copy of the per-minute request limit.
 
-  - `object: "chatkit.session"`
+  - `object: "chatkit.session" (default: "chatkit.session")`
 
     Type discriminator that is always `chatkit.session`.
 
@@ -84,7 +86,7 @@ Cancelling prevents new requests from using the issued client secret.
 
     Resolved rate limit values.
 
-    - `max_requests_per_1_minute: number`
+    - `max_requests_per_1_minute: integer`
 
       Maximum allowed requests per one-minute window.
 
@@ -141,7 +143,7 @@ curl https://api.openai.com/v1/chatkit/sessions/$SESSION_ID/cancel \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -191,7 +193,7 @@ curl -X POST \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

@@ -20,9 +20,11 @@ Retrieves a model instance, providing basic information about the model such as 
 
     The model identifier, which can be referenced in the API endpoints.
 
-  - `created: number`
+  - `created: integer`
 
     The Unix timestamp (in seconds) when the model was created.
+
+    `format: unixtime`
 
   - `object: "model"`
 
@@ -38,6 +40,8 @@ Retrieves a model instance, providing basic information about the model such as 
 
     The date when the model will shut down, or null if not announced.
 
+    `format: date`
+
 ### Example
 
 ```http
@@ -45,7 +49,7 @@ curl https://api.openai.com/v1/models/$MODEL \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -64,7 +68,7 @@ curl https://api.openai.com/v1/models/gpt-6-astra \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

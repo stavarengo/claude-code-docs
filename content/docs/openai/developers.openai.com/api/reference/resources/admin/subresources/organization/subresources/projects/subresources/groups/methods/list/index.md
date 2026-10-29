@@ -14,11 +14,13 @@ Lists the groups that have access to a project.
 
   Cursor for pagination. Provide the ID of the last group from the previous response to fetch the next page.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of project groups to return. Defaults to 20.
 
-- `order: optional "asc" or "desc"`
+  `minimum: 0`, `maximum: 100`
+
+- `order: optional "asc" or "desc" (default: "asc")`
 
   Sort order for the returned groups.
 
@@ -32,9 +34,11 @@ Lists the groups that have access to a project.
 
   Project group memberships returned in the current page.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the group was granted project access.
+
+    `format: unixtime`
 
   - `group_id: string`
 
@@ -83,7 +87,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/groups \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -111,7 +115,7 @@ curl https://api.openai.com/v1/organization/projects/proj_abc123/groups?limit=20
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

@@ -247,7 +247,7 @@ const event = {
 };
 
 // WebRTC data channel and WebSocket both have .send()
-dataChannel.send(JSON.stringify(event));
+ws.send(JSON.stringify(event));
 ```
 
 ```python
@@ -309,6 +309,14 @@ connection.conversation.items.create(
     }
   ]
 )
+
+receipt = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+  next unless event.is_a?(OpenAI::Realtime::ConversationItemDone)
+
+  event.item.is_a?(OpenAI::Realtime::RealtimeConversationItemUserMessage)
+end
+raise "Connection closed before the conversation item was acknowledged" unless receipt
 ```
 
 
@@ -325,7 +333,7 @@ const event = {
 };
 
 // WebRTC data channel and WebSocket both have .send()
-dataChannel.send(JSON.stringify(event));
+ws.send(JSON.stringify(event));
 ```
 
 ```python
@@ -372,6 +380,16 @@ connection.response.create(
   output_modalities: [:text],
   instructions: "Respond with a concise text message."
 )
+
+response_done = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+  next unless event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
+
+  raise "Response failed: #{event.response.status}" unless event.response.status == :completed
+
+  true
+end
+raise "Connection closed before the response completed" unless response_done
 ```
 
 
@@ -389,10 +407,10 @@ function handleEvent(message) {
 }
 
 // Listen for server messages (WebRTC)
-dataChannel.addEventListener("message", handleEvent);
+// dataChannel.addEventListener("message", handleEvent);
 
 // Listen for server messages (WebSocket)
-// ws.on("message", handleEvent);
+ws.on("message", handleEvent);
 ```
 
 ```python
@@ -946,6 +964,14 @@ connection.conversation.items.create(
     }
   ]
 )
+
+receipt = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+
+  event.is_a?(OpenAI::Realtime::ConversationItemDone) &&
+    event.item.is_a?(OpenAI::Realtime::RealtimeConversationItemUserMessage)
+end
+raise "Connection closed before the audio item was acknowledged" unless receipt
 ```
 
 
@@ -968,8 +994,8 @@ Listen for response.output_audio.delta events
 function handleEvent(message) {
   const serverEvent = JSON.parse(message.toString());
   if (serverEvent.type === "response.output_audio.delta") {
-    // Access Base64-encoded audio chunks
-    // console.log(serverEvent.delta);
+    const audio = Buffer.from(serverEvent.delta, "base64");
+    console.log(`Received ${audio.length} audio bytes`);
   }
 }
 
@@ -1010,15 +1036,20 @@ internal static void HandleEvent(RealtimeServerUpdate update)
 ```
 
 ```ruby
-connection.each do |event|
+response_done = connection.find do |event|
   case event
   when OpenAI::Realtime::ResponseAudioDeltaEvent
     audio_bytes = Base64.strict_decode64(event.delta)
     puts("Received #{audio_bytes.bytesize} audio bytes")
+  when OpenAI::Realtime::RealtimeErrorEvent
+    raise event.error.message
   when OpenAI::Realtime::ResponseDoneEvent
-    break
+    raise "Response failed: #{event.response.status}" unless event.response.status == :completed
+
+    true
   end
 end
+raise "Connection closed before the response completed" unless response_done
 ```
 
 
@@ -1067,6 +1098,15 @@ connection.conversation.items.create(
   ]
 )
 connection.response.create(output_modalities: [:text])
+
+completion = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+
+  event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
+end
+unless completion.is_a?(OpenAI::Realtime::ResponseDoneEvent) && completion.response.status == :completed
+  raise "The Realtime response did not complete"
+end
 ```
 
 
@@ -1108,24 +1148,24 @@ Analyze the conversation so far. If it is related to support, output
 "support". If it is related to sales, output "sales".
 `;
 
-const event = {
-  type: "response.create",
-  response: {
-    // Setting to "none" indicates the response is out of band
-    // and will not be added to the default conversation
-    conversation: "none",
+  const event = {
+    type: "response.create",
+    response: {
+      // Setting to "none" indicates the response is out of band
+      // and will not be added to the default conversation
+      conversation: "none",
 
-    // Set metadata to help identify responses sent back from the model
-    metadata: { topic: "classification" },
+      // Set metadata to help identify responses sent back from the model
+      metadata: { topic: "classification" },
 
-    // Set any other available response fields
-    output_modalities: ["text"],
-    instructions: prompt,
-  },
-};
+      // Set any other available response fields
+      output_modalities: ["text"],
+      instructions: prompt,
+    },
+  };
 
-// WebRTC data channel and WebSocket both have .send()
-dataChannel.send(JSON.stringify(event));
+  // WebRTC data channel and WebSocket both have .send()
+  ws.send(JSON.stringify(event));
 ```
 
 ```python
@@ -1206,6 +1246,16 @@ connection.response.create(
   output_modalities: [:text],
   instructions: "Classify the conversation as support or sales."
 )
+
+response_done = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+  next unless event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
+
+  raise "Response failed: #{event.response.status}" unless event.response.status == :completed
+
+  true
+end
+raise "Connection closed before the response completed" unless response_done
 ```
 
 
@@ -1232,10 +1282,10 @@ function handleEvent(message) {
 }
 
 // Listen for server messages (WebRTC)
-dataChannel.addEventListener("message", handleEvent);
+// dataChannel.addEventListener("message", handleEvent);
 
 // Listen for server messages (WebSocket)
-// ws.on("message", handleEvent);
+ws.on("message", handleEvent);
 ```
 
 ```python
@@ -1335,7 +1385,7 @@ const event = {
       // potentially include existing conversation items:
       {
         type: "item_reference",
-        id: "some_conversation_item_id",
+        id: existingItemId,
       },
       {
         type: "message",
@@ -1352,7 +1402,7 @@ const event = {
 };
 
 // WebRTC data channel and WebSocket both have .send()
-dataChannel.send(JSON.stringify(event));
+ws.send(JSON.stringify(event));
 ```
 
 ```python
@@ -1423,17 +1473,18 @@ I'm a little teapot, short and stout!
 This is my handle, this is my spout!
 `;
 
-const event = {
-  type: "response.create",
-  response: {
-    // An empty input array removes existing context
-    input: [],
-    instructions: prompt,
-  },
-};
+  const event = {
+    type: "response.create",
+    response: {
+      // An empty input array removes existing context
+      input: [],
+      output_modalities: ["text"],
+      instructions: prompt,
+    },
+  };
 
-// WebRTC data channel and WebSocket both have .send()
-dataChannel.send(JSON.stringify(event));
+  // WebRTC data channel and WebSocket both have .send()
+  ws.send(JSON.stringify(event));
 ```
 
 ```python
@@ -1500,6 +1551,16 @@ connection.response.create(
   output_modalities: [:text],
   instructions: "Generate a concise greeting without conversation context."
 )
+
+response_done = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+  next unless event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
+
+  raise "Response failed: #{event.response.status}" unless event.response.status == :completed
+
+  true
+end
+raise "Connection closed before the response completed" unless response_done
 ```
 
 
@@ -1601,26 +1662,25 @@ Instead of immediately returning a text or audio response, the model will instea
 
 ```json
 {
-    "type": "response.done",
-    "event_id": "event_AeqLA8iR6FK20L4XZs2P6",
-    "response": {
-        "object": "realtime.response",
-        "id": "resp_AeqL8XwMUOri9OhcQJIu9",
+  "type": "response.done",
+  "event_id": "event_AeqLA8iR6FK20L4XZs2P6",
+  "response": {
+    "object": "realtime.response",
+    "id": "resp_AeqL8XwMUOri9OhcQJIu9",
+    "status": "completed",
+    "status_details": null,
+    "output": [
+      {
+        "object": "realtime.item",
+        "id": "item_AeqL8gmRWDn9bIsUM2T35",
+        "type": "function_call",
         "status": "completed",
-        "status_details": null,
-        "output": [
-            {
-                "object": "realtime.item",
-                "id": "item_AeqL8gmRWDn9bIsUM2T35",
-                "type": "function_call",
-                "status": "completed",
-                "name": "generate_horoscope",
-                "call_id": "call_sHlR7iaFwQ2YQOqm",
-                "arguments": "{\"sign\":\"Aquarius\"}"
-            }
-        ],
-        ...
-    }
+        "name": "generate_horoscope",
+        "call_id": "call_sHlR7iaFwQ2YQOqm",
+        "arguments": "{\"sign\":\"Aquarius\"}"
+      }
+    ]
+  }
 }
 ```
 
@@ -1684,11 +1744,15 @@ This unsuccessful event sent from the client will emit an error event like the f
 
 ```json
 {
-  "type": "invalid_request_error",
-  "code": "invalid_value",
-  "message": "Invalid value: 'scooby.dooby.doo' ...",
-  "param": "type",
-  "event_id": "my_awesome_event"
+  "type": "error",
+  "event_id": "event_error_123",
+  "error": {
+    "type": "invalid_request_error",
+    "code": "invalid_value",
+    "message": "Invalid value: 'scooby.dooby.doo'.",
+    "param": "type",
+    "event_id": "my_awesome_event"
+  }
 }
 ```
 

@@ -75,6 +75,8 @@ Use Bearer Auth (header Authorization).
 
     Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+    `minItems: 1`
+
   - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
     The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -205,7 +207,7 @@ Use Bearer Auth (header Authorization).
 
         Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-      - `detail: optional "auto" or "low" or "high"`
+      - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
         The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -218,6 +220,8 @@ Use Bearer Auth (header Authorization).
       - `image_url: optional string`
 
         Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+        `format: uri`
 
       - `text: optional string`
 
@@ -509,7 +513,7 @@ Use Bearer Auth (header Authorization).
 
       - `RealtimeMcpProtocolError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
@@ -527,7 +531,7 @@ Use Bearer Auth (header Authorization).
 
       - `RealtimeMcphttpError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
@@ -647,7 +651,7 @@ Use Bearer Auth (header Authorization).
 
           Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-        - `detail: optional "auto" or "low" or "high"`
+        - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
           The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -660,6 +664,8 @@ Use Bearer Auth (header Authorization).
         - `image_url: optional string`
 
           Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+          `format: uri`
 
         - `text: optional string`
 
@@ -951,7 +957,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcpProtocolError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -969,7 +975,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcphttpError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -1097,7 +1103,7 @@ Use Bearer Auth (header Authorization).
 
           Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-        - `detail: optional "auto" or "low" or "high"`
+        - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
           The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -1110,6 +1116,8 @@ Use Bearer Auth (header Authorization).
         - `image_url: optional string`
 
           Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+          `format: uri`
 
         - `text: optional string`
 
@@ -1401,7 +1409,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcpProtocolError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -1419,7 +1427,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcphttpError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -1466,6 +1474,8 @@ Use Bearer Auth (header Authorization).
   - `event_id: optional string`
 
     Optional client-generated ID used to identify this event.
+
+    `maxLength: 512`
 
   - `previous_item_id: optional string`
 
@@ -1560,7 +1570,7 @@ Use Bearer Auth (header Authorization).
 
           Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-        - `detail: optional "auto" or "low" or "high"`
+        - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
           The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -1573,6 +1583,8 @@ Use Bearer Auth (header Authorization).
         - `image_url: optional string`
 
           Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+          `format: uri`
 
         - `text: optional string`
 
@@ -1864,7 +1876,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcpProtocolError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -1882,7 +1894,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcphttpError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -1954,6 +1966,8 @@ Use Bearer Auth (header Authorization).
   - `event_id: optional string`
 
     Optional client-generated ID used to identify this event.
+
+    `maxLength: 512`
 
 ### Conversation Item Deleted Event
 
@@ -2055,7 +2069,7 @@ Use Bearer Auth (header Authorization).
 
           Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-        - `detail: optional "auto" or "low" or "high"`
+        - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
           The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -2068,6 +2082,8 @@ Use Bearer Auth (header Authorization).
         - `image_url: optional string`
 
           Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+          `format: uri`
 
         - `text: optional string`
 
@@ -2359,7 +2375,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcpProtocolError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -2377,7 +2393,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcphttpError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -2441,7 +2457,7 @@ Use Bearer Auth (header Authorization).
   The transcript may diverge somewhat from the model's interpretation, and
   should be treated as a rough guide.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part containing the audio.
 
@@ -2472,15 +2488,15 @@ Use Bearer Auth (header Authorization).
 
       Usage statistics for models billed by token usage.
 
-      - `input_tokens: number`
+      - `input_tokens: integer`
 
         Number of input tokens billed for this request.
 
-      - `output_tokens: number`
+      - `output_tokens: integer`
 
         Number of output tokens generated.
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
         Total number of tokens used (input + output).
 
@@ -2494,11 +2510,11 @@ Use Bearer Auth (header Authorization).
 
         Details about the input tokens billed for this request.
 
-        - `audio_tokens: optional number`
+        - `audio_tokens: optional integer`
 
           Number of audio tokens billed for this request.
 
-        - `text_tokens: optional number`
+        - `text_tokens: optional integer`
 
           Number of text tokens billed for this request.
 
@@ -2509,6 +2525,8 @@ Use Bearer Auth (header Authorization).
       - `seconds: number`
 
         Duration of the input audio in seconds.
+
+        `format: double`
 
       - `type: "duration"`
 
@@ -2560,7 +2578,7 @@ Use Bearer Auth (header Authorization).
 
     - `"conversation.item.input_audio_transcription.delta"`
 
-  - `content_index: optional number`
+  - `content_index: optional integer`
 
     The index of the content part in the item's content array.
 
@@ -2592,7 +2610,7 @@ Use Bearer Auth (header Authorization).
   request for a user message failed. These events are separate from other
   `error` events so that the client can identify the related Item.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part containing the audio.
 
@@ -2641,13 +2659,15 @@ Use Bearer Auth (header Authorization).
 
     The segment identifier.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the input audio content part within the item.
 
   - `end: number`
 
     End time of the segment in seconds.
+
+    `format: double`
 
   - `event_id: string`
 
@@ -2664,6 +2684,8 @@ Use Bearer Auth (header Authorization).
   - `start: number`
 
     Start time of the segment in seconds.
+
+    `format: double`
 
   - `text: string`
 
@@ -2698,6 +2720,8 @@ Use Bearer Auth (header Authorization).
 
     Optional client-generated ID used to identify this event.
 
+    `maxLength: 512`
+
 ### Conversation Item Truncate Event
 
 - `ConversationItemTruncateEvent object { audio_end_ms, content_index, item_id, 2 more }`
@@ -2714,13 +2738,13 @@ Use Bearer Auth (header Authorization).
   If successful, the server will respond with a `conversation.item.truncated`
   event.
 
-  - `audio_end_ms: number`
+  - `audio_end_ms: integer`
 
     Inclusive duration up to which audio is truncated, in milliseconds. If
     the audio_end_ms is greater than the actual audio duration, the server
     will respond with an error.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part to truncate. Set this to `0`.
 
@@ -2739,6 +2763,8 @@ Use Bearer Auth (header Authorization).
 
     Optional client-generated ID used to identify this event.
 
+    `maxLength: 512`
+
 ### Conversation Item Truncated Event
 
 - `ConversationItemTruncatedEvent object { audio_end_ms, content_index, event_id, 2 more }`
@@ -2750,11 +2776,11 @@ Use Bearer Auth (header Authorization).
   This action will truncate the audio and remove the server-side text transcript
   to ensure there is no text in the context that hasn't been heard by the user.
 
-  - `audio_end_ms: number`
+  - `audio_end_ms: integer`
 
     The duration up to which the audio was truncated, in milliseconds.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part that was truncated.
 
@@ -2917,6 +2943,8 @@ Use Bearer Auth (header Authorization).
 
     Optional client-generated ID used to identify this event.
 
+    `maxLength: 512`
+
 ### Input Audio Buffer Clear Event
 
 - `InputAudioBufferClearEvent object { type, event_id }`
@@ -2933,6 +2961,8 @@ Use Bearer Auth (header Authorization).
   - `event_id: optional string`
 
     Optional client-generated ID used to identify this event.
+
+    `maxLength: 512`
 
 ### Input Audio Buffer Cleared Event
 
@@ -2968,6 +2998,8 @@ Use Bearer Auth (header Authorization).
   - `event_id: optional string`
 
     Optional client-generated ID used to identify this event.
+
+    `maxLength: 512`
 
 ### Input Audio Buffer Committed Event
 
@@ -3010,7 +3042,7 @@ Use Bearer Auth (header Authorization).
 
     The telephone keypad that was pressed by the user.
 
-  - `received_at: number`
+  - `received_at: integer`
 
     UTC Unix Timestamp when DTMF Event was received by server.
 
@@ -3035,7 +3067,7 @@ Use Bearer Auth (header Authorization).
   `input_audio_buffer.speech_stopped` event (unless the client manually commits
   the audio buffer during VAD activation).
 
-  - `audio_start_ms: number`
+  - `audio_start_ms: integer`
 
     Milliseconds from the start of all audio written to the buffer during the
     session when speech was first detected. This will correspond to the
@@ -3064,7 +3096,7 @@ Use Bearer Auth (header Authorization).
   the audio buffer. The server will also send an `conversation.item.created`
   event with the user message item that is created from the audio buffer.
 
-  - `audio_end_ms: number`
+  - `audio_end_ms: integer`
 
     Milliseconds since the session started when speech stopped. This will
     correspond to the end of audio sent to the model, and thus includes the
@@ -3102,11 +3134,11 @@ Use Bearer Auth (header Authorization).
   that didn't trigger VAD but is still detected by the model, so the model may respond with
   something relevant to the conversation or a prompt to continue speaking.
 
-  - `audio_end_ms: number`
+  - `audio_end_ms: integer`
 
     Millisecond offset of audio written to the input audio buffer at the time the timeout was triggered.
 
-  - `audio_start_ms: number`
+  - `audio_start_ms: integer`
 
     Millisecond offset of audio written to the input audio buffer that was after the playback time of the last model response.
 
@@ -3249,7 +3281,7 @@ Use Bearer Auth (header Authorization).
 
     List of rate limit information.
 
-    - `limit: optional number`
+    - `limit: optional integer`
 
       The maximum allowed value for the rate limit.
 
@@ -3261,7 +3293,7 @@ Use Bearer Auth (header Authorization).
 
       - `"tokens"`
 
-    - `remaining: optional number`
+    - `remaining: optional integer`
 
       The remaining value before the limit is reached.
 
@@ -3371,6 +3403,8 @@ Use Bearer Auth (header Authorization).
 
         Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+        `minItems: 1`
+
       - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
         The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -3420,19 +3454,19 @@ Use Bearer Auth (header Authorization).
 
         Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-        - `type: "server_vad"`
+        - `type: "server_vad" (default: "server_vad")`
 
           Type of turn detection, `server_vad` to turn on simple Server VAD.
 
           - `"server_vad"`
 
-        - `create_response: optional boolean`
+        - `create_response: optional boolean (default: true)`
 
           Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
           If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-        - `idle_timeout_ms: optional number or null`
+        - `idle_timeout_ms: optional integer or null`
 
           Optional timeout after which a model response will be triggered automatically. This is
           useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -3446,19 +3480,21 @@ Use Bearer Auth (header Authorization).
           associated with the Response) will be emitted when the timeout is reached.
           Idle timeout is currently only supported for `server_vad` mode.
 
-        - `interrupt_response: optional boolean`
+          `minimum: 5000`, `maximum: 30000`
+
+        - `interrupt_response: optional boolean (default: true)`
 
           Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
           conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
           If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-        - `prefix_padding_ms: optional number`
+        - `prefix_padding_ms: optional integer`
 
           Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
           milliseconds). Defaults to 300ms.
 
-        - `silence_duration_ms: optional number`
+        - `silence_duration_ms: optional integer`
 
           Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
           to 500ms. With shorter values the model will respond more quickly,
@@ -3480,11 +3516,11 @@ Use Bearer Auth (header Authorization).
 
           - `"semantic_vad"`
 
-        - `create_response: optional boolean`
+        - `create_response: optional boolean (default: true)`
 
           Whether or not to automatically generate a response when a VAD stop event occurs.
 
-        - `eagerness: optional "low" or "medium" or "high" or "auto"`
+        - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
           Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -3496,7 +3532,7 @@ Use Bearer Auth (header Authorization).
 
           - `"auto"`
 
-        - `interrupt_response: optional boolean`
+        - `interrupt_response: optional boolean (default: true)`
 
           Whether or not to automatically interrupt any ongoing response with output to the default
           conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -3507,7 +3543,7 @@ Use Bearer Auth (header Authorization).
 
       The format of the output audio.
 
-    - `speed: optional number`
+    - `speed: optional number (default: 1)`
 
       The speed of the model's spoken response as a multiple of the original speed.
       1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -3515,7 +3551,9 @@ Use Bearer Auth (header Authorization).
       This parameter is a post-processing adjustment to the audio after it is generated, it's
       also possible to prompt the model to speak faster or slower.
 
-    - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+      `minimum: 0.25`, `maximum: 1.5`
+
+    - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
       The voice the model uses to respond. Supported built-in voices are
       `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -3649,6 +3687,8 @@ Use Bearer Auth (header Authorization).
 
       Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+      `minItems: 1`
+
     - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
       The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -3698,19 +3738,19 @@ Use Bearer Auth (header Authorization).
 
       Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-      - `type: "server_vad"`
+      - `type: "server_vad" (default: "server_vad")`
 
         Type of turn detection, `server_vad` to turn on simple Server VAD.
 
         - `"server_vad"`
 
-      - `create_response: optional boolean`
+      - `create_response: optional boolean (default: true)`
 
         Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
         If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-      - `idle_timeout_ms: optional number or null`
+      - `idle_timeout_ms: optional integer or null`
 
         Optional timeout after which a model response will be triggered automatically. This is
         useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -3724,19 +3764,21 @@ Use Bearer Auth (header Authorization).
         associated with the Response) will be emitted when the timeout is reached.
         Idle timeout is currently only supported for `server_vad` mode.
 
-      - `interrupt_response: optional boolean`
+        `minimum: 5000`, `maximum: 30000`
+
+      - `interrupt_response: optional boolean (default: true)`
 
         Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
         conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
         If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-      - `prefix_padding_ms: optional number`
+      - `prefix_padding_ms: optional integer`
 
         Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
         milliseconds). Defaults to 300ms.
 
-      - `silence_duration_ms: optional number`
+      - `silence_duration_ms: optional integer`
 
         Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
         to 500ms. With shorter values the model will respond more quickly,
@@ -3758,11 +3800,11 @@ Use Bearer Auth (header Authorization).
 
         - `"semantic_vad"`
 
-      - `create_response: optional boolean`
+      - `create_response: optional boolean (default: true)`
 
         Whether or not to automatically generate a response when a VAD stop event occurs.
 
-      - `eagerness: optional "low" or "medium" or "high" or "auto"`
+      - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
         Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -3774,7 +3816,7 @@ Use Bearer Auth (header Authorization).
 
         - `"auto"`
 
-      - `interrupt_response: optional boolean`
+      - `interrupt_response: optional boolean (default: true)`
 
         Whether or not to automatically interrupt any ongoing response with output to the default
         conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -3823,7 +3865,7 @@ Use Bearer Auth (header Authorization).
 
         - `"audio/pcma"`
 
-  - `speed: optional number`
+  - `speed: optional number (default: 1)`
 
     The speed of the model's spoken response as a multiple of the original speed.
     1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -3831,7 +3873,9 @@ Use Bearer Auth (header Authorization).
     This parameter is a post-processing adjustment to the audio after it is generated, it's
     also possible to prompt the model to speak faster or slower.
 
-  - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+    `minimum: 0.25`, `maximum: 1.5`
+
+  - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
     The voice the model uses to respond. Supported built-in voices are
     `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -3932,19 +3976,19 @@ Use Bearer Auth (header Authorization).
 
     Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-    - `type: "server_vad"`
+    - `type: "server_vad" (default: "server_vad")`
 
       Type of turn detection, `server_vad` to turn on simple Server VAD.
 
       - `"server_vad"`
 
-    - `create_response: optional boolean`
+    - `create_response: optional boolean (default: true)`
 
       Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
       If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-    - `idle_timeout_ms: optional number or null`
+    - `idle_timeout_ms: optional integer or null`
 
       Optional timeout after which a model response will be triggered automatically. This is
       useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -3958,19 +4002,21 @@ Use Bearer Auth (header Authorization).
       associated with the Response) will be emitted when the timeout is reached.
       Idle timeout is currently only supported for `server_vad` mode.
 
-    - `interrupt_response: optional boolean`
+      `minimum: 5000`, `maximum: 30000`
+
+    - `interrupt_response: optional boolean (default: true)`
 
       Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
       conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
       If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-    - `prefix_padding_ms: optional number`
+    - `prefix_padding_ms: optional integer`
 
       Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
       milliseconds). Defaults to 300ms.
 
-    - `silence_duration_ms: optional number`
+    - `silence_duration_ms: optional integer`
 
       Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
       to 500ms. With shorter values the model will respond more quickly,
@@ -3992,11 +4038,11 @@ Use Bearer Auth (header Authorization).
 
       - `"semantic_vad"`
 
-    - `create_response: optional boolean`
+    - `create_response: optional boolean (default: true)`
 
       Whether or not to automatically generate a response when a VAD stop event occurs.
 
-    - `eagerness: optional "low" or "medium" or "high" or "auto"`
+    - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
       Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -4008,7 +4054,7 @@ Use Bearer Auth (header Authorization).
 
       - `"auto"`
 
-    - `interrupt_response: optional boolean`
+    - `interrupt_response: optional boolean (default: true)`
 
       Whether or not to automatically interrupt any ongoing response with output to the default
       conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -4096,7 +4142,7 @@ Use Bearer Auth (header Authorization).
 
             Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-          - `detail: optional "auto" or "low" or "high"`
+          - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
             The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -4109,6 +4155,8 @@ Use Bearer Auth (header Authorization).
           - `image_url: optional string`
 
             Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+            `format: uri`
 
           - `text: optional string`
 
@@ -4400,7 +4448,7 @@ Use Bearer Auth (header Authorization).
 
           - `RealtimeMcpProtocolError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
@@ -4418,7 +4466,7 @@ Use Bearer Auth (header Authorization).
 
           - `RealtimeMcphttpError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
@@ -4466,6 +4514,8 @@ Use Bearer Auth (header Authorization).
 
       Optional client-generated ID used to identify this event.
 
+      `maxLength: 512`
+
     - `previous_item_id: optional string`
 
       The ID of the preceding item after which the new item will be inserted. If not set, the new item will be appended to the end of the conversation.
@@ -4495,6 +4545,8 @@ Use Bearer Auth (header Authorization).
 
       Optional client-generated ID used to identify this event.
 
+      `maxLength: 512`
+
   - `ConversationItemRetrieveEvent object { item_id, type, event_id }`
 
     Send this event when you want to retrieve the server's representation of a specific item in the conversation history. This is useful, for example, to inspect user audio after noise cancellation and VAD.
@@ -4516,6 +4568,8 @@ Use Bearer Auth (header Authorization).
 
       Optional client-generated ID used to identify this event.
 
+      `maxLength: 512`
+
   - `ConversationItemTruncateEvent object { audio_end_ms, content_index, item_id, 2 more }`
 
     Send this event to truncate a previous assistant message’s audio. The server
@@ -4530,13 +4584,13 @@ Use Bearer Auth (header Authorization).
     If successful, the server will respond with a `conversation.item.truncated`
     event.
 
-    - `audio_end_ms: number`
+    - `audio_end_ms: integer`
 
       Inclusive duration up to which audio is truncated, in milliseconds. If
       the audio_end_ms is greater than the actual audio duration, the server
       will respond with an error.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part to truncate. Set this to `0`.
 
@@ -4554,6 +4608,8 @@ Use Bearer Auth (header Authorization).
     - `event_id: optional string`
 
       Optional client-generated ID used to identify this event.
+
+      `maxLength: 512`
 
   - `InputAudioBufferAppendEvent object { audio, type, event_id }`
 
@@ -4586,6 +4642,8 @@ Use Bearer Auth (header Authorization).
 
       Optional client-generated ID used to identify this event.
 
+      `maxLength: 512`
+
   - `InputAudioBufferClearEvent object { type, event_id }`
 
     Send this event to clear the audio bytes in the buffer. The server will
@@ -4600,6 +4658,8 @@ Use Bearer Auth (header Authorization).
     - `event_id: optional string`
 
       Optional client-generated ID used to identify this event.
+
+      `maxLength: 512`
 
   - `OutputAudioBufferClearEvent object { type, event_id }`
 
@@ -4635,6 +4695,8 @@ Use Bearer Auth (header Authorization).
 
       Optional client-generated ID used to identify this event.
 
+      `maxLength: 512`
+
   - `ResponseCancelEvent object { type, event_id, response_id }`
 
     Send this event to cancel an in-progress response. The server will respond
@@ -4652,6 +4714,8 @@ Use Bearer Auth (header Authorization).
     - `event_id: optional string`
 
       Optional client-generated ID used to identify this event.
+
+      `maxLength: 512`
 
     - `response_id: optional string`
 
@@ -4695,6 +4759,8 @@ Use Bearer Auth (header Authorization).
     - `event_id: optional string`
 
       Optional client-generated ID used to identify this event.
+
+      `maxLength: 512`
 
     - `response: optional RealtimeResponseCreateParams`
 
@@ -4746,7 +4812,7 @@ Use Bearer Auth (header Authorization).
 
                 - `"audio/pcma"`
 
-          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
             The voice the model uses to respond. Supported built-in voices are
             `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -4810,7 +4876,7 @@ Use Bearer Auth (header Authorization).
 
           - `"none"`
 
-      - `input: optional array of ConversationItem`
+      - `input: optional array of RealtimeResponseInputMessageSystem { content, role, type, 2 more }  or RealtimeResponseInputMessageDeveloper { content, role, type, 2 more }  or RealtimeResponseInputMessageUser { content, role, type, 2 more }  or 4 more`
 
         Input items to include in the prompt for the model. Using this field
         creates a new context for this Response instead of using the default
@@ -4818,41 +4884,261 @@ Use Bearer Auth (header Authorization).
         Note that this can include references to items that previously appeared in the session
         using their id.
 
-        - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
+        - `RealtimeResponseInputMessageSystem object { content, role, type, 2 more }`
 
-          A system message in a Realtime conversation can be used to provide additional context or instructions to the model. This is similar but distinct from the instruction prompt provided at the start of a conversation, as system messages can be added at any point in the conversation. For major changes to the conversation's behavior, use instructions, but for smaller updates (e.g. "the user is now asking about a different topic"), use system messages.
+          - `content: array of object { text, type }`
 
-        - `RealtimeConversationItemUserMessage object { content, role, type, 3 more }`
+            `minItems: 1`, `maxItems: 1`
 
-          A user message item in a Realtime conversation.
+            - `text: string`
 
-        - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
+              `maxLength: 256000`
 
-          An assistant message item in a Realtime conversation.
+            - `type: "input_text"`
 
-        - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
+              - `"input_text"`
 
-          A function call item in a Realtime conversation.
+          - `role: "system"`
 
-        - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
+            - `"system"`
 
-          A function call output item in a Realtime conversation.
+          - `type: "message"`
 
-        - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
+            - `"message"`
 
-          A Realtime item responding to an MCP approval request.
+          - `id: optional string or null`
 
-        - `RealtimeMcpListTools object { server_label, tools, type, id }`
+            An optional client ID. The value `root` is reserved.
 
-          A Realtime item listing tools available on an MCP server.
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
+          - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-          A Realtime item representing an invocation of a tool on an MCP server.
+            Optional input status. Omission or null defaults to completed.
 
-        - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
+            - `"completed"`
 
-          A Realtime item requesting human approval of a tool invocation.
+            - `"incomplete"`
+
+        - `RealtimeResponseInputMessageDeveloper object { content, role, type, 2 more }`
+
+          - `content: array of object { text, type }`
+
+            `minItems: 1`, `maxItems: 1`
+
+            - `text: string`
+
+              `maxLength: 256000`
+
+            - `type: "input_text"`
+
+              - `"input_text"`
+
+          - `role: "developer"`
+
+            - `"developer"`
+
+          - `type: "message"`
+
+            - `"message"`
+
+          - `id: optional string or null`
+
+            An optional client ID. The value `root` is reserved.
+
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+          - `status: optional "completed" or "incomplete" or null (default: "completed")`
+
+            Optional input status. Omission or null defaults to completed.
+
+            - `"completed"`
+
+            - `"incomplete"`
+
+        - `RealtimeResponseInputMessageUser object { content, role, type, 2 more }`
+
+          - `content: array of InputText { text, type }  or InputAudio { audio, type, transcript }  or InputImage { image_url, type, detail }`
+
+            `minItems: 1`
+
+            - `InputText object { text, type }`
+
+              - `text: string`
+
+                `maxLength: 256000`
+
+              - `type: "input_text"`
+
+                - `"input_text"`
+
+            - `InputAudio object { audio, type, transcript }`
+
+              - `audio: string`
+
+                Base64 audio bytes in the session input audio format.
+
+                `minLength: 1`
+
+              - `type: "input_audio"`
+
+                - `"input_audio"`
+
+              - `transcript: optional string or null`
+
+                Optional text to associate with the input audio.
+
+            - `InputImage object { image_url, type, detail }`
+
+              - `image_url: string`
+
+                A base64 data URL with an image MIME type; use PNG or JPEG.
+
+                `pattern: ^data:image/[^;,]+;base64,.+`, `format: uri`
+
+              - `type: "input_image"`
+
+                - `"input_image"`
+
+              - `detail: optional "low" or "high" or "auto" or null (default: "auto")`
+
+                - `"low"`
+
+                - `"high"`
+
+                - `"auto"`
+
+          - `role: "user"`
+
+            - `"user"`
+
+          - `type: "message"`
+
+            - `"message"`
+
+          - `id: optional string or null`
+
+            An optional client ID. The value `root` is reserved.
+
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+          - `status: optional "completed" or "incomplete" or null (default: "completed")`
+
+            Optional input status. Omission or null defaults to completed.
+
+            - `"completed"`
+
+            - `"incomplete"`
+
+        - `RealtimeResponseInputMessageAssistant object { content, role, type, 2 more }`
+
+          - `content: array of object { text, type }`
+
+            `minItems: 1`
+
+            - `text: string`
+
+              `maxLength: 256000`
+
+            - `type: "output_text"`
+
+              - `"output_text"`
+
+          - `role: "assistant"`
+
+            - `"assistant"`
+
+          - `type: "message"`
+
+            - `"message"`
+
+          - `id: optional string or null`
+
+            An optional client ID. The value `root` is reserved.
+
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+          - `status: optional "completed" or "incomplete" or null (default: "completed")`
+
+            Optional input status. Omission or null defaults to completed.
+
+            - `"completed"`
+
+            - `"incomplete"`
+
+        - `FunctionCall object { arguments, call_id, name, 3 more }`
+
+          A function call supplied as input to a Realtime response.
+
+          - `arguments: string`
+
+            `maxLength: 1048576`
+
+          - `call_id: string`
+
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+          - `name: string`
+
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
+
+          - `type: "function_call"`
+
+            - `"function_call"`
+
+          - `id: optional string or null`
+
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+          - `status: optional "completed" or "incomplete" or null (default: "completed")`
+
+            - `"completed"`
+
+            - `"incomplete"`
+
+        - `FunctionCallOutput object { call_id, output, type, 2 more }`
+
+          The result of a function call supplied as input to a Realtime response.
+
+          - `call_id: string`
+
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+          - `output: string`
+
+            `maxLength: 1048576`
+
+          - `type: "function_call_output"`
+
+            - `"function_call_output"`
+
+          - `id: optional string or null`
+
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+          - `status: optional "completed" or "incomplete" or null (default: "completed")`
+
+            - `"completed"`
+
+            - `"incomplete"`
+
+        - `ResponseItemReference object { id, type }`
+
+          Reference an existing item in this Realtime session as response.create input.
+          Item references are only accepted in the response input array, not as new
+          conversation items.
+
+          - `id: string`
+
+            The ID of an existing item in the same Realtime session.
+
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+          - `type: "item_reference"`
+
+            The type of this item. Always `item_reference`.
+
+            - `"item_reference"`
 
       - `instructions: optional string`
 
@@ -4921,7 +5207,7 @@ Use Bearer Auth (header Authorization).
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -4931,7 +5217,7 @@ Use Bearer Auth (header Authorization).
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -4961,7 +5247,7 @@ Use Bearer Auth (header Authorization).
 
               - `"original"`
 
-            - `type: "input_image"`
+            - `type: "input_image" (default: "input_image")`
 
               The type of the input item. Always `input_image`.
 
@@ -4975,11 +5261,13 @@ Use Bearer Auth (header Authorization).
 
               The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+              `format: uri`
+
             - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -4997,7 +5285,7 @@ Use Bearer Auth (header Authorization).
 
             A file input to the model.
 
-            - `type: "input_file"`
+            - `type: "input_file" (default: "input_file")`
 
               The type of the input item. Always `input_file`.
 
@@ -5025,6 +5313,8 @@ Use Bearer Auth (header Authorization).
 
               The URL of the file to be sent to the model.
 
+              `format: uri`
+
             - `filename: optional string`
 
               The name of the file to be sent to the model.
@@ -5033,7 +5323,7 @@ Use Bearer Auth (header Authorization).
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -5055,7 +5345,7 @@ Use Bearer Auth (header Authorization).
 
         Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-        - `effort: optional RealtimeReasoningEffort`
+        - `effort: optional RealtimeReasoningEffort (default: "low")`
 
           Constrains effort on reasoning for reasoning-capable Realtime models such as
           `gpt-realtime-2`.
@@ -5070,7 +5360,7 @@ Use Bearer Auth (header Authorization).
 
           - `"xhigh"`
 
-      - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
+      - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp (default: "auto")`
 
         How the model chooses tools. Provide one of the string modes or force a specific
         function/MCP tool.
@@ -5169,6 +5459,8 @@ Use Bearer Auth (header Authorization).
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -5247,7 +5539,7 @@ Use Bearer Auth (header Authorization).
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -5304,10 +5596,14 @@ Use Bearer Auth (header Authorization).
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
   - `SessionUpdateEvent object { session, type, event_id }`
 
@@ -5403,6 +5699,8 @@ Use Bearer Auth (header Authorization).
 
                 Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+                `minItems: 1`
+
               - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
                 The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -5452,19 +5750,19 @@ Use Bearer Auth (header Authorization).
 
                 Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-                - `type: "server_vad"`
+                - `type: "server_vad" (default: "server_vad")`
 
                   Type of turn detection, `server_vad` to turn on simple Server VAD.
 
                   - `"server_vad"`
 
-                - `create_response: optional boolean`
+                - `create_response: optional boolean (default: true)`
 
                   Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
                   If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-                - `idle_timeout_ms: optional number or null`
+                - `idle_timeout_ms: optional integer or null`
 
                   Optional timeout after which a model response will be triggered automatically. This is
                   useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -5478,19 +5776,21 @@ Use Bearer Auth (header Authorization).
                   associated with the Response) will be emitted when the timeout is reached.
                   Idle timeout is currently only supported for `server_vad` mode.
 
-                - `interrupt_response: optional boolean`
+                  `minimum: 5000`, `maximum: 30000`
+
+                - `interrupt_response: optional boolean (default: true)`
 
                   Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
                   conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
                   If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-                - `prefix_padding_ms: optional number`
+                - `prefix_padding_ms: optional integer`
 
                   Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
                   milliseconds). Defaults to 300ms.
 
-                - `silence_duration_ms: optional number`
+                - `silence_duration_ms: optional integer`
 
                   Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
                   to 500ms. With shorter values the model will respond more quickly,
@@ -5512,11 +5812,11 @@ Use Bearer Auth (header Authorization).
 
                   - `"semantic_vad"`
 
-                - `create_response: optional boolean`
+                - `create_response: optional boolean (default: true)`
 
                   Whether or not to automatically generate a response when a VAD stop event occurs.
 
-                - `eagerness: optional "low" or "medium" or "high" or "auto"`
+                - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
                   Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -5528,7 +5828,7 @@ Use Bearer Auth (header Authorization).
 
                   - `"auto"`
 
-                - `interrupt_response: optional boolean`
+                - `interrupt_response: optional boolean (default: true)`
 
                   Whether or not to automatically interrupt any ongoing response with output to the default
                   conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -5539,7 +5839,7 @@ Use Bearer Auth (header Authorization).
 
               The format of the output audio.
 
-            - `speed: optional number`
+            - `speed: optional number (default: 1)`
 
               The speed of the model's spoken response as a multiple of the original speed.
               1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -5547,7 +5847,9 @@ Use Bearer Auth (header Authorization).
               This parameter is a post-processing adjustment to the audio after it is generated, it's
               also possible to prompt the model to speak faster or slower.
 
-            - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+              `minimum: 0.25`, `maximum: 1.5`
+
+            - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
               The voice the model uses to respond. Supported built-in voices are
               `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -5664,7 +5966,7 @@ Use Bearer Auth (header Authorization).
 
             - `"gpt-audio-mini-2025-12-15"`
 
-        - `output_modalities: optional array of "text" or "audio"`
+        - `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
           The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
           that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -5688,7 +5990,7 @@ Use Bearer Auth (header Authorization).
 
           Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-        - `tool_choice: optional RealtimeToolChoiceConfig`
+        - `tool_choice: optional RealtimeToolChoiceConfig (default: "auto")`
 
           How the model chooses tools. Provide one of the string modes or force a specific
           function/MCP tool.
@@ -5736,6 +6038,8 @@ Use Bearer Auth (header Authorization).
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -5815,7 +6119,7 @@ Use Bearer Auth (header Authorization).
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -5872,10 +6176,14 @@ Use Bearer Auth (header Authorization).
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `tracing: optional RealtimeTracingConfig or null`
 
@@ -5936,6 +6244,8 @@ Use Bearer Auth (header Authorization).
 
               Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+              `minimum: 0`, `maximum: 1`
+
             - `type: "retention_ratio"`
 
               Use retention ratio truncation.
@@ -5946,9 +6256,11 @@ Use Bearer Auth (header Authorization).
 
               Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-              - `post_instructions: optional number`
+              - `post_instructions: optional integer`
 
                 Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+                `minimum: 0`
 
       - `RealtimeTranscriptionSessionCreateRequest object { type, audio, include }`
 
@@ -5999,19 +6311,19 @@ Use Bearer Auth (header Authorization).
 
                 Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-                - `type: "server_vad"`
+                - `type: "server_vad" (default: "server_vad")`
 
                   Type of turn detection, `server_vad` to turn on simple Server VAD.
 
                   - `"server_vad"`
 
-                - `create_response: optional boolean`
+                - `create_response: optional boolean (default: true)`
 
                   Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
                   If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-                - `idle_timeout_ms: optional number or null`
+                - `idle_timeout_ms: optional integer or null`
 
                   Optional timeout after which a model response will be triggered automatically. This is
                   useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -6025,19 +6337,21 @@ Use Bearer Auth (header Authorization).
                   associated with the Response) will be emitted when the timeout is reached.
                   Idle timeout is currently only supported for `server_vad` mode.
 
-                - `interrupt_response: optional boolean`
+                  `minimum: 5000`, `maximum: 30000`
+
+                - `interrupt_response: optional boolean (default: true)`
 
                   Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
                   conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
                   If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-                - `prefix_padding_ms: optional number`
+                - `prefix_padding_ms: optional integer`
 
                   Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
                   milliseconds). Defaults to 300ms.
 
-                - `silence_duration_ms: optional number`
+                - `silence_duration_ms: optional integer`
 
                   Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
                   to 500ms. With shorter values the model will respond more quickly,
@@ -6059,11 +6373,11 @@ Use Bearer Auth (header Authorization).
 
                   - `"semantic_vad"`
 
-                - `create_response: optional boolean`
+                - `create_response: optional boolean (default: true)`
 
                   Whether or not to automatically generate a response when a VAD stop event occurs.
 
-                - `eagerness: optional "low" or "medium" or "high" or "auto"`
+                - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
                   Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -6075,7 +6389,7 @@ Use Bearer Auth (header Authorization).
 
                   - `"auto"`
 
-                - `interrupt_response: optional boolean`
+                - `interrupt_response: optional boolean (default: true)`
 
                   Whether or not to automatically interrupt any ongoing response with output to the default
                   conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -6097,6 +6411,8 @@ Use Bearer Auth (header Authorization).
     - `event_id: optional string`
 
       Optional client-generated ID used to identify this event. This is an arbitrary string that a client may assign. It will be passed back if there is an error with the event, but the corresponding `session.updated` event will not include it.
+
+      `maxLength: 512`
 
 ### Realtime Conversation Item Assistant Message
 
@@ -6310,7 +6626,7 @@ Use Bearer Auth (header Authorization).
 
       Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-    - `detail: optional "auto" or "low" or "high"`
+    - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
       The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -6323,6 +6639,8 @@ Use Bearer Auth (header Authorization).
     - `image_url: optional string`
 
       Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+      `format: uri`
 
     - `text: optional string`
 
@@ -6566,7 +6884,7 @@ Use Bearer Auth (header Authorization).
 
 - `RealtimeMcpProtocolError object { code, message, type }`
 
-  - `code: number`
+  - `code: integer`
 
   - `message: string`
 
@@ -6612,7 +6930,7 @@ Use Bearer Auth (header Authorization).
 
     - `RealtimeMcpProtocolError object { code, message, type }`
 
-      - `code: number`
+      - `code: integer`
 
       - `message: string`
 
@@ -6630,7 +6948,7 @@ Use Bearer Auth (header Authorization).
 
     - `RealtimeMcphttpError object { code, message, type }`
 
-      - `code: number`
+      - `code: integer`
 
       - `message: string`
 
@@ -6656,7 +6974,7 @@ Use Bearer Auth (header Authorization).
 
 - `RealtimeMcphttpError object { code, message, type }`
 
-  - `code: number`
+  - `code: integer`
 
   - `message: string`
 
@@ -6670,7 +6988,7 @@ Use Bearer Auth (header Authorization).
 
   Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-  - `effort: optional RealtimeReasoningEffort`
+  - `effort: optional RealtimeReasoningEffort (default: "low")`
 
     Constrains effort on reasoning for reasoning-capable Realtime models such as
     `gpt-realtime-2`.
@@ -6758,7 +7076,7 @@ Use Bearer Auth (header Authorization).
 
             - `"audio/pcma"`
 
-      - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
+      - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more (default: "alloy")`
 
         The voice the model uses to respond. Voice cannot be changed during the
         session once the model has responded with audio at least once. Current
@@ -6897,7 +7215,7 @@ Use Bearer Auth (header Authorization).
 
           Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-        - `detail: optional "auto" or "low" or "high"`
+        - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
           The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -6910,6 +7228,8 @@ Use Bearer Auth (header Authorization).
         - `image_url: optional string`
 
           Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+          `format: uri`
 
         - `text: optional string`
 
@@ -7201,7 +7521,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcpProtocolError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -7219,7 +7539,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcphttpError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -7340,11 +7660,11 @@ Use Bearer Auth (header Authorization).
 
       Details about the input tokens used in the Response. Cached tokens are tokens from previous turns in the conversation that are included as context for the current response. Cached tokens here are counted as a subset of input tokens, meaning input tokens will include cached and uncached tokens.
 
-      - `audio_tokens: optional number`
+      - `audio_tokens: optional integer`
 
         The number of audio tokens used as input for the Response.
 
-      - `cached_tokens: optional number`
+      - `cached_tokens: optional integer`
 
         The number of cached tokens used as input for the Response.
 
@@ -7352,27 +7672,27 @@ Use Bearer Auth (header Authorization).
 
         Details about the cached tokens used as input for the Response.
 
-        - `audio_tokens: optional number`
+        - `audio_tokens: optional integer`
 
           The number of cached audio tokens used as input for the Response.
 
-        - `image_tokens: optional number`
+        - `image_tokens: optional integer`
 
           The number of cached image tokens used as input for the Response.
 
-        - `text_tokens: optional number`
+        - `text_tokens: optional integer`
 
           The number of cached text tokens used as input for the Response.
 
-      - `image_tokens: optional number`
+      - `image_tokens: optional integer`
 
         The number of image tokens used as input for the Response.
 
-      - `text_tokens: optional number`
+      - `text_tokens: optional integer`
 
         The number of text tokens used as input for the Response.
 
-    - `input_tokens: optional number`
+    - `input_tokens: optional integer`
 
       The number of input tokens used in the Response, including text and
       audio tokens.
@@ -7381,20 +7701,20 @@ Use Bearer Auth (header Authorization).
 
       Details about the output tokens used in the Response.
 
-      - `audio_tokens: optional number`
+      - `audio_tokens: optional integer`
 
         The number of audio tokens used in the Response.
 
-      - `text_tokens: optional number`
+      - `text_tokens: optional integer`
 
         The number of text tokens used in the Response.
 
-    - `output_tokens: optional number`
+    - `output_tokens: optional integer`
 
       The number of output tokens sent in the Response, including text and
       audio tokens.
 
-    - `total_tokens: optional number`
+    - `total_tokens: optional integer`
 
       The total number of tokens in the Response including input and output
       text and audio tokens.
@@ -7447,7 +7767,7 @@ Use Bearer Auth (header Authorization).
 
           - `"audio/pcma"`
 
-    - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+    - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
       The voice the model uses to respond. Supported built-in voices are
       `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -7541,7 +7861,7 @@ Use Bearer Auth (header Authorization).
 
             - `"audio/pcma"`
 
-      - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+      - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
         The voice the model uses to respond. Supported built-in voices are
         `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -7605,7 +7925,7 @@ Use Bearer Auth (header Authorization).
 
       - `"none"`
 
-  - `input: optional array of ConversationItem`
+  - `input: optional array of RealtimeResponseInputMessageSystem { content, role, type, 2 more }  or RealtimeResponseInputMessageDeveloper { content, role, type, 2 more }  or RealtimeResponseInputMessageUser { content, role, type, 2 more }  or 4 more`
 
     Input items to include in the prompt for the model. Using this field
     creates a new context for this Response instead of using the default
@@ -7613,427 +7933,261 @@ Use Bearer Auth (header Authorization).
     Note that this can include references to items that previously appeared in the session
     using their id.
 
-    - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
-
-      A system message in a Realtime conversation can be used to provide additional context or instructions to the model. This is similar but distinct from the instruction prompt provided at the start of a conversation, as system messages can be added at any point in the conversation. For major changes to the conversation's behavior, use instructions, but for smaller updates (e.g. "the user is now asking about a different topic"), use system messages.
+    - `RealtimeResponseInputMessageSystem object { content, role, type, 2 more }`
 
       - `content: array of object { text, type }`
 
-        The content of the message.
+        `minItems: 1`, `maxItems: 1`
 
-        - `text: optional string`
+        - `text: string`
 
-          The text content.
+          `maxLength: 256000`
 
-        - `type: optional "input_text"`
-
-          The content type. Always `input_text` for system messages.
+        - `type: "input_text"`
 
           - `"input_text"`
 
       - `role: "system"`
 
-        The role of the message sender. Always `system`.
-
         - `"system"`
 
       - `type: "message"`
 
-        The type of the item. Always `message`.
-
         - `"message"`
 
-      - `id: optional string`
+      - `id: optional string or null`
 
-        The unique ID of the item. This may be provided by the client or generated by the server.
+        An optional client ID. The value `root` is reserved.
 
-      - `object: optional "realtime.item"`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-        - `"realtime.item"`
-
-      - `status: optional "completed" or "incomplete" or "in_progress"`
-
-        The status of the item. Has no effect on the conversation.
+        Optional input status. Omission or null defaults to completed.
 
         - `"completed"`
 
         - `"incomplete"`
 
-        - `"in_progress"`
+    - `RealtimeResponseInputMessageDeveloper object { content, role, type, 2 more }`
 
-    - `RealtimeConversationItemUserMessage object { content, role, type, 3 more }`
+      - `content: array of object { text, type }`
 
-      A user message item in a Realtime conversation.
+        `minItems: 1`, `maxItems: 1`
 
-      - `content: array of object { audio, detail, image_url, 3 more }`
+        - `text: string`
 
-        The content of the message.
+          `maxLength: 256000`
 
-        - `audio: optional string`
-
-          Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
-
-        - `detail: optional "auto" or "low" or "high"`
-
-          The detail level of the image (for `input_image`). `auto` will default to `high`.
-
-          - `"auto"`
-
-          - `"low"`
-
-          - `"high"`
-
-        - `image_url: optional string`
-
-          Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
-
-        - `text: optional string`
-
-          The text content (for `input_text`).
-
-        - `transcript: optional string`
-
-          Transcript of the audio (for `input_audio`). This is not sent to the model, but will be attached to the message item for reference.
-
-        - `type: optional "input_text" or "input_audio" or "input_image"`
-
-          The content type (`input_text`, `input_audio`, or `input_image`).
+        - `type: "input_text"`
 
           - `"input_text"`
 
-          - `"input_audio"`
+      - `role: "developer"`
 
-          - `"input_image"`
+        - `"developer"`
+
+      - `type: "message"`
+
+        - `"message"`
+
+      - `id: optional string or null`
+
+        An optional client ID. The value `root` is reserved.
+
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
+
+        Optional input status. Omission or null defaults to completed.
+
+        - `"completed"`
+
+        - `"incomplete"`
+
+    - `RealtimeResponseInputMessageUser object { content, role, type, 2 more }`
+
+      - `content: array of InputText { text, type }  or InputAudio { audio, type, transcript }  or InputImage { image_url, type, detail }`
+
+        `minItems: 1`
+
+        - `InputText object { text, type }`
+
+          - `text: string`
+
+            `maxLength: 256000`
+
+          - `type: "input_text"`
+
+            - `"input_text"`
+
+        - `InputAudio object { audio, type, transcript }`
+
+          - `audio: string`
+
+            Base64 audio bytes in the session input audio format.
+
+            `minLength: 1`
+
+          - `type: "input_audio"`
+
+            - `"input_audio"`
+
+          - `transcript: optional string or null`
+
+            Optional text to associate with the input audio.
+
+        - `InputImage object { image_url, type, detail }`
+
+          - `image_url: string`
+
+            A base64 data URL with an image MIME type; use PNG or JPEG.
+
+            `pattern: ^data:image/[^;,]+;base64,.+`, `format: uri`
+
+          - `type: "input_image"`
+
+            - `"input_image"`
+
+          - `detail: optional "low" or "high" or "auto" or null (default: "auto")`
+
+            - `"low"`
+
+            - `"high"`
+
+            - `"auto"`
 
       - `role: "user"`
-
-        The role of the message sender. Always `user`.
 
         - `"user"`
 
       - `type: "message"`
 
-        The type of the item. Always `message`.
-
         - `"message"`
 
-      - `id: optional string`
+      - `id: optional string or null`
 
-        The unique ID of the item. This may be provided by the client or generated by the server.
+        An optional client ID. The value `root` is reserved.
 
-      - `object: optional "realtime.item"`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-        - `"realtime.item"`
-
-      - `status: optional "completed" or "incomplete" or "in_progress"`
-
-        The status of the item. Has no effect on the conversation.
+        Optional input status. Omission or null defaults to completed.
 
         - `"completed"`
 
         - `"incomplete"`
 
-        - `"in_progress"`
+    - `RealtimeResponseInputMessageAssistant object { content, role, type, 2 more }`
 
-    - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
+      - `content: array of object { text, type }`
 
-      An assistant message item in a Realtime conversation.
+        `minItems: 1`
 
-      - `content: array of object { audio, text, transcript, type }`
+        - `text: string`
 
-        The content of the message.
+          `maxLength: 256000`
 
-        - `audio: optional string`
-
-          Base64-encoded audio bytes, these will be parsed as the format specified in the session output audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
-
-        - `text: optional string`
-
-          The text content.
-
-        - `transcript: optional string`
-
-          The transcript of the audio content, this will always be present if the output type is `audio`.
-
-        - `type: optional "output_text" or "output_audio"`
-
-          The content type, `output_text` or `output_audio` depending on the session `output_modalities` configuration.
+        - `type: "output_text"`
 
           - `"output_text"`
 
-          - `"output_audio"`
-
       - `role: "assistant"`
-
-        The role of the message sender. Always `assistant`.
 
         - `"assistant"`
 
       - `type: "message"`
 
-        The type of the item. Always `message`.
-
         - `"message"`
 
-      - `id: optional string`
+      - `id: optional string or null`
 
-        The unique ID of the item. This may be provided by the client or generated by the server.
+        An optional client ID. The value `root` is reserved.
 
-      - `object: optional "realtime.item"`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-        - `"realtime.item"`
-
-      - `status: optional "completed" or "incomplete" or "in_progress"`
-
-        The status of the item. Has no effect on the conversation.
+        Optional input status. Omission or null defaults to completed.
 
         - `"completed"`
 
         - `"incomplete"`
 
-        - `"in_progress"`
+    - `FunctionCall object { arguments, call_id, name, 3 more }`
 
-    - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
-
-      A function call item in a Realtime conversation.
+      A function call supplied as input to a Realtime response.
 
       - `arguments: string`
 
-        The arguments of the function call. This is a JSON-encoded string representing the arguments passed to the function, for example `{"arg1": "value1", "arg2": 42}`.
-
-      - `name: string`
-
-        The name of the function being called.
-
-      - `type: "function_call"`
-
-        The type of the item. Always `function_call`.
-
-        - `"function_call"`
-
-      - `id: optional string`
-
-        The unique ID of the item. This may be provided by the client or generated by the server.
-
-      - `call_id: optional string`
-
-        The ID of the function call.
-
-      - `object: optional "realtime.item"`
-
-        Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
-
-        - `"realtime.item"`
-
-      - `status: optional "completed" or "incomplete" or "in_progress"`
-
-        The status of the item. Has no effect on the conversation.
-
-        - `"completed"`
-
-        - `"incomplete"`
-
-        - `"in_progress"`
-
-    - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
-
-      A function call output item in a Realtime conversation.
+        `maxLength: 1048576`
 
       - `call_id: string`
 
-        The ID of the function call this output is for.
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-      - `output: string`
+      - `name: string`
 
-        The output of the function call, this is free text and can contain any information or simply be empty.
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
-      - `type: "function_call_output"`
+      - `type: "function_call"`
 
-        The type of the item. Always `function_call_output`.
+        - `"function_call"`
 
-        - `"function_call_output"`
+      - `id: optional string or null`
 
-      - `id: optional string`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        The unique ID of the item. This may be provided by the client or generated by the server.
-
-      - `object: optional "realtime.item"`
-
-        Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
-
-        - `"realtime.item"`
-
-      - `status: optional "completed" or "incomplete" or "in_progress"`
-
-        The status of the item. Has no effect on the conversation.
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
         - `"completed"`
 
         - `"incomplete"`
 
-        - `"in_progress"`
+    - `FunctionCallOutput object { call_id, output, type, 2 more }`
 
-    - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
+      The result of a function call supplied as input to a Realtime response.
 
-      A Realtime item responding to an MCP approval request.
+      - `call_id: string`
 
-      - `id: string`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        The unique ID of the approval response.
+      - `output: string`
 
-      - `approval_request_id: string`
+        `maxLength: 1048576`
 
-        The ID of the approval request being answered.
+      - `type: "function_call_output"`
 
-      - `approve: boolean`
+        - `"function_call_output"`
 
-        Whether the request was approved.
+      - `id: optional string or null`
 
-      - `type: "mcp_approval_response"`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        The type of the item. Always `mcp_approval_response`.
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-        - `"mcp_approval_response"`
+        - `"completed"`
 
-      - `reason: optional string or null`
+        - `"incomplete"`
 
-        Optional reason for the decision.
+    - `ResponseItemReference object { id, type }`
 
-    - `RealtimeMcpListTools object { server_label, tools, type, id }`
-
-      A Realtime item listing tools available on an MCP server.
-
-      - `server_label: string`
-
-        The label of the MCP server.
-
-      - `tools: array of object { input_schema, name, annotations, description }`
-
-        The tools available on the server.
-
-        - `input_schema: unknown`
-
-          The JSON schema describing the tool's input.
-
-        - `name: string`
-
-          The name of the tool.
-
-        - `annotations: optional unknown or null`
-
-          Additional annotations about the tool.
-
-        - `description: optional string or null`
-
-          The description of the tool.
-
-      - `type: "mcp_list_tools"`
-
-        The type of the item. Always `mcp_list_tools`.
-
-        - `"mcp_list_tools"`
-
-      - `id: optional string`
-
-        The unique ID of the list.
-
-    - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
-
-      A Realtime item representing an invocation of a tool on an MCP server.
+      Reference an existing item in this Realtime session as response.create input.
+      Item references are only accepted in the response input array, not as new
+      conversation items.
 
       - `id: string`
 
-        The unique ID of the tool call.
+        The ID of an existing item in the same Realtime session.
 
-      - `arguments: string`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        A JSON string of the arguments passed to the tool.
+      - `type: "item_reference"`
 
-      - `name: string`
+        The type of this item. Always `item_reference`.
 
-        The name of the tool that was run.
-
-      - `server_label: string`
-
-        The label of the MCP server running the tool.
-
-      - `type: "mcp_call"`
-
-        The type of the item. Always `mcp_call`.
-
-        - `"mcp_call"`
-
-      - `approval_request_id: optional string or null`
-
-        The ID of an associated approval request, if any.
-
-      - `error: optional RealtimeMcpProtocolError or RealtimeMcpToolExecutionError or RealtimeMcphttpError or null`
-
-        The error from the tool call, if any.
-
-        - `RealtimeMcpProtocolError object { code, message, type }`
-
-          - `code: number`
-
-          - `message: string`
-
-          - `type: "protocol_error"`
-
-            - `"protocol_error"`
-
-        - `RealtimeMcpToolExecutionError object { message, type }`
-
-          - `message: string`
-
-          - `type: "tool_execution_error"`
-
-            - `"tool_execution_error"`
-
-        - `RealtimeMcphttpError object { code, message, type }`
-
-          - `code: number`
-
-          - `message: string`
-
-          - `type: "http_error"`
-
-            - `"http_error"`
-
-      - `output: optional string or null`
-
-        The output from the tool call.
-
-    - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
-
-      A Realtime item requesting human approval of a tool invocation.
-
-      - `id: string`
-
-        The unique ID of the approval request.
-
-      - `arguments: string`
-
-        A JSON string of arguments for the tool.
-
-      - `name: string`
-
-        The name of the tool to run.
-
-      - `server_label: string`
-
-        The label of the MCP server making the request.
-
-      - `type: "mcp_approval_request"`
-
-        The type of the item. Always `mcp_approval_request`.
-
-        - `"mcp_approval_request"`
+        - `"item_reference"`
 
   - `instructions: optional string`
 
@@ -8102,7 +8256,7 @@ Use Bearer Auth (header Authorization).
 
           The text input to the model.
 
-        - `type: "input_text"`
+        - `type: "input_text" (default: "input_text")`
 
           The type of the input item. Always `input_text`.
 
@@ -8112,7 +8266,7 @@ Use Bearer Auth (header Authorization).
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -8142,7 +8296,7 @@ Use Bearer Auth (header Authorization).
 
           - `"original"`
 
-        - `type: "input_image"`
+        - `type: "input_image" (default: "input_image")`
 
           The type of the input item. Always `input_image`.
 
@@ -8156,11 +8310,13 @@ Use Bearer Auth (header Authorization).
 
           The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+          `format: uri`
+
         - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -8178,7 +8334,7 @@ Use Bearer Auth (header Authorization).
 
         A file input to the model.
 
-        - `type: "input_file"`
+        - `type: "input_file" (default: "input_file")`
 
           The type of the input item. Always `input_file`.
 
@@ -8206,6 +8362,8 @@ Use Bearer Auth (header Authorization).
 
           The URL of the file to be sent to the model.
 
+          `format: uri`
+
         - `filename: optional string`
 
           The name of the file to be sent to the model.
@@ -8214,7 +8372,7 @@ Use Bearer Auth (header Authorization).
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -8236,7 +8394,7 @@ Use Bearer Auth (header Authorization).
 
     Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-    - `effort: optional RealtimeReasoningEffort`
+    - `effort: optional RealtimeReasoningEffort (default: "low")`
 
       Constrains effort on reasoning for reasoning-capable Realtime models such as
       `gpt-realtime-2`.
@@ -8251,7 +8409,7 @@ Use Bearer Auth (header Authorization).
 
       - `"xhigh"`
 
-  - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
+  - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp (default: "auto")`
 
     How the model chooses tools. Provide one of the string modes or force a specific
     function/MCP tool.
@@ -8350,6 +8508,8 @@ Use Bearer Auth (header Authorization).
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
@@ -8428,7 +8588,7 @@ Use Bearer Auth (header Authorization).
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
         Specify which of the MCP server's tools require approval.
 
@@ -8485,10 +8645,14 @@ Use Bearer Auth (header Authorization).
         The URL for the MCP server. One of `server_url`, `connector_id`, or
         `tunnel_id` must be provided.
 
+        `format: uri`
+
       - `tunnel_id: optional string`
 
         The Secure MCP Tunnel ID to use instead of a direct server URL. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+        `pattern: ^tunnel_[a-z0-9]{32}$`
 
 ### Realtime Response Status
 
@@ -8552,11 +8716,11 @@ Use Bearer Auth (header Authorization).
 
     Details about the input tokens used in the Response. Cached tokens are tokens from previous turns in the conversation that are included as context for the current response. Cached tokens here are counted as a subset of input tokens, meaning input tokens will include cached and uncached tokens.
 
-    - `audio_tokens: optional number`
+    - `audio_tokens: optional integer`
 
       The number of audio tokens used as input for the Response.
 
-    - `cached_tokens: optional number`
+    - `cached_tokens: optional integer`
 
       The number of cached tokens used as input for the Response.
 
@@ -8564,27 +8728,27 @@ Use Bearer Auth (header Authorization).
 
       Details about the cached tokens used as input for the Response.
 
-      - `audio_tokens: optional number`
+      - `audio_tokens: optional integer`
 
         The number of cached audio tokens used as input for the Response.
 
-      - `image_tokens: optional number`
+      - `image_tokens: optional integer`
 
         The number of cached image tokens used as input for the Response.
 
-      - `text_tokens: optional number`
+      - `text_tokens: optional integer`
 
         The number of cached text tokens used as input for the Response.
 
-    - `image_tokens: optional number`
+    - `image_tokens: optional integer`
 
       The number of image tokens used as input for the Response.
 
-    - `text_tokens: optional number`
+    - `text_tokens: optional integer`
 
       The number of text tokens used as input for the Response.
 
-  - `input_tokens: optional number`
+  - `input_tokens: optional integer`
 
     The number of input tokens used in the Response, including text and
     audio tokens.
@@ -8593,20 +8757,20 @@ Use Bearer Auth (header Authorization).
 
     Details about the output tokens used in the Response.
 
-    - `audio_tokens: optional number`
+    - `audio_tokens: optional integer`
 
       The number of audio tokens used in the Response.
 
-    - `text_tokens: optional number`
+    - `text_tokens: optional integer`
 
       The number of text tokens used in the Response.
 
-  - `output_tokens: optional number`
+  - `output_tokens: optional integer`
 
     The number of output tokens sent in the Response, including text and
     audio tokens.
 
-  - `total_tokens: optional number`
+  - `total_tokens: optional integer`
 
     The total number of tokens in the Response including input and output
     text and audio tokens.
@@ -8617,11 +8781,11 @@ Use Bearer Auth (header Authorization).
 
   Details about the input tokens used in the Response. Cached tokens are tokens from previous turns in the conversation that are included as context for the current response. Cached tokens here are counted as a subset of input tokens, meaning input tokens will include cached and uncached tokens.
 
-  - `audio_tokens: optional number`
+  - `audio_tokens: optional integer`
 
     The number of audio tokens used as input for the Response.
 
-  - `cached_tokens: optional number`
+  - `cached_tokens: optional integer`
 
     The number of cached tokens used as input for the Response.
 
@@ -8629,23 +8793,23 @@ Use Bearer Auth (header Authorization).
 
     Details about the cached tokens used as input for the Response.
 
-    - `audio_tokens: optional number`
+    - `audio_tokens: optional integer`
 
       The number of cached audio tokens used as input for the Response.
 
-    - `image_tokens: optional number`
+    - `image_tokens: optional integer`
 
       The number of cached image tokens used as input for the Response.
 
-    - `text_tokens: optional number`
+    - `text_tokens: optional integer`
 
       The number of cached text tokens used as input for the Response.
 
-  - `image_tokens: optional number`
+  - `image_tokens: optional integer`
 
     The number of image tokens used as input for the Response.
 
-  - `text_tokens: optional number`
+  - `text_tokens: optional integer`
 
     The number of text tokens used as input for the Response.
 
@@ -8655,11 +8819,11 @@ Use Bearer Auth (header Authorization).
 
   Details about the output tokens used in the Response.
 
-  - `audio_tokens: optional number`
+  - `audio_tokens: optional integer`
 
     The number of audio tokens used in the Response.
 
-  - `text_tokens: optional number`
+  - `text_tokens: optional integer`
 
     The number of text tokens used in the Response.
 
@@ -8778,7 +8942,7 @@ Use Bearer Auth (header Authorization).
 
             Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-          - `detail: optional "auto" or "low" or "high"`
+          - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
             The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -8791,6 +8955,8 @@ Use Bearer Auth (header Authorization).
           - `image_url: optional string`
 
             Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+            `format: uri`
 
           - `text: optional string`
 
@@ -9082,7 +9248,7 @@ Use Bearer Auth (header Authorization).
 
           - `RealtimeMcpProtocolError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
@@ -9100,7 +9266,7 @@ Use Bearer Auth (header Authorization).
 
           - `RealtimeMcphttpError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
@@ -9183,7 +9349,7 @@ Use Bearer Auth (header Authorization).
     The transcript may diverge somewhat from the model's interpretation, and
     should be treated as a rough guide.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part containing the audio.
 
@@ -9214,15 +9380,15 @@ Use Bearer Auth (header Authorization).
 
         Usage statistics for models billed by token usage.
 
-        - `input_tokens: number`
+        - `input_tokens: integer`
 
           Number of input tokens billed for this request.
 
-        - `output_tokens: number`
+        - `output_tokens: integer`
 
           Number of output tokens generated.
 
-        - `total_tokens: number`
+        - `total_tokens: integer`
 
           Total number of tokens used (input + output).
 
@@ -9236,11 +9402,11 @@ Use Bearer Auth (header Authorization).
 
           Details about the input tokens billed for this request.
 
-          - `audio_tokens: optional number`
+          - `audio_tokens: optional integer`
 
             Number of audio tokens billed for this request.
 
-          - `text_tokens: optional number`
+          - `text_tokens: optional integer`
 
             Number of text tokens billed for this request.
 
@@ -9251,6 +9417,8 @@ Use Bearer Auth (header Authorization).
         - `seconds: number`
 
           Duration of the input audio in seconds.
+
+          `format: double`
 
         - `type: "duration"`
 
@@ -9300,7 +9468,7 @@ Use Bearer Auth (header Authorization).
 
       - `"conversation.item.input_audio_transcription.delta"`
 
-    - `content_index: optional number`
+    - `content_index: optional integer`
 
       The index of the content part in the item's content array.
 
@@ -9330,7 +9498,7 @@ Use Bearer Auth (header Authorization).
     request for a user message failed. These events are separate from other
     `error` events so that the client can identify the related Item.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part containing the audio.
 
@@ -9396,11 +9564,11 @@ Use Bearer Auth (header Authorization).
     This action will truncate the audio and remove the server-side text transcript
     to ensure there is no text in the context that hasn't been heard by the user.
 
-    - `audio_end_ms: number`
+    - `audio_end_ms: integer`
 
       The duration up to which the audio was truncated, in milliseconds.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part that was truncated.
 
@@ -9510,7 +9678,7 @@ Use Bearer Auth (header Authorization).
 
       The telephone keypad that was pressed by the user.
 
-    - `received_at: number`
+    - `received_at: integer`
 
       UTC Unix Timestamp when DTMF Event was received by server.
 
@@ -9533,7 +9701,7 @@ Use Bearer Auth (header Authorization).
     `input_audio_buffer.speech_stopped` event (unless the client manually commits
     the audio buffer during VAD activation).
 
-    - `audio_start_ms: number`
+    - `audio_start_ms: integer`
 
       Milliseconds from the start of all audio written to the buffer during the
       session when speech was first detected. This will correspond to the
@@ -9560,7 +9728,7 @@ Use Bearer Auth (header Authorization).
     the audio buffer. The server will also send an `conversation.item.created`
     event with the user message item that is created from the audio buffer.
 
-    - `audio_end_ms: number`
+    - `audio_end_ms: integer`
 
       Milliseconds since the session started when speech stopped. This will
       correspond to the end of audio sent to the model, and thus includes the
@@ -9595,7 +9763,7 @@ Use Bearer Auth (header Authorization).
 
       List of rate limit information.
 
-      - `limit: optional number`
+      - `limit: optional integer`
 
         The maximum allowed value for the rate limit.
 
@@ -9607,7 +9775,7 @@ Use Bearer Auth (header Authorization).
 
         - `"tokens"`
 
-      - `remaining: optional number`
+      - `remaining: optional integer`
 
         The remaining value before the limit is reached.
 
@@ -9625,7 +9793,7 @@ Use Bearer Auth (header Authorization).
 
     Returned when the model-generated audio is updated.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part in the item's content array.
 
@@ -9641,7 +9809,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -9660,7 +9828,7 @@ Use Bearer Auth (header Authorization).
     Returned when the model-generated audio is done. Also emitted when a Response
     is interrupted, incomplete, or cancelled.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part in the item's content array.
 
@@ -9672,7 +9840,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -9690,7 +9858,7 @@ Use Bearer Auth (header Authorization).
 
     Returned when the model-generated transcription of audio output is updated.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part in the item's content array.
 
@@ -9706,7 +9874,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -9726,7 +9894,7 @@ Use Bearer Auth (header Authorization).
     streaming. Also emitted when a Response is interrupted, incomplete, or
     cancelled.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part in the item's content array.
 
@@ -9738,7 +9906,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -9761,7 +9929,7 @@ Use Bearer Auth (header Authorization).
     Returned when a new content part is added to an assistant message item during
     response generation.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part in the item's content array.
 
@@ -9773,7 +9941,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the item to which the content part was added.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -9816,7 +9984,7 @@ Use Bearer Auth (header Authorization).
     Returned when a content part is done streaming in an assistant message item.
     Also emitted when a Response is interrupted, incomplete, or cancelled.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part in the item's content array.
 
@@ -9828,7 +9996,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -9929,7 +10097,7 @@ Use Bearer Auth (header Authorization).
 
                 - `"audio/pcma"`
 
-          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
+          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more (default: "alloy")`
 
             The voice the model uses to respond. Voice cannot be changed during the
             session once the model has responded with audio at least once. Current
@@ -10125,11 +10293,11 @@ Use Bearer Auth (header Authorization).
 
           Details about the input tokens used in the Response. Cached tokens are tokens from previous turns in the conversation that are included as context for the current response. Cached tokens here are counted as a subset of input tokens, meaning input tokens will include cached and uncached tokens.
 
-          - `audio_tokens: optional number`
+          - `audio_tokens: optional integer`
 
             The number of audio tokens used as input for the Response.
 
-          - `cached_tokens: optional number`
+          - `cached_tokens: optional integer`
 
             The number of cached tokens used as input for the Response.
 
@@ -10137,27 +10305,27 @@ Use Bearer Auth (header Authorization).
 
             Details about the cached tokens used as input for the Response.
 
-            - `audio_tokens: optional number`
+            - `audio_tokens: optional integer`
 
               The number of cached audio tokens used as input for the Response.
 
-            - `image_tokens: optional number`
+            - `image_tokens: optional integer`
 
               The number of cached image tokens used as input for the Response.
 
-            - `text_tokens: optional number`
+            - `text_tokens: optional integer`
 
               The number of cached text tokens used as input for the Response.
 
-          - `image_tokens: optional number`
+          - `image_tokens: optional integer`
 
             The number of image tokens used as input for the Response.
 
-          - `text_tokens: optional number`
+          - `text_tokens: optional integer`
 
             The number of text tokens used as input for the Response.
 
-        - `input_tokens: optional number`
+        - `input_tokens: optional integer`
 
           The number of input tokens used in the Response, including text and
           audio tokens.
@@ -10166,20 +10334,20 @@ Use Bearer Auth (header Authorization).
 
           Details about the output tokens used in the Response.
 
-          - `audio_tokens: optional number`
+          - `audio_tokens: optional integer`
 
             The number of audio tokens used in the Response.
 
-          - `text_tokens: optional number`
+          - `text_tokens: optional integer`
 
             The number of text tokens used in the Response.
 
-        - `output_tokens: optional number`
+        - `output_tokens: optional integer`
 
           The number of output tokens sent in the Response, including text and
           audio tokens.
 
-        - `total_tokens: optional number`
+        - `total_tokens: optional integer`
 
           The total number of tokens in the Response including input and output
           text and audio tokens.
@@ -10236,7 +10404,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the function call item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -10275,7 +10443,7 @@ Use Bearer Auth (header Authorization).
 
       The name of the function that was called.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -10301,7 +10469,7 @@ Use Bearer Auth (header Authorization).
 
       A single item within a Realtime conversation.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the Response.
 
@@ -10328,7 +10496,7 @@ Use Bearer Auth (header Authorization).
 
       A single item within a Realtime conversation.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the Response.
 
@@ -10346,7 +10514,7 @@ Use Bearer Auth (header Authorization).
 
     Returned when the text value of an "output_text" content part is updated.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part in the item's content array.
 
@@ -10362,7 +10530,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -10381,7 +10549,7 @@ Use Bearer Auth (header Authorization).
     Returned when the text value of an "output_text" content part is done streaming. Also
     emitted when a Response is interrupted, incomplete, or cancelled.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the content part in the item's content array.
 
@@ -10393,7 +10561,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -10455,7 +10623,7 @@ Use Bearer Auth (header Authorization).
 
               The format of the input audio.
 
-            - `noise_reduction: optional object { type }  or null`
+            - `noise_reduction: optional object { type }  or null (default: null)`
 
               Configuration for input audio noise reduction. This can be set to `null` to turn off.
               Noise reduction filters audio added to the input audio buffer before it is sent to VAD and the model.
@@ -10480,6 +10648,8 @@ Use Bearer Auth (header Authorization).
               - `languages: optional array of string`
 
                 The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
+
+                `minItems: 1`
 
               - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
@@ -10526,19 +10696,19 @@ Use Bearer Auth (header Authorization).
 
                 Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-                - `type: "server_vad"`
+                - `type: "server_vad" (default: "server_vad")`
 
                   Type of turn detection, `server_vad` to turn on simple Server VAD.
 
                   - `"server_vad"`
 
-                - `create_response: optional boolean`
+                - `create_response: optional boolean (default: true)`
 
                   Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
                   If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-                - `idle_timeout_ms: optional number or null`
+                - `idle_timeout_ms: optional integer or null`
 
                   Optional timeout after which a model response will be triggered automatically. This is
                   useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -10552,19 +10722,21 @@ Use Bearer Auth (header Authorization).
                   associated with the Response) will be emitted when the timeout is reached.
                   Idle timeout is currently only supported for `server_vad` mode.
 
-                - `interrupt_response: optional boolean`
+                  `minimum: 5000`, `maximum: 30000`
+
+                - `interrupt_response: optional boolean (default: true)`
 
                   Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
                   conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
                   If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-                - `prefix_padding_ms: optional number`
+                - `prefix_padding_ms: optional integer`
 
                   Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
                   milliseconds). Defaults to 300ms.
 
-                - `silence_duration_ms: optional number`
+                - `silence_duration_ms: optional integer`
 
                   Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
                   to 500ms. With shorter values the model will respond more quickly,
@@ -10586,11 +10758,11 @@ Use Bearer Auth (header Authorization).
 
                   - `"semantic_vad"`
 
-                - `create_response: optional boolean`
+                - `create_response: optional boolean (default: true)`
 
                   Whether or not to automatically generate a response when a VAD stop event occurs.
 
-                - `eagerness: optional "low" or "medium" or "high" or "auto"`
+                - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
                   Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -10602,7 +10774,7 @@ Use Bearer Auth (header Authorization).
 
                   - `"auto"`
 
-                - `interrupt_response: optional boolean`
+                - `interrupt_response: optional boolean (default: true)`
 
                   Whether or not to automatically interrupt any ongoing response with output to the default
                   conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -10613,7 +10785,7 @@ Use Bearer Auth (header Authorization).
 
               The format of the output audio.
 
-            - `speed: optional number`
+            - `speed: optional number (default: 1)`
 
               The speed of the model's spoken response as a multiple of the original speed.
               1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -10621,7 +10793,9 @@ Use Bearer Auth (header Authorization).
               This parameter is a post-processing adjustment to the audio after it is generated, it's
               also possible to prompt the model to speak faster or slower.
 
-            - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
+              `minimum: 0.25`, `maximum: 1.5`
+
+            - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more (default: "alloy")`
 
               The voice the model uses to respond. Voice cannot be changed during the
               session once the model has responded with audio at least once. Current
@@ -10659,9 +10833,11 @@ Use Bearer Auth (header Authorization).
 
                 - `"cedar"`
 
-        - `expires_at: optional number`
+        - `expires_at: optional integer`
 
           Expiration timestamp for the session, in seconds since epoch.
+
+          `format: unixtime`
 
         - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -10738,7 +10914,7 @@ Use Bearer Auth (header Authorization).
 
             - `"gpt-audio-mini-2025-12-15"`
 
-        - `output_modalities: optional array of "text" or "audio"`
+        - `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
           The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
           that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -10773,7 +10949,7 @@ Use Bearer Auth (header Authorization).
 
                 The text input to the model.
 
-              - `type: "input_text"`
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -10783,7 +10959,7 @@ Use Bearer Auth (header Authorization).
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -10813,7 +10989,7 @@ Use Bearer Auth (header Authorization).
 
                 - `"original"`
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -10827,11 +11003,13 @@ Use Bearer Auth (header Authorization).
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -10849,7 +11027,7 @@ Use Bearer Auth (header Authorization).
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -10877,6 +11055,8 @@ Use Bearer Auth (header Authorization).
 
                 The URL of the file to be sent to the model.
 
+                `format: uri`
+
               - `filename: optional string`
 
                 The name of the file to be sent to the model.
@@ -10885,7 +11065,7 @@ Use Bearer Auth (header Authorization).
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -10907,7 +11087,7 @@ Use Bearer Auth (header Authorization).
 
           Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-          - `effort: optional RealtimeReasoningEffort`
+          - `effort: optional RealtimeReasoningEffort (default: "low")`
 
             Constrains effort on reasoning for reasoning-capable Realtime models such as
             `gpt-realtime-2`.
@@ -10922,7 +11102,7 @@ Use Bearer Auth (header Authorization).
 
             - `"xhigh"`
 
-        - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
+        - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp (default: "auto")`
 
           How the model chooses tools. Provide one of the string modes or force a specific
           function/MCP tool.
@@ -11021,6 +11201,8 @@ Use Bearer Auth (header Authorization).
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -11099,7 +11281,7 @@ Use Bearer Auth (header Authorization).
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -11156,10 +11338,14 @@ Use Bearer Auth (header Authorization).
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `tracing: optional "auto" or TracingConfiguration { group_id, metadata, workflow_name }  or null`
 
@@ -11220,6 +11406,8 @@ Use Bearer Auth (header Authorization).
 
               Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+              `minimum: 0`, `maximum: 1`
+
             - `type: "retention_ratio"`
 
               Use retention ratio truncation.
@@ -11230,9 +11418,11 @@ Use Bearer Auth (header Authorization).
 
               Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-              - `post_instructions: optional number`
+              - `post_instructions: optional integer`
 
                 Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+                `minimum: 0`
 
       - `RealtimeTranscriptionSessionCreateResponse object { id, object, type, 3 more }`
 
@@ -11282,6 +11472,8 @@ Use Bearer Auth (header Authorization).
 
                 The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
 
+                `minItems: 1`
+
               - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
                 The model used for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
@@ -11318,12 +11510,12 @@ Use Bearer Auth (header Authorization).
               VAD means that the model will detect the start and end of speech based on
               audio volume and respond at the end of user speech. For `gpt-realtime-whisper`, this must be `null`; VAD is not supported.
 
-              - `prefix_padding_ms: optional number`
+              - `prefix_padding_ms: optional integer`
 
                 Amount of audio to include before the VAD detected speech (in
                 milliseconds). Defaults to 300ms.
 
-              - `silence_duration_ms: optional number`
+              - `silence_duration_ms: optional integer`
 
                 Duration of silence to detect speech stop (in milliseconds). Defaults
                 to 500ms. With shorter values the model will respond more quickly,
@@ -11339,9 +11531,11 @@ Use Bearer Auth (header Authorization).
 
                 Type of turn detection, only `server_vad` is currently supported.
 
-        - `expires_at: optional number`
+        - `expires_at: optional integer`
 
           Expiration timestamp for the session, in seconds since epoch.
+
+          `format: unixtime`
 
         - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -11518,11 +11712,11 @@ Use Bearer Auth (header Authorization).
     that didn't trigger VAD but is still detected by the model, so the model may respond with
     something relevant to the conversation or a prompt to continue speaking.
 
-    - `audio_end_ms: number`
+    - `audio_end_ms: integer`
 
       Millisecond offset of audio written to the input audio buffer at the time the timeout was triggered.
 
-    - `audio_start_ms: number`
+    - `audio_start_ms: integer`
 
       Millisecond offset of audio written to the input audio buffer that was after the playback time of the last model response.
 
@@ -11548,13 +11742,15 @@ Use Bearer Auth (header Authorization).
 
       The segment identifier.
 
-    - `content_index: number`
+    - `content_index: integer`
 
       The index of the input audio content part within the item.
 
     - `end: number`
 
       End time of the segment in seconds.
+
+      `format: double`
 
     - `event_id: string`
 
@@ -11571,6 +11767,8 @@ Use Bearer Auth (header Authorization).
     - `start: number`
 
       Start time of the segment in seconds.
+
+      `format: double`
 
     - `text: string`
 
@@ -11652,7 +11850,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the MCP tool call item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -11686,7 +11884,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the MCP tool call item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -11712,7 +11910,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the MCP tool call item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -11734,7 +11932,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the MCP tool call item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -11756,7 +11954,7 @@ Use Bearer Auth (header Authorization).
 
       The ID of the MCP tool call item.
 
-    - `output_index: number`
+    - `output_index: integer`
 
       The index of the output item in the response.
 
@@ -11776,9 +11974,11 @@ Use Bearer Auth (header Authorization).
 
     Unique identifier for the session that looks like `sess_1234567890abcdef`.
 
-  - `expires_at: optional number`
+  - `expires_at: optional integer`
 
     Expiration timestamp for the session, in seconds since epoch.
+
+    `format: unixtime`
 
   - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -11788,7 +11988,7 @@ Use Bearer Auth (header Authorization).
 
     - `"item.input_audio_transcription.logprobs"`
 
-  - `input_audio_format: optional "pcm16" or "g711_ulaw" or "g711_alaw"`
+  - `input_audio_format: optional "pcm16" or "g711_ulaw" or "g711_alaw" (default: "pcm16")`
 
     The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
     For `pcm16`, input audio must be 16-bit PCM at a 24kHz sample rate,
@@ -11825,6 +12025,8 @@ Use Bearer Auth (header Authorization).
     - `languages: optional array of string`
 
       The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
+
+      `minItems: 1`
 
     - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
@@ -11941,7 +12143,7 @@ Use Bearer Auth (header Authorization).
 
     - `"realtime.session"`
 
-  - `output_audio_format: optional "pcm16" or "g711_ulaw" or "g711_alaw"`
+  - `output_audio_format: optional "pcm16" or "g711_ulaw" or "g711_alaw" (default: "pcm16")`
 
     The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
     For `pcm16`, output audio is sampled at a rate of 24kHz.
@@ -11977,7 +12179,7 @@ Use Bearer Auth (header Authorization).
 
           The text input to the model.
 
-        - `type: "input_text"`
+        - `type: "input_text" (default: "input_text")`
 
           The type of the input item. Always `input_text`.
 
@@ -11987,7 +12189,7 @@ Use Bearer Auth (header Authorization).
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -12017,7 +12219,7 @@ Use Bearer Auth (header Authorization).
 
           - `"original"`
 
-        - `type: "input_image"`
+        - `type: "input_image" (default: "input_image")`
 
           The type of the input item. Always `input_image`.
 
@@ -12031,11 +12233,13 @@ Use Bearer Auth (header Authorization).
 
           The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+          `format: uri`
+
         - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -12053,7 +12257,7 @@ Use Bearer Auth (header Authorization).
 
         A file input to the model.
 
-        - `type: "input_file"`
+        - `type: "input_file" (default: "input_file")`
 
           The type of the input item. Always `input_file`.
 
@@ -12081,6 +12285,8 @@ Use Bearer Auth (header Authorization).
 
           The URL of the file to be sent to the model.
 
+          `format: uri`
+
         - `filename: optional string`
 
           The name of the file to be sent to the model.
@@ -12089,7 +12295,7 @@ Use Bearer Auth (header Authorization).
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -12107,17 +12313,19 @@ Use Bearer Auth (header Authorization).
 
       Optional version of the prompt template.
 
-  - `speed: optional number`
+  - `speed: optional number (default: 1)`
 
     The speed of the model's spoken response. 1.0 is the default speed. 0.25 is
     the minimum speed. 1.5 is the maximum speed. This value can only be changed
     in between model turns, not while a response is in progress.
 
-  - `temperature: optional number`
+    `minimum: 0.25`, `maximum: 1.5`
+
+  - `temperature: optional number (default: 0.8)`
 
     Sampling temperature for the model, limited to [0.6, 1.2]. For audio models a temperature of 0.8 is highly recommended for best performance.
 
-  - `tool_choice: optional string`
+  - `tool_choice: optional string (default: "auto")`
 
     How the model chooses tools. Options are `auto`, `none`, `required`, or
     specify a function.
@@ -12194,19 +12402,19 @@ Use Bearer Auth (header Authorization).
 
       Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-      - `type: "server_vad"`
+      - `type: "server_vad" (default: "server_vad")`
 
         Type of turn detection, `server_vad` to turn on simple Server VAD.
 
         - `"server_vad"`
 
-      - `create_response: optional boolean`
+      - `create_response: optional boolean (default: true)`
 
         Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
         If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-      - `idle_timeout_ms: optional number or null`
+      - `idle_timeout_ms: optional integer or null`
 
         Optional timeout after which a model response will be triggered automatically. This is
         useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -12220,19 +12428,21 @@ Use Bearer Auth (header Authorization).
         associated with the Response) will be emitted when the timeout is reached.
         Idle timeout is currently only supported for `server_vad` mode.
 
-      - `interrupt_response: optional boolean`
+        `minimum: 5000`, `maximum: 30000`
+
+      - `interrupt_response: optional boolean (default: true)`
 
         Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
         conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
         If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-      - `prefix_padding_ms: optional number`
+      - `prefix_padding_ms: optional integer`
 
         Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
         milliseconds). Defaults to 300ms.
 
-      - `silence_duration_ms: optional number`
+      - `silence_duration_ms: optional integer`
 
         Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
         to 500ms. With shorter values the model will respond more quickly,
@@ -12254,11 +12464,11 @@ Use Bearer Auth (header Authorization).
 
         - `"semantic_vad"`
 
-      - `create_response: optional boolean`
+      - `create_response: optional boolean (default: true)`
 
         Whether or not to automatically generate a response when a VAD stop event occurs.
 
-      - `eagerness: optional "low" or "medium" or "high" or "auto"`
+      - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
         Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -12270,7 +12480,7 @@ Use Bearer Auth (header Authorization).
 
         - `"auto"`
 
-      - `interrupt_response: optional boolean`
+      - `interrupt_response: optional boolean (default: true)`
 
         Whether or not to automatically interrupt any ongoing response with output to the default
         conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -12417,6 +12627,8 @@ Use Bearer Auth (header Authorization).
 
           Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+          `minItems: 1`
+
         - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
           The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -12466,19 +12678,19 @@ Use Bearer Auth (header Authorization).
 
           Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-          - `type: "server_vad"`
+          - `type: "server_vad" (default: "server_vad")`
 
             Type of turn detection, `server_vad` to turn on simple Server VAD.
 
             - `"server_vad"`
 
-          - `create_response: optional boolean`
+          - `create_response: optional boolean (default: true)`
 
             Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
             If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-          - `idle_timeout_ms: optional number or null`
+          - `idle_timeout_ms: optional integer or null`
 
             Optional timeout after which a model response will be triggered automatically. This is
             useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -12492,19 +12704,21 @@ Use Bearer Auth (header Authorization).
             associated with the Response) will be emitted when the timeout is reached.
             Idle timeout is currently only supported for `server_vad` mode.
 
-          - `interrupt_response: optional boolean`
+            `minimum: 5000`, `maximum: 30000`
+
+          - `interrupt_response: optional boolean (default: true)`
 
             Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
             conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
             If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-          - `prefix_padding_ms: optional number`
+          - `prefix_padding_ms: optional integer`
 
             Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
             milliseconds). Defaults to 300ms.
 
-          - `silence_duration_ms: optional number`
+          - `silence_duration_ms: optional integer`
 
             Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
             to 500ms. With shorter values the model will respond more quickly,
@@ -12526,11 +12740,11 @@ Use Bearer Auth (header Authorization).
 
             - `"semantic_vad"`
 
-          - `create_response: optional boolean`
+          - `create_response: optional boolean (default: true)`
 
             Whether or not to automatically generate a response when a VAD stop event occurs.
 
-          - `eagerness: optional "low" or "medium" or "high" or "auto"`
+          - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
             Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -12542,7 +12756,7 @@ Use Bearer Auth (header Authorization).
 
             - `"auto"`
 
-          - `interrupt_response: optional boolean`
+          - `interrupt_response: optional boolean (default: true)`
 
             Whether or not to automatically interrupt any ongoing response with output to the default
             conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -12553,7 +12767,7 @@ Use Bearer Auth (header Authorization).
 
         The format of the output audio.
 
-      - `speed: optional number`
+      - `speed: optional number (default: 1)`
 
         The speed of the model's spoken response as a multiple of the original speed.
         1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -12561,7 +12775,9 @@ Use Bearer Auth (header Authorization).
         This parameter is a post-processing adjustment to the audio after it is generated, it's
         also possible to prompt the model to speak faster or slower.
 
-      - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+        `minimum: 0.25`, `maximum: 1.5`
+
+      - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
         The voice the model uses to respond. Supported built-in voices are
         `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -12678,7 +12894,7 @@ Use Bearer Auth (header Authorization).
 
       - `"gpt-audio-mini-2025-12-15"`
 
-  - `output_modalities: optional array of "text" or "audio"`
+  - `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
     The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
     that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -12718,7 +12934,7 @@ Use Bearer Auth (header Authorization).
 
           The text input to the model.
 
-        - `type: "input_text"`
+        - `type: "input_text" (default: "input_text")`
 
           The type of the input item. Always `input_text`.
 
@@ -12728,7 +12944,7 @@ Use Bearer Auth (header Authorization).
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -12758,7 +12974,7 @@ Use Bearer Auth (header Authorization).
 
           - `"original"`
 
-        - `type: "input_image"`
+        - `type: "input_image" (default: "input_image")`
 
           The type of the input item. Always `input_image`.
 
@@ -12772,11 +12988,13 @@ Use Bearer Auth (header Authorization).
 
           The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+          `format: uri`
+
         - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -12794,7 +13012,7 @@ Use Bearer Auth (header Authorization).
 
         A file input to the model.
 
-        - `type: "input_file"`
+        - `type: "input_file" (default: "input_file")`
 
           The type of the input item. Always `input_file`.
 
@@ -12822,6 +13040,8 @@ Use Bearer Auth (header Authorization).
 
           The URL of the file to be sent to the model.
 
+          `format: uri`
+
         - `filename: optional string`
 
           The name of the file to be sent to the model.
@@ -12830,7 +13050,7 @@ Use Bearer Auth (header Authorization).
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -12852,7 +13072,7 @@ Use Bearer Auth (header Authorization).
 
     Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-    - `effort: optional RealtimeReasoningEffort`
+    - `effort: optional RealtimeReasoningEffort (default: "low")`
 
       Constrains effort on reasoning for reasoning-capable Realtime models such as
       `gpt-realtime-2`.
@@ -12867,7 +13087,7 @@ Use Bearer Auth (header Authorization).
 
       - `"xhigh"`
 
-  - `tool_choice: optional RealtimeToolChoiceConfig`
+  - `tool_choice: optional RealtimeToolChoiceConfig (default: "auto")`
 
     How the model chooses tools. Provide one of the string modes or force a specific
     function/MCP tool.
@@ -12966,6 +13186,8 @@ Use Bearer Auth (header Authorization).
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
@@ -13044,7 +13266,7 @@ Use Bearer Auth (header Authorization).
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
         Specify which of the MCP server's tools require approval.
 
@@ -13101,10 +13323,14 @@ Use Bearer Auth (header Authorization).
         The URL for the MCP server. One of `server_url`, `connector_id`, or
         `tunnel_id` must be provided.
 
+        `format: uri`
+
       - `tunnel_id: optional string`
 
         The Secure MCP Tunnel ID to use instead of a direct server URL. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+        `pattern: ^tunnel_[a-z0-9]{32}$`
 
   - `tracing: optional RealtimeTracingConfig or null`
 
@@ -13165,6 +13391,8 @@ Use Bearer Auth (header Authorization).
 
         Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+        `minimum: 0`, `maximum: 1`
+
       - `type: "retention_ratio"`
 
         Use retention ratio truncation.
@@ -13175,9 +13403,11 @@ Use Bearer Auth (header Authorization).
 
         Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-        - `post_instructions: optional number`
+        - `post_instructions: optional integer`
 
           Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+          `minimum: 0`
 
 ### Realtime Tool Choice Config
 
@@ -13282,6 +13512,8 @@ Use Bearer Auth (header Authorization).
 
       The tool invocation context(s).
 
+      `minItems: 1`
+
       - `"direct"`
 
       - `"programmatic"`
@@ -13360,7 +13592,7 @@ Use Bearer Auth (header Authorization).
       Optional HTTP headers to send to the MCP server. Use for authentication
       or other purposes.
 
-    - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+    - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
       Specify which of the MCP server's tools require approval.
 
@@ -13417,10 +13649,14 @@ Use Bearer Auth (header Authorization).
       The URL for the MCP server. One of `server_url`, `connector_id`, or
       `tunnel_id` must be provided.
 
+      `format: uri`
+
     - `tunnel_id: optional string`
 
       The Secure MCP Tunnel ID to use instead of a direct server URL. One of
       `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+      `pattern: ^tunnel_[a-z0-9]{32}$`
 
 ### Realtime Tools Config Union
 
@@ -13470,6 +13706,8 @@ Use Bearer Auth (header Authorization).
 
       The tool invocation context(s).
 
+      `minItems: 1`
+
       - `"direct"`
 
       - `"programmatic"`
@@ -13548,7 +13786,7 @@ Use Bearer Auth (header Authorization).
       Optional HTTP headers to send to the MCP server. Use for authentication
       or other purposes.
 
-    - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+    - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
       Specify which of the MCP server's tools require approval.
 
@@ -13605,10 +13843,14 @@ Use Bearer Auth (header Authorization).
       The URL for the MCP server. One of `server_url`, `connector_id`, or
       `tunnel_id` must be provided.
 
+      `format: uri`
+
     - `tunnel_id: optional string`
 
       The Secure MCP Tunnel ID to use instead of a direct server URL. One of
       `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+      `pattern: ^tunnel_[a-z0-9]{32}$`
 
 ### Realtime Tracing Config
 
@@ -13741,6 +13983,8 @@ Use Bearer Auth (header Authorization).
 
         Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+        `minItems: 1`
+
       - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
         The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -13790,19 +14034,19 @@ Use Bearer Auth (header Authorization).
 
         Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-        - `type: "server_vad"`
+        - `type: "server_vad" (default: "server_vad")`
 
           Type of turn detection, `server_vad` to turn on simple Server VAD.
 
           - `"server_vad"`
 
-        - `create_response: optional boolean`
+        - `create_response: optional boolean (default: true)`
 
           Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
           If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-        - `idle_timeout_ms: optional number or null`
+        - `idle_timeout_ms: optional integer or null`
 
           Optional timeout after which a model response will be triggered automatically. This is
           useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -13816,19 +14060,21 @@ Use Bearer Auth (header Authorization).
           associated with the Response) will be emitted when the timeout is reached.
           Idle timeout is currently only supported for `server_vad` mode.
 
-        - `interrupt_response: optional boolean`
+          `minimum: 5000`, `maximum: 30000`
+
+        - `interrupt_response: optional boolean (default: true)`
 
           Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
           conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
           If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-        - `prefix_padding_ms: optional number`
+        - `prefix_padding_ms: optional integer`
 
           Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
           milliseconds). Defaults to 300ms.
 
-        - `silence_duration_ms: optional number`
+        - `silence_duration_ms: optional integer`
 
           Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
           to 500ms. With shorter values the model will respond more quickly,
@@ -13850,11 +14096,11 @@ Use Bearer Auth (header Authorization).
 
           - `"semantic_vad"`
 
-        - `create_response: optional boolean`
+        - `create_response: optional boolean (default: true)`
 
           Whether or not to automatically generate a response when a VAD stop event occurs.
 
-        - `eagerness: optional "low" or "medium" or "high" or "auto"`
+        - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
           Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -13866,7 +14112,7 @@ Use Bearer Auth (header Authorization).
 
           - `"auto"`
 
-        - `interrupt_response: optional boolean`
+        - `interrupt_response: optional boolean (default: true)`
 
           Whether or not to automatically interrupt any ongoing response with output to the default
           conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -13963,6 +14209,8 @@ Use Bearer Auth (header Authorization).
 
       Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+      `minItems: 1`
+
     - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
       The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -14012,19 +14260,19 @@ Use Bearer Auth (header Authorization).
 
       Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-      - `type: "server_vad"`
+      - `type: "server_vad" (default: "server_vad")`
 
         Type of turn detection, `server_vad` to turn on simple Server VAD.
 
         - `"server_vad"`
 
-      - `create_response: optional boolean`
+      - `create_response: optional boolean (default: true)`
 
         Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
         If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-      - `idle_timeout_ms: optional number or null`
+      - `idle_timeout_ms: optional integer or null`
 
         Optional timeout after which a model response will be triggered automatically. This is
         useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -14038,19 +14286,21 @@ Use Bearer Auth (header Authorization).
         associated with the Response) will be emitted when the timeout is reached.
         Idle timeout is currently only supported for `server_vad` mode.
 
-      - `interrupt_response: optional boolean`
+        `minimum: 5000`, `maximum: 30000`
+
+      - `interrupt_response: optional boolean (default: true)`
 
         Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
         conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
         If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-      - `prefix_padding_ms: optional number`
+      - `prefix_padding_ms: optional integer`
 
         Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
         milliseconds). Defaults to 300ms.
 
-      - `silence_duration_ms: optional number`
+      - `silence_duration_ms: optional integer`
 
         Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
         to 500ms. With shorter values the model will respond more quickly,
@@ -14072,11 +14322,11 @@ Use Bearer Auth (header Authorization).
 
         - `"semantic_vad"`
 
-      - `create_response: optional boolean`
+      - `create_response: optional boolean (default: true)`
 
         Whether or not to automatically generate a response when a VAD stop event occurs.
 
-      - `eagerness: optional "low" or "medium" or "high" or "auto"`
+      - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
         Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -14088,7 +14338,7 @@ Use Bearer Auth (header Authorization).
 
         - `"auto"`
 
-      - `interrupt_response: optional boolean`
+      - `interrupt_response: optional boolean (default: true)`
 
         Whether or not to automatically interrupt any ongoing response with output to the default
         conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -14110,19 +14360,19 @@ Use Bearer Auth (header Authorization).
 
     Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-    - `type: "server_vad"`
+    - `type: "server_vad" (default: "server_vad")`
 
       Type of turn detection, `server_vad` to turn on simple Server VAD.
 
       - `"server_vad"`
 
-    - `create_response: optional boolean`
+    - `create_response: optional boolean (default: true)`
 
       Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
       If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-    - `idle_timeout_ms: optional number or null`
+    - `idle_timeout_ms: optional integer or null`
 
       Optional timeout after which a model response will be triggered automatically. This is
       useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -14136,19 +14386,21 @@ Use Bearer Auth (header Authorization).
       associated with the Response) will be emitted when the timeout is reached.
       Idle timeout is currently only supported for `server_vad` mode.
 
-    - `interrupt_response: optional boolean`
+      `minimum: 5000`, `maximum: 30000`
+
+    - `interrupt_response: optional boolean (default: true)`
 
       Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
       conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
       If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-    - `prefix_padding_ms: optional number`
+    - `prefix_padding_ms: optional integer`
 
       Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
       milliseconds). Defaults to 300ms.
 
-    - `silence_duration_ms: optional number`
+    - `silence_duration_ms: optional integer`
 
       Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
       to 500ms. With shorter values the model will respond more quickly,
@@ -14170,11 +14422,11 @@ Use Bearer Auth (header Authorization).
 
       - `"semantic_vad"`
 
-    - `create_response: optional boolean`
+    - `create_response: optional boolean (default: true)`
 
       Whether or not to automatically generate a response when a VAD stop event occurs.
 
-    - `eagerness: optional "low" or "medium" or "high" or "auto"`
+    - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
       Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -14186,7 +14438,7 @@ Use Bearer Auth (header Authorization).
 
       - `"auto"`
 
-    - `interrupt_response: optional boolean`
+    - `interrupt_response: optional boolean (default: true)`
 
       Whether or not to automatically interrupt any ongoing response with output to the default
       conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -14297,6 +14549,8 @@ Use Bearer Auth (header Authorization).
 
           Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+          `minItems: 1`
+
         - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
           The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -14346,19 +14600,19 @@ Use Bearer Auth (header Authorization).
 
           Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-          - `type: "server_vad"`
+          - `type: "server_vad" (default: "server_vad")`
 
             Type of turn detection, `server_vad` to turn on simple Server VAD.
 
             - `"server_vad"`
 
-          - `create_response: optional boolean`
+          - `create_response: optional boolean (default: true)`
 
             Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
             If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-          - `idle_timeout_ms: optional number or null`
+          - `idle_timeout_ms: optional integer or null`
 
             Optional timeout after which a model response will be triggered automatically. This is
             useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -14372,19 +14626,21 @@ Use Bearer Auth (header Authorization).
             associated with the Response) will be emitted when the timeout is reached.
             Idle timeout is currently only supported for `server_vad` mode.
 
-          - `interrupt_response: optional boolean`
+            `minimum: 5000`, `maximum: 30000`
+
+          - `interrupt_response: optional boolean (default: true)`
 
             Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
             conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
             If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-          - `prefix_padding_ms: optional number`
+          - `prefix_padding_ms: optional integer`
 
             Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
             milliseconds). Defaults to 300ms.
 
-          - `silence_duration_ms: optional number`
+          - `silence_duration_ms: optional integer`
 
             Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
             to 500ms. With shorter values the model will respond more quickly,
@@ -14406,11 +14662,11 @@ Use Bearer Auth (header Authorization).
 
             - `"semantic_vad"`
 
-          - `create_response: optional boolean`
+          - `create_response: optional boolean (default: true)`
 
             Whether or not to automatically generate a response when a VAD stop event occurs.
 
-          - `eagerness: optional "low" or "medium" or "high" or "auto"`
+          - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
             Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -14422,7 +14678,7 @@ Use Bearer Auth (header Authorization).
 
             - `"auto"`
 
-          - `interrupt_response: optional boolean`
+          - `interrupt_response: optional boolean (default: true)`
 
             Whether or not to automatically interrupt any ongoing response with output to the default
             conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -14496,6 +14752,8 @@ Use Bearer Auth (header Authorization).
 
       Optional client-generated ID used to identify this event.
 
+      `maxLength: 512`
+
   - `RealtimeTranslationInputAudioBufferAppendEvent object { audio, type, event_id }`
 
     Send this event to append audio bytes to the translation session input audio buffer.
@@ -14528,6 +14786,8 @@ Use Bearer Auth (header Authorization).
 
       Optional client-generated ID used to identify this event.
 
+      `maxLength: 512`
+
   - `RealtimeTranslationSessionCloseEvent object { type, event_id }`
 
     Gracefully close the realtime translation session. The server flushes pending
@@ -14543,6 +14803,8 @@ Use Bearer Auth (header Authorization).
     - `event_id: optional string`
 
       Optional client-generated ID used to identify this event.
+
+      `maxLength: 512`
 
 ### Realtime Translation Client Secret Create Request
 
@@ -14600,15 +14862,17 @@ Use Bearer Auth (header Authorization).
     continue after that time once started. A secret can be used to create multiple sessions
     until it expires.
 
-    - `anchor: optional "created_at"`
+    - `anchor: optional "created_at" (default: "created_at")`
 
       The anchor point for the client secret expiration, meaning that `seconds` will be added to the `created_at` time of the client secret to produce an expiration timestamp. Only `created_at` is currently supported.
 
       - `"created_at"`
 
-    - `seconds: optional number`
+    - `seconds: optional integer (default: 600)`
 
       The number of seconds from the anchor point to the expiration. Select a value between `10` and `7200` (2 hours). This default to 600 seconds (10 minutes) if not specified.
+
+      `format: int64`, `minimum: 10`, `maximum: 7200`
 
 ### Realtime Translation Client Secret Create Response
 
@@ -14616,9 +14880,11 @@ Use Bearer Auth (header Authorization).
 
   Response from creating a translation session and client secret for the Realtime API.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Expiration timestamp for the client secret, in seconds since epoch.
+
+    `format: unixtime`
 
   - `session: RealtimeTranslationSession`
 
@@ -14663,9 +14929,11 @@ Use Bearer Auth (header Authorization).
 
           Target language for translated output audio and transcript deltas.
 
-    - `expires_at: number`
+    - `expires_at: integer`
 
       Expiration timestamp for the session, in seconds since epoch.
+
+      `format: unixtime`
 
     - `model: string`
 
@@ -14716,6 +14984,8 @@ Use Bearer Auth (header Authorization).
 
     Optional client-generated ID used to identify this event.
 
+    `maxLength: 512`
+
 ### Realtime Translation Input Transcript Delta Event
 
 - `RealtimeTranslationInputTranscriptDeltaEvent object { delta, event_id, type, elapsed_ms }`
@@ -14740,7 +15010,7 @@ Use Bearer Auth (header Authorization).
 
     - `"session.input_transcript.delta"`
 
-  - `elapsed_ms: optional number or null`
+  - `elapsed_ms: optional integer or null`
 
     Timing metadata for stream alignment, derived from the translation frame
     when available. It advances in 200 ms increments, but multiple transcript
@@ -14769,11 +15039,11 @@ Use Bearer Auth (header Authorization).
 
     - `"session.output_audio.delta"`
 
-  - `channels: optional number`
+  - `channels: optional integer (default: 1)`
 
     Number of audio channels.
 
-  - `elapsed_ms: optional number or null`
+  - `elapsed_ms: optional integer or null`
 
     Timing metadata for stream alignment, derived from the translation frame
     when available. Treat `elapsed_ms` as alignment metadata, not a unique
@@ -14785,7 +15055,7 @@ Use Bearer Auth (header Authorization).
 
     - `"pcm16"`
 
-  - `sample_rate: optional number`
+  - `sample_rate: optional integer (default: 24000)`
 
     Sample rate of the audio delta.
 
@@ -14812,7 +15082,7 @@ Use Bearer Auth (header Authorization).
 
     - `"session.output_transcript.delta"`
 
-  - `elapsed_ms: optional number or null`
+  - `elapsed_ms: optional integer or null`
 
     Timing metadata for stream alignment, derived from the translation frame
     when available. It advances in 200 ms increments, but multiple transcript
@@ -14917,9 +15187,11 @@ Use Bearer Auth (header Authorization).
 
             Target language for translated output audio and transcript deltas.
 
-      - `expires_at: number`
+      - `expires_at: integer`
 
         Expiration timestamp for the session, in seconds since epoch.
+
+        `format: unixtime`
 
       - `model: string`
 
@@ -14993,7 +15265,7 @@ Use Bearer Auth (header Authorization).
 
       - `"session.input_transcript.delta"`
 
-    - `elapsed_ms: optional number or null`
+    - `elapsed_ms: optional integer or null`
 
       Timing metadata for stream alignment, derived from the translation frame
       when available. It advances in 200 ms increments, but multiple transcript
@@ -15021,7 +15293,7 @@ Use Bearer Auth (header Authorization).
 
       - `"session.output_transcript.delta"`
 
-    - `elapsed_ms: optional number or null`
+    - `elapsed_ms: optional integer or null`
 
       Timing metadata for stream alignment, derived from the translation frame
       when available. It advances in 200 ms increments, but multiple transcript
@@ -15048,11 +15320,11 @@ Use Bearer Auth (header Authorization).
 
       - `"session.output_audio.delta"`
 
-    - `channels: optional number`
+    - `channels: optional integer (default: 1)`
 
       Number of audio channels.
 
-    - `elapsed_ms: optional number or null`
+    - `elapsed_ms: optional integer or null`
 
       Timing metadata for stream alignment, derived from the translation frame
       when available. Treat `elapsed_ms` as alignment metadata, not a unique
@@ -15064,7 +15336,7 @@ Use Bearer Auth (header Authorization).
 
       - `"pcm16"`
 
-    - `sample_rate: optional number`
+    - `sample_rate: optional integer (default: 24000)`
 
       Sample rate of the audio delta.
 
@@ -15113,9 +15385,11 @@ Use Bearer Auth (header Authorization).
 
         Target language for translated output audio and transcript deltas.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Expiration timestamp for the session, in seconds since epoch.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -15145,6 +15419,8 @@ Use Bearer Auth (header Authorization).
   - `event_id: optional string`
 
     Optional client-generated ID used to identify this event.
+
+    `maxLength: 512`
 
 ### Realtime Translation Session Closed Event
 
@@ -15261,9 +15537,11 @@ Use Bearer Auth (header Authorization).
 
           Target language for translated output audio and transcript deltas.
 
-    - `expires_at: number`
+    - `expires_at: integer`
 
       Expiration timestamp for the session, in seconds since epoch.
+
+      `format: unixtime`
 
     - `model: string`
 
@@ -15338,6 +15616,8 @@ Use Bearer Auth (header Authorization).
   - `event_id: optional string`
 
     Optional client-generated ID used to identify this event.
+
+    `maxLength: 512`
 
 ### Realtime Translation Session Update Request
 
@@ -15432,9 +15712,11 @@ Use Bearer Auth (header Authorization).
 
           Target language for translated output audio and transcript deltas.
 
-    - `expires_at: number`
+    - `expires_at: integer`
 
       Expiration timestamp for the session, in seconds since epoch.
+
+      `format: unixtime`
 
     - `model: string`
 
@@ -15481,6 +15763,8 @@ Use Bearer Auth (header Authorization).
 
       Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+      `minimum: 0`, `maximum: 1`
+
     - `type: "retention_ratio"`
 
       Use retention ratio truncation.
@@ -15491,9 +15775,11 @@ Use Bearer Auth (header Authorization).
 
       Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-      - `post_instructions: optional number`
+      - `post_instructions: optional integer`
 
         Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+        `minimum: 0`
 
 ### Response Audio Delta Event
 
@@ -15501,7 +15787,7 @@ Use Bearer Auth (header Authorization).
 
   Returned when the model-generated audio is updated.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part in the item's content array.
 
@@ -15517,7 +15803,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -15538,7 +15824,7 @@ Use Bearer Auth (header Authorization).
   Returned when the model-generated audio is done. Also emitted when a Response
   is interrupted, incomplete, or cancelled.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part in the item's content array.
 
@@ -15550,7 +15836,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -15570,7 +15856,7 @@ Use Bearer Auth (header Authorization).
 
   Returned when the model-generated transcription of audio output is updated.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part in the item's content array.
 
@@ -15586,7 +15872,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -15608,7 +15894,7 @@ Use Bearer Auth (header Authorization).
   streaming. Also emitted when a Response is interrupted, incomplete, or
   cancelled.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part in the item's content array.
 
@@ -15620,7 +15906,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -15658,6 +15944,8 @@ Use Bearer Auth (header Authorization).
 
     Optional client-generated ID used to identify this event.
 
+    `maxLength: 512`
+
   - `response_id: optional string`
 
     A specific response ID to cancel - if not provided, will cancel an
@@ -15670,7 +15958,7 @@ Use Bearer Auth (header Authorization).
   Returned when a new content part is added to an assistant message item during
   response generation.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part in the item's content array.
 
@@ -15682,7 +15970,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the item to which the content part was added.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -15727,7 +16015,7 @@ Use Bearer Auth (header Authorization).
   Returned when a content part is done streaming in an assistant message item.
   Also emitted when a Response is interrupted, incomplete, or cancelled.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part in the item's content array.
 
@@ -15739,7 +16027,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -15817,6 +16105,8 @@ Use Bearer Auth (header Authorization).
 
     Optional client-generated ID used to identify this event.
 
+    `maxLength: 512`
+
   - `response: optional RealtimeResponseCreateParams`
 
     Create a new Realtime response with these parameters
@@ -15867,7 +16157,7 @@ Use Bearer Auth (header Authorization).
 
               - `"audio/pcma"`
 
-        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
           The voice the model uses to respond. Supported built-in voices are
           `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -15931,7 +16221,7 @@ Use Bearer Auth (header Authorization).
 
         - `"none"`
 
-    - `input: optional array of ConversationItem`
+    - `input: optional array of RealtimeResponseInputMessageSystem { content, role, type, 2 more }  or RealtimeResponseInputMessageDeveloper { content, role, type, 2 more }  or RealtimeResponseInputMessageUser { content, role, type, 2 more }  or 4 more`
 
       Input items to include in the prompt for the model. Using this field
       creates a new context for this Response instead of using the default
@@ -15939,427 +16229,261 @@ Use Bearer Auth (header Authorization).
       Note that this can include references to items that previously appeared in the session
       using their id.
 
-      - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
-
-        A system message in a Realtime conversation can be used to provide additional context or instructions to the model. This is similar but distinct from the instruction prompt provided at the start of a conversation, as system messages can be added at any point in the conversation. For major changes to the conversation's behavior, use instructions, but for smaller updates (e.g. "the user is now asking about a different topic"), use system messages.
+      - `RealtimeResponseInputMessageSystem object { content, role, type, 2 more }`
 
         - `content: array of object { text, type }`
 
-          The content of the message.
+          `minItems: 1`, `maxItems: 1`
 
-          - `text: optional string`
+          - `text: string`
 
-            The text content.
+            `maxLength: 256000`
 
-          - `type: optional "input_text"`
-
-            The content type. Always `input_text` for system messages.
+          - `type: "input_text"`
 
             - `"input_text"`
 
         - `role: "system"`
 
-          The role of the message sender. Always `system`.
-
           - `"system"`
 
         - `type: "message"`
 
-          The type of the item. Always `message`.
-
           - `"message"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
-          The unique ID of the item. This may be provided by the client or generated by the server.
+          An optional client ID. The value `root` is reserved.
 
-        - `object: optional "realtime.item"`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-          Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
+        - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-          - `"realtime.item"`
-
-        - `status: optional "completed" or "incomplete" or "in_progress"`
-
-          The status of the item. Has no effect on the conversation.
+          Optional input status. Omission or null defaults to completed.
 
           - `"completed"`
 
           - `"incomplete"`
 
-          - `"in_progress"`
+      - `RealtimeResponseInputMessageDeveloper object { content, role, type, 2 more }`
 
-      - `RealtimeConversationItemUserMessage object { content, role, type, 3 more }`
+        - `content: array of object { text, type }`
 
-        A user message item in a Realtime conversation.
+          `minItems: 1`, `maxItems: 1`
 
-        - `content: array of object { audio, detail, image_url, 3 more }`
+          - `text: string`
 
-          The content of the message.
+            `maxLength: 256000`
 
-          - `audio: optional string`
-
-            Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
-
-          - `detail: optional "auto" or "low" or "high"`
-
-            The detail level of the image (for `input_image`). `auto` will default to `high`.
-
-            - `"auto"`
-
-            - `"low"`
-
-            - `"high"`
-
-          - `image_url: optional string`
-
-            Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
-
-          - `text: optional string`
-
-            The text content (for `input_text`).
-
-          - `transcript: optional string`
-
-            Transcript of the audio (for `input_audio`). This is not sent to the model, but will be attached to the message item for reference.
-
-          - `type: optional "input_text" or "input_audio" or "input_image"`
-
-            The content type (`input_text`, `input_audio`, or `input_image`).
+          - `type: "input_text"`
 
             - `"input_text"`
 
-            - `"input_audio"`
+        - `role: "developer"`
 
-            - `"input_image"`
+          - `"developer"`
+
+        - `type: "message"`
+
+          - `"message"`
+
+        - `id: optional string or null`
+
+          An optional client ID. The value `root` is reserved.
+
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+        - `status: optional "completed" or "incomplete" or null (default: "completed")`
+
+          Optional input status. Omission or null defaults to completed.
+
+          - `"completed"`
+
+          - `"incomplete"`
+
+      - `RealtimeResponseInputMessageUser object { content, role, type, 2 more }`
+
+        - `content: array of InputText { text, type }  or InputAudio { audio, type, transcript }  or InputImage { image_url, type, detail }`
+
+          `minItems: 1`
+
+          - `InputText object { text, type }`
+
+            - `text: string`
+
+              `maxLength: 256000`
+
+            - `type: "input_text"`
+
+              - `"input_text"`
+
+          - `InputAudio object { audio, type, transcript }`
+
+            - `audio: string`
+
+              Base64 audio bytes in the session input audio format.
+
+              `minLength: 1`
+
+            - `type: "input_audio"`
+
+              - `"input_audio"`
+
+            - `transcript: optional string or null`
+
+              Optional text to associate with the input audio.
+
+          - `InputImage object { image_url, type, detail }`
+
+            - `image_url: string`
+
+              A base64 data URL with an image MIME type; use PNG or JPEG.
+
+              `pattern: ^data:image/[^;,]+;base64,.+`, `format: uri`
+
+            - `type: "input_image"`
+
+              - `"input_image"`
+
+            - `detail: optional "low" or "high" or "auto" or null (default: "auto")`
+
+              - `"low"`
+
+              - `"high"`
+
+              - `"auto"`
 
         - `role: "user"`
-
-          The role of the message sender. Always `user`.
 
           - `"user"`
 
         - `type: "message"`
 
-          The type of the item. Always `message`.
-
           - `"message"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
-          The unique ID of the item. This may be provided by the client or generated by the server.
+          An optional client ID. The value `root` is reserved.
 
-        - `object: optional "realtime.item"`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-          Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
+        - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-          - `"realtime.item"`
-
-        - `status: optional "completed" or "incomplete" or "in_progress"`
-
-          The status of the item. Has no effect on the conversation.
+          Optional input status. Omission or null defaults to completed.
 
           - `"completed"`
 
           - `"incomplete"`
 
-          - `"in_progress"`
+      - `RealtimeResponseInputMessageAssistant object { content, role, type, 2 more }`
 
-      - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
+        - `content: array of object { text, type }`
 
-        An assistant message item in a Realtime conversation.
+          `minItems: 1`
 
-        - `content: array of object { audio, text, transcript, type }`
+          - `text: string`
 
-          The content of the message.
+            `maxLength: 256000`
 
-          - `audio: optional string`
-
-            Base64-encoded audio bytes, these will be parsed as the format specified in the session output audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
-
-          - `text: optional string`
-
-            The text content.
-
-          - `transcript: optional string`
-
-            The transcript of the audio content, this will always be present if the output type is `audio`.
-
-          - `type: optional "output_text" or "output_audio"`
-
-            The content type, `output_text` or `output_audio` depending on the session `output_modalities` configuration.
+          - `type: "output_text"`
 
             - `"output_text"`
 
-            - `"output_audio"`
-
         - `role: "assistant"`
-
-          The role of the message sender. Always `assistant`.
 
           - `"assistant"`
 
         - `type: "message"`
 
-          The type of the item. Always `message`.
-
           - `"message"`
 
-        - `id: optional string`
+        - `id: optional string or null`
 
-          The unique ID of the item. This may be provided by the client or generated by the server.
+          An optional client ID. The value `root` is reserved.
 
-        - `object: optional "realtime.item"`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-          Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
+        - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-          - `"realtime.item"`
-
-        - `status: optional "completed" or "incomplete" or "in_progress"`
-
-          The status of the item. Has no effect on the conversation.
+          Optional input status. Omission or null defaults to completed.
 
           - `"completed"`
 
           - `"incomplete"`
 
-          - `"in_progress"`
+      - `FunctionCall object { arguments, call_id, name, 3 more }`
 
-      - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
-
-        A function call item in a Realtime conversation.
+        A function call supplied as input to a Realtime response.
 
         - `arguments: string`
 
-          The arguments of the function call. This is a JSON-encoded string representing the arguments passed to the function, for example `{"arg1": "value1", "arg2": 42}`.
-
-        - `name: string`
-
-          The name of the function being called.
-
-        - `type: "function_call"`
-
-          The type of the item. Always `function_call`.
-
-          - `"function_call"`
-
-        - `id: optional string`
-
-          The unique ID of the item. This may be provided by the client or generated by the server.
-
-        - `call_id: optional string`
-
-          The ID of the function call.
-
-        - `object: optional "realtime.item"`
-
-          Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
-
-          - `"realtime.item"`
-
-        - `status: optional "completed" or "incomplete" or "in_progress"`
-
-          The status of the item. Has no effect on the conversation.
-
-          - `"completed"`
-
-          - `"incomplete"`
-
-          - `"in_progress"`
-
-      - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
-
-        A function call output item in a Realtime conversation.
+          `maxLength: 1048576`
 
         - `call_id: string`
 
-          The ID of the function call this output is for.
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        - `output: string`
+        - `name: string`
 
-          The output of the function call, this is free text and can contain any information or simply be empty.
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
-        - `type: "function_call_output"`
+        - `type: "function_call"`
 
-          The type of the item. Always `function_call_output`.
+          - `"function_call"`
 
-          - `"function_call_output"`
+        - `id: optional string or null`
 
-        - `id: optional string`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-          The unique ID of the item. This may be provided by the client or generated by the server.
-
-        - `object: optional "realtime.item"`
-
-          Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
-
-          - `"realtime.item"`
-
-        - `status: optional "completed" or "incomplete" or "in_progress"`
-
-          The status of the item. Has no effect on the conversation.
+        - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
           - `"completed"`
 
           - `"incomplete"`
 
-          - `"in_progress"`
+      - `FunctionCallOutput object { call_id, output, type, 2 more }`
 
-      - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
+        The result of a function call supplied as input to a Realtime response.
 
-        A Realtime item responding to an MCP approval request.
+        - `call_id: string`
 
-        - `id: string`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-          The unique ID of the approval response.
+        - `output: string`
 
-        - `approval_request_id: string`
+          `maxLength: 1048576`
 
-          The ID of the approval request being answered.
+        - `type: "function_call_output"`
 
-        - `approve: boolean`
+          - `"function_call_output"`
 
-          Whether the request was approved.
+        - `id: optional string or null`
 
-        - `type: "mcp_approval_response"`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-          The type of the item. Always `mcp_approval_response`.
+        - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-          - `"mcp_approval_response"`
+          - `"completed"`
 
-        - `reason: optional string or null`
+          - `"incomplete"`
 
-          Optional reason for the decision.
+      - `ResponseItemReference object { id, type }`
 
-      - `RealtimeMcpListTools object { server_label, tools, type, id }`
-
-        A Realtime item listing tools available on an MCP server.
-
-        - `server_label: string`
-
-          The label of the MCP server.
-
-        - `tools: array of object { input_schema, name, annotations, description }`
-
-          The tools available on the server.
-
-          - `input_schema: unknown`
-
-            The JSON schema describing the tool's input.
-
-          - `name: string`
-
-            The name of the tool.
-
-          - `annotations: optional unknown or null`
-
-            Additional annotations about the tool.
-
-          - `description: optional string or null`
-
-            The description of the tool.
-
-        - `type: "mcp_list_tools"`
-
-          The type of the item. Always `mcp_list_tools`.
-
-          - `"mcp_list_tools"`
-
-        - `id: optional string`
-
-          The unique ID of the list.
-
-      - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
-
-        A Realtime item representing an invocation of a tool on an MCP server.
+        Reference an existing item in this Realtime session as response.create input.
+        Item references are only accepted in the response input array, not as new
+        conversation items.
 
         - `id: string`
 
-          The unique ID of the tool call.
+          The ID of an existing item in the same Realtime session.
 
-        - `arguments: string`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-          A JSON string of the arguments passed to the tool.
+        - `type: "item_reference"`
 
-        - `name: string`
+          The type of this item. Always `item_reference`.
 
-          The name of the tool that was run.
-
-        - `server_label: string`
-
-          The label of the MCP server running the tool.
-
-        - `type: "mcp_call"`
-
-          The type of the item. Always `mcp_call`.
-
-          - `"mcp_call"`
-
-        - `approval_request_id: optional string or null`
-
-          The ID of an associated approval request, if any.
-
-        - `error: optional RealtimeMcpProtocolError or RealtimeMcpToolExecutionError or RealtimeMcphttpError or null`
-
-          The error from the tool call, if any.
-
-          - `RealtimeMcpProtocolError object { code, message, type }`
-
-            - `code: number`
-
-            - `message: string`
-
-            - `type: "protocol_error"`
-
-              - `"protocol_error"`
-
-          - `RealtimeMcpToolExecutionError object { message, type }`
-
-            - `message: string`
-
-            - `type: "tool_execution_error"`
-
-              - `"tool_execution_error"`
-
-          - `RealtimeMcphttpError object { code, message, type }`
-
-            - `code: number`
-
-            - `message: string`
-
-            - `type: "http_error"`
-
-              - `"http_error"`
-
-        - `output: optional string or null`
-
-          The output from the tool call.
-
-      - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
-
-        A Realtime item requesting human approval of a tool invocation.
-
-        - `id: string`
-
-          The unique ID of the approval request.
-
-        - `arguments: string`
-
-          A JSON string of arguments for the tool.
-
-        - `name: string`
-
-          The name of the tool to run.
-
-        - `server_label: string`
-
-          The label of the MCP server making the request.
-
-        - `type: "mcp_approval_request"`
-
-          The type of the item. Always `mcp_approval_request`.
-
-          - `"mcp_approval_request"`
+          - `"item_reference"`
 
     - `instructions: optional string`
 
@@ -16428,7 +16552,7 @@ Use Bearer Auth (header Authorization).
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -16438,7 +16562,7 @@ Use Bearer Auth (header Authorization).
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -16468,7 +16592,7 @@ Use Bearer Auth (header Authorization).
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -16482,11 +16606,13 @@ Use Bearer Auth (header Authorization).
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -16504,7 +16630,7 @@ Use Bearer Auth (header Authorization).
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -16532,6 +16658,8 @@ Use Bearer Auth (header Authorization).
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -16540,7 +16668,7 @@ Use Bearer Auth (header Authorization).
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -16562,7 +16690,7 @@ Use Bearer Auth (header Authorization).
 
       Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-      - `effort: optional RealtimeReasoningEffort`
+      - `effort: optional RealtimeReasoningEffort (default: "low")`
 
         Constrains effort on reasoning for reasoning-capable Realtime models such as
         `gpt-realtime-2`.
@@ -16577,7 +16705,7 @@ Use Bearer Auth (header Authorization).
 
         - `"xhigh"`
 
-    - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
+    - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp (default: "auto")`
 
       How the model chooses tools. Provide one of the string modes or force a specific
       function/MCP tool.
@@ -16676,6 +16804,8 @@ Use Bearer Auth (header Authorization).
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
@@ -16754,7 +16884,7 @@ Use Bearer Auth (header Authorization).
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -16811,10 +16941,14 @@ Use Bearer Auth (header Authorization).
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
 ### Response Created Event
 
@@ -16881,7 +17015,7 @@ Use Bearer Auth (header Authorization).
 
               - `"audio/pcma"`
 
-        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
+        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more (default: "alloy")`
 
           The voice the model uses to respond. Voice cannot be changed during the
           session once the model has responded with audio at least once. Current
@@ -17020,7 +17154,7 @@ Use Bearer Auth (header Authorization).
 
             Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-          - `detail: optional "auto" or "low" or "high"`
+          - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
             The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -17033,6 +17167,8 @@ Use Bearer Auth (header Authorization).
           - `image_url: optional string`
 
             Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+            `format: uri`
 
           - `text: optional string`
 
@@ -17324,7 +17460,7 @@ Use Bearer Auth (header Authorization).
 
           - `RealtimeMcpProtocolError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
@@ -17342,7 +17478,7 @@ Use Bearer Auth (header Authorization).
 
           - `RealtimeMcphttpError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
@@ -17463,11 +17599,11 @@ Use Bearer Auth (header Authorization).
 
         Details about the input tokens used in the Response. Cached tokens are tokens from previous turns in the conversation that are included as context for the current response. Cached tokens here are counted as a subset of input tokens, meaning input tokens will include cached and uncached tokens.
 
-        - `audio_tokens: optional number`
+        - `audio_tokens: optional integer`
 
           The number of audio tokens used as input for the Response.
 
-        - `cached_tokens: optional number`
+        - `cached_tokens: optional integer`
 
           The number of cached tokens used as input for the Response.
 
@@ -17475,27 +17611,27 @@ Use Bearer Auth (header Authorization).
 
           Details about the cached tokens used as input for the Response.
 
-          - `audio_tokens: optional number`
+          - `audio_tokens: optional integer`
 
             The number of cached audio tokens used as input for the Response.
 
-          - `image_tokens: optional number`
+          - `image_tokens: optional integer`
 
             The number of cached image tokens used as input for the Response.
 
-          - `text_tokens: optional number`
+          - `text_tokens: optional integer`
 
             The number of cached text tokens used as input for the Response.
 
-        - `image_tokens: optional number`
+        - `image_tokens: optional integer`
 
           The number of image tokens used as input for the Response.
 
-        - `text_tokens: optional number`
+        - `text_tokens: optional integer`
 
           The number of text tokens used as input for the Response.
 
-      - `input_tokens: optional number`
+      - `input_tokens: optional integer`
 
         The number of input tokens used in the Response, including text and
         audio tokens.
@@ -17504,20 +17640,20 @@ Use Bearer Auth (header Authorization).
 
         Details about the output tokens used in the Response.
 
-        - `audio_tokens: optional number`
+        - `audio_tokens: optional integer`
 
           The number of audio tokens used in the Response.
 
-        - `text_tokens: optional number`
+        - `text_tokens: optional integer`
 
           The number of text tokens used in the Response.
 
-      - `output_tokens: optional number`
+      - `output_tokens: optional integer`
 
         The number of output tokens sent in the Response, including text and
         audio tokens.
 
-      - `total_tokens: optional number`
+      - `total_tokens: optional integer`
 
         The total number of tokens in the Response including input and output
         text and audio tokens.
@@ -17600,7 +17736,7 @@ Use Bearer Auth (header Authorization).
 
               - `"audio/pcma"`
 
-        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
+        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more (default: "alloy")`
 
           The voice the model uses to respond. Voice cannot be changed during the
           session once the model has responded with audio at least once. Current
@@ -17739,7 +17875,7 @@ Use Bearer Auth (header Authorization).
 
             Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-          - `detail: optional "auto" or "low" or "high"`
+          - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
             The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -17752,6 +17888,8 @@ Use Bearer Auth (header Authorization).
           - `image_url: optional string`
 
             Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+            `format: uri`
 
           - `text: optional string`
 
@@ -18043,7 +18181,7 @@ Use Bearer Auth (header Authorization).
 
           - `RealtimeMcpProtocolError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
@@ -18061,7 +18199,7 @@ Use Bearer Auth (header Authorization).
 
           - `RealtimeMcphttpError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
@@ -18182,11 +18320,11 @@ Use Bearer Auth (header Authorization).
 
         Details about the input tokens used in the Response. Cached tokens are tokens from previous turns in the conversation that are included as context for the current response. Cached tokens here are counted as a subset of input tokens, meaning input tokens will include cached and uncached tokens.
 
-        - `audio_tokens: optional number`
+        - `audio_tokens: optional integer`
 
           The number of audio tokens used as input for the Response.
 
-        - `cached_tokens: optional number`
+        - `cached_tokens: optional integer`
 
           The number of cached tokens used as input for the Response.
 
@@ -18194,27 +18332,27 @@ Use Bearer Auth (header Authorization).
 
           Details about the cached tokens used as input for the Response.
 
-          - `audio_tokens: optional number`
+          - `audio_tokens: optional integer`
 
             The number of cached audio tokens used as input for the Response.
 
-          - `image_tokens: optional number`
+          - `image_tokens: optional integer`
 
             The number of cached image tokens used as input for the Response.
 
-          - `text_tokens: optional number`
+          - `text_tokens: optional integer`
 
             The number of cached text tokens used as input for the Response.
 
-        - `image_tokens: optional number`
+        - `image_tokens: optional integer`
 
           The number of image tokens used as input for the Response.
 
-        - `text_tokens: optional number`
+        - `text_tokens: optional integer`
 
           The number of text tokens used as input for the Response.
 
-      - `input_tokens: optional number`
+      - `input_tokens: optional integer`
 
         The number of input tokens used in the Response, including text and
         audio tokens.
@@ -18223,20 +18361,20 @@ Use Bearer Auth (header Authorization).
 
         Details about the output tokens used in the Response.
 
-        - `audio_tokens: optional number`
+        - `audio_tokens: optional integer`
 
           The number of audio tokens used in the Response.
 
-        - `text_tokens: optional number`
+        - `text_tokens: optional integer`
 
           The number of text tokens used in the Response.
 
-      - `output_tokens: optional number`
+      - `output_tokens: optional integer`
 
         The number of output tokens sent in the Response, including text and
         audio tokens.
 
-      - `total_tokens: optional number`
+      - `total_tokens: optional integer`
 
         The total number of tokens in the Response including input and output
         text and audio tokens.
@@ -18269,7 +18407,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the function call item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -18310,7 +18448,7 @@ Use Bearer Auth (header Authorization).
 
     The name of the function that was called.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -18323,6 +18461,26 @@ Use Bearer Auth (header Authorization).
     The event type, must be `response.function_call_arguments.done`.
 
     - `"response.function_call_arguments.done"`
+
+### Response Item Reference
+
+- `ResponseItemReference object { id, type }`
+
+  Reference an existing item in this Realtime session as response.create input.
+  Item references are only accepted in the response input array, not as new
+  conversation items.
+
+  - `id: string`
+
+    The ID of an existing item in the same Realtime session.
+
+    `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+  - `type: "item_reference"`
+
+    The type of this item. Always `item_reference`.
+
+    - `"item_reference"`
 
 ### Response Mcp Call Arguments Delta
 
@@ -18342,7 +18500,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the MCP tool call item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -18378,7 +18536,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the MCP tool call item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -18406,7 +18564,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the MCP tool call item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -18430,7 +18588,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the MCP tool call item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -18454,7 +18612,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the MCP tool call item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -18540,7 +18698,7 @@ Use Bearer Auth (header Authorization).
 
           Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-        - `detail: optional "auto" or "low" or "high"`
+        - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
           The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -18553,6 +18711,8 @@ Use Bearer Auth (header Authorization).
         - `image_url: optional string`
 
           Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+          `format: uri`
 
         - `text: optional string`
 
@@ -18844,7 +19004,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcpProtocolError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -18862,7 +19022,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcphttpError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -18900,7 +19060,7 @@ Use Bearer Auth (header Authorization).
 
         - `"mcp_approval_request"`
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the Response.
 
@@ -18991,7 +19151,7 @@ Use Bearer Auth (header Authorization).
 
           Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-        - `detail: optional "auto" or "low" or "high"`
+        - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
           The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -19004,6 +19164,8 @@ Use Bearer Auth (header Authorization).
         - `image_url: optional string`
 
           Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+          `format: uri`
 
         - `text: optional string`
 
@@ -19295,7 +19457,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcpProtocolError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -19313,7 +19475,7 @@ Use Bearer Auth (header Authorization).
 
         - `RealtimeMcphttpError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
@@ -19351,7 +19513,7 @@ Use Bearer Auth (header Authorization).
 
         - `"mcp_approval_request"`
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the Response.
 
@@ -19371,7 +19533,7 @@ Use Bearer Auth (header Authorization).
 
   Returned when the text value of an "output_text" content part is updated.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part in the item's content array.
 
@@ -19387,7 +19549,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -19408,7 +19570,7 @@ Use Bearer Auth (header Authorization).
   Returned when the text value of an "output_text" content part is done streaming. Also
   emitted when a Response is interrupted, incomplete, or cancelled.
 
-  - `content_index: number`
+  - `content_index: integer`
 
     The index of the content part in the item's content array.
 
@@ -19420,7 +19582,7 @@ Use Bearer Auth (header Authorization).
 
     The ID of the item.
 
-  - `output_index: number`
+  - `output_index: integer`
 
     The index of the output item in the response.
 
@@ -19520,7 +19682,7 @@ Use Bearer Auth (header Authorization).
 
                 - `"audio/pcma"`
 
-          - `noise_reduction: optional object { type }  or null`
+          - `noise_reduction: optional object { type }  or null (default: null)`
 
             Configuration for input audio noise reduction. This can be set to `null` to turn off.
             Noise reduction filters audio added to the input audio buffer before it is sent to VAD and the model.
@@ -19545,6 +19707,8 @@ Use Bearer Auth (header Authorization).
             - `languages: optional array of string`
 
               The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
+
+              `minItems: 1`
 
             - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
@@ -19591,19 +19755,19 @@ Use Bearer Auth (header Authorization).
 
               Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-              - `type: "server_vad"`
+              - `type: "server_vad" (default: "server_vad")`
 
                 Type of turn detection, `server_vad` to turn on simple Server VAD.
 
                 - `"server_vad"`
 
-              - `create_response: optional boolean`
+              - `create_response: optional boolean (default: true)`
 
                 Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
                 If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-              - `idle_timeout_ms: optional number or null`
+              - `idle_timeout_ms: optional integer or null`
 
                 Optional timeout after which a model response will be triggered automatically. This is
                 useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -19617,19 +19781,21 @@ Use Bearer Auth (header Authorization).
                 associated with the Response) will be emitted when the timeout is reached.
                 Idle timeout is currently only supported for `server_vad` mode.
 
-              - `interrupt_response: optional boolean`
+                `minimum: 5000`, `maximum: 30000`
+
+              - `interrupt_response: optional boolean (default: true)`
 
                 Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
                 conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
                 If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-              - `prefix_padding_ms: optional number`
+              - `prefix_padding_ms: optional integer`
 
                 Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
                 milliseconds). Defaults to 300ms.
 
-              - `silence_duration_ms: optional number`
+              - `silence_duration_ms: optional integer`
 
                 Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
                 to 500ms. With shorter values the model will respond more quickly,
@@ -19651,11 +19817,11 @@ Use Bearer Auth (header Authorization).
 
                 - `"semantic_vad"`
 
-              - `create_response: optional boolean`
+              - `create_response: optional boolean (default: true)`
 
                 Whether or not to automatically generate a response when a VAD stop event occurs.
 
-              - `eagerness: optional "low" or "medium" or "high" or "auto"`
+              - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
                 Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -19667,7 +19833,7 @@ Use Bearer Auth (header Authorization).
 
                 - `"auto"`
 
-              - `interrupt_response: optional boolean`
+              - `interrupt_response: optional boolean (default: true)`
 
                 Whether or not to automatically interrupt any ongoing response with output to the default
                 conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -19678,7 +19844,7 @@ Use Bearer Auth (header Authorization).
 
             The format of the output audio.
 
-          - `speed: optional number`
+          - `speed: optional number (default: 1)`
 
             The speed of the model's spoken response as a multiple of the original speed.
             1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -19686,7 +19852,9 @@ Use Bearer Auth (header Authorization).
             This parameter is a post-processing adjustment to the audio after it is generated, it's
             also possible to prompt the model to speak faster or slower.
 
-          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
+            `minimum: 0.25`, `maximum: 1.5`
+
+          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more (default: "alloy")`
 
             The voice the model uses to respond. Voice cannot be changed during the
             session once the model has responded with audio at least once. Current
@@ -19724,9 +19892,11 @@ Use Bearer Auth (header Authorization).
 
               - `"cedar"`
 
-      - `expires_at: optional number`
+      - `expires_at: optional integer`
 
         Expiration timestamp for the session, in seconds since epoch.
+
+        `format: unixtime`
 
       - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -19803,7 +19973,7 @@ Use Bearer Auth (header Authorization).
 
           - `"gpt-audio-mini-2025-12-15"`
 
-      - `output_modalities: optional array of "text" or "audio"`
+      - `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
         The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
         that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -19838,7 +20008,7 @@ Use Bearer Auth (header Authorization).
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -19848,7 +20018,7 @@ Use Bearer Auth (header Authorization).
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -19878,7 +20048,7 @@ Use Bearer Auth (header Authorization).
 
               - `"original"`
 
-            - `type: "input_image"`
+            - `type: "input_image" (default: "input_image")`
 
               The type of the input item. Always `input_image`.
 
@@ -19892,11 +20062,13 @@ Use Bearer Auth (header Authorization).
 
               The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+              `format: uri`
+
             - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -19914,7 +20086,7 @@ Use Bearer Auth (header Authorization).
 
             A file input to the model.
 
-            - `type: "input_file"`
+            - `type: "input_file" (default: "input_file")`
 
               The type of the input item. Always `input_file`.
 
@@ -19942,6 +20114,8 @@ Use Bearer Auth (header Authorization).
 
               The URL of the file to be sent to the model.
 
+              `format: uri`
+
             - `filename: optional string`
 
               The name of the file to be sent to the model.
@@ -19950,7 +20124,7 @@ Use Bearer Auth (header Authorization).
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -19972,7 +20146,7 @@ Use Bearer Auth (header Authorization).
 
         Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-        - `effort: optional RealtimeReasoningEffort`
+        - `effort: optional RealtimeReasoningEffort (default: "low")`
 
           Constrains effort on reasoning for reasoning-capable Realtime models such as
           `gpt-realtime-2`.
@@ -19987,7 +20161,7 @@ Use Bearer Auth (header Authorization).
 
           - `"xhigh"`
 
-      - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
+      - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp (default: "auto")`
 
         How the model chooses tools. Provide one of the string modes or force a specific
         function/MCP tool.
@@ -20086,6 +20260,8 @@ Use Bearer Auth (header Authorization).
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -20164,7 +20340,7 @@ Use Bearer Auth (header Authorization).
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -20221,10 +20397,14 @@ Use Bearer Auth (header Authorization).
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `tracing: optional "auto" or TracingConfiguration { group_id, metadata, workflow_name }  or null`
 
@@ -20285,6 +20465,8 @@ Use Bearer Auth (header Authorization).
 
             Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+            `minimum: 0`, `maximum: 1`
+
           - `type: "retention_ratio"`
 
             Use retention ratio truncation.
@@ -20295,9 +20477,11 @@ Use Bearer Auth (header Authorization).
 
             Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-            - `post_instructions: optional number`
+            - `post_instructions: optional integer`
 
               Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+              `minimum: 0`
 
     - `RealtimeTranscriptionSessionCreateResponse object { id, object, type, 3 more }`
 
@@ -20347,6 +20531,8 @@ Use Bearer Auth (header Authorization).
 
               The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
 
+              `minItems: 1`
+
             - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
               The model used for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
@@ -20383,12 +20569,12 @@ Use Bearer Auth (header Authorization).
             VAD means that the model will detect the start and end of speech based on
             audio volume and respond at the end of user speech. For `gpt-realtime-whisper`, this must be `null`; VAD is not supported.
 
-            - `prefix_padding_ms: optional number`
+            - `prefix_padding_ms: optional integer`
 
               Amount of audio to include before the VAD detected speech (in
               milliseconds). Defaults to 300ms.
 
-            - `silence_duration_ms: optional number`
+            - `silence_duration_ms: optional integer`
 
               Duration of silence to detect speech stop (in milliseconds). Defaults
               to 500ms. With shorter values the model will respond more quickly,
@@ -20404,9 +20590,11 @@ Use Bearer Auth (header Authorization).
 
               Type of turn detection, only `server_vad` is currently supported.
 
-      - `expires_at: optional number`
+      - `expires_at: optional integer`
 
         Expiration timestamp for the session, in seconds since epoch.
+
+        `format: unixtime`
 
       - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -20554,6 +20742,8 @@ Use Bearer Auth (header Authorization).
 
               Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+              `minItems: 1`
+
             - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
               The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -20603,19 +20793,19 @@ Use Bearer Auth (header Authorization).
 
               Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-              - `type: "server_vad"`
+              - `type: "server_vad" (default: "server_vad")`
 
                 Type of turn detection, `server_vad` to turn on simple Server VAD.
 
                 - `"server_vad"`
 
-              - `create_response: optional boolean`
+              - `create_response: optional boolean (default: true)`
 
                 Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
                 If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-              - `idle_timeout_ms: optional number or null`
+              - `idle_timeout_ms: optional integer or null`
 
                 Optional timeout after which a model response will be triggered automatically. This is
                 useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -20629,19 +20819,21 @@ Use Bearer Auth (header Authorization).
                 associated with the Response) will be emitted when the timeout is reached.
                 Idle timeout is currently only supported for `server_vad` mode.
 
-              - `interrupt_response: optional boolean`
+                `minimum: 5000`, `maximum: 30000`
+
+              - `interrupt_response: optional boolean (default: true)`
 
                 Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
                 conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
                 If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-              - `prefix_padding_ms: optional number`
+              - `prefix_padding_ms: optional integer`
 
                 Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
                 milliseconds). Defaults to 300ms.
 
-              - `silence_duration_ms: optional number`
+              - `silence_duration_ms: optional integer`
 
                 Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
                 to 500ms. With shorter values the model will respond more quickly,
@@ -20663,11 +20855,11 @@ Use Bearer Auth (header Authorization).
 
                 - `"semantic_vad"`
 
-              - `create_response: optional boolean`
+              - `create_response: optional boolean (default: true)`
 
                 Whether or not to automatically generate a response when a VAD stop event occurs.
 
-              - `eagerness: optional "low" or "medium" or "high" or "auto"`
+              - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
                 Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -20679,7 +20871,7 @@ Use Bearer Auth (header Authorization).
 
                 - `"auto"`
 
-              - `interrupt_response: optional boolean`
+              - `interrupt_response: optional boolean (default: true)`
 
                 Whether or not to automatically interrupt any ongoing response with output to the default
                 conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -20690,7 +20882,7 @@ Use Bearer Auth (header Authorization).
 
             The format of the output audio.
 
-          - `speed: optional number`
+          - `speed: optional number (default: 1)`
 
             The speed of the model's spoken response as a multiple of the original speed.
             1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -20698,7 +20890,9 @@ Use Bearer Auth (header Authorization).
             This parameter is a post-processing adjustment to the audio after it is generated, it's
             also possible to prompt the model to speak faster or slower.
 
-          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+            `minimum: 0.25`, `maximum: 1.5`
+
+          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
             The voice the model uses to respond. Supported built-in voices are
             `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -20815,7 +21009,7 @@ Use Bearer Auth (header Authorization).
 
           - `"gpt-audio-mini-2025-12-15"`
 
-      - `output_modalities: optional array of "text" or "audio"`
+      - `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
         The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
         that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -20855,7 +21049,7 @@ Use Bearer Auth (header Authorization).
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -20865,7 +21059,7 @@ Use Bearer Auth (header Authorization).
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -20895,7 +21089,7 @@ Use Bearer Auth (header Authorization).
 
               - `"original"`
 
-            - `type: "input_image"`
+            - `type: "input_image" (default: "input_image")`
 
               The type of the input item. Always `input_image`.
 
@@ -20909,11 +21103,13 @@ Use Bearer Auth (header Authorization).
 
               The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+              `format: uri`
+
             - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -20931,7 +21127,7 @@ Use Bearer Auth (header Authorization).
 
             A file input to the model.
 
-            - `type: "input_file"`
+            - `type: "input_file" (default: "input_file")`
 
               The type of the input item. Always `input_file`.
 
@@ -20959,6 +21155,8 @@ Use Bearer Auth (header Authorization).
 
               The URL of the file to be sent to the model.
 
+              `format: uri`
+
             - `filename: optional string`
 
               The name of the file to be sent to the model.
@@ -20967,7 +21165,7 @@ Use Bearer Auth (header Authorization).
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -20989,7 +21187,7 @@ Use Bearer Auth (header Authorization).
 
         Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-        - `effort: optional RealtimeReasoningEffort`
+        - `effort: optional RealtimeReasoningEffort (default: "low")`
 
           Constrains effort on reasoning for reasoning-capable Realtime models such as
           `gpt-realtime-2`.
@@ -21004,7 +21202,7 @@ Use Bearer Auth (header Authorization).
 
           - `"xhigh"`
 
-      - `tool_choice: optional RealtimeToolChoiceConfig`
+      - `tool_choice: optional RealtimeToolChoiceConfig (default: "auto")`
 
         How the model chooses tools. Provide one of the string modes or force a specific
         function/MCP tool.
@@ -21103,6 +21301,8 @@ Use Bearer Auth (header Authorization).
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -21181,7 +21381,7 @@ Use Bearer Auth (header Authorization).
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -21238,10 +21438,14 @@ Use Bearer Auth (header Authorization).
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `tracing: optional RealtimeTracingConfig or null`
 
@@ -21302,6 +21506,8 @@ Use Bearer Auth (header Authorization).
 
             Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+            `minimum: 0`, `maximum: 1`
+
           - `type: "retention_ratio"`
 
             Use retention ratio truncation.
@@ -21312,9 +21518,11 @@ Use Bearer Auth (header Authorization).
 
             Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-            - `post_instructions: optional number`
+            - `post_instructions: optional integer`
 
               Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+              `minimum: 0`
 
     - `RealtimeTranscriptionSessionCreateRequest object { type, audio, include }`
 
@@ -21365,19 +21573,19 @@ Use Bearer Auth (header Authorization).
 
               Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-              - `type: "server_vad"`
+              - `type: "server_vad" (default: "server_vad")`
 
                 Type of turn detection, `server_vad` to turn on simple Server VAD.
 
                 - `"server_vad"`
 
-              - `create_response: optional boolean`
+              - `create_response: optional boolean (default: true)`
 
                 Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
                 If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-              - `idle_timeout_ms: optional number or null`
+              - `idle_timeout_ms: optional integer or null`
 
                 Optional timeout after which a model response will be triggered automatically. This is
                 useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -21391,19 +21599,21 @@ Use Bearer Auth (header Authorization).
                 associated with the Response) will be emitted when the timeout is reached.
                 Idle timeout is currently only supported for `server_vad` mode.
 
-              - `interrupt_response: optional boolean`
+                `minimum: 5000`, `maximum: 30000`
+
+              - `interrupt_response: optional boolean (default: true)`
 
                 Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
                 conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
                 If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-              - `prefix_padding_ms: optional number`
+              - `prefix_padding_ms: optional integer`
 
                 Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
                 milliseconds). Defaults to 300ms.
 
-              - `silence_duration_ms: optional number`
+              - `silence_duration_ms: optional integer`
 
                 Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
                 to 500ms. With shorter values the model will respond more quickly,
@@ -21425,11 +21635,11 @@ Use Bearer Auth (header Authorization).
 
                 - `"semantic_vad"`
 
-              - `create_response: optional boolean`
+              - `create_response: optional boolean (default: true)`
 
                 Whether or not to automatically generate a response when a VAD stop event occurs.
 
-              - `eagerness: optional "low" or "medium" or "high" or "auto"`
+              - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
                 Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -21441,7 +21651,7 @@ Use Bearer Auth (header Authorization).
 
                 - `"auto"`
 
-              - `interrupt_response: optional boolean`
+              - `interrupt_response: optional boolean (default: true)`
 
                 Whether or not to automatically interrupt any ongoing response with output to the default
                 conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -21463,6 +21673,8 @@ Use Bearer Auth (header Authorization).
   - `event_id: optional string`
 
     Optional client-generated ID used to identify this event. This is an arbitrary string that a client may assign. It will be passed back if there is an error with the event, but the corresponding `session.updated` event will not include it.
+
+    `maxLength: 512`
 
 ### Session Updated Event
 
@@ -21545,7 +21757,7 @@ Use Bearer Auth (header Authorization).
 
                 - `"audio/pcma"`
 
-          - `noise_reduction: optional object { type }  or null`
+          - `noise_reduction: optional object { type }  or null (default: null)`
 
             Configuration for input audio noise reduction. This can be set to `null` to turn off.
             Noise reduction filters audio added to the input audio buffer before it is sent to VAD and the model.
@@ -21570,6 +21782,8 @@ Use Bearer Auth (header Authorization).
             - `languages: optional array of string`
 
               The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
+
+              `minItems: 1`
 
             - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
@@ -21616,19 +21830,19 @@ Use Bearer Auth (header Authorization).
 
               Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-              - `type: "server_vad"`
+              - `type: "server_vad" (default: "server_vad")`
 
                 Type of turn detection, `server_vad` to turn on simple Server VAD.
 
                 - `"server_vad"`
 
-              - `create_response: optional boolean`
+              - `create_response: optional boolean (default: true)`
 
                 Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
                 If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-              - `idle_timeout_ms: optional number or null`
+              - `idle_timeout_ms: optional integer or null`
 
                 Optional timeout after which a model response will be triggered automatically. This is
                 useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -21642,19 +21856,21 @@ Use Bearer Auth (header Authorization).
                 associated with the Response) will be emitted when the timeout is reached.
                 Idle timeout is currently only supported for `server_vad` mode.
 
-              - `interrupt_response: optional boolean`
+                `minimum: 5000`, `maximum: 30000`
+
+              - `interrupt_response: optional boolean (default: true)`
 
                 Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
                 conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
                 If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-              - `prefix_padding_ms: optional number`
+              - `prefix_padding_ms: optional integer`
 
                 Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
                 milliseconds). Defaults to 300ms.
 
-              - `silence_duration_ms: optional number`
+              - `silence_duration_ms: optional integer`
 
                 Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
                 to 500ms. With shorter values the model will respond more quickly,
@@ -21676,11 +21892,11 @@ Use Bearer Auth (header Authorization).
 
                 - `"semantic_vad"`
 
-              - `create_response: optional boolean`
+              - `create_response: optional boolean (default: true)`
 
                 Whether or not to automatically generate a response when a VAD stop event occurs.
 
-              - `eagerness: optional "low" or "medium" or "high" or "auto"`
+              - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
                 Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -21692,7 +21908,7 @@ Use Bearer Auth (header Authorization).
 
                 - `"auto"`
 
-              - `interrupt_response: optional boolean`
+              - `interrupt_response: optional boolean (default: true)`
 
                 Whether or not to automatically interrupt any ongoing response with output to the default
                 conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -21703,7 +21919,7 @@ Use Bearer Auth (header Authorization).
 
             The format of the output audio.
 
-          - `speed: optional number`
+          - `speed: optional number (default: 1)`
 
             The speed of the model's spoken response as a multiple of the original speed.
             1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -21711,7 +21927,9 @@ Use Bearer Auth (header Authorization).
             This parameter is a post-processing adjustment to the audio after it is generated, it's
             also possible to prompt the model to speak faster or slower.
 
-          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
+            `minimum: 0.25`, `maximum: 1.5`
+
+          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more (default: "alloy")`
 
             The voice the model uses to respond. Voice cannot be changed during the
             session once the model has responded with audio at least once. Current
@@ -21749,9 +21967,11 @@ Use Bearer Auth (header Authorization).
 
               - `"cedar"`
 
-      - `expires_at: optional number`
+      - `expires_at: optional integer`
 
         Expiration timestamp for the session, in seconds since epoch.
+
+        `format: unixtime`
 
       - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -21828,7 +22048,7 @@ Use Bearer Auth (header Authorization).
 
           - `"gpt-audio-mini-2025-12-15"`
 
-      - `output_modalities: optional array of "text" or "audio"`
+      - `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
         The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
         that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -21863,7 +22083,7 @@ Use Bearer Auth (header Authorization).
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -21873,7 +22093,7 @@ Use Bearer Auth (header Authorization).
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -21903,7 +22123,7 @@ Use Bearer Auth (header Authorization).
 
               - `"original"`
 
-            - `type: "input_image"`
+            - `type: "input_image" (default: "input_image")`
 
               The type of the input item. Always `input_image`.
 
@@ -21917,11 +22137,13 @@ Use Bearer Auth (header Authorization).
 
               The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+              `format: uri`
+
             - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -21939,7 +22161,7 @@ Use Bearer Auth (header Authorization).
 
             A file input to the model.
 
-            - `type: "input_file"`
+            - `type: "input_file" (default: "input_file")`
 
               The type of the input item. Always `input_file`.
 
@@ -21967,6 +22189,8 @@ Use Bearer Auth (header Authorization).
 
               The URL of the file to be sent to the model.
 
+              `format: uri`
+
             - `filename: optional string`
 
               The name of the file to be sent to the model.
@@ -21975,7 +22199,7 @@ Use Bearer Auth (header Authorization).
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -21997,7 +22221,7 @@ Use Bearer Auth (header Authorization).
 
         Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-        - `effort: optional RealtimeReasoningEffort`
+        - `effort: optional RealtimeReasoningEffort (default: "low")`
 
           Constrains effort on reasoning for reasoning-capable Realtime models such as
           `gpt-realtime-2`.
@@ -22012,7 +22236,7 @@ Use Bearer Auth (header Authorization).
 
           - `"xhigh"`
 
-      - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
+      - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp (default: "auto")`
 
         How the model chooses tools. Provide one of the string modes or force a specific
         function/MCP tool.
@@ -22111,6 +22335,8 @@ Use Bearer Auth (header Authorization).
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -22189,7 +22415,7 @@ Use Bearer Auth (header Authorization).
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -22246,10 +22472,14 @@ Use Bearer Auth (header Authorization).
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `tracing: optional "auto" or TracingConfiguration { group_id, metadata, workflow_name }  or null`
 
@@ -22310,6 +22540,8 @@ Use Bearer Auth (header Authorization).
 
             Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+            `minimum: 0`, `maximum: 1`
+
           - `type: "retention_ratio"`
 
             Use retention ratio truncation.
@@ -22320,9 +22552,11 @@ Use Bearer Auth (header Authorization).
 
             Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-            - `post_instructions: optional number`
+            - `post_instructions: optional integer`
 
               Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+              `minimum: 0`
 
     - `RealtimeTranscriptionSessionCreateResponse object { id, object, type, 3 more }`
 
@@ -22372,6 +22606,8 @@ Use Bearer Auth (header Authorization).
 
               The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
 
+              `minItems: 1`
+
             - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
               The model used for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
@@ -22408,12 +22644,12 @@ Use Bearer Auth (header Authorization).
             VAD means that the model will detect the start and end of speech based on
             audio volume and respond at the end of user speech. For `gpt-realtime-whisper`, this must be `null`; VAD is not supported.
 
-            - `prefix_padding_ms: optional number`
+            - `prefix_padding_ms: optional integer`
 
               Amount of audio to include before the VAD detected speech (in
               milliseconds). Defaults to 300ms.
 
-            - `silence_duration_ms: optional number`
+            - `silence_duration_ms: optional integer`
 
               Duration of silence to detect speech stop (in milliseconds). Defaults
               to 500ms. With shorter values the model will respond more quickly,
@@ -22429,9 +22665,11 @@ Use Bearer Auth (header Authorization).
 
               Type of turn detection, only `server_vad` is currently supported.
 
-      - `expires_at: optional number`
+      - `expires_at: optional integer`
 
         Expiration timestamp for the session, in seconds since epoch.
+
+        `format: unixtime`
 
       - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -22464,7 +22702,7 @@ Use Bearer Auth (header Authorization).
 
       - `"item.input_audio_transcription.logprobs"`
 
-    - `input_audio_format: optional "pcm16" or "g711_ulaw" or "g711_alaw"`
+    - `input_audio_format: optional "pcm16" or "g711_ulaw" or "g711_alaw" (default: "pcm16")`
 
       The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
       For `pcm16`, input audio must be 16-bit PCM at a 24kHz sample rate,
@@ -22524,6 +22762,8 @@ Use Bearer Auth (header Authorization).
 
         Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+        `minItems: 1`
+
       - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
         The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -22562,12 +22802,12 @@ Use Bearer Auth (header Authorization).
 
       Configuration for turn detection. Can be set to `null` to turn off. Server VAD means that the model will detect the start and end of speech based on audio volume and respond at the end of user speech.
 
-      - `prefix_padding_ms: optional number`
+      - `prefix_padding_ms: optional integer`
 
         Amount of audio to include before the VAD detected speech (in
         milliseconds). Defaults to 300ms.
 
-      - `silence_duration_ms: optional number`
+      - `silence_duration_ms: optional integer`
 
         Duration of silence to detect speech stop (in milliseconds). Defaults
         to 500ms. With shorter values the model will respond more quickly,
@@ -22619,10 +22859,12 @@ Use Bearer Auth (header Authorization).
       Ephemeral key returned by the API. Only present when the session is
       created on the server via REST API.
 
-      - `expires_at: number`
+      - `expires_at: integer`
 
         Timestamp for when the token expires. Currently, all tokens expire
         after one minute.
+
+        `format: unixtime`
 
       - `value: string`
 
@@ -22645,6 +22887,8 @@ Use Bearer Auth (header Authorization).
       - `languages: optional array of string`
 
         The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
+
+        `minItems: 1`
 
       - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
@@ -22691,12 +22935,12 @@ Use Bearer Auth (header Authorization).
       VAD means that the model will detect the start and end of speech based on
       audio volume and respond at the end of user speech.
 
-      - `prefix_padding_ms: optional number`
+      - `prefix_padding_ms: optional integer`
 
         Amount of audio to include before the VAD detected speech (in
         milliseconds). Defaults to 300ms.
 
-      - `silence_duration_ms: optional number`
+      - `silence_duration_ms: optional integer`
 
         Duration of silence to detect speech stop (in milliseconds). Defaults
         to 500ms. With shorter values the model will respond more quickly,
@@ -22833,6 +23077,8 @@ handle it.
 
         Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+        `minItems: 1`
+
       - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
         The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -22882,19 +23128,19 @@ handle it.
 
         Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-        - `type: "server_vad"`
+        - `type: "server_vad" (default: "server_vad")`
 
           Type of turn detection, `server_vad` to turn on simple Server VAD.
 
           - `"server_vad"`
 
-        - `create_response: optional boolean`
+        - `create_response: optional boolean (default: true)`
 
           Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
           If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-        - `idle_timeout_ms: optional number or null`
+        - `idle_timeout_ms: optional integer or null`
 
           Optional timeout after which a model response will be triggered automatically. This is
           useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -22908,19 +23154,21 @@ handle it.
           associated with the Response) will be emitted when the timeout is reached.
           Idle timeout is currently only supported for `server_vad` mode.
 
-        - `interrupt_response: optional boolean`
+          `minimum: 5000`, `maximum: 30000`
+
+        - `interrupt_response: optional boolean (default: true)`
 
           Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
           conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
           If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-        - `prefix_padding_ms: optional number`
+        - `prefix_padding_ms: optional integer`
 
           Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
           milliseconds). Defaults to 300ms.
 
-        - `silence_duration_ms: optional number`
+        - `silence_duration_ms: optional integer`
 
           Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
           to 500ms. With shorter values the model will respond more quickly,
@@ -22942,11 +23190,11 @@ handle it.
 
           - `"semantic_vad"`
 
-        - `create_response: optional boolean`
+        - `create_response: optional boolean (default: true)`
 
           Whether or not to automatically generate a response when a VAD stop event occurs.
 
-        - `eagerness: optional "low" or "medium" or "high" or "auto"`
+        - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
           Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -22958,7 +23206,7 @@ handle it.
 
           - `"auto"`
 
-        - `interrupt_response: optional boolean`
+        - `interrupt_response: optional boolean (default: true)`
 
           Whether or not to automatically interrupt any ongoing response with output to the default
           conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -22969,7 +23217,7 @@ handle it.
 
       The format of the output audio.
 
-    - `speed: optional number`
+    - `speed: optional number (default: 1)`
 
       The speed of the model's spoken response as a multiple of the original speed.
       1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -22977,7 +23225,9 @@ handle it.
       This parameter is a post-processing adjustment to the audio after it is generated, it's
       also possible to prompt the model to speak faster or slower.
 
-    - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+      `minimum: 0.25`, `maximum: 1.5`
+
+    - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
       The voice the model uses to respond. Supported built-in voices are
       `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -23094,7 +23344,7 @@ handle it.
 
     - `"gpt-audio-mini-2025-12-15"`
 
-- `output_modalities: optional array of "text" or "audio"`
+- `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
   The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
   that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -23134,7 +23384,7 @@ handle it.
 
         The text input to the model.
 
-      - `type: "input_text"`
+      - `type: "input_text" (default: "input_text")`
 
         The type of the input item. Always `input_text`.
 
@@ -23144,7 +23394,7 @@ handle it.
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -23174,7 +23424,7 @@ handle it.
 
         - `"original"`
 
-      - `type: "input_image"`
+      - `type: "input_image" (default: "input_image")`
 
         The type of the input item. Always `input_image`.
 
@@ -23188,11 +23438,13 @@ handle it.
 
         The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+        `format: uri`
+
       - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -23210,7 +23462,7 @@ handle it.
 
       A file input to the model.
 
-      - `type: "input_file"`
+      - `type: "input_file" (default: "input_file")`
 
         The type of the input item. Always `input_file`.
 
@@ -23238,6 +23490,8 @@ handle it.
 
         The URL of the file to be sent to the model.
 
+        `format: uri`
+
       - `filename: optional string`
 
         The name of the file to be sent to the model.
@@ -23246,7 +23500,7 @@ handle it.
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -23268,7 +23522,7 @@ handle it.
 
   Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-  - `effort: optional RealtimeReasoningEffort`
+  - `effort: optional RealtimeReasoningEffort (default: "low")`
 
     Constrains effort on reasoning for reasoning-capable Realtime models such as
     `gpt-realtime-2`.
@@ -23283,7 +23537,7 @@ handle it.
 
     - `"xhigh"`
 
-- `tool_choice: optional RealtimeToolChoiceConfig`
+- `tool_choice: optional RealtimeToolChoiceConfig (default: "auto")`
 
   How the model chooses tools. Provide one of the string modes or force a specific
   function/MCP tool.
@@ -23382,6 +23636,8 @@ handle it.
 
       The tool invocation context(s).
 
+      `minItems: 1`
+
       - `"direct"`
 
       - `"programmatic"`
@@ -23460,7 +23716,7 @@ handle it.
       Optional HTTP headers to send to the MCP server. Use for authentication
       or other purposes.
 
-    - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+    - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
       Specify which of the MCP server's tools require approval.
 
@@ -23517,12 +23773,16 @@ handle it.
       The URL for the MCP server. One of `server_url`, `connector_id`, or
       `tunnel_id` must be provided.
 
+      `format: uri`
+
     - `tunnel_id: optional string`
 
       The Secure MCP Tunnel ID to use instead of a direct server URL. One of
       `server_url`, `connector_id`, or `tunnel_id` must be provided.
 
-- `tracing: optional RealtimeTracingConfig or null`
+      `pattern: ^tunnel_[a-z0-9]{32}$`
+
+- `tracing: optional RealtimeTracingConfig or null (default: null)`
 
   Realtime API can write session traces to the [Traces Dashboard](https://platform.openai.com/logs?api=traces). Set to null to disable tracing. Once
   tracing is enabled for a session, the configuration cannot be modified.
@@ -23581,6 +23841,8 @@ handle it.
 
       Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+      `minimum: 0`, `maximum: 1`
+
     - `type: "retention_ratio"`
 
       Use retention ratio truncation.
@@ -23591,9 +23853,11 @@ handle it.
 
       Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-      - `post_instructions: optional number`
+      - `post_instructions: optional integer`
 
         Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+        `minimum: 0`
 
 ### Example
 
@@ -23644,7 +23908,7 @@ curl -X POST https://api.openai.com/v1/realtime/calls \
   -F 'session={"type":"realtime","model":"gpt-realtime"};type=application/json'
 ```
 
-#### Response
+#### Response example
 
 ```json
 v=0
@@ -23744,7 +24008,7 @@ Decline an incoming SIP call by returning a SIP status code to the caller.
 
 ### Body Parameters
 
-- `status_code: optional number`
+- `status_code: optional integer`
 
   SIP response code to send back to the caller. Defaults to `603` (Decline)
   when omitted.
@@ -23795,15 +24059,17 @@ Returns the created client secret and the effective session object. The client s
   continue after that time once started. A secret can be used to create multiple sessions
   until it expires.
 
-  - `anchor: optional "created_at"`
+  - `anchor: optional "created_at" (default: "created_at")`
 
     The anchor point for the client secret expiration, meaning that `seconds` will be added to the `created_at` time of the client secret to produce an expiration timestamp. Only `created_at` is currently supported.
 
     - `"created_at"`
 
-  - `seconds: optional number`
+  - `seconds: optional integer (default: 600)`
 
     The number of seconds from the anchor point to the expiration. Select a value between `10` and `7200` (2 hours). This default to 600 seconds (10 minutes) if not specified.
+
+    `format: int64`, `minimum: 10`, `maximum: 7200`
 
 - `session: optional RealtimeSessionCreateRequest or RealtimeTranscriptionSessionCreateRequest`
 
@@ -23914,6 +24180,8 @@ Returns the created client secret and the effective session object. The client s
 
             Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+            `minItems: 1`
+
           - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
             The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -23963,19 +24231,19 @@ Returns the created client secret and the effective session object. The client s
 
             Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-            - `type: "server_vad"`
+            - `type: "server_vad" (default: "server_vad")`
 
               Type of turn detection, `server_vad` to turn on simple Server VAD.
 
               - `"server_vad"`
 
-            - `create_response: optional boolean`
+            - `create_response: optional boolean (default: true)`
 
               Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
               If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-            - `idle_timeout_ms: optional number or null`
+            - `idle_timeout_ms: optional integer or null`
 
               Optional timeout after which a model response will be triggered automatically. This is
               useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -23989,19 +24257,21 @@ Returns the created client secret and the effective session object. The client s
               associated with the Response) will be emitted when the timeout is reached.
               Idle timeout is currently only supported for `server_vad` mode.
 
-            - `interrupt_response: optional boolean`
+              `minimum: 5000`, `maximum: 30000`
+
+            - `interrupt_response: optional boolean (default: true)`
 
               Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
               conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
               If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-            - `prefix_padding_ms: optional number`
+            - `prefix_padding_ms: optional integer`
 
               Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
               milliseconds). Defaults to 300ms.
 
-            - `silence_duration_ms: optional number`
+            - `silence_duration_ms: optional integer`
 
               Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
               to 500ms. With shorter values the model will respond more quickly,
@@ -24023,11 +24293,11 @@ Returns the created client secret and the effective session object. The client s
 
               - `"semantic_vad"`
 
-            - `create_response: optional boolean`
+            - `create_response: optional boolean (default: true)`
 
               Whether or not to automatically generate a response when a VAD stop event occurs.
 
-            - `eagerness: optional "low" or "medium" or "high" or "auto"`
+            - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
               Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -24039,7 +24309,7 @@ Returns the created client secret and the effective session object. The client s
 
               - `"auto"`
 
-            - `interrupt_response: optional boolean`
+            - `interrupt_response: optional boolean (default: true)`
 
               Whether or not to automatically interrupt any ongoing response with output to the default
               conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -24050,7 +24320,7 @@ Returns the created client secret and the effective session object. The client s
 
           The format of the output audio.
 
-        - `speed: optional number`
+        - `speed: optional number (default: 1)`
 
           The speed of the model's spoken response as a multiple of the original speed.
           1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -24058,7 +24328,9 @@ Returns the created client secret and the effective session object. The client s
           This parameter is a post-processing adjustment to the audio after it is generated, it's
           also possible to prompt the model to speak faster or slower.
 
-        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+          `minimum: 0.25`, `maximum: 1.5`
+
+        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
           The voice the model uses to respond. Supported built-in voices are
           `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -24175,7 +24447,7 @@ Returns the created client secret and the effective session object. The client s
 
         - `"gpt-audio-mini-2025-12-15"`
 
-    - `output_modalities: optional array of "text" or "audio"`
+    - `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
       The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
       that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -24215,7 +24487,7 @@ Returns the created client secret and the effective session object. The client s
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -24225,7 +24497,7 @@ Returns the created client secret and the effective session object. The client s
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -24255,7 +24527,7 @@ Returns the created client secret and the effective session object. The client s
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -24269,11 +24541,13 @@ Returns the created client secret and the effective session object. The client s
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -24291,7 +24565,7 @@ Returns the created client secret and the effective session object. The client s
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -24319,6 +24593,8 @@ Returns the created client secret and the effective session object. The client s
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -24327,7 +24603,7 @@ Returns the created client secret and the effective session object. The client s
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -24349,7 +24625,7 @@ Returns the created client secret and the effective session object. The client s
 
       Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-      - `effort: optional RealtimeReasoningEffort`
+      - `effort: optional RealtimeReasoningEffort (default: "low")`
 
         Constrains effort on reasoning for reasoning-capable Realtime models such as
         `gpt-realtime-2`.
@@ -24364,7 +24640,7 @@ Returns the created client secret and the effective session object. The client s
 
         - `"xhigh"`
 
-    - `tool_choice: optional RealtimeToolChoiceConfig`
+    - `tool_choice: optional RealtimeToolChoiceConfig (default: "auto")`
 
       How the model chooses tools. Provide one of the string modes or force a specific
       function/MCP tool.
@@ -24463,6 +24739,8 @@ Returns the created client secret and the effective session object. The client s
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
@@ -24541,7 +24819,7 @@ Returns the created client secret and the effective session object. The client s
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -24598,10 +24876,14 @@ Returns the created client secret and the effective session object. The client s
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
     - `tracing: optional RealtimeTracingConfig or null`
 
@@ -24662,6 +24944,8 @@ Returns the created client secret and the effective session object. The client s
 
           Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+          `minimum: 0`, `maximum: 1`
+
         - `type: "retention_ratio"`
 
           Use retention ratio truncation.
@@ -24672,9 +24956,11 @@ Returns the created client secret and the effective session object. The client s
 
           Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-          - `post_instructions: optional number`
+          - `post_instructions: optional integer`
 
             Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+            `minimum: 0`
 
   - `RealtimeTranscriptionSessionCreateRequest object { type, audio, include }`
 
@@ -24725,19 +25011,19 @@ Returns the created client secret and the effective session object. The client s
 
             Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-            - `type: "server_vad"`
+            - `type: "server_vad" (default: "server_vad")`
 
               Type of turn detection, `server_vad` to turn on simple Server VAD.
 
               - `"server_vad"`
 
-            - `create_response: optional boolean`
+            - `create_response: optional boolean (default: true)`
 
               Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
               If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-            - `idle_timeout_ms: optional number or null`
+            - `idle_timeout_ms: optional integer or null`
 
               Optional timeout after which a model response will be triggered automatically. This is
               useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -24751,19 +25037,21 @@ Returns the created client secret and the effective session object. The client s
               associated with the Response) will be emitted when the timeout is reached.
               Idle timeout is currently only supported for `server_vad` mode.
 
-            - `interrupt_response: optional boolean`
+              `minimum: 5000`, `maximum: 30000`
+
+            - `interrupt_response: optional boolean (default: true)`
 
               Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
               conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
               If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-            - `prefix_padding_ms: optional number`
+            - `prefix_padding_ms: optional integer`
 
               Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
               milliseconds). Defaults to 300ms.
 
-            - `silence_duration_ms: optional number`
+            - `silence_duration_ms: optional integer`
 
               Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
               to 500ms. With shorter values the model will respond more quickly,
@@ -24785,11 +25073,11 @@ Returns the created client secret and the effective session object. The client s
 
               - `"semantic_vad"`
 
-            - `create_response: optional boolean`
+            - `create_response: optional boolean (default: true)`
 
               Whether or not to automatically generate a response when a VAD stop event occurs.
 
-            - `eagerness: optional "low" or "medium" or "high" or "auto"`
+            - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
               Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -24801,7 +25089,7 @@ Returns the created client secret and the effective session object. The client s
 
               - `"auto"`
 
-            - `interrupt_response: optional boolean`
+            - `interrupt_response: optional boolean (default: true)`
 
               Whether or not to automatically interrupt any ongoing response with output to the default
               conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -24816,9 +25104,11 @@ Returns the created client secret and the effective session object. The client s
 
 ### Returns
 
-- `expires_at: number`
+- `expires_at: integer`
 
   Expiration timestamp for the client secret, in seconds since epoch.
+
+  `format: unixtime`
 
 - `session: RealtimeSessionCreateResponse or RealtimeTranscriptionSessionCreateResponse`
 
@@ -24890,7 +25180,7 @@ Returns the created client secret and the effective session object. The client s
 
               - `"audio/pcma"`
 
-        - `noise_reduction: optional object { type }  or null`
+        - `noise_reduction: optional object { type }  or null (default: null)`
 
           Configuration for input audio noise reduction. This can be set to `null` to turn off.
           Noise reduction filters audio added to the input audio buffer before it is sent to VAD and the model.
@@ -24915,6 +25205,8 @@ Returns the created client secret and the effective session object. The client s
           - `languages: optional array of string`
 
             The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
+
+            `minItems: 1`
 
           - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
@@ -24961,19 +25253,19 @@ Returns the created client secret and the effective session object. The client s
 
             Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-            - `type: "server_vad"`
+            - `type: "server_vad" (default: "server_vad")`
 
               Type of turn detection, `server_vad` to turn on simple Server VAD.
 
               - `"server_vad"`
 
-            - `create_response: optional boolean`
+            - `create_response: optional boolean (default: true)`
 
               Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
               If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-            - `idle_timeout_ms: optional number or null`
+            - `idle_timeout_ms: optional integer or null`
 
               Optional timeout after which a model response will be triggered automatically. This is
               useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -24987,19 +25279,21 @@ Returns the created client secret and the effective session object. The client s
               associated with the Response) will be emitted when the timeout is reached.
               Idle timeout is currently only supported for `server_vad` mode.
 
-            - `interrupt_response: optional boolean`
+              `minimum: 5000`, `maximum: 30000`
+
+            - `interrupt_response: optional boolean (default: true)`
 
               Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
               conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
               If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-            - `prefix_padding_ms: optional number`
+            - `prefix_padding_ms: optional integer`
 
               Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
               milliseconds). Defaults to 300ms.
 
-            - `silence_duration_ms: optional number`
+            - `silence_duration_ms: optional integer`
 
               Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
               to 500ms. With shorter values the model will respond more quickly,
@@ -25021,11 +25315,11 @@ Returns the created client secret and the effective session object. The client s
 
               - `"semantic_vad"`
 
-            - `create_response: optional boolean`
+            - `create_response: optional boolean (default: true)`
 
               Whether or not to automatically generate a response when a VAD stop event occurs.
 
-            - `eagerness: optional "low" or "medium" or "high" or "auto"`
+            - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
               Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -25037,7 +25331,7 @@ Returns the created client secret and the effective session object. The client s
 
               - `"auto"`
 
-            - `interrupt_response: optional boolean`
+            - `interrupt_response: optional boolean (default: true)`
 
               Whether or not to automatically interrupt any ongoing response with output to the default
               conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -25048,7 +25342,7 @@ Returns the created client secret and the effective session object. The client s
 
           The format of the output audio.
 
-        - `speed: optional number`
+        - `speed: optional number (default: 1)`
 
           The speed of the model's spoken response as a multiple of the original speed.
           1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -25056,7 +25350,9 @@ Returns the created client secret and the effective session object. The client s
           This parameter is a post-processing adjustment to the audio after it is generated, it's
           also possible to prompt the model to speak faster or slower.
 
-        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
+          `minimum: 0.25`, `maximum: 1.5`
+
+        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more (default: "alloy")`
 
           The voice the model uses to respond. Voice cannot be changed during the
           session once the model has responded with audio at least once. Current
@@ -25094,9 +25390,11 @@ Returns the created client secret and the effective session object. The client s
 
             - `"cedar"`
 
-    - `expires_at: optional number`
+    - `expires_at: optional integer`
 
       Expiration timestamp for the session, in seconds since epoch.
+
+      `format: unixtime`
 
     - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -25173,7 +25471,7 @@ Returns the created client secret and the effective session object. The client s
 
         - `"gpt-audio-mini-2025-12-15"`
 
-    - `output_modalities: optional array of "text" or "audio"`
+    - `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
       The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
       that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -25208,7 +25506,7 @@ Returns the created client secret and the effective session object. The client s
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -25218,7 +25516,7 @@ Returns the created client secret and the effective session object. The client s
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -25248,7 +25546,7 @@ Returns the created client secret and the effective session object. The client s
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -25262,11 +25560,13 @@ Returns the created client secret and the effective session object. The client s
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -25284,7 +25584,7 @@ Returns the created client secret and the effective session object. The client s
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -25312,6 +25612,8 @@ Returns the created client secret and the effective session object. The client s
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -25320,7 +25622,7 @@ Returns the created client secret and the effective session object. The client s
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -25342,7 +25644,7 @@ Returns the created client secret and the effective session object. The client s
 
       Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-      - `effort: optional RealtimeReasoningEffort`
+      - `effort: optional RealtimeReasoningEffort (default: "low")`
 
         Constrains effort on reasoning for reasoning-capable Realtime models such as
         `gpt-realtime-2`.
@@ -25357,7 +25659,7 @@ Returns the created client secret and the effective session object. The client s
 
         - `"xhigh"`
 
-    - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
+    - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp (default: "auto")`
 
       How the model chooses tools. Provide one of the string modes or force a specific
       function/MCP tool.
@@ -25456,6 +25758,8 @@ Returns the created client secret and the effective session object. The client s
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
@@ -25534,7 +25838,7 @@ Returns the created client secret and the effective session object. The client s
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -25591,10 +25895,14 @@ Returns the created client secret and the effective session object. The client s
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
     - `tracing: optional "auto" or TracingConfiguration { group_id, metadata, workflow_name }  or null`
 
@@ -25655,6 +25963,8 @@ Returns the created client secret and the effective session object. The client s
 
           Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+          `minimum: 0`, `maximum: 1`
+
         - `type: "retention_ratio"`
 
           Use retention ratio truncation.
@@ -25665,9 +25975,11 @@ Returns the created client secret and the effective session object. The client s
 
           Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-          - `post_instructions: optional number`
+          - `post_instructions: optional integer`
 
             Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+            `minimum: 0`
 
   - `RealtimeTranscriptionSessionCreateResponse object { id, object, type, 3 more }`
 
@@ -25717,6 +26029,8 @@ Returns the created client secret and the effective session object. The client s
 
             The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
 
+            `minItems: 1`
+
           - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
             The model used for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
@@ -25753,12 +26067,12 @@ Returns the created client secret and the effective session object. The client s
           VAD means that the model will detect the start and end of speech based on
           audio volume and respond at the end of user speech. For `gpt-realtime-whisper`, this must be `null`; VAD is not supported.
 
-          - `prefix_padding_ms: optional number`
+          - `prefix_padding_ms: optional integer`
 
             Amount of audio to include before the VAD detected speech (in
             milliseconds). Defaults to 300ms.
 
-          - `silence_duration_ms: optional number`
+          - `silence_duration_ms: optional integer`
 
             Duration of silence to detect speech stop (in milliseconds). Defaults
             to 500ms. With shorter values the model will respond more quickly,
@@ -25774,9 +26088,11 @@ Returns the created client secret and the effective session object. The client s
 
             Type of turn detection, only `server_vad` is currently supported.
 
-    - `expires_at: optional number`
+    - `expires_at: optional integer`
 
       Expiration timestamp for the session, in seconds since epoch.
+
+      `format: unixtime`
 
     - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -25799,7 +26115,7 @@ curl https://api.openai.com/v1/realtime/client_secrets \
     -d '{}'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -25899,7 +26215,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -25955,9 +26271,11 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
   Response from creating a session and client secret for the Realtime API.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Expiration timestamp for the client secret, in seconds since epoch.
+
+    `format: unixtime`
 
   - `session: RealtimeSessionCreateResponse or RealtimeTranscriptionSessionCreateResponse`
 
@@ -26029,7 +26347,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
                 - `"audio/pcma"`
 
-          - `noise_reduction: optional object { type }  or null`
+          - `noise_reduction: optional object { type }  or null (default: null)`
 
             Configuration for input audio noise reduction. This can be set to `null` to turn off.
             Noise reduction filters audio added to the input audio buffer before it is sent to VAD and the model.
@@ -26054,6 +26372,8 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
             - `languages: optional array of string`
 
               The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
+
+              `minItems: 1`
 
             - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
@@ -26100,19 +26420,19 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
               Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-              - `type: "server_vad"`
+              - `type: "server_vad" (default: "server_vad")`
 
                 Type of turn detection, `server_vad` to turn on simple Server VAD.
 
                 - `"server_vad"`
 
-              - `create_response: optional boolean`
+              - `create_response: optional boolean (default: true)`
 
                 Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
                 If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-              - `idle_timeout_ms: optional number or null`
+              - `idle_timeout_ms: optional integer or null`
 
                 Optional timeout after which a model response will be triggered automatically. This is
                 useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -26126,19 +26446,21 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
                 associated with the Response) will be emitted when the timeout is reached.
                 Idle timeout is currently only supported for `server_vad` mode.
 
-              - `interrupt_response: optional boolean`
+                `minimum: 5000`, `maximum: 30000`
+
+              - `interrupt_response: optional boolean (default: true)`
 
                 Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
                 conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
                 If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-              - `prefix_padding_ms: optional number`
+              - `prefix_padding_ms: optional integer`
 
                 Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
                 milliseconds). Defaults to 300ms.
 
-              - `silence_duration_ms: optional number`
+              - `silence_duration_ms: optional integer`
 
                 Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
                 to 500ms. With shorter values the model will respond more quickly,
@@ -26160,11 +26482,11 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
                 - `"semantic_vad"`
 
-              - `create_response: optional boolean`
+              - `create_response: optional boolean (default: true)`
 
                 Whether or not to automatically generate a response when a VAD stop event occurs.
 
-              - `eagerness: optional "low" or "medium" or "high" or "auto"`
+              - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
                 Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -26176,7 +26498,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
                 - `"auto"`
 
-              - `interrupt_response: optional boolean`
+              - `interrupt_response: optional boolean (default: true)`
 
                 Whether or not to automatically interrupt any ongoing response with output to the default
                 conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -26187,7 +26509,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
             The format of the output audio.
 
-          - `speed: optional number`
+          - `speed: optional number (default: 1)`
 
             The speed of the model's spoken response as a multiple of the original speed.
             1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -26195,7 +26517,9 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
             This parameter is a post-processing adjustment to the audio after it is generated, it's
             also possible to prompt the model to speak faster or slower.
 
-          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
+            `minimum: 0.25`, `maximum: 1.5`
+
+          - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more (default: "alloy")`
 
             The voice the model uses to respond. Voice cannot be changed during the
             session once the model has responded with audio at least once. Current
@@ -26233,9 +26557,11 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
               - `"cedar"`
 
-      - `expires_at: optional number`
+      - `expires_at: optional integer`
 
         Expiration timestamp for the session, in seconds since epoch.
+
+        `format: unixtime`
 
       - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -26312,7 +26638,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           - `"gpt-audio-mini-2025-12-15"`
 
-      - `output_modalities: optional array of "text" or "audio"`
+      - `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
         The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
         that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -26347,7 +26673,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -26357,7 +26683,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -26387,7 +26713,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
               - `"original"`
 
-            - `type: "input_image"`
+            - `type: "input_image" (default: "input_image")`
 
               The type of the input item. Always `input_image`.
 
@@ -26401,11 +26727,13 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
               The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+              `format: uri`
+
             - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -26423,7 +26751,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
             A file input to the model.
 
-            - `type: "input_file"`
+            - `type: "input_file" (default: "input_file")`
 
               The type of the input item. Always `input_file`.
 
@@ -26451,6 +26779,8 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
               The URL of the file to be sent to the model.
 
+              `format: uri`
+
             - `filename: optional string`
 
               The name of the file to be sent to the model.
@@ -26459,7 +26789,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -26481,7 +26811,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
         Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-        - `effort: optional RealtimeReasoningEffort`
+        - `effort: optional RealtimeReasoningEffort (default: "low")`
 
           Constrains effort on reasoning for reasoning-capable Realtime models such as
           `gpt-realtime-2`.
@@ -26496,7 +26826,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           - `"xhigh"`
 
-      - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
+      - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp (default: "auto")`
 
         How the model chooses tools. Provide one of the string modes or force a specific
         function/MCP tool.
@@ -26595,6 +26925,8 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -26673,7 +27005,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -26730,10 +27062,14 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `tracing: optional "auto" or TracingConfiguration { group_id, metadata, workflow_name }  or null`
 
@@ -26794,6 +27130,8 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
             Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+            `minimum: 0`, `maximum: 1`
+
           - `type: "retention_ratio"`
 
             Use retention ratio truncation.
@@ -26804,9 +27142,11 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
             Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-            - `post_instructions: optional number`
+            - `post_instructions: optional integer`
 
               Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+              `minimum: 0`
 
     - `RealtimeTranscriptionSessionCreateResponse object { id, object, type, 3 more }`
 
@@ -26856,6 +27196,8 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
               The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
 
+              `minItems: 1`
+
             - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
               The model used for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
@@ -26892,12 +27234,12 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
             VAD means that the model will detect the start and end of speech based on
             audio volume and respond at the end of user speech. For `gpt-realtime-whisper`, this must be `null`; VAD is not supported.
 
-            - `prefix_padding_ms: optional number`
+            - `prefix_padding_ms: optional integer`
 
               Amount of audio to include before the VAD detected speech (in
               milliseconds). Defaults to 300ms.
 
-            - `silence_duration_ms: optional number`
+            - `silence_duration_ms: optional integer`
 
               Duration of silence to detect speech stop (in milliseconds). Defaults
               to 500ms. With shorter values the model will respond more quickly,
@@ -26913,9 +27255,11 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
               Type of turn detection, only `server_vad` is currently supported.
 
-      - `expires_at: optional number`
+      - `expires_at: optional integer`
 
         Expiration timestamp for the session, in seconds since epoch.
+
+        `format: unixtime`
 
       - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -26997,7 +27341,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
             - `"audio/pcma"`
 
-      - `noise_reduction: optional object { type }  or null`
+      - `noise_reduction: optional object { type }  or null (default: null)`
 
         Configuration for input audio noise reduction. This can be set to `null` to turn off.
         Noise reduction filters audio added to the input audio buffer before it is sent to VAD and the model.
@@ -27022,6 +27366,8 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
         - `languages: optional array of string`
 
           The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
+
+          `minItems: 1`
 
         - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
@@ -27068,19 +27414,19 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-          - `type: "server_vad"`
+          - `type: "server_vad" (default: "server_vad")`
 
             Type of turn detection, `server_vad` to turn on simple Server VAD.
 
             - `"server_vad"`
 
-          - `create_response: optional boolean`
+          - `create_response: optional boolean (default: true)`
 
             Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
             If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-          - `idle_timeout_ms: optional number or null`
+          - `idle_timeout_ms: optional integer or null`
 
             Optional timeout after which a model response will be triggered automatically. This is
             useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -27094,19 +27440,21 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
             associated with the Response) will be emitted when the timeout is reached.
             Idle timeout is currently only supported for `server_vad` mode.
 
-          - `interrupt_response: optional boolean`
+            `minimum: 5000`, `maximum: 30000`
+
+          - `interrupt_response: optional boolean (default: true)`
 
             Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
             conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
             If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-          - `prefix_padding_ms: optional number`
+          - `prefix_padding_ms: optional integer`
 
             Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
             milliseconds). Defaults to 300ms.
 
-          - `silence_duration_ms: optional number`
+          - `silence_duration_ms: optional integer`
 
             Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
             to 500ms. With shorter values the model will respond more quickly,
@@ -27128,11 +27476,11 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
             - `"semantic_vad"`
 
-          - `create_response: optional boolean`
+          - `create_response: optional boolean (default: true)`
 
             Whether or not to automatically generate a response when a VAD stop event occurs.
 
-          - `eagerness: optional "low" or "medium" or "high" or "auto"`
+          - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
             Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -27144,7 +27492,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
             - `"auto"`
 
-          - `interrupt_response: optional boolean`
+          - `interrupt_response: optional boolean (default: true)`
 
             Whether or not to automatically interrupt any ongoing response with output to the default
             conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -27155,7 +27503,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
         The format of the output audio.
 
-      - `speed: optional number`
+      - `speed: optional number (default: 1)`
 
         The speed of the model's spoken response as a multiple of the original speed.
         1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -27163,7 +27511,9 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
         This parameter is a post-processing adjustment to the audio after it is generated, it's
         also possible to prompt the model to speak faster or slower.
 
-      - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
+        `minimum: 0.25`, `maximum: 1.5`
+
+      - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more (default: "alloy")`
 
         The voice the model uses to respond. Voice cannot be changed during the
         session once the model has responded with audio at least once. Current
@@ -27201,9 +27551,11 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           - `"cedar"`
 
-  - `expires_at: optional number`
+  - `expires_at: optional integer`
 
     Expiration timestamp for the session, in seconds since epoch.
+
+    `format: unixtime`
 
   - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -27280,7 +27632,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
       - `"gpt-audio-mini-2025-12-15"`
 
-  - `output_modalities: optional array of "text" or "audio"`
+  - `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
     The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
     that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -27315,7 +27667,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           The text input to the model.
 
-        - `type: "input_text"`
+        - `type: "input_text" (default: "input_text")`
 
           The type of the input item. Always `input_text`.
 
@@ -27325,7 +27677,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -27355,7 +27707,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           - `"original"`
 
-        - `type: "input_image"`
+        - `type: "input_image" (default: "input_image")`
 
           The type of the input item. Always `input_image`.
 
@@ -27369,11 +27721,13 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+          `format: uri`
+
         - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -27391,7 +27745,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
         A file input to the model.
 
-        - `type: "input_file"`
+        - `type: "input_file" (default: "input_file")`
 
           The type of the input item. Always `input_file`.
 
@@ -27419,6 +27773,8 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           The URL of the file to be sent to the model.
 
+          `format: uri`
+
         - `filename: optional string`
 
           The name of the file to be sent to the model.
@@ -27427,7 +27783,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -27449,7 +27805,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
     Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-    - `effort: optional RealtimeReasoningEffort`
+    - `effort: optional RealtimeReasoningEffort (default: "low")`
 
       Constrains effort on reasoning for reasoning-capable Realtime models such as
       `gpt-realtime-2`.
@@ -27464,7 +27820,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
       - `"xhigh"`
 
-  - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
+  - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp (default: "auto")`
 
     How the model chooses tools. Provide one of the string modes or force a specific
     function/MCP tool.
@@ -27563,6 +27919,8 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
@@ -27641,7 +27999,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
         Specify which of the MCP server's tools require approval.
 
@@ -27698,10 +28056,14 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
         The URL for the MCP server. One of `server_url`, `connector_id`, or
         `tunnel_id` must be provided.
 
+        `format: uri`
+
       - `tunnel_id: optional string`
 
         The Secure MCP Tunnel ID to use instead of a direct server URL. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+        `pattern: ^tunnel_[a-z0-9]{32}$`
 
   - `tracing: optional "auto" or TracingConfiguration { group_id, metadata, workflow_name }  or null`
 
@@ -27762,6 +28124,8 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
         Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+        `minimum: 0`, `maximum: 1`
+
       - `type: "retention_ratio"`
 
         Use retention ratio truncation.
@@ -27772,9 +28136,11 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
         Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-        - `post_instructions: optional number`
+        - `post_instructions: optional integer`
 
           Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+          `minimum: 0`
 
 ### Realtime Transcription Session Create Response
 
@@ -27866,6 +28232,8 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
 
+          `minItems: 1`
+
         - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
           The model used for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
@@ -27902,12 +28270,12 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
         VAD means that the model will detect the start and end of speech based on
         audio volume and respond at the end of user speech. For `gpt-realtime-whisper`, this must be `null`; VAD is not supported.
 
-        - `prefix_padding_ms: optional number`
+        - `prefix_padding_ms: optional integer`
 
           Amount of audio to include before the VAD detected speech (in
           milliseconds). Defaults to 300ms.
 
-        - `silence_duration_ms: optional number`
+        - `silence_duration_ms: optional integer`
 
           Duration of silence to detect speech stop (in milliseconds). Defaults
           to 500ms. With shorter values the model will respond more quickly,
@@ -27923,9 +28291,11 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
 
           Type of turn detection, only `server_vad` is currently supported.
 
-  - `expires_at: optional number`
+  - `expires_at: optional integer`
 
     Expiration timestamp for the session, in seconds since epoch.
+
+    `format: unixtime`
 
   - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
@@ -27943,12 +28313,12 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
   VAD means that the model will detect the start and end of speech based on
   audio volume and respond at the end of user speech. For `gpt-realtime-whisper`, this must be `null`; VAD is not supported.
 
-  - `prefix_padding_ms: optional number`
+  - `prefix_padding_ms: optional integer`
 
     Amount of audio to include before the VAD detected speech (in
     milliseconds). Defaults to 300ms.
 
-  - `silence_duration_ms: optional number`
+  - `silence_duration_ms: optional integer`
 
     Duration of silence to detect speech stop (in milliseconds). Defaults
     to 500ms. With shorter values the model will respond more quickly,
@@ -27986,10 +28356,12 @@ Returns the created Realtime session object, plus an ephemeral key.
 
   Ephemeral key returned by the API.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Timestamp for when the token expires. Currently, all tokens expire
     after one minute.
+
+    `format: unixtime`
 
   - `value: string`
 
@@ -28069,7 +28441,7 @@ Returns the created Realtime session object, plus an ephemeral key.
 
         The text input to the model.
 
-      - `type: "input_text"`
+      - `type: "input_text" (default: "input_text")`
 
         The type of the input item. Always `input_text`.
 
@@ -28079,7 +28451,7 @@ Returns the created Realtime session object, plus an ephemeral key.
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -28109,7 +28481,7 @@ Returns the created Realtime session object, plus an ephemeral key.
 
         - `"original"`
 
-      - `type: "input_image"`
+      - `type: "input_image" (default: "input_image")`
 
         The type of the input item. Always `input_image`.
 
@@ -28123,11 +28495,13 @@ Returns the created Realtime session object, plus an ephemeral key.
 
         The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+        `format: uri`
+
       - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -28145,7 +28519,7 @@ Returns the created Realtime session object, plus an ephemeral key.
 
       A file input to the model.
 
-      - `type: "input_file"`
+      - `type: "input_file" (default: "input_file")`
 
         The type of the input item. Always `input_file`.
 
@@ -28173,6 +28547,8 @@ Returns the created Realtime session object, plus an ephemeral key.
 
         The URL of the file to be sent to the model.
 
+        `format: uri`
+
       - `filename: optional string`
 
         The name of the file to be sent to the model.
@@ -28181,7 +28557,7 @@ Returns the created Realtime session object, plus an ephemeral key.
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -28199,11 +28575,13 @@ Returns the created Realtime session object, plus an ephemeral key.
 
     Optional version of the prompt template.
 
-- `speed: optional number`
+- `speed: optional number (default: 1)`
 
   The speed of the model's spoken response. 1.0 is the default speed. 0.25 is
   the minimum speed. 1.5 is the maximum speed. This value can only be changed
   in between model turns, not while a response is in progress.
+
+  `minimum: 0.25`, `maximum: 1.5`
 
 - `temperature: optional number`
 
@@ -28297,6 +28675,8 @@ Returns the created Realtime session object, plus an ephemeral key.
 
       Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+      `minimum: 0`, `maximum: 1`
+
     - `type: "retention_ratio"`
 
       Use retention ratio truncation.
@@ -28307,9 +28687,11 @@ Returns the created Realtime session object, plus an ephemeral key.
 
       Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-      - `post_instructions: optional number`
+      - `post_instructions: optional integer`
 
         Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+        `minimum: 0`
 
 - `turn_detection: optional object { prefix_padding_ms, silence_duration_ms, threshold, type }`
 
@@ -28317,12 +28699,12 @@ Returns the created Realtime session object, plus an ephemeral key.
   VAD means that the model will detect the start and end of speech based on
   audio volume and respond at the end of user speech.
 
-  - `prefix_padding_ms: optional number`
+  - `prefix_padding_ms: optional integer`
 
     Amount of audio to include before the VAD detected speech (in
     milliseconds). Defaults to 300ms.
 
-  - `silence_duration_ms: optional number`
+  - `silence_duration_ms: optional integer`
 
     Duration of silence to detect speech stop (in milliseconds). Defaults
     to 500ms. With shorter values the model will respond more quickly,
@@ -28455,6 +28837,8 @@ Returns the created Realtime session object, plus an ephemeral key.
 
         The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
 
+        `minItems: 1`
+
       - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
         The model used for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
@@ -28489,9 +28873,9 @@ Returns the created Realtime session object, plus an ephemeral key.
 
       Configuration for turn detection.
 
-      - `prefix_padding_ms: optional number`
+      - `prefix_padding_ms: optional integer`
 
-      - `silence_duration_ms: optional number`
+      - `silence_duration_ms: optional integer`
 
       - `threshold: optional number`
 
@@ -28533,9 +28917,11 @@ Returns the created Realtime session object, plus an ephemeral key.
 
         - `"cedar"`
 
-- `expires_at: optional number`
+- `expires_at: optional integer`
 
   Expiration timestamp for the session, in seconds since epoch.
+
+  `format: unixtime`
 
 - `include: optional array of "item.input_audio_transcription.logprobs"`
 
@@ -28658,12 +29044,12 @@ Returns the created Realtime session object, plus an ephemeral key.
   VAD means that the model will detect the start and end of speech based on
   audio volume and respond at the end of user speech.
 
-  - `prefix_padding_ms: optional number`
+  - `prefix_padding_ms: optional integer`
 
     Amount of audio to include before the VAD detected speech (in
     milliseconds). Defaults to 300ms.
 
-  - `silence_duration_ms: optional number`
+  - `silence_duration_ms: optional integer`
 
     Duration of silence to detect speech stop (in milliseconds). Defaults
     to 500ms. With shorter values the model will respond more quickly,
@@ -28693,7 +29079,7 @@ curl https://api.openai.com/v1/realtime/sessions \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -28774,7 +29160,7 @@ curl -X POST https://api.openai.com/v1/realtime/sessions \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -28885,6 +29271,8 @@ curl -X POST https://api.openai.com/v1/realtime/sessions \
 
           The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
 
+          `minItems: 1`
+
         - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
           The model used for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`.
@@ -28919,9 +29307,9 @@ curl -X POST https://api.openai.com/v1/realtime/sessions \
 
         Configuration for turn detection.
 
-        - `prefix_padding_ms: optional number`
+        - `prefix_padding_ms: optional integer`
 
-        - `silence_duration_ms: optional number`
+        - `silence_duration_ms: optional integer`
 
         - `threshold: optional number`
 
@@ -28963,9 +29351,11 @@ curl -X POST https://api.openai.com/v1/realtime/sessions \
 
           - `"cedar"`
 
-  - `expires_at: optional number`
+  - `expires_at: optional integer`
 
     Expiration timestamp for the session, in seconds since epoch.
+
+    `format: unixtime`
 
   - `include: optional array of "item.input_audio_transcription.logprobs"`
 
@@ -29088,12 +29478,12 @@ curl -X POST https://api.openai.com/v1/realtime/sessions \
     VAD means that the model will detect the start and end of speech based on
     audio volume and respond at the end of user speech.
 
-    - `prefix_padding_ms: optional number`
+    - `prefix_padding_ms: optional integer`
 
       Amount of audio to include before the VAD detected speech (in
       milliseconds). Defaults to 300ms.
 
-    - `silence_duration_ms: optional number`
+    - `silence_duration_ms: optional integer`
 
       Duration of silence to detect speech stop (in milliseconds). Defaults
       to 500ms. With shorter values the model will respond more quickly,
@@ -29134,7 +29524,7 @@ Returns the created Realtime transcription session object, plus an ephemeral key
 
   - `"item.input_audio_transcription.logprobs"`
 
-- `input_audio_format: optional "pcm16" or "g711_ulaw" or "g711_alaw"`
+- `input_audio_format: optional "pcm16" or "g711_ulaw" or "g711_alaw" (default: "pcm16")`
 
   The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`.
   For `pcm16`, input audio must be 16-bit PCM at a 24kHz sample rate,
@@ -29194,6 +29584,8 @@ Returns the created Realtime transcription session object, plus an ephemeral key
 
     Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+    `minItems: 1`
+
   - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
     The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -29232,12 +29624,12 @@ Returns the created Realtime transcription session object, plus an ephemeral key
 
   Configuration for turn detection. Can be set to `null` to turn off. Server VAD means that the model will detect the start and end of speech based on audio volume and respond at the end of user speech.
 
-  - `prefix_padding_ms: optional number`
+  - `prefix_padding_ms: optional integer`
 
     Amount of audio to include before the VAD detected speech (in
     milliseconds). Defaults to 300ms.
 
-  - `silence_duration_ms: optional number`
+  - `silence_duration_ms: optional integer`
 
     Duration of silence to detect speech stop (in milliseconds). Defaults
     to 500ms. With shorter values the model will respond more quickly,
@@ -29262,10 +29654,12 @@ Returns the created Realtime transcription session object, plus an ephemeral key
   Ephemeral key returned by the API. Only present when the session is
   created on the server via REST API.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Timestamp for when the token expires. Currently, all tokens expire
     after one minute.
+
+    `format: unixtime`
 
   - `value: string`
 
@@ -29288,6 +29682,8 @@ Returns the created Realtime transcription session object, plus an ephemeral key
   - `languages: optional array of string`
 
     The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
+
+    `minItems: 1`
 
   - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
@@ -29334,12 +29730,12 @@ Returns the created Realtime transcription session object, plus an ephemeral key
   VAD means that the model will detect the start and end of speech based on
   audio volume and respond at the end of user speech.
 
-  - `prefix_padding_ms: optional number`
+  - `prefix_padding_ms: optional integer`
 
     Amount of audio to include before the VAD detected speech (in
     milliseconds). Defaults to 300ms.
 
-  - `silence_duration_ms: optional number`
+  - `silence_duration_ms: optional integer`
 
     Duration of silence to detect speech stop (in milliseconds). Defaults
     to 500ms. With shorter values the model will respond more quickly,
@@ -29364,7 +29760,7 @@ curl https://api.openai.com/v1/realtime/transcription_sessions \
     -d '{}'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -29402,7 +29798,7 @@ curl -X POST https://api.openai.com/v1/realtime/transcription_sessions \
   -d '{}'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -29445,10 +29841,12 @@ curl -X POST https://api.openai.com/v1/realtime/transcription_sessions \
     Ephemeral key returned by the API. Only present when the session is
     created on the server via REST API.
 
-    - `expires_at: number`
+    - `expires_at: integer`
 
       Timestamp for when the token expires. Currently, all tokens expire
       after one minute.
+
+      `format: unixtime`
 
     - `value: string`
 
@@ -29471,6 +29869,8 @@ curl -X POST https://api.openai.com/v1/realtime/transcription_sessions \
     - `languages: optional array of string`
 
       The possible input audio languages configured for transcription, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format.
+
+      `minItems: 1`
 
     - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
@@ -29517,12 +29917,12 @@ curl -X POST https://api.openai.com/v1/realtime/transcription_sessions \
     VAD means that the model will detect the start and end of speech based on
     audio volume and respond at the end of user speech.
 
-    - `prefix_padding_ms: optional number`
+    - `prefix_padding_ms: optional integer`
 
       Amount of audio to include before the VAD detected speech (in
       milliseconds). Defaults to 300ms.
 
-    - `silence_duration_ms: optional number`
+    - `silence_duration_ms: optional integer`
 
       Duration of silence to detect speech stop (in milliseconds). Defaults
       to 500ms. With shorter values the model will respond more quickly,
@@ -29630,15 +30030,17 @@ The client secret is a string that looks like `ek_1234`.
   continue after that time once started. A secret can be used to create multiple sessions
   until it expires.
 
-  - `anchor: optional "created_at"`
+  - `anchor: optional "created_at" (default: "created_at")`
 
     The anchor point for the client secret expiration, meaning that `seconds` will be added to the `created_at` time of the client secret to produce an expiration timestamp. Only `created_at` is currently supported.
 
     - `"created_at"`
 
-  - `seconds: optional number`
+  - `seconds: optional integer (default: 600)`
 
     The number of seconds from the anchor point to the expiration. Select a value between `10` and `7200` (2 hours). This default to 600 seconds (10 minutes) if not specified.
+
+    `format: int64`, `minimum: 10`, `maximum: 7200`
 
 ### Returns
 
@@ -29646,9 +30048,11 @@ The client secret is a string that looks like `ek_1234`.
 
   Response from creating a translation session and client secret for the Realtime API.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Expiration timestamp for the client secret, in seconds since epoch.
+
+    `format: unixtime`
 
   - `session: RealtimeTranslationSession`
 
@@ -29693,9 +30097,11 @@ The client secret is a string that looks like `ek_1234`.
 
           Target language for translated output audio and transcript deltas.
 
-    - `expires_at: number`
+    - `expires_at: integer`
 
       Expiration timestamp for the session, in seconds since epoch.
+
+      `format: unixtime`
 
     - `model: string`
 
@@ -29725,7 +30131,7 @@ curl https://api.openai.com/v1/realtime/translations/client_secrets \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -29781,7 +30187,7 @@ curl -X POST https://api.openai.com/v1/realtime/translations/client_secrets \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

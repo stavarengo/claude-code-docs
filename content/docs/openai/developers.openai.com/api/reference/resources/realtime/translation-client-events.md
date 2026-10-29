@@ -65,6 +65,8 @@ Schema name: `RealtimeTranslationClientEventSessionUpdate`
 
   Optional client-generated ID used to identify this event.
 
+  `maxLength: 512`
+
 ### Example
 
 ```json
@@ -124,6 +126,8 @@ Schema name: `RealtimeTranslationClientEventInputAudioBufferAppend`
 
   Optional client-generated ID used to identify this event.
 
+  `maxLength: 512`
+
 ### Example
 
 ```json
@@ -155,6 +159,8 @@ Schema name: `RealtimeTranslationClientEventSessionClose`
 - `event_id: optional string`
 
   Optional client-generated ID used to identify this event.
+
+  `maxLength: 512`
 
 ### Example
 

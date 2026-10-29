@@ -89,29 +89,33 @@ Schema name: `LiveSessionUpdateParam`
 
       Delegate tasks to your application. The Live session emits delegation events that your backend handles.
 
-      - `type: "client"`
+      - `type: "client" (default: "client")`
 
         The delegation owner. Always `client` for tasks handled by your application.
 
         - `"client"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400 for Decisions sessions and 0 (request immediately) for other sessions. Omission in a session update preserves the current value. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
     - `Responses object { type, acknowledgement_delay_ms, responses }`
 
       Update the Responses backend for an existing Live session without changing delegation ownership.
 
-      - `type: "responses"`
+      - `type: "responses" (default: "responses")`
 
         The delegation owner. Always `responses` for tasks handled by the Responses API.
 
         - `"responses"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400 for Decisions sessions and 0 (request immediately) for other sessions. Omission in a session update preserves the current value. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
       - `responses: optional ResponsesDelegationUpdateConfig`
 
@@ -121,9 +125,11 @@ Schema name: `LiveSessionUpdateParam`
 
           Instructions for the delegated Responses model, separate from Live instructions. See [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
 
-        - `max_output_tokens: optional number or null`
+        - `max_output_tokens: optional integer or null`
 
           Maximum number of output tokens for each delegated response.
+
+          `minimum: 16`
 
         - `model: optional string`
 
@@ -211,7 +217,7 @@ Schema name: `LiveSessionUpdateParam`
 
               The name of the function tool to call.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The tool to call. Always `function`.
 
@@ -223,7 +229,7 @@ Schema name: `LiveSessionUpdateParam`
 
               The label of the MCP server to call.
 
-            - `type: "mcp"`
+            - `type: "mcp" (default: "mcp")`
 
               The tool to call. Always `mcp`.
 
@@ -235,7 +241,7 @@ Schema name: `LiveSessionUpdateParam`
 
           - `FileSearch object { type }`
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The tool to call. Always `file_search`.
 
@@ -243,7 +249,7 @@ Schema name: `LiveSessionUpdateParam`
 
           - `WebSearch object { type }`
 
-            - `type: "web_search"`
+            - `type: "web_search" (default: "web_search")`
 
               The tool to call. Always `web_search`.
 
@@ -251,7 +257,7 @@ Schema name: `LiveSessionUpdateParam`
 
           - `WebSearchPreview object { type }`
 
-            - `type: "web_search_preview"`
+            - `type: "web_search_preview" (default: "web_search_preview")`
 
               The tool to call. Always `web_search_preview`.
 
@@ -259,7 +265,7 @@ Schema name: `LiveSessionUpdateParam`
 
           - `ImageGeneration object { type }`
 
-            - `type: "image_generation"`
+            - `type: "image_generation" (default: "image_generation")`
 
               The tool to call. Always `image_generation`.
 
@@ -267,7 +273,7 @@ Schema name: `LiveSessionUpdateParam`
 
           - `Computer object { type }`
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The tool to call. Always `computer`.
 
@@ -275,7 +281,7 @@ Schema name: `LiveSessionUpdateParam`
 
           - `CodeInterpreter object { type }`
 
-            - `type: "code_interpreter"`
+            - `type: "code_interpreter" (default: "code_interpreter")`
 
               The tool to call. Always `code_interpreter`.
 
@@ -283,7 +289,7 @@ Schema name: `LiveSessionUpdateParam`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The tool to call. Always `programmatic_tool_calling`.
 
@@ -293,7 +299,7 @@ Schema name: `LiveSessionUpdateParam`
 
             Forces the model to call the shell tool when a tool call is required.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The tool to call. Always `shell`.
 
@@ -305,7 +311,7 @@ Schema name: `LiveSessionUpdateParam`
 
               The name of the custom tool to call.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The tool to call. Always `custom`.
 
@@ -315,7 +321,7 @@ Schema name: `LiveSessionUpdateParam`
 
             Forces the model to call the apply_patch tool when executing a tool call.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The tool to call. Always `apply_patch`.
 
@@ -327,13 +333,15 @@ Schema name: `LiveSessionUpdateParam`
 
               The tools that the delegated Responses model may call.
 
+              `minItems: 1`, `maxItems: 128`
+
               - `Function object { name, type }`
 
                 - `name: string`
 
                   The name of the function tool to call.
 
-                - `type: "function"`
+                - `type: "function" (default: "function")`
 
                   The tool to call. Always `function`.
 
@@ -345,7 +353,7 @@ Schema name: `LiveSessionUpdateParam`
 
                   The label of the MCP server to call.
 
-                - `type: "mcp"`
+                - `type: "mcp" (default: "mcp")`
 
                   The tool to call. Always `mcp`.
 
@@ -357,7 +365,7 @@ Schema name: `LiveSessionUpdateParam`
 
               - `FileSearch object { type }`
 
-                - `type: "file_search"`
+                - `type: "file_search" (default: "file_search")`
 
                   The tool to call. Always `file_search`.
 
@@ -365,7 +373,7 @@ Schema name: `LiveSessionUpdateParam`
 
               - `WebSearch object { type }`
 
-                - `type: "web_search"`
+                - `type: "web_search" (default: "web_search")`
 
                   The tool to call. Always `web_search`.
 
@@ -373,7 +381,7 @@ Schema name: `LiveSessionUpdateParam`
 
               - `WebSearchPreview object { type }`
 
-                - `type: "web_search_preview"`
+                - `type: "web_search_preview" (default: "web_search_preview")`
 
                   The tool to call. Always `web_search_preview`.
 
@@ -381,7 +389,7 @@ Schema name: `LiveSessionUpdateParam`
 
               - `ImageGeneration object { type }`
 
-                - `type: "image_generation"`
+                - `type: "image_generation" (default: "image_generation")`
 
                   The tool to call. Always `image_generation`.
 
@@ -389,7 +397,7 @@ Schema name: `LiveSessionUpdateParam`
 
               - `Computer object { type }`
 
-                - `type: "computer"`
+                - `type: "computer" (default: "computer")`
 
                   The tool to call. Always `computer`.
 
@@ -397,7 +405,7 @@ Schema name: `LiveSessionUpdateParam`
 
               - `CodeInterpreter object { type }`
 
-                - `type: "code_interpreter"`
+                - `type: "code_interpreter" (default: "code_interpreter")`
 
                   The tool to call. Always `code_interpreter`.
 
@@ -405,7 +413,7 @@ Schema name: `LiveSessionUpdateParam`
 
               - `ProgrammaticToolCalling object { type }`
 
-                - `type: "programmatic_tool_calling"`
+                - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
                   The tool to call. Always `programmatic_tool_calling`.
 
@@ -415,7 +423,7 @@ Schema name: `LiveSessionUpdateParam`
 
                 Forces the model to call the shell tool when a tool call is required.
 
-                - `type: "shell"`
+                - `type: "shell" (default: "shell")`
 
                   The tool to call. Always `shell`.
 
@@ -427,7 +435,7 @@ Schema name: `LiveSessionUpdateParam`
 
                   The name of the custom tool to call.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The tool to call. Always `custom`.
 
@@ -437,13 +445,13 @@ Schema name: `LiveSessionUpdateParam`
 
                 Forces the model to call the apply_patch tool when executing a tool call.
 
-                - `type: "apply_patch"`
+                - `type: "apply_patch" (default: "apply_patch")`
 
                   The tool to call. Always `apply_patch`.
 
                   - `"apply_patch"`
 
-            - `type: "allowed_tools"`
+            - `type: "allowed_tools" (default: "allowed_tools")`
 
               The tool choice type. Always `allowed_tools`.
 
@@ -471,7 +479,7 @@ Schema name: `LiveSessionUpdateParam`
 
               The name the delegated Responses model uses when calling this function.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The tool type. Always `function`.
 
@@ -493,7 +501,7 @@ Schema name: `LiveSessionUpdateParam`
 
             A web search tool available to the Live session’s Responses backend.
 
-            - `type: "web_search"`
+            - `type: "web_search" (default: "web_search")`
 
               The tool type. Always `web_search`.
 
@@ -501,13 +509,13 @@ Schema name: `LiveSessionUpdateParam`
 
           - `FileSearch object { type }`
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               - `"file_search"`
 
           - `CodeInterpreter object { type }`
 
-            - `type: "code_interpreter"`
+            - `type: "code_interpreter" (default: "code_interpreter")`
 
               - `"code_interpreter"`
 
@@ -515,7 +523,7 @@ Schema name: `LiveSessionUpdateParam`
 
             A Responses shell tool. Use a hosted container or return local shell results with response.item.create. Domain secrets are not supported.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               - `"shell"`
 
@@ -523,7 +531,7 @@ Schema name: `LiveSessionUpdateParam`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -532,6 +540,8 @@ Schema name: `LiveSessionUpdateParam`
                 - `file_ids: optional array of string or null`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -551,7 +561,7 @@ Schema name: `LiveSessionUpdateParam`
 
                   - `Disabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -563,7 +573,9 @@ Schema name: `LiveSessionUpdateParam`
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -573,13 +585,17 @@ Schema name: `LiveSessionUpdateParam`
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -607,19 +623,21 @@ Schema name: `LiveSessionUpdateParam`
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -631,7 +649,7 @@ Schema name: `LiveSessionUpdateParam`
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -639,7 +657,7 @@ Schema name: `LiveSessionUpdateParam`
 
               - `Local object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -648,6 +666,8 @@ Schema name: `LiveSessionUpdateParam`
                 - `skills: optional array of object { description, name, path }  or null`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -663,73 +683,81 @@ Schema name: `LiveSessionUpdateParam`
 
           - `ImageGeneration object { type }`
 
-            - `type: "image_generation"`
+            - `type: "image_generation" (default: "image_generation")`
 
               - `"image_generation"`
 
           - `Mcp object { type }`
 
-            - `type: "mcp"`
+            - `type: "mcp" (default: "mcp")`
 
               - `"mcp"`
 
           - `Custom object { type }`
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               - `"custom"`
 
           - `Namespace object { type }`
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               - `"namespace"`
 
           - `ToolSearch object { type }`
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               - `"tool_search"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               - `"programmatic_tool_calling"`
 
           - `Computer object { type }`
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               - `"computer"`
 
           - `ApplyPatch object { type }`
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               - `"apply_patch"`
 
     - `Decisions object { type, acknowledgement_delay_ms, decisions }`
 
-      - `type: "decisions"`
+      - `type: "decisions" (default: "decisions")`
 
         - `"decisions"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400 for Decisions sessions and 0 (request immediately) for other sessions. Omission in a session update preserves the current value. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
       - `decisions: optional DecisionsDelegationUpdateConfig`
 
         - `model: optional string`
 
+          `minLength: 1`
+
         - `questions: optional array of DecisionQuestion`
 
           Native Decision API questions evaluated together, in order.
 
+          `minItems: 1`, `maxItems: 64`
+
           - `Choice object { choices, instructions, type, name }`
 
             - `choices: array of DecisionChoiceOption`
+
+              `minItems: 2`, `maxItems: 255`
 
               - `value: string or boolean`
 
@@ -745,13 +773,17 @@ Schema name: `LiveSessionUpdateParam`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                   - `text: string`
 
                     The text input to the model.
 
-                  - `type: "input_text"`
+                    `maxLength: 10485760`
+
+                  - `type: "input_text" (default: "input_text")`
 
                     - `"input_text"`
 
@@ -761,7 +793,9 @@ Schema name: `LiveSessionUpdateParam`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -785,11 +819,11 @@ Schema name: `LiveSessionUpdateParam`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
-            - `type: "choice"`
+            - `type: "choice" (default: "choice")`
 
               - `"choice"`
 
@@ -803,6 +837,8 @@ Schema name: `LiveSessionUpdateParam`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                 - `InputImage object { image_url, type, detail }`
@@ -811,7 +847,9 @@ Schema name: `LiveSessionUpdateParam`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -835,11 +873,11 @@ Schema name: `LiveSessionUpdateParam`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
-            - `type: "predicate"`
+            - `type: "predicate" (default: "predicate")`
 
               - `"predicate"`
 
@@ -853,6 +891,8 @@ Schema name: `LiveSessionUpdateParam`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                 - `InputImage object { image_url, type, detail }`
@@ -861,7 +901,9 @@ Schema name: `LiveSessionUpdateParam`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -885,17 +927,19 @@ Schema name: `LiveSessionUpdateParam`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
             - `levels: array of object { label, description }`
 
+              `minItems: 2`, `maxItems: 10`
+
               - `label: string`
 
               - `description: optional string`
 
-            - `type: "score"`
+            - `type: "score" (default: "score")`
 
               - `"score"`
 
@@ -905,6 +949,8 @@ Schema name: `LiveSessionUpdateParam`
 
     At most one Decisions trigger per transcript event type. Triggers run independently of delegation. On update, omit triggers to keep the current configuration, send a list to replace it, or send an empty list to disable triggers.
 
+    `maxItems: 2`
+
     - `decisions: object { questions }`
 
       Questions evaluated using the current transcript and the session's shared Decision items.
@@ -912,6 +958,8 @@ Schema name: `LiveSessionUpdateParam`
       - `questions: array of DecisionQuestion`
 
         Native Decision API questions evaluated together, in order.
+
+        `minItems: 1`, `maxItems: 64`
 
         - `Choice object { choices, instructions, type, name }`
 
@@ -925,11 +973,11 @@ Schema name: `LiveSessionUpdateParam`
 
       - `"session.output_transcript.delta"`
 
-    - `type: "decisions"`
+    - `type: "decisions" (default: "decisions")`
 
       - `"decisions"`
 
-- `type: "session.update"`
+- `type: "session.update" (default: "session.update")`
 
   The Live client event type. Always `session.update`.
 
@@ -938,6 +986,8 @@ Schema name: `LiveSessionUpdateParam`
 - `event_id: optional string or null`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
 
 #### Example
 
@@ -967,7 +1017,7 @@ Mute audio input to the Live model without closing the session. The server ackno
 
 Schema name: `LiveInputAudioMuteParam`
 
-- `type: "session.input_audio.mute"`
+- `type: "session.input_audio.mute" (default: "session.input_audio.mute")`
 
   The Live client event type. Always `session.input_audio.mute`.
 
@@ -976,6 +1026,8 @@ Schema name: `LiveInputAudioMuteParam`
 - `event_id: optional string or null`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
 
 #### Example
 
@@ -996,7 +1048,7 @@ Resume audio input to a Live model after muting it. The server acknowledges with
 
 Schema name: `LiveInputAudioUnmuteParam`
 
-- `type: "session.input_audio.unmute"`
+- `type: "session.input_audio.unmute" (default: "session.input_audio.unmute")`
 
   The Live client event type. Always `session.input_audio.unmute`.
 
@@ -1005,6 +1057,8 @@ Schema name: `LiveInputAudioUnmuteParam`
 - `event_id: optional string or null`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
 
 #### Example
 
@@ -1029,13 +1083,17 @@ Schema name: `LiveOutputAudioFixturePlayParam`
 
   Base64-encoded raw mono PCM16 audio, little-endian, at 24 kHz. Do not include a WAV or other container header.
 
-- `type: "session.output_audio.fixture.play"`
+  `minLength: 1`, `maxLength: 1920000`
+
+- `type: "session.output_audio.fixture.play" (default: "session.output_audio.fixture.play")`
 
   - `"session.output_audio.fixture.play"`
 
 - `event_id: optional string or null`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
 
 #### Example
 
@@ -1065,7 +1123,9 @@ Schema name: `LiveInstructionsAppendParam`
 
   Required, nullable. Set null for general session context, or use the ID from session.delegation.created for an existing client delegation. Non-null IDs are not accepted with Responses delegation.
 
-- `type: "session.instructions.append"`
+  `minLength: 1`
+
+- `type: "session.instructions.append" (default: "session.instructions.append")`
 
   The Live client event type. Always `session.instructions.append`.
 
@@ -1074,6 +1134,8 @@ Schema name: `LiveInstructionsAppendParam`
 - `event_id: optional string or null`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
 
 #### Example
 
@@ -1104,7 +1166,9 @@ Schema name: `LiveThinkingAppendParam`
 
   Required, nullable. Set null for general session context, or use the ID from session.delegation.created for an existing client delegation. Non-null IDs are not accepted with Responses delegation.
 
-- `type: "session.thinking.append"`
+  `minLength: 1`
+
+- `type: "session.thinking.append" (default: "session.thinking.append")`
 
   The Live client event type. Always `session.thinking.append`.
 
@@ -1113,6 +1177,8 @@ Schema name: `LiveThinkingAppendParam`
 - `event_id: optional string or null`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
 
 #### Example
 
@@ -1143,7 +1209,9 @@ Schema name: `LiveCommentaryAppendParam`
 
   Required, nullable. Set null for general session context, or use the ID from session.delegation.created for an existing client delegation. Non-null IDs are not accepted with Responses delegation.
 
-- `type: "session.commentary.append"`
+  `minLength: 1`
+
+- `type: "session.commentary.append" (default: "session.commentary.append")`
 
   The Live client event type. Always `session.commentary.append`.
 
@@ -1152,6 +1220,8 @@ Schema name: `LiveCommentaryAppendParam`
 - `event_id: optional string or null`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
 
 #### Example
 
@@ -1176,7 +1246,9 @@ Schema name: `LiveDecisionCreateParam`
 
 - `event_id: string`
 
-- `type: "decision.create"`
+  `minLength: 1`, `maxLength: 256`
+
+- `type: "decision.create" (default: "decision.create")`
 
   - `"decision.create"`
 
@@ -1211,6 +1283,8 @@ Schema name: `LiveDecisionItemCreateParam`
 
         The text input to the model.
 
+        `maxLength: 10485760`
+
       - `array of InputText { text, type }  or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
         - `InputText object { text, type }`
@@ -1219,7 +1293,9 @@ Schema name: `LiveDecisionItemCreateParam`
 
             The text input to the model.
 
-          - `type: "input_text"`
+            `maxLength: 10485760`
+
+          - `type: "input_text" (default: "input_text")`
 
             - `"input_text"`
 
@@ -1229,7 +1305,9 @@ Schema name: `LiveDecisionItemCreateParam`
 
             A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-          - `type: "input_image"`
+            `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+          - `type: "input_image" (default: "input_image")`
 
             - `"input_image"`
 
@@ -1253,11 +1331,11 @@ Schema name: `LiveDecisionItemCreateParam`
 
             - `array of map[unknown]`
 
-          - `type: "input_json"`
+          - `type: "input_json" (default: "input_json")`
 
             - `"input_json"`
 
-    - `role: "user"`
+    - `role: "user" (default: "user")`
 
       The message role. Always `user`.
 
@@ -1267,7 +1345,7 @@ Schema name: `LiveDecisionItemCreateParam`
 
       The unique ID of this message item.
 
-    - `type: optional "message"`
+    - `type: optional "message" (default: "message")`
 
       - `"message"`
 
@@ -1281,17 +1359,21 @@ Schema name: `LiveDecisionItemCreateParam`
 
         The text input to the model.
 
+        `maxLength: 10485760`
+
       - `array of DecisionInputText`
 
         - `text: string`
 
           The text input to the model.
 
-        - `type: "input_text"`
+          `maxLength: 10485760`
+
+        - `type: "input_text" (default: "input_text")`
 
           - `"input_text"`
 
-    - `role: "developer"`
+    - `role: "developer" (default: "developer")`
 
       - `"developer"`
 
@@ -1299,7 +1381,7 @@ Schema name: `LiveDecisionItemCreateParam`
 
       The unique ID of this message item.
 
-    - `type: optional "message"`
+    - `type: optional "message" (default: "message")`
 
       - `"message"`
 
@@ -1313,15 +1395,19 @@ Schema name: `LiveDecisionItemCreateParam`
 
         The text input to the model.
 
+        `maxLength: 10485760`
+
       - `array of DecisionInputText`
 
         - `text: string`
 
           The text input to the model.
 
-        - `type: "input_text"`
+          `maxLength: 10485760`
 
-    - `role: "system"`
+        - `type: "input_text" (default: "input_text")`
+
+    - `role: "system" (default: "system")`
 
       - `"system"`
 
@@ -1329,7 +1415,7 @@ Schema name: `LiveDecisionItemCreateParam`
 
       The unique ID of this message item.
 
-    - `type: optional "message"`
+    - `type: optional "message" (default: "message")`
 
       - `"message"`
 
@@ -1343,6 +1429,8 @@ Schema name: `LiveDecisionItemCreateParam`
 
         The text input to the model.
 
+        `maxLength: 10485760`
+
       - `array of OutputText { text, type }  or Refusal { refusal, type }`
 
         - `OutputText object { text, type }`
@@ -1351,7 +1439,9 @@ Schema name: `LiveDecisionItemCreateParam`
 
             The text content.
 
-          - `type: "output_text"`
+            `maxLength: 10485760`
+
+          - `type: "output_text" (default: "output_text")`
 
             - `"output_text"`
 
@@ -1361,11 +1451,13 @@ Schema name: `LiveDecisionItemCreateParam`
 
             The refusal text.
 
-          - `type: "refusal"`
+            `maxLength: 10485760`
+
+          - `type: "refusal" (default: "refusal")`
 
             - `"refusal"`
 
-    - `role: "assistant"`
+    - `role: "assistant" (default: "assistant")`
 
       - `"assistant"`
 
@@ -1381,7 +1473,7 @@ Schema name: `LiveDecisionItemCreateParam`
 
       - `"final_answer"`
 
-    - `type: optional "message"`
+    - `type: optional "message" (default: "message")`
 
       - `"message"`
 
@@ -1395,9 +1487,13 @@ Schema name: `LiveDecisionItemCreateParam`
 
       The unique ID of the function tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `name: string`
 
-    - `type: "function_call"`
+      `pattern: ^[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+    - `type: "function_call" (default: "function_call")`
 
       The item type. Always `function_call`.
 
@@ -1410,6 +1506,8 @@ Schema name: `LiveDecisionItemCreateParam`
     - `namespace: optional string or null`
 
       The namespace of the function to call.
+
+      `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -1425,6 +1523,8 @@ Schema name: `LiveDecisionItemCreateParam`
 
       The unique ID of the function tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `output: string or array of DecisionInputText or InputImage { image_url, type, detail }`
 
       The text input to the model.
@@ -1432,6 +1532,8 @@ Schema name: `LiveDecisionItemCreateParam`
       - `string`
 
         The text input to the model.
+
+        `maxLength: 10485760`
 
       - `array of DecisionInputText or InputImage { image_url, type, detail }`
 
@@ -1441,7 +1543,9 @@ Schema name: `LiveDecisionItemCreateParam`
 
             The text input to the model.
 
-          - `type: "input_text"`
+            `maxLength: 10485760`
+
+          - `type: "input_text" (default: "input_text")`
 
         - `InputImage object { image_url, type, detail }`
 
@@ -1449,7 +1553,9 @@ Schema name: `LiveDecisionItemCreateParam`
 
             A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-          - `type: "input_image"`
+            `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+          - `type: "input_image" (default: "input_image")`
 
             - `"input_image"`
 
@@ -1465,7 +1571,7 @@ Schema name: `LiveDecisionItemCreateParam`
 
             - `"original"`
 
-    - `type: "function_call_output"`
+    - `type: "function_call_output" (default: "function_call_output")`
 
       The type of the function tool call output. Always `function_call_output`.
 
@@ -1489,6 +1595,8 @@ Schema name: `LiveDecisionItemCreateParam`
 
       The unique ID of the function tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `input: string`
 
       The input to the custom tool call.
@@ -1497,7 +1605,9 @@ Schema name: `LiveDecisionItemCreateParam`
 
       The name of the custom tool to call.
 
-    - `type: "custom_tool_call"`
+      `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
+
+    - `type: "custom_tool_call" (default: "custom_tool_call")`
 
       The item type. Always `custom_tool_call`.
 
@@ -1510,6 +1620,8 @@ Schema name: `LiveDecisionItemCreateParam`
     - `namespace: optional string or null`
 
       The namespace of the function to call.
+
+      `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -1525,6 +1637,8 @@ Schema name: `LiveDecisionItemCreateParam`
 
       The unique ID of the function tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `output: string or array of DecisionInputText or InputImage { image_url, type, detail }`
 
       The text input to the model.
@@ -1532,6 +1646,8 @@ Schema name: `LiveDecisionItemCreateParam`
       - `string`
 
         The text input to the model.
+
+        `maxLength: 10485760`
 
       - `array of DecisionInputText or InputImage { image_url, type, detail }`
 
@@ -1543,7 +1659,9 @@ Schema name: `LiveDecisionItemCreateParam`
 
             A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-          - `type: "input_image"`
+            `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+          - `type: "input_image" (default: "input_image")`
 
             - `"input_image"`
 
@@ -1559,7 +1677,7 @@ Schema name: `LiveDecisionItemCreateParam`
 
             - `"original"`
 
-    - `type: "custom_tool_call_output"`
+    - `type: "custom_tool_call_output" (default: "custom_tool_call_output")`
 
       - `"custom_tool_call_output"`
 
@@ -1575,13 +1693,15 @@ Schema name: `LiveDecisionItemCreateParam`
 
       - `"incomplete"`
 
-- `type: "decision.item.create"`
+- `type: "decision.item.create" (default: "decision.item.create")`
 
   - `"decision.item.create"`
 
 - `event_id: optional string or null`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
 
 #### Example
 
@@ -1614,13 +1734,17 @@ Schema name: `LiveDecisionItemDeleteParam`
 
 - `item_id: string`
 
-- `type: "decision.item.delete"`
+  `minLength: 1`
+
+- `type: "decision.item.delete" (default: "decision.item.delete")`
 
   - `"decision.item.delete"`
 
 - `event_id: optional string or null`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
 
 #### Example
 
@@ -1676,7 +1800,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -1686,7 +1810,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -1716,7 +1840,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -1730,11 +1854,13 @@ Schema name: `LiveResponseItemCreateParam`
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -1752,7 +1878,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -1780,6 +1906,8 @@ Schema name: `LiveResponseItemCreateParam`
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -1788,7 +1916,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -1901,11 +2029,11 @@ Schema name: `LiveResponseItemCreateParam`
 
               The filename of the file cited.
 
-            - `index: number`
+            - `index: integer`
 
               The index in the output text at which to insert the file citation.
 
-            - `type: "file_citation"`
+            - `type: "file_citation" (default: "file_citation")`
 
               The type of the file citation. Always `file_citation`.
 
@@ -1915,11 +2043,11 @@ Schema name: `LiveResponseItemCreateParam`
 
             A citation for a web resource used to generate a model response.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the URL citation in the message.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the URL citation in the message.
 
@@ -1927,7 +2055,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               The title of the web resource.
 
-            - `type: "url_citation"`
+            - `type: "url_citation" (default: "url_citation")`
 
               The type of the URL citation. Always `url_citation`.
 
@@ -1937,6 +2065,8 @@ Schema name: `LiveResponseItemCreateParam`
 
               The URL of the web resource.
 
+              `format: uri`
+
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
             A citation for a container file used to generate a model response.
@@ -1945,7 +2075,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               The ID of the container file.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the container file citation in the message.
 
@@ -1957,11 +2087,11 @@ Schema name: `LiveResponseItemCreateParam`
 
               The filename of the container file cited.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the container file citation in the message.
 
-            - `type: "container_file_citation"`
+            - `type: "container_file_citation" (default: "container_file_citation")`
 
               The type of the container file citation. Always `container_file_citation`.
 
@@ -1975,7 +2105,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               The ID of the file.
 
-            - `index: number`
+            - `index: integer`
 
               The index of the file in the list of files.
 
@@ -2005,7 +2135,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The text output from the model.
 
-        - `type: "output_text"`
+        - `type: "output_text" (default: "output_text")`
 
           The type of the output text. Always `output_text`.
 
@@ -2019,7 +2149,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The refusal explanation from the model.
 
-        - `type: "refusal"`
+        - `type: "refusal" (default: "refusal")`
 
           The type of the refusal. Always `refusal`.
 
@@ -2106,6 +2236,8 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `string`
 
+          `maxLength: 512`
+
         - `number`
 
         - `boolean`
@@ -2121,6 +2253,8 @@ Schema name: `LiveResponseItemCreateParam`
       - `score: optional number`
 
         The relevance score of the file - a value between 0 and 1.
+
+        `format: float`
 
       - `text: optional string`
 
@@ -2166,7 +2300,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `"incomplete"`
 
-    - `type: "computer_call"`
+    - `type: "computer_call" (default: "computer_call")`
 
       The type of the computer call. Always `computer_call`.
 
@@ -2194,17 +2328,17 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"forward"`
 
-        - `type: "click"`
+        - `type: "click" (default: "click")`
 
           Specifies the event type. For a click action, this property is always `click`.
 
           - `"click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the click occurred.
 
@@ -2220,17 +2354,17 @@ Schema name: `LiveResponseItemCreateParam`
 
           The keys being held while double-clicking.
 
-        - `type: "double_click"`
+        - `type: "double_click" (default: "double_click")`
 
           Specifies the event type. For a double click action, this property is always set to `double_click`.
 
           - `"double_click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the double click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the double click occurred.
 
@@ -2249,15 +2383,15 @@ Schema name: `LiveResponseItemCreateParam`
           ]
           ```
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate.
 
-        - `type: "drag"`
+        - `type: "drag" (default: "drag")`
 
           Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -2275,7 +2409,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-        - `type: "keypress"`
+        - `type: "keypress" (default: "keypress")`
 
           Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -2285,17 +2419,17 @@ Schema name: `LiveResponseItemCreateParam`
 
         A mouse move action.
 
-        - `type: "move"`
+        - `type: "move" (default: "move")`
 
           Specifies the event type. For a move action, this property is always set to `move`.
 
           - `"move"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate to move to.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate to move to.
 
@@ -2307,7 +2441,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A screenshot action.
 
-        - `type: "screenshot"`
+        - `type: "screenshot" (default: "screenshot")`
 
           Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -2317,25 +2451,25 @@ Schema name: `LiveResponseItemCreateParam`
 
         A scroll action.
 
-        - `scroll_x: number`
+        - `scroll_x: integer`
 
           The horizontal scroll distance.
 
-        - `scroll_y: number`
+        - `scroll_y: integer`
 
           The vertical scroll distance.
 
-        - `type: "scroll"`
+        - `type: "scroll" (default: "scroll")`
 
           Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
           - `"scroll"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the scroll occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the scroll occurred.
 
@@ -2351,7 +2485,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The text to type.
 
-        - `type: "type"`
+        - `type: "type" (default: "type")`
 
           Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -2361,7 +2495,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A wait action.
 
-        - `type: "wait"`
+        - `type: "wait" (default: "wait")`
 
           Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -2416,11 +2550,13 @@ Schema name: `LiveResponseItemCreateParam`
 
       The ID of the computer tool call that produced the output.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `output: ResponseComputerToolCallOutputScreenshot`
 
       A computer screenshot image used with the computer use tool.
 
-      - `type: "computer_screenshot"`
+      - `type: "computer_screenshot" (default: "computer_screenshot")`
 
         Specifies the event type. For a computer screenshot, this property is
         always set to `computer_screenshot`.
@@ -2435,7 +2571,9 @@ Schema name: `LiveResponseItemCreateParam`
 
         The URL of the screenshot image.
 
-    - `type: "computer_call_output"`
+        `format: uri`
+
+    - `type: "computer_call_output" (default: "computer_call_output")`
 
       The type of the computer tool call output. Always `computer_call_output`.
 
@@ -2537,6 +2675,8 @@ Schema name: `LiveResponseItemCreateParam`
 
             The URL of the source.
 
+            `format: uri`
+
       - `OpenPage object { type, url }`
 
         Action type "open_page" - Opens a specific URL from search results.
@@ -2550,6 +2690,8 @@ Schema name: `LiveResponseItemCreateParam`
         - `url: optional string or null`
 
           The URL opened by the model.
+
+          `format: uri`
 
       - `FindInPage object { pattern, type, url }`
 
@@ -2568,6 +2710,8 @@ Schema name: `LiveResponseItemCreateParam`
         - `url: optional string or null`
 
           The URL of the page searched for the pattern, when available.
+
+          `format: uri`
 
   - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -2606,7 +2750,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -2616,7 +2760,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -2647,6 +2791,8 @@ Schema name: `LiveResponseItemCreateParam`
 
         A JSON string of the output of the function tool call.
 
+        `maxLength: 10485760`
+
       - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
         An array of content outputs (text, image, file) for the function tool call.
@@ -2659,7 +2805,9 @@ Schema name: `LiveResponseItemCreateParam`
 
             The text input to the model.
 
-          - `type: "input_text"`
+            `maxLength: 10485760`
+
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -2669,7 +2817,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -2687,7 +2835,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           An image input to the model. Learn about [image inputs](https://developers.openai.com/api/docs/guides/images-vision)
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -2705,11 +2853,13 @@ Schema name: `LiveResponseItemCreateParam`
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `maxLength: 20971520`, `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -2727,7 +2877,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -2747,6 +2897,8 @@ Schema name: `LiveResponseItemCreateParam`
 
             The base64-encoded data of the file to be sent to the model.
 
+            `maxLength: 73400320`
+
           - `file_id: optional string or null`
 
             The ID of the file to be sent to the model.
@@ -2754,6 +2906,8 @@ Schema name: `LiveResponseItemCreateParam`
           - `file_url: optional string or null`
 
             The URL of the file to be sent to the model.
+
+            `format: uri`
 
           - `filename: optional string or null`
 
@@ -2763,7 +2917,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -2777,7 +2931,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               - `"12h"`
 
-    - `type: "function_call_output"`
+    - `type: "function_call_output" (default: "function_call_output")`
 
       The type of the function tool call output. Always `function_call_output`.
 
@@ -2791,13 +2945,15 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the function tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -2809,7 +2965,9 @@ Schema name: `LiveResponseItemCreateParam`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -2819,9 +2977,13 @@ Schema name: `LiveResponseItemCreateParam`
 
       The name of the tool that produced the output.
 
+      `minLength: 1`, `maxLength: 128`
+
     - `namespace: optional string or null`
 
       The namespace of the tool that produced the output.
+
+      `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -2839,7 +3001,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       The arguments supplied to the tool search call.
 
-    - `type: "tool_search_call"`
+    - `type: "tool_search_call" (default: "tool_search_call")`
 
       The item type. Always `tool_search_call`.
 
@@ -2852,6 +3014,8 @@ Schema name: `LiveResponseItemCreateParam`
     - `call_id: optional string or null`
 
       The unique ID of the tool search call generated by the model.
+
+      `minLength: 1`, `maxLength: 64`
 
     - `execution: optional "server" or "client"`
 
@@ -2893,7 +3057,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -2925,7 +3089,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -2947,7 +3111,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               The key to compare against the value.
 
-            - `type: "eq" or "ne" or "gt" or 5 more`
+            - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
               Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -3016,7 +3180,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               - `"or"`
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -3052,7 +3216,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -3062,11 +3226,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -3084,7 +3248,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -3095,7 +3259,7 @@ Schema name: `LiveResponseItemCreateParam`
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -3103,7 +3267,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -3111,14 +3275,14 @@ Schema name: `LiveResponseItemCreateParam`
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -3150,7 +3314,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -3174,6 +3338,8 @@ Schema name: `LiveResponseItemCreateParam`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -3253,7 +3419,7 @@ Schema name: `LiveResponseItemCreateParam`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -3310,10 +3476,14 @@ Schema name: `LiveResponseItemCreateParam`
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -3333,7 +3503,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -3342,6 +3512,8 @@ Schema name: `LiveResponseItemCreateParam`
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -3361,7 +3533,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               - `ContainerNetworkPolicyDisabled object { type }`
 
-                - `type: "disabled"`
+                - `type: "disabled" (default: "disabled")`
 
                   Disable outbound network access. Always `disabled`.
 
@@ -3373,7 +3545,9 @@ Schema name: `LiveResponseItemCreateParam`
 
                   A list of allowed domains when type is `allowlist`.
 
-                - `type: "allowlist"`
+                  `minItems: 1`
+
+                - `type: "allowlist" (default: "allowlist")`
 
                   Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -3383,17 +3557,25 @@ Schema name: `LiveResponseItemCreateParam`
 
                   Optional domain-scoped secrets for allowlisted domains.
 
+                  `minItems: 1`
+
                   - `domain: string`
 
                     The domain associated with the secret.
+
+                    `minLength: 1`
 
                   - `name: string`
 
                     The name of the secret to inject for the domain.
 
+                    `minLength: 1`
+
                   - `value: string`
 
                     The secret value to inject for the domain.
+
+                    `minLength: 1`, `maxLength: 10485760`
 
         - `type: "code_interpreter"`
 
@@ -3405,13 +3587,15 @@ Schema name: `LiveResponseItemCreateParam`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -3437,7 +3621,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -3518,7 +3702,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -3526,11 +3710,13 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -3541,11 +3727,13 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -3564,7 +3752,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -3586,7 +3774,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -3596,7 +3784,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -3606,6 +3794,8 @@ Schema name: `LiveResponseItemCreateParam`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
@@ -3614,7 +3804,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-            - `type: "container_auto"`
+            - `type: "container_auto" (default: "container_auto")`
 
               Automatically creates a container for this request
 
@@ -3623,6 +3813,8 @@ Schema name: `LiveResponseItemCreateParam`
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -3648,13 +3840,17 @@ Schema name: `LiveResponseItemCreateParam`
 
               An optional list of skills referenced by id or inline data.
 
+              `maxItems: 200`
+
               - `SkillReference object { skill_id, type, version }`
 
                 - `skill_id: string`
 
                   The ID of the referenced skill.
 
-                - `type: "skill_reference"`
+                  `minLength: 1`, `maxLength: 64`
+
+                - `type: "skill_reference" (default: "skill_reference")`
 
                   References a skill created with the /v1/skills endpoint.
 
@@ -3682,19 +3878,21 @@ Schema name: `LiveResponseItemCreateParam`
 
                     Base64-encoded skill zip bundle.
 
-                  - `media_type: "application/zip"`
+                    `minLength: 1`, `maxLength: 70254592`
+
+                  - `media_type: "application/zip" (default: "application/zip")`
 
                     The media type of the inline skill payload. Must be `application/zip`.
 
                     - `"application/zip"`
 
-                  - `type: "base64"`
+                  - `type: "base64" (default: "base64")`
 
                     The type of the inline skill source. Must be `base64`.
 
                     - `"base64"`
 
-                - `type: "inline"`
+                - `type: "inline" (default: "inline")`
 
                   Defines an inline skill for this request.
 
@@ -3702,7 +3900,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `LocalEnvironment object { type, skills }`
 
-            - `type: "local"`
+            - `type: "local" (default: "local")`
 
               Use a local computer environment.
 
@@ -3711,6 +3909,8 @@ Schema name: `LiveResponseItemCreateParam`
             - `skills: optional array of LocalSkill`
 
               An optional list of skills.
+
+              `maxItems: 200`
 
               - `description: string`
 
@@ -3730,7 +3930,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               The ID of the referenced container.
 
-            - `type: "container_reference"`
+            - `type: "container_reference" (default: "container_reference")`
 
               References a container created with the /v1/containers endpoint
 
@@ -3744,7 +3944,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -3753,6 +3953,8 @@ Schema name: `LiveResponseItemCreateParam`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -3778,7 +3980,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             Unconstrained free-form text.
 
-            - `type: "text"`
+            - `type: "text" (default: "text")`
 
               Unconstrained text format. Always `text`.
 
@@ -3800,7 +4002,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               - `"regex"`
 
-            - `type: "grammar"`
+            - `type: "grammar" (default: "grammar")`
 
               Grammar format. Always `grammar`.
 
@@ -3818,9 +4020,13 @@ Schema name: `LiveResponseItemCreateParam`
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools loaded inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
@@ -3828,13 +4034,17 @@ Schema name: `LiveResponseItemCreateParam`
 
               The name of the loaded function tool.
 
-            - `type: "function"`
+              `pattern: ^(?![\s\S]*[\r\n])[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -3868,7 +4078,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -3877,6 +4087,8 @@ Schema name: `LiveResponseItemCreateParam`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -3898,7 +4110,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -3908,7 +4120,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -3934,7 +4146,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -3962,7 +4174,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -3988,7 +4200,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -3998,11 +4210,13 @@ Schema name: `LiveResponseItemCreateParam`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "tool_search_output"`
+    - `type: "tool_search_output" (default: "tool_search_output")`
 
       The item type. Always `tool_search_output`.
 
@@ -4015,6 +4229,8 @@ Schema name: `LiveResponseItemCreateParam`
     - `call_id: optional string or null`
 
       The unique ID of the tool search call generated by the model.
+
+      `minLength: 1`, `maxLength: 64`
 
     - `execution: optional "server" or "client"`
 
@@ -4036,7 +4252,7 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `AdditionalTools object { role, tools, type, id }`
 
-    - `role: "developer"`
+    - `role: "developer" (default: "developer")`
 
       The role that provided the additional tools. Only `developer` is supported.
 
@@ -4062,7 +4278,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -4094,7 +4310,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -4116,7 +4332,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             Combine multiple filters using `and` or `or`.
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -4152,7 +4368,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -4162,11 +4378,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -4184,7 +4400,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -4195,7 +4411,7 @@ Schema name: `LiveResponseItemCreateParam`
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -4203,7 +4419,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -4211,14 +4427,14 @@ Schema name: `LiveResponseItemCreateParam`
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -4250,7 +4466,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -4274,6 +4490,8 @@ Schema name: `LiveResponseItemCreateParam`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -4353,7 +4571,7 @@ Schema name: `LiveResponseItemCreateParam`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -4410,10 +4628,14 @@ Schema name: `LiveResponseItemCreateParam`
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -4433,7 +4655,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -4442,6 +4664,8 @@ Schema name: `LiveResponseItemCreateParam`
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -4473,13 +4697,15 @@ Schema name: `LiveResponseItemCreateParam`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -4505,7 +4731,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -4586,7 +4812,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -4594,11 +4820,13 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -4609,11 +4837,13 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -4632,7 +4862,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -4654,7 +4884,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -4664,7 +4894,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -4673,6 +4903,8 @@ Schema name: `LiveResponseItemCreateParam`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -4694,7 +4926,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -4703,6 +4935,8 @@ Schema name: `LiveResponseItemCreateParam`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -4736,21 +4970,29 @@ Schema name: `LiveResponseItemCreateParam`
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-            - `type: "function"`
+              `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -4784,7 +5026,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -4793,6 +5035,8 @@ Schema name: `LiveResponseItemCreateParam`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -4814,7 +5058,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -4824,7 +5068,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -4850,7 +5094,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -4878,7 +5122,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -4904,7 +5148,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -4914,11 +5158,13 @@ Schema name: `LiveResponseItemCreateParam`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "additional_tools"`
+    - `type: "additional_tools" (default: "additional_tools")`
 
       The item type. Always `additional_tools`.
 
@@ -4934,7 +5180,7 @@ Schema name: `LiveResponseItemCreateParam`
     remains in effect for subsequent responses until it is replaced by another
     configuration update.
 
-    - `type: "configuration_update"`
+    - `type: "configuration_update" (default: "configuration_update")`
 
       The item type. Always `configuration_update`.
 
@@ -4948,7 +5194,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       Updates to reasoning configuration. Only effort is supported.
 
-      - `effort: optional ReasoningEffort or null`
+      - `effort: optional ReasoningEffort or null (default: "medium")`
 
         The reasoning effort to use for subsequent responses until another
         configuration update replaces it.
@@ -4986,7 +5232,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A summary of the reasoning output from the model so far.
 
-      - `type: "summary_text"`
+      - `type: "summary_text" (default: "summary_text")`
 
         The type of the object. Always `summary_text`.
 
@@ -5006,7 +5252,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         The reasoning text from the model.
 
-      - `type: "reasoning_text"`
+      - `type: "reasoning_text" (default: "reasoning_text")`
 
         The type of the reasoning text. Always `reasoning_text`.
 
@@ -5043,7 +5289,9 @@ Schema name: `LiveResponseItemCreateParam`
 
       The encrypted content of the compaction summary.
 
-    - `type: "compaction"`
+      `maxLength: 104857600`
+
+    - `type: "compaction" (default: "compaction")`
 
       The type of the item. Always `compaction`.
 
@@ -5216,7 +5464,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The logs output from the code interpreter.
 
-        - `type: "logs"`
+        - `type: "logs" (default: "logs")`
 
           The type of the output. Always `logs`.
 
@@ -5226,7 +5474,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         The image output from the code interpreter.
 
-        - `type: "image"`
+        - `type: "image" (default: "image")`
 
           The type of the output. Always `image`.
 
@@ -5235,6 +5483,8 @@ Schema name: `LiveResponseItemCreateParam`
         - `url: string`
 
           The URL of the image output from the code interpreter.
+
+          `format: uri`
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -5250,7 +5500,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `"failed"`
 
-    - `type: "code_interpreter_call"`
+    - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
       The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -5276,13 +5526,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         Environment variables to set for the command.
 
-      - `type: "exec"`
+      - `type: "exec" (default: "exec")`
 
         The type of the local shell action. Always `exec`.
 
         - `"exec"`
 
-      - `timeout_ms: optional number or null`
+      - `timeout_ms: optional integer or null`
 
         Optional timeout in milliseconds for the command.
 
@@ -5354,11 +5604,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         Ordered shell commands for the execution environment to run.
 
-      - `max_output_length: optional number or null`
+      - `max_output_length: optional integer or null`
 
         Maximum number of UTF-8 characters to capture from combined stdout and stderr output.
 
-      - `timeout_ms: optional number or null`
+      - `timeout_ms: optional integer or null`
 
         Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
@@ -5366,7 +5616,9 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the shell tool call generated by the model.
 
-    - `type: "shell_call"`
+      `minLength: 1`, `maxLength: 64`
+
+    - `type: "shell_call" (default: "shell_call")`
 
       The type of the item. Always `shell_call`.
 
@@ -5382,7 +5634,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -5394,7 +5646,9 @@ Schema name: `LiveResponseItemCreateParam`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -5426,6 +5680,8 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the shell tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `output: array of ResponseFunctionShellCallOutputContent`
 
       Captured chunks of stdout and stderr output, along with their associated outcomes.
@@ -5438,7 +5694,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           Indicates that the shell call exceeded its configured time limit.
 
-          - `type: "timeout"`
+          - `type: "timeout" (default: "timeout")`
 
             The outcome type. Always `timeout`.
 
@@ -5448,11 +5704,11 @@ Schema name: `LiveResponseItemCreateParam`
 
           Indicates that the shell commands finished and returned an exit code.
 
-          - `exit_code: number`
+          - `exit_code: integer`
 
             The exit code returned by the shell process.
 
-          - `type: "exit"`
+          - `type: "exit" (default: "exit")`
 
             The outcome type. Always `exit`.
 
@@ -5462,11 +5718,15 @@ Schema name: `LiveResponseItemCreateParam`
 
         Captured stderr output for the shell call.
 
+        `maxLength: 10485760`
+
       - `stdout: string`
 
         Captured stdout output for the shell call.
 
-    - `type: "shell_call_output"`
+        `maxLength: 10485760`
+
+    - `type: "shell_call_output" (default: "shell_call_output")`
 
       The type of the item. Always `shell_call_output`.
 
@@ -5482,7 +5742,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -5494,13 +5754,15 @@ Schema name: `LiveResponseItemCreateParam`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
           - `"program"`
 
-    - `max_output_length: optional number or null`
+    - `max_output_length: optional integer or null`
 
       The maximum number of UTF-8 characters captured for this shell call's combined output.
 
@@ -5522,6 +5784,8 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the apply patch tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
       The specific create, delete, or update instruction for the apply_patch tool call.
@@ -5534,11 +5798,15 @@ Schema name: `LiveResponseItemCreateParam`
 
           Unified diff content to apply when creating the file.
 
+          `maxLength: 10485760`
+
         - `path: string`
 
           Path of the file to create relative to the workspace root.
 
-        - `type: "create_file"`
+          `minLength: 1`
+
+        - `type: "create_file" (default: "create_file")`
 
           The operation type. Always `create_file`.
 
@@ -5552,7 +5820,9 @@ Schema name: `LiveResponseItemCreateParam`
 
           Path of the file to delete relative to the workspace root.
 
-        - `type: "delete_file"`
+          `minLength: 1`
+
+        - `type: "delete_file" (default: "delete_file")`
 
           The operation type. Always `delete_file`.
 
@@ -5566,11 +5836,15 @@ Schema name: `LiveResponseItemCreateParam`
 
           Unified diff content to apply to the existing file.
 
+          `maxLength: 10485760`
+
         - `path: string`
 
           Path of the file to update relative to the workspace root.
 
-        - `type: "update_file"`
+          `minLength: 1`
+
+        - `type: "update_file" (default: "update_file")`
 
           The operation type. Always `update_file`.
 
@@ -5584,7 +5858,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `"completed"`
 
-    - `type: "apply_patch_call"`
+    - `type: "apply_patch_call" (default: "apply_patch_call")`
 
       The type of the item. Always `apply_patch_call`.
 
@@ -5600,7 +5874,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -5612,7 +5886,9 @@ Schema name: `LiveResponseItemCreateParam`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -5626,6 +5902,8 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the apply patch tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `status: "completed" or "failed"`
 
       The status of the apply patch tool call output. One of `completed` or `failed`.
@@ -5634,7 +5912,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `"failed"`
 
-    - `type: "apply_patch_call_output"`
+    - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
       The type of the item. Always `apply_patch_call_output`.
 
@@ -5650,7 +5928,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -5662,7 +5940,9 @@ Schema name: `LiveResponseItemCreateParam`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -5671,6 +5951,8 @@ Schema name: `LiveResponseItemCreateParam`
     - `output: optional string or null`
 
       Optional human-readable log text from the apply patch tool (e.g., patch results or errors).
+
+      `maxLength: 10485760`
 
   - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -5803,11 +6085,11 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `McpProtocolError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "mcp_protocol_error"`
+        - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
           - `"mcp_protocol_error"`
 
@@ -5815,17 +6097,17 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `content: unknown`
 
-        - `type: "mcp_tool_execution_error"`
+        - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
           - `"mcp_tool_execution_error"`
 
       - `HTTPError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "http_error"`
+        - `type: "http_error" (default: "http_error")`
 
           - `"http_error"`
 
@@ -5896,7 +6178,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -5908,7 +6190,9 @@ Schema name: `LiveResponseItemCreateParam`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -5950,7 +6234,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -5960,7 +6244,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -5972,7 +6256,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     Compacts the current context. Must be the final input item.
 
-    - `type: "compaction_trigger"`
+    - `type: "compaction_trigger" (default: "compaction_trigger")`
 
       The type of the item. Always `compaction_trigger`.
 
@@ -5990,7 +6274,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       The ID of the item to reference.
 
-    - `type: optional "item_reference" or null`
+    - `type: optional "item_reference" or null (default: "item_reference")`
 
       The type of item to reference. Always `item_reference`.
 
@@ -6006,15 +6290,21 @@ Schema name: `LiveResponseItemCreateParam`
 
       The stable call ID of the program item.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `code: string`
 
       The JavaScript source executed by programmatic tool calling.
+
+      `maxLength: 10485760`
 
     - `fingerprint: string`
 
       Opaque program replay fingerprint that must be round-tripped.
 
-    - `type: "program"`
+      `maxLength: 10485760`
+
+    - `type: "program" (default: "program")`
 
       The item type. Always `program`.
 
@@ -6030,9 +6320,13 @@ Schema name: `LiveResponseItemCreateParam`
 
       The call ID of the program item.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `result: string`
 
       The result produced by the program item.
+
+      `maxLength: 10485760`
 
     - `status: "completed" or "incomplete"`
 
@@ -6042,13 +6336,13 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `"incomplete"`
 
-    - `type: "program_output"`
+    - `type: "program_output" (default: "program_output")`
 
       The item type. Always `program_output`.
 
       - `"program_output"`
 
-- `type: "response.item.create"`
+- `type: "response.item.create" (default: "response.item.create")`
 
   The Live client event type. Always `response.item.create`.
 
@@ -6057,6 +6351,8 @@ Schema name: `LiveResponseItemCreateParam`
 - `event_id: optional string or null`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
 
 #### Example
 
@@ -6087,7 +6383,7 @@ Request a response from the Live session’s Responses backend, or continue a de
 
 Schema name: `LiveResponseCreateParam`
 
-- `type: "response.create"`
+- `type: "response.create" (default: "response.create")`
 
   The Live client event type. Always `response.create`.
 
@@ -6096,6 +6392,8 @@ Schema name: `LiveResponseCreateParam`
 - `event_id: optional string or null`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
 
 #### Example
 
@@ -6116,7 +6414,7 @@ Request that the Live session close. The terminal `session.closed` event contain
 
 Schema name: `LiveSessionCloseParam`
 
-- `type: "session.close"`
+- `type: "session.close" (default: "session.close")`
 
   The Live client event type. Always `session.close`.
 
@@ -6126,12 +6424,50 @@ Schema name: `LiveSessionCloseParam`
 
   Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
 
+  `maxLength: 512`
+
 #### Example
 
 ```json
 {
   "type": "session.close",
   "event_id": "evt_close_001"
+}
+```
+
+<a id="transport.dtmf.send"></a>
+
+### transport.dtmf.send
+
+Send one DTMF keypress to the SIP trunk through a Live sideband connection. This command is supported only for SIP calls. A successful send emits `transport.dtmf.sent` on sideband. If you provide `event_id`, the success notification includes it as `client_event_id`; a failure includes it as `error.client_event_id`. Send separate events for multiple keypresses.
+
+#### Schema
+
+Schema name: `LiveTransportDTMFSendParam`
+
+- `event: string`
+
+  The DTMF key to send: one of `0`–`9`, `A`–`D`, `*`, or `#`.
+
+  `pattern: ^[0-9A-D*#]$`, `minLength: 1`, `maxLength: 1`
+
+- `type: "transport.dtmf.send" (default: "transport.dtmf.send")`
+
+  - `"transport.dtmf.send"`
+
+- `event_id: optional string or null`
+
+  Optional client identifier for correlating this command with a server event's client_event_id or error.client_event_id.
+
+  `maxLength: 512`
+
+#### Example
+
+```json
+{
+  "type": "transport.dtmf.send",
+  "event_id": "evt_dtmf_001",
+  "event": "#"
 }
 ```
 
@@ -6155,7 +6491,7 @@ Schema name: `LiveTransportRinging`
 
   The canonical Live session ID.
 
-- `type: "transport.ringing"`
+- `type: "transport.ringing" (default: "transport.ringing")`
 
   - `"transport.ringing"`
 
@@ -6185,7 +6521,7 @@ Schema name: `LiveTransportAnswered`
 
   The canonical Live session ID.
 
-- `type: "transport.answered"`
+- `type: "transport.answered" (default: "transport.answered")`
 
   - `"transport.answered"`
 
@@ -6217,7 +6553,7 @@ Schema name: `LiveTransportFailed`
 
   - `message: string`
 
-  - `type: "call_error"`
+  - `type: "call_error" (default: "call_error")`
 
     - `"call_error"`
 
@@ -6231,7 +6567,7 @@ Schema name: `LiveTransportFailed`
 
   The canonical Live session ID.
 
-- `type: "transport.failed"`
+- `type: "transport.failed" (default: "transport.failed")`
 
   - `"transport.failed"`
 
@@ -6273,7 +6609,7 @@ Schema name: `LiveSessionStarted`
 
     The unique ID of the Live session. Use this ID for sideband connections, forking, and recording download.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     The Unix timestamp, in seconds, at which the Live session expires.
 
@@ -6283,13 +6619,15 @@ Schema name: `LiveSessionStarted`
 
     - `string`
 
+      `minLength: 1`
+
     - `"gpt-live-1"`
 
       The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
 
       - `"gpt-live-1"`
 
-  - `status: "active"`
+  - `status: "active" (default: "active")`
 
     The status of the session snapshot. Always `active`, including the final snapshot in session.closed; use the event type to determine that the session has closed.
 
@@ -6311,11 +6649,13 @@ Schema name: `LiveSessionStarted`
 
           Audio sample rate in hertz. Live WebSocket PCM audio supports 16000 or 24000 Hz.
 
+          `minimum: 16000`, `maximum: 24000`
+
           - `16000`
 
           - `24000`
 
-        - `type: "audio/pcm"`
+        - `type: "audio/pcm" (default: "audio/pcm")`
 
           The audio encoding. Always `audio/pcm`.
 
@@ -6325,11 +6665,13 @@ Schema name: `LiveSessionStarted`
 
         Raw, mono G.711 μ-law audio for a Live WebSocket connection.
 
-        - `rate: number`
+        - `rate: integer`
 
           Audio sample rate in hertz. G.711 audio uses 8000 Hz.
 
-        - `type: "audio/pcmu"`
+          `minimum: 8000`, `maximum: 8000`
+
+        - `type: "audio/pcmu" (default: "audio/pcmu")`
 
           The audio encoding. Always `audio/pcmu`.
 
@@ -6339,11 +6681,13 @@ Schema name: `LiveSessionStarted`
 
         Raw, mono G.711 A-law audio for a Live WebSocket connection.
 
-        - `rate: number`
+        - `rate: integer`
 
           Audio sample rate in hertz. G.711 audio uses 8000 Hz.
 
-        - `type: "audio/pcma"`
+          `minimum: 8000`, `maximum: 8000`
+
+        - `type: "audio/pcma" (default: "audio/pcma")`
 
           The audio encoding. Always `audio/pcma`.
 
@@ -6429,6 +6773,8 @@ Schema name: `LiveSessionStarted`
 
           - `id: string`
 
+            `minLength: 1`, `maxLength: 128`
+
   - `client: optional ClientConfig`
 
     Startup-only capabilities for an untrusted frontend attached to a unified WebRTC session. Trusted sideband connections are unaffected.
@@ -6447,6 +6793,8 @@ Schema name: `LiveSessionStarted`
 
         - `array of string`
 
+          `maxItems: 256`
+
       - `allowed_server_events: optional "all" or array of ServerEventSelector`
 
         Server events that may be sent to the frontend data channel. Use 'all' to allow every server event; an empty array allows none. Omission preserves the existing allow-all behavior. Responses events use an object with type 'response.event' and a response_event selector.
@@ -6457,13 +6805,19 @@ Schema name: `LiveSessionStarted`
 
         - `array of ServerEventSelector`
 
+          `maxItems: 256`
+
           - `type: string`
 
             The outer Live server event type. Use 'response.event' for Responses events.
 
+            `minLength: 1`, `maxLength: 256`
+
           - `response_event: optional string`
 
             The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
+
+            `minLength: 1`, `maxLength: 256`
 
   - `delegation: optional ClientDelegation or Responses { responses, type, acknowledgement_delay_ms }  or Decisions { decisions, type, acknowledgement_delay_ms }  or null`
 
@@ -6473,15 +6827,17 @@ Schema name: `LiveSessionStarted`
 
       Delegate tasks to your application. The Live session emits delegation events that your backend handles.
 
-      - `type: "client"`
+      - `type: "client" (default: "client")`
 
         The delegation owner. Always `client` for tasks handled by your application.
 
         - `"client"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400 for Decisions sessions and 0 (request immediately) for other sessions. Omission in a session update preserves the current value. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
     - `Responses object { responses, type, acknowledgement_delay_ms }`
 
@@ -6499,9 +6855,11 @@ Schema name: `LiveSessionStarted`
 
           Instructions for the delegated Responses model, separate from Live instructions. See [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
 
-        - `max_output_tokens: optional number or null`
+        - `max_output_tokens: optional integer or null`
 
           Maximum number of output tokens for each delegated response.
+
+          `minimum: 16`
 
         - `parallel_tool_calls: optional boolean or null`
 
@@ -6585,7 +6943,7 @@ Schema name: `LiveSessionStarted`
 
               The name of the function tool to call.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The tool to call. Always `function`.
 
@@ -6597,7 +6955,7 @@ Schema name: `LiveSessionStarted`
 
               The label of the MCP server to call.
 
-            - `type: "mcp"`
+            - `type: "mcp" (default: "mcp")`
 
               The tool to call. Always `mcp`.
 
@@ -6609,7 +6967,7 @@ Schema name: `LiveSessionStarted`
 
           - `FileSearch object { type }`
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The tool to call. Always `file_search`.
 
@@ -6617,7 +6975,7 @@ Schema name: `LiveSessionStarted`
 
           - `WebSearch object { type }`
 
-            - `type: "web_search"`
+            - `type: "web_search" (default: "web_search")`
 
               The tool to call. Always `web_search`.
 
@@ -6625,7 +6983,7 @@ Schema name: `LiveSessionStarted`
 
           - `WebSearchPreview object { type }`
 
-            - `type: "web_search_preview"`
+            - `type: "web_search_preview" (default: "web_search_preview")`
 
               The tool to call. Always `web_search_preview`.
 
@@ -6633,7 +6991,7 @@ Schema name: `LiveSessionStarted`
 
           - `ImageGeneration object { type }`
 
-            - `type: "image_generation"`
+            - `type: "image_generation" (default: "image_generation")`
 
               The tool to call. Always `image_generation`.
 
@@ -6641,7 +6999,7 @@ Schema name: `LiveSessionStarted`
 
           - `Computer object { type }`
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The tool to call. Always `computer`.
 
@@ -6649,7 +7007,7 @@ Schema name: `LiveSessionStarted`
 
           - `CodeInterpreter object { type }`
 
-            - `type: "code_interpreter"`
+            - `type: "code_interpreter" (default: "code_interpreter")`
 
               The tool to call. Always `code_interpreter`.
 
@@ -6657,7 +7015,7 @@ Schema name: `LiveSessionStarted`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The tool to call. Always `programmatic_tool_calling`.
 
@@ -6667,7 +7025,7 @@ Schema name: `LiveSessionStarted`
 
             Forces the model to call the shell tool when a tool call is required.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The tool to call. Always `shell`.
 
@@ -6679,7 +7037,7 @@ Schema name: `LiveSessionStarted`
 
               The name of the custom tool to call.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The tool to call. Always `custom`.
 
@@ -6689,7 +7047,7 @@ Schema name: `LiveSessionStarted`
 
             Forces the model to call the apply_patch tool when executing a tool call.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The tool to call. Always `apply_patch`.
 
@@ -6701,13 +7059,15 @@ Schema name: `LiveSessionStarted`
 
               The tools that the delegated Responses model may call.
 
+              `minItems: 1`, `maxItems: 128`
+
               - `Function object { name, type }`
 
                 - `name: string`
 
                   The name of the function tool to call.
 
-                - `type: "function"`
+                - `type: "function" (default: "function")`
 
                   The tool to call. Always `function`.
 
@@ -6719,7 +7079,7 @@ Schema name: `LiveSessionStarted`
 
                   The label of the MCP server to call.
 
-                - `type: "mcp"`
+                - `type: "mcp" (default: "mcp")`
 
                   The tool to call. Always `mcp`.
 
@@ -6731,7 +7091,7 @@ Schema name: `LiveSessionStarted`
 
               - `FileSearch object { type }`
 
-                - `type: "file_search"`
+                - `type: "file_search" (default: "file_search")`
 
                   The tool to call. Always `file_search`.
 
@@ -6739,7 +7099,7 @@ Schema name: `LiveSessionStarted`
 
               - `WebSearch object { type }`
 
-                - `type: "web_search"`
+                - `type: "web_search" (default: "web_search")`
 
                   The tool to call. Always `web_search`.
 
@@ -6747,7 +7107,7 @@ Schema name: `LiveSessionStarted`
 
               - `WebSearchPreview object { type }`
 
-                - `type: "web_search_preview"`
+                - `type: "web_search_preview" (default: "web_search_preview")`
 
                   The tool to call. Always `web_search_preview`.
 
@@ -6755,7 +7115,7 @@ Schema name: `LiveSessionStarted`
 
               - `ImageGeneration object { type }`
 
-                - `type: "image_generation"`
+                - `type: "image_generation" (default: "image_generation")`
 
                   The tool to call. Always `image_generation`.
 
@@ -6763,7 +7123,7 @@ Schema name: `LiveSessionStarted`
 
               - `Computer object { type }`
 
-                - `type: "computer"`
+                - `type: "computer" (default: "computer")`
 
                   The tool to call. Always `computer`.
 
@@ -6771,7 +7131,7 @@ Schema name: `LiveSessionStarted`
 
               - `CodeInterpreter object { type }`
 
-                - `type: "code_interpreter"`
+                - `type: "code_interpreter" (default: "code_interpreter")`
 
                   The tool to call. Always `code_interpreter`.
 
@@ -6779,7 +7139,7 @@ Schema name: `LiveSessionStarted`
 
               - `ProgrammaticToolCalling object { type }`
 
-                - `type: "programmatic_tool_calling"`
+                - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
                   The tool to call. Always `programmatic_tool_calling`.
 
@@ -6789,7 +7149,7 @@ Schema name: `LiveSessionStarted`
 
                 Forces the model to call the shell tool when a tool call is required.
 
-                - `type: "shell"`
+                - `type: "shell" (default: "shell")`
 
                   The tool to call. Always `shell`.
 
@@ -6801,7 +7161,7 @@ Schema name: `LiveSessionStarted`
 
                   The name of the custom tool to call.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The tool to call. Always `custom`.
 
@@ -6811,13 +7171,13 @@ Schema name: `LiveSessionStarted`
 
                 Forces the model to call the apply_patch tool when executing a tool call.
 
-                - `type: "apply_patch"`
+                - `type: "apply_patch" (default: "apply_patch")`
 
                   The tool to call. Always `apply_patch`.
 
                   - `"apply_patch"`
 
-            - `type: "allowed_tools"`
+            - `type: "allowed_tools" (default: "allowed_tools")`
 
               The tool choice type. Always `allowed_tools`.
 
@@ -6845,7 +7205,7 @@ Schema name: `LiveSessionStarted`
 
               The name the delegated Responses model uses when calling this function.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The tool type. Always `function`.
 
@@ -6867,7 +7227,7 @@ Schema name: `LiveSessionStarted`
 
             A web search tool available to the Live session’s Responses backend.
 
-            - `type: "web_search"`
+            - `type: "web_search" (default: "web_search")`
 
               The tool type. Always `web_search`.
 
@@ -6875,13 +7235,13 @@ Schema name: `LiveSessionStarted`
 
           - `FileSearch object { type }`
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               - `"file_search"`
 
           - `CodeInterpreter object { type }`
 
-            - `type: "code_interpreter"`
+            - `type: "code_interpreter" (default: "code_interpreter")`
 
               - `"code_interpreter"`
 
@@ -6889,7 +7249,7 @@ Schema name: `LiveSessionStarted`
 
             A Responses shell tool. Use a hosted container or return local shell results with response.item.create. Domain secrets are not supported.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               - `"shell"`
 
@@ -6897,7 +7257,7 @@ Schema name: `LiveSessionStarted`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -6906,6 +7266,8 @@ Schema name: `LiveSessionStarted`
                 - `file_ids: optional array of string or null`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -6925,7 +7287,7 @@ Schema name: `LiveSessionStarted`
 
                   - `Disabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -6937,7 +7299,9 @@ Schema name: `LiveSessionStarted`
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -6947,13 +7311,17 @@ Schema name: `LiveSessionStarted`
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -6981,19 +7349,21 @@ Schema name: `LiveSessionStarted`
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -7005,7 +7375,7 @@ Schema name: `LiveSessionStarted`
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -7013,7 +7383,7 @@ Schema name: `LiveSessionStarted`
 
               - `Local object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -7022,6 +7392,8 @@ Schema name: `LiveSessionStarted`
                 - `skills: optional array of object { description, name, path }  or null`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -7037,61 +7409,63 @@ Schema name: `LiveSessionStarted`
 
           - `ImageGeneration object { type }`
 
-            - `type: "image_generation"`
+            - `type: "image_generation" (default: "image_generation")`
 
               - `"image_generation"`
 
           - `Mcp object { type }`
 
-            - `type: "mcp"`
+            - `type: "mcp" (default: "mcp")`
 
               - `"mcp"`
 
           - `Custom object { type }`
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               - `"custom"`
 
           - `Namespace object { type }`
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               - `"namespace"`
 
           - `ToolSearch object { type }`
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               - `"tool_search"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               - `"programmatic_tool_calling"`
 
           - `Computer object { type }`
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               - `"computer"`
 
           - `ApplyPatch object { type }`
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               - `"apply_patch"`
 
-      - `type: "responses"`
+      - `type: "responses" (default: "responses")`
 
         The delegation owner. Always `responses` for tasks handled by the Responses API.
 
         - `"responses"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400 for Decisions sessions and 0 (request immediately) for other sessions. Omission in a session update preserves the current value. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
     - `Decisions object { decisions, type, acknowledgement_delay_ms }`
 
@@ -7099,13 +7473,19 @@ Schema name: `LiveSessionStarted`
 
         - `model: string`
 
+          `minLength: 1`
+
         - `questions: array of DecisionQuestion`
 
           Native Decision API questions evaluated together, in order.
 
+          `minItems: 1`, `maxItems: 64`
+
           - `Choice object { choices, instructions, type, name }`
 
             - `choices: array of DecisionChoiceOption`
+
+              `minItems: 2`, `maxItems: 255`
 
               - `value: string or boolean`
 
@@ -7121,13 +7501,17 @@ Schema name: `LiveSessionStarted`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                   - `text: string`
 
                     The text input to the model.
 
-                  - `type: "input_text"`
+                    `maxLength: 10485760`
+
+                  - `type: "input_text" (default: "input_text")`
 
                     - `"input_text"`
 
@@ -7137,7 +7521,9 @@ Schema name: `LiveSessionStarted`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -7161,11 +7547,11 @@ Schema name: `LiveSessionStarted`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
-            - `type: "choice"`
+            - `type: "choice" (default: "choice")`
 
               - `"choice"`
 
@@ -7179,6 +7565,8 @@ Schema name: `LiveSessionStarted`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                 - `InputImage object { image_url, type, detail }`
@@ -7187,7 +7575,9 @@ Schema name: `LiveSessionStarted`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -7211,11 +7601,11 @@ Schema name: `LiveSessionStarted`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
-            - `type: "predicate"`
+            - `type: "predicate" (default: "predicate")`
 
               - `"predicate"`
 
@@ -7229,6 +7619,8 @@ Schema name: `LiveSessionStarted`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                 - `InputImage object { image_url, type, detail }`
@@ -7237,7 +7629,9 @@ Schema name: `LiveSessionStarted`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -7261,33 +7655,39 @@ Schema name: `LiveSessionStarted`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
             - `levels: array of object { label, description }`
 
+              `minItems: 2`, `maxItems: 10`
+
               - `label: string`
 
               - `description: optional string`
 
-            - `type: "score"`
+            - `type: "score" (default: "score")`
 
               - `"score"`
 
             - `name: optional string`
 
-      - `type: "decisions"`
+      - `type: "decisions" (default: "decisions")`
 
         - `"decisions"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
   - `input: optional array of InitialItem`
 
     Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and a configured rendered-token limit (8,192 by default).
+
+    `maxItems: 128`
 
     - `Developer object { content, role, id, 2 more }`
 
@@ -7297,17 +7697,19 @@ Schema name: `LiveSessionStarted`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
+        `minItems: 1`, `maxItems: 1`
+
         - `text: string`
 
           The message text to include in the Live session’s initial conversation history.
 
-        - `type: optional "input_text"`
+        - `type: optional "input_text" (default: "input_text")`
 
           The text content type. Always `input_text`.
 
           - `"input_text"`
 
-      - `role: "developer"`
+      - `role: "developer" (default: "developer")`
 
         The author of this history message. Always `developer`.
 
@@ -7325,7 +7727,7 @@ Schema name: `LiveSessionStarted`
 
         - `"completed"`
 
-      - `type: optional "message"`
+      - `type: optional "message" (default: "message")`
 
         The history item type. Always `message`.
 
@@ -7339,17 +7741,19 @@ Schema name: `LiveSessionStarted`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
+        `minItems: 1`, `maxItems: 1`
+
         - `text: string`
 
           The message text to include in the Live session’s initial conversation history.
 
-        - `type: optional "input_text"`
+        - `type: optional "input_text" (default: "input_text")`
 
           The text content type. Always `input_text`.
 
           - `"input_text"`
 
-      - `role: "user"`
+      - `role: "user" (default: "user")`
 
         The author of this history message. Always `user`.
 
@@ -7367,7 +7771,7 @@ Schema name: `LiveSessionStarted`
 
         - `"completed"`
 
-      - `type: optional "message"`
+      - `type: optional "message" (default: "message")`
 
         The history item type. Always `message`.
 
@@ -7381,6 +7785,8 @@ Schema name: `LiveSessionStarted`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
+        `minItems: 1`, `maxItems: 1`
+
         - `Text object { text, type }`
 
           Assistant text supplied as conversation history when starting a Live session.
@@ -7389,7 +7795,7 @@ Schema name: `LiveSessionStarted`
 
             The message text to include in the Live session’s initial conversation history.
 
-          - `type: optional "text"`
+          - `type: optional "text" (default: "text")`
 
             The text content type. Always `text`.
 
@@ -7403,13 +7809,13 @@ Schema name: `LiveSessionStarted`
 
             The message text to include in the Live session’s initial conversation history.
 
-          - `type: "output_text"`
+          - `type: "output_text" (default: "output_text")`
 
             The text content type. Always `output_text`.
 
             - `"output_text"`
 
-      - `role: "assistant"`
+      - `role: "assistant" (default: "assistant")`
 
         The author of this history message. Always `assistant`.
 
@@ -7427,7 +7833,7 @@ Schema name: `LiveSessionStarted`
 
         - `"completed"`
 
-      - `type: optional "message"`
+      - `type: optional "message" (default: "message")`
 
         The history item type. Always `message`.
 
@@ -7445,6 +7851,8 @@ Schema name: `LiveSessionStarted`
 
     At most one Decisions trigger per transcript event type. Triggers run independently of delegation. On update, omit triggers to keep the current configuration, send a list to replace it, or send an empty list to disable triggers.
 
+    `maxItems: 2`
+
     - `decisions: object { questions }`
 
       Questions evaluated using the current transcript and the session's shared Decision items.
@@ -7452,6 +7860,8 @@ Schema name: `LiveSessionStarted`
       - `questions: array of DecisionQuestion`
 
         Native Decision API questions evaluated together, in order.
+
+        `minItems: 1`, `maxItems: 64`
 
         - `Choice object { choices, instructions, type, name }`
 
@@ -7465,11 +7875,11 @@ Schema name: `LiveSessionStarted`
 
       - `"session.output_transcript.delta"`
 
-    - `type: "decisions"`
+    - `type: "decisions" (default: "decisions")`
 
       - `"decisions"`
 
-- `type: "session.started"`
+- `type: "session.started" (default: "session.started")`
 
   The event type, always `session.started`.
 
@@ -7531,7 +7941,7 @@ Schema name: `LiveSessionUpdated`
 
     The unique ID of the Live session. Use this ID for sideband connections, forking, and recording download.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     The Unix timestamp, in seconds, at which the Live session expires.
 
@@ -7541,13 +7951,15 @@ Schema name: `LiveSessionUpdated`
 
     - `string`
 
+      `minLength: 1`
+
     - `"gpt-live-1"`
 
       The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
 
       - `"gpt-live-1"`
 
-  - `status: "active"`
+  - `status: "active" (default: "active")`
 
     The status of the session snapshot. Always `active`, including the final snapshot in session.closed; use the event type to determine that the session has closed.
 
@@ -7569,11 +7981,13 @@ Schema name: `LiveSessionUpdated`
 
           Audio sample rate in hertz. Live WebSocket PCM audio supports 16000 or 24000 Hz.
 
+          `minimum: 16000`, `maximum: 24000`
+
           - `16000`
 
           - `24000`
 
-        - `type: "audio/pcm"`
+        - `type: "audio/pcm" (default: "audio/pcm")`
 
           The audio encoding. Always `audio/pcm`.
 
@@ -7583,11 +7997,13 @@ Schema name: `LiveSessionUpdated`
 
         Raw, mono G.711 μ-law audio for a Live WebSocket connection.
 
-        - `rate: number`
+        - `rate: integer`
 
           Audio sample rate in hertz. G.711 audio uses 8000 Hz.
 
-        - `type: "audio/pcmu"`
+          `minimum: 8000`, `maximum: 8000`
+
+        - `type: "audio/pcmu" (default: "audio/pcmu")`
 
           The audio encoding. Always `audio/pcmu`.
 
@@ -7597,11 +8013,13 @@ Schema name: `LiveSessionUpdated`
 
         Raw, mono G.711 A-law audio for a Live WebSocket connection.
 
-        - `rate: number`
+        - `rate: integer`
 
           Audio sample rate in hertz. G.711 audio uses 8000 Hz.
 
-        - `type: "audio/pcma"`
+          `minimum: 8000`, `maximum: 8000`
+
+        - `type: "audio/pcma" (default: "audio/pcma")`
 
           The audio encoding. Always `audio/pcma`.
 
@@ -7687,6 +8105,8 @@ Schema name: `LiveSessionUpdated`
 
           - `id: string`
 
+            `minLength: 1`, `maxLength: 128`
+
   - `client: optional ClientConfig`
 
     Startup-only capabilities for an untrusted frontend attached to a unified WebRTC session. Trusted sideband connections are unaffected.
@@ -7705,6 +8125,8 @@ Schema name: `LiveSessionUpdated`
 
         - `array of string`
 
+          `maxItems: 256`
+
       - `allowed_server_events: optional "all" or array of ServerEventSelector`
 
         Server events that may be sent to the frontend data channel. Use 'all' to allow every server event; an empty array allows none. Omission preserves the existing allow-all behavior. Responses events use an object with type 'response.event' and a response_event selector.
@@ -7715,13 +8137,19 @@ Schema name: `LiveSessionUpdated`
 
         - `array of ServerEventSelector`
 
+          `maxItems: 256`
+
           - `type: string`
 
             The outer Live server event type. Use 'response.event' for Responses events.
 
+            `minLength: 1`, `maxLength: 256`
+
           - `response_event: optional string`
 
             The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
+
+            `minLength: 1`, `maxLength: 256`
 
   - `delegation: optional ClientDelegation or Responses { responses, type, acknowledgement_delay_ms }  or Decisions { decisions, type, acknowledgement_delay_ms }  or null`
 
@@ -7731,15 +8159,17 @@ Schema name: `LiveSessionUpdated`
 
       Delegate tasks to your application. The Live session emits delegation events that your backend handles.
 
-      - `type: "client"`
+      - `type: "client" (default: "client")`
 
         The delegation owner. Always `client` for tasks handled by your application.
 
         - `"client"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400 for Decisions sessions and 0 (request immediately) for other sessions. Omission in a session update preserves the current value. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
     - `Responses object { responses, type, acknowledgement_delay_ms }`
 
@@ -7757,9 +8187,11 @@ Schema name: `LiveSessionUpdated`
 
           Instructions for the delegated Responses model, separate from Live instructions. See [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
 
-        - `max_output_tokens: optional number or null`
+        - `max_output_tokens: optional integer or null`
 
           Maximum number of output tokens for each delegated response.
+
+          `minimum: 16`
 
         - `parallel_tool_calls: optional boolean or null`
 
@@ -7843,7 +8275,7 @@ Schema name: `LiveSessionUpdated`
 
               The name of the function tool to call.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The tool to call. Always `function`.
 
@@ -7855,7 +8287,7 @@ Schema name: `LiveSessionUpdated`
 
               The label of the MCP server to call.
 
-            - `type: "mcp"`
+            - `type: "mcp" (default: "mcp")`
 
               The tool to call. Always `mcp`.
 
@@ -7867,7 +8299,7 @@ Schema name: `LiveSessionUpdated`
 
           - `FileSearch object { type }`
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The tool to call. Always `file_search`.
 
@@ -7875,7 +8307,7 @@ Schema name: `LiveSessionUpdated`
 
           - `WebSearch object { type }`
 
-            - `type: "web_search"`
+            - `type: "web_search" (default: "web_search")`
 
               The tool to call. Always `web_search`.
 
@@ -7883,7 +8315,7 @@ Schema name: `LiveSessionUpdated`
 
           - `WebSearchPreview object { type }`
 
-            - `type: "web_search_preview"`
+            - `type: "web_search_preview" (default: "web_search_preview")`
 
               The tool to call. Always `web_search_preview`.
 
@@ -7891,7 +8323,7 @@ Schema name: `LiveSessionUpdated`
 
           - `ImageGeneration object { type }`
 
-            - `type: "image_generation"`
+            - `type: "image_generation" (default: "image_generation")`
 
               The tool to call. Always `image_generation`.
 
@@ -7899,7 +8331,7 @@ Schema name: `LiveSessionUpdated`
 
           - `Computer object { type }`
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The tool to call. Always `computer`.
 
@@ -7907,7 +8339,7 @@ Schema name: `LiveSessionUpdated`
 
           - `CodeInterpreter object { type }`
 
-            - `type: "code_interpreter"`
+            - `type: "code_interpreter" (default: "code_interpreter")`
 
               The tool to call. Always `code_interpreter`.
 
@@ -7915,7 +8347,7 @@ Schema name: `LiveSessionUpdated`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The tool to call. Always `programmatic_tool_calling`.
 
@@ -7925,7 +8357,7 @@ Schema name: `LiveSessionUpdated`
 
             Forces the model to call the shell tool when a tool call is required.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The tool to call. Always `shell`.
 
@@ -7937,7 +8369,7 @@ Schema name: `LiveSessionUpdated`
 
               The name of the custom tool to call.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The tool to call. Always `custom`.
 
@@ -7947,7 +8379,7 @@ Schema name: `LiveSessionUpdated`
 
             Forces the model to call the apply_patch tool when executing a tool call.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The tool to call. Always `apply_patch`.
 
@@ -7959,13 +8391,15 @@ Schema name: `LiveSessionUpdated`
 
               The tools that the delegated Responses model may call.
 
+              `minItems: 1`, `maxItems: 128`
+
               - `Function object { name, type }`
 
                 - `name: string`
 
                   The name of the function tool to call.
 
-                - `type: "function"`
+                - `type: "function" (default: "function")`
 
                   The tool to call. Always `function`.
 
@@ -7977,7 +8411,7 @@ Schema name: `LiveSessionUpdated`
 
                   The label of the MCP server to call.
 
-                - `type: "mcp"`
+                - `type: "mcp" (default: "mcp")`
 
                   The tool to call. Always `mcp`.
 
@@ -7989,7 +8423,7 @@ Schema name: `LiveSessionUpdated`
 
               - `FileSearch object { type }`
 
-                - `type: "file_search"`
+                - `type: "file_search" (default: "file_search")`
 
                   The tool to call. Always `file_search`.
 
@@ -7997,7 +8431,7 @@ Schema name: `LiveSessionUpdated`
 
               - `WebSearch object { type }`
 
-                - `type: "web_search"`
+                - `type: "web_search" (default: "web_search")`
 
                   The tool to call. Always `web_search`.
 
@@ -8005,7 +8439,7 @@ Schema name: `LiveSessionUpdated`
 
               - `WebSearchPreview object { type }`
 
-                - `type: "web_search_preview"`
+                - `type: "web_search_preview" (default: "web_search_preview")`
 
                   The tool to call. Always `web_search_preview`.
 
@@ -8013,7 +8447,7 @@ Schema name: `LiveSessionUpdated`
 
               - `ImageGeneration object { type }`
 
-                - `type: "image_generation"`
+                - `type: "image_generation" (default: "image_generation")`
 
                   The tool to call. Always `image_generation`.
 
@@ -8021,7 +8455,7 @@ Schema name: `LiveSessionUpdated`
 
               - `Computer object { type }`
 
-                - `type: "computer"`
+                - `type: "computer" (default: "computer")`
 
                   The tool to call. Always `computer`.
 
@@ -8029,7 +8463,7 @@ Schema name: `LiveSessionUpdated`
 
               - `CodeInterpreter object { type }`
 
-                - `type: "code_interpreter"`
+                - `type: "code_interpreter" (default: "code_interpreter")`
 
                   The tool to call. Always `code_interpreter`.
 
@@ -8037,7 +8471,7 @@ Schema name: `LiveSessionUpdated`
 
               - `ProgrammaticToolCalling object { type }`
 
-                - `type: "programmatic_tool_calling"`
+                - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
                   The tool to call. Always `programmatic_tool_calling`.
 
@@ -8047,7 +8481,7 @@ Schema name: `LiveSessionUpdated`
 
                 Forces the model to call the shell tool when a tool call is required.
 
-                - `type: "shell"`
+                - `type: "shell" (default: "shell")`
 
                   The tool to call. Always `shell`.
 
@@ -8059,7 +8493,7 @@ Schema name: `LiveSessionUpdated`
 
                   The name of the custom tool to call.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The tool to call. Always `custom`.
 
@@ -8069,13 +8503,13 @@ Schema name: `LiveSessionUpdated`
 
                 Forces the model to call the apply_patch tool when executing a tool call.
 
-                - `type: "apply_patch"`
+                - `type: "apply_patch" (default: "apply_patch")`
 
                   The tool to call. Always `apply_patch`.
 
                   - `"apply_patch"`
 
-            - `type: "allowed_tools"`
+            - `type: "allowed_tools" (default: "allowed_tools")`
 
               The tool choice type. Always `allowed_tools`.
 
@@ -8103,7 +8537,7 @@ Schema name: `LiveSessionUpdated`
 
               The name the delegated Responses model uses when calling this function.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The tool type. Always `function`.
 
@@ -8125,7 +8559,7 @@ Schema name: `LiveSessionUpdated`
 
             A web search tool available to the Live session’s Responses backend.
 
-            - `type: "web_search"`
+            - `type: "web_search" (default: "web_search")`
 
               The tool type. Always `web_search`.
 
@@ -8133,13 +8567,13 @@ Schema name: `LiveSessionUpdated`
 
           - `FileSearch object { type }`
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               - `"file_search"`
 
           - `CodeInterpreter object { type }`
 
-            - `type: "code_interpreter"`
+            - `type: "code_interpreter" (default: "code_interpreter")`
 
               - `"code_interpreter"`
 
@@ -8147,7 +8581,7 @@ Schema name: `LiveSessionUpdated`
 
             A Responses shell tool. Use a hosted container or return local shell results with response.item.create. Domain secrets are not supported.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               - `"shell"`
 
@@ -8155,7 +8589,7 @@ Schema name: `LiveSessionUpdated`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -8164,6 +8598,8 @@ Schema name: `LiveSessionUpdated`
                 - `file_ids: optional array of string or null`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -8183,7 +8619,7 @@ Schema name: `LiveSessionUpdated`
 
                   - `Disabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -8195,7 +8631,9 @@ Schema name: `LiveSessionUpdated`
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -8205,13 +8643,17 @@ Schema name: `LiveSessionUpdated`
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -8239,19 +8681,21 @@ Schema name: `LiveSessionUpdated`
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -8263,7 +8707,7 @@ Schema name: `LiveSessionUpdated`
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -8271,7 +8715,7 @@ Schema name: `LiveSessionUpdated`
 
               - `Local object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -8280,6 +8724,8 @@ Schema name: `LiveSessionUpdated`
                 - `skills: optional array of object { description, name, path }  or null`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -8295,61 +8741,63 @@ Schema name: `LiveSessionUpdated`
 
           - `ImageGeneration object { type }`
 
-            - `type: "image_generation"`
+            - `type: "image_generation" (default: "image_generation")`
 
               - `"image_generation"`
 
           - `Mcp object { type }`
 
-            - `type: "mcp"`
+            - `type: "mcp" (default: "mcp")`
 
               - `"mcp"`
 
           - `Custom object { type }`
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               - `"custom"`
 
           - `Namespace object { type }`
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               - `"namespace"`
 
           - `ToolSearch object { type }`
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               - `"tool_search"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               - `"programmatic_tool_calling"`
 
           - `Computer object { type }`
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               - `"computer"`
 
           - `ApplyPatch object { type }`
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               - `"apply_patch"`
 
-      - `type: "responses"`
+      - `type: "responses" (default: "responses")`
 
         The delegation owner. Always `responses` for tasks handled by the Responses API.
 
         - `"responses"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400 for Decisions sessions and 0 (request immediately) for other sessions. Omission in a session update preserves the current value. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
     - `Decisions object { decisions, type, acknowledgement_delay_ms }`
 
@@ -8357,13 +8805,19 @@ Schema name: `LiveSessionUpdated`
 
         - `model: string`
 
+          `minLength: 1`
+
         - `questions: array of DecisionQuestion`
 
           Native Decision API questions evaluated together, in order.
 
+          `minItems: 1`, `maxItems: 64`
+
           - `Choice object { choices, instructions, type, name }`
 
             - `choices: array of DecisionChoiceOption`
+
+              `minItems: 2`, `maxItems: 255`
 
               - `value: string or boolean`
 
@@ -8379,13 +8833,17 @@ Schema name: `LiveSessionUpdated`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                   - `text: string`
 
                     The text input to the model.
 
-                  - `type: "input_text"`
+                    `maxLength: 10485760`
+
+                  - `type: "input_text" (default: "input_text")`
 
                     - `"input_text"`
 
@@ -8395,7 +8853,9 @@ Schema name: `LiveSessionUpdated`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -8419,11 +8879,11 @@ Schema name: `LiveSessionUpdated`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
-            - `type: "choice"`
+            - `type: "choice" (default: "choice")`
 
               - `"choice"`
 
@@ -8437,6 +8897,8 @@ Schema name: `LiveSessionUpdated`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                 - `InputImage object { image_url, type, detail }`
@@ -8445,7 +8907,9 @@ Schema name: `LiveSessionUpdated`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -8469,11 +8933,11 @@ Schema name: `LiveSessionUpdated`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
-            - `type: "predicate"`
+            - `type: "predicate" (default: "predicate")`
 
               - `"predicate"`
 
@@ -8487,6 +8951,8 @@ Schema name: `LiveSessionUpdated`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                 - `InputImage object { image_url, type, detail }`
@@ -8495,7 +8961,9 @@ Schema name: `LiveSessionUpdated`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -8519,33 +8987,39 @@ Schema name: `LiveSessionUpdated`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
             - `levels: array of object { label, description }`
 
+              `minItems: 2`, `maxItems: 10`
+
               - `label: string`
 
               - `description: optional string`
 
-            - `type: "score"`
+            - `type: "score" (default: "score")`
 
               - `"score"`
 
             - `name: optional string`
 
-      - `type: "decisions"`
+      - `type: "decisions" (default: "decisions")`
 
         - `"decisions"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
   - `input: optional array of InitialItem`
 
     Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and a configured rendered-token limit (8,192 by default).
+
+    `maxItems: 128`
 
     - `Developer object { content, role, id, 2 more }`
 
@@ -8555,17 +9029,19 @@ Schema name: `LiveSessionUpdated`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
+        `minItems: 1`, `maxItems: 1`
+
         - `text: string`
 
           The message text to include in the Live session’s initial conversation history.
 
-        - `type: optional "input_text"`
+        - `type: optional "input_text" (default: "input_text")`
 
           The text content type. Always `input_text`.
 
           - `"input_text"`
 
-      - `role: "developer"`
+      - `role: "developer" (default: "developer")`
 
         The author of this history message. Always `developer`.
 
@@ -8583,7 +9059,7 @@ Schema name: `LiveSessionUpdated`
 
         - `"completed"`
 
-      - `type: optional "message"`
+      - `type: optional "message" (default: "message")`
 
         The history item type. Always `message`.
 
@@ -8597,17 +9073,19 @@ Schema name: `LiveSessionUpdated`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
+        `minItems: 1`, `maxItems: 1`
+
         - `text: string`
 
           The message text to include in the Live session’s initial conversation history.
 
-        - `type: optional "input_text"`
+        - `type: optional "input_text" (default: "input_text")`
 
           The text content type. Always `input_text`.
 
           - `"input_text"`
 
-      - `role: "user"`
+      - `role: "user" (default: "user")`
 
         The author of this history message. Always `user`.
 
@@ -8625,7 +9103,7 @@ Schema name: `LiveSessionUpdated`
 
         - `"completed"`
 
-      - `type: optional "message"`
+      - `type: optional "message" (default: "message")`
 
         The history item type. Always `message`.
 
@@ -8639,6 +9117,8 @@ Schema name: `LiveSessionUpdated`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
+        `minItems: 1`, `maxItems: 1`
+
         - `Text object { text, type }`
 
           Assistant text supplied as conversation history when starting a Live session.
@@ -8647,7 +9127,7 @@ Schema name: `LiveSessionUpdated`
 
             The message text to include in the Live session’s initial conversation history.
 
-          - `type: optional "text"`
+          - `type: optional "text" (default: "text")`
 
             The text content type. Always `text`.
 
@@ -8661,13 +9141,13 @@ Schema name: `LiveSessionUpdated`
 
             The message text to include in the Live session’s initial conversation history.
 
-          - `type: "output_text"`
+          - `type: "output_text" (default: "output_text")`
 
             The text content type. Always `output_text`.
 
             - `"output_text"`
 
-      - `role: "assistant"`
+      - `role: "assistant" (default: "assistant")`
 
         The author of this history message. Always `assistant`.
 
@@ -8685,7 +9165,7 @@ Schema name: `LiveSessionUpdated`
 
         - `"completed"`
 
-      - `type: optional "message"`
+      - `type: optional "message" (default: "message")`
 
         The history item type. Always `message`.
 
@@ -8703,6 +9183,8 @@ Schema name: `LiveSessionUpdated`
 
     At most one Decisions trigger per transcript event type. Triggers run independently of delegation. On update, omit triggers to keep the current configuration, send a list to replace it, or send an empty list to disable triggers.
 
+    `maxItems: 2`
+
     - `decisions: object { questions }`
 
       Questions evaluated using the current transcript and the session's shared Decision items.
@@ -8710,6 +9192,8 @@ Schema name: `LiveSessionUpdated`
       - `questions: array of DecisionQuestion`
 
         Native Decision API questions evaluated together, in order.
+
+        `minItems: 1`, `maxItems: 64`
 
         - `Choice object { choices, instructions, type, name }`
 
@@ -8723,11 +9207,11 @@ Schema name: `LiveSessionUpdated`
 
       - `"session.output_transcript.delta"`
 
-    - `type: "decisions"`
+    - `type: "decisions" (default: "decisions")`
 
       - `"decisions"`
 
-- `type: "session.updated"`
+- `type: "session.updated" (default: "session.updated")`
 
   The event type, always `session.updated`.
 
@@ -8787,7 +9271,7 @@ Schema name: `LiveInputAudioMuted`
 
   The unique ID of the Live server event.
 
-- `type: "session.input_audio.muted"`
+- `type: "session.input_audio.muted" (default: "session.input_audio.muted")`
 
   The event type, always `session.input_audio.muted`.
 
@@ -8821,7 +9305,7 @@ Schema name: `LiveInputAudioUnmuted`
 
   The unique ID of the Live server event.
 
-- `type: "session.input_audio.unmuted"`
+- `type: "session.input_audio.unmuted" (default: "session.input_audio.unmuted")`
 
   The event type, always `session.input_audio.unmuted`.
 
@@ -8855,7 +9339,7 @@ Schema name: `LiveOutputAudioFixturePlaying`
 
   The unique ID of the Live server event.
 
-- `type: "session.output_audio.fixture.playing"`
+- `type: "session.output_audio.fixture.playing" (default: "session.output_audio.fixture.playing")`
 
   - `"session.output_audio.fixture.playing"`
 
@@ -8887,7 +9371,7 @@ Schema name: `LiveOutputAudioFixturePlayed`
 
   The unique ID of the Live server event.
 
-- `type: "session.output_audio.fixture.played"`
+- `type: "session.output_audio.fixture.played" (default: "session.output_audio.fixture.played")`
 
   - `"session.output_audio.fixture.played"`
 
@@ -8915,7 +9399,7 @@ Returned when a session.instructions.append command is accepted into the Live se
 
 Schema name: `LiveInstructionsAppended`
 
-- `end_ms: number`
+- `end_ms: integer`
 
   The end of this event on the Live session timeline, in milliseconds from the beginning of the session. For appended context, this can equal start_ms.
 
@@ -8923,11 +9407,11 @@ Schema name: `LiveInstructionsAppended`
 
   The unique ID of the Live server event.
 
-- `start_ms: number`
+- `start_ms: integer`
 
   The start of this event on the Live session timeline, in milliseconds from the beginning of the session.
 
-- `type: "session.instructions.appended"`
+- `type: "session.instructions.appended" (default: "session.instructions.appended")`
 
   The event type, always `session.instructions.appended`.
 
@@ -8959,7 +9443,7 @@ Returned when a session.thinking.append command is accepted into the Live sessio
 
 Schema name: `LiveThinkingAppended`
 
-- `end_ms: number`
+- `end_ms: integer`
 
   The end of this event on the Live session timeline, in milliseconds from the beginning of the session. For appended context, this can equal start_ms.
 
@@ -8967,11 +9451,11 @@ Schema name: `LiveThinkingAppended`
 
   The unique ID of the Live server event.
 
-- `start_ms: number`
+- `start_ms: integer`
 
   The start of this event on the Live session timeline, in milliseconds from the beginning of the session.
 
-- `type: "session.thinking.appended"`
+- `type: "session.thinking.appended" (default: "session.thinking.appended")`
 
   The event type, always `session.thinking.appended`.
 
@@ -9003,7 +9487,7 @@ Returned when a session.commentary.append command is accepted into the Live sess
 
 Schema name: `LiveCommentaryAppended`
 
-- `end_ms: number`
+- `end_ms: integer`
 
   The end of this event on the Live session timeline, in milliseconds from the beginning of the session. For appended context, this can equal start_ms.
 
@@ -9011,11 +9495,11 @@ Schema name: `LiveCommentaryAppended`
 
   The unique ID of the Live server event.
 
-- `start_ms: number`
+- `start_ms: integer`
 
   The start of this event on the Live session timeline, in milliseconds from the beginning of the session.
 
-- `type: "session.commentary.appended"`
+- `type: "session.commentary.appended" (default: "session.commentary.appended")`
 
   The event type, always `session.commentary.appended`.
 
@@ -9051,17 +9535,17 @@ Schema name: `LiveOutputAudioDelta`
 
   Base64-encoded raw audio. Primary WebSocket events use the session's configured format; reflected sideband events use mono PCM16LE at 24 kHz.
 
-- `type: "session.output_audio.delta"`
+- `type: "session.output_audio.delta" (default: "session.output_audio.delta")`
 
   The event type, always `session.output_audio.delta`.
 
   - `"session.output_audio.delta"`
 
-- `end_ms: optional number`
+- `end_ms: optional integer`
 
   Exclusive session-relative end in milliseconds. Required on reflected sideband events; omitted on the primary WebSocket. Dropped output frames leave gaps between reflected ranges.
 
-- `start_ms: optional number`
+- `start_ms: optional integer`
 
   Inclusive session-relative start in milliseconds. Required on reflected sideband events; omitted on the primary WebSocket.
 
@@ -9090,7 +9574,7 @@ Schema name: `LiveInputTranscriptDelta`
 
   The transcript text fragment for the audio in this time range. Append fragments in delivery order to build the transcript.
 
-- `end_ms: number`
+- `end_ms: integer`
 
   The end of this event on the Live session timeline, in milliseconds from the beginning of the session. For appended context, this can equal start_ms.
 
@@ -9098,11 +9582,11 @@ Schema name: `LiveInputTranscriptDelta`
 
   The unique ID of the Live server event.
 
-- `start_ms: number`
+- `start_ms: integer`
 
   The start of this event on the Live session timeline, in milliseconds from the beginning of the session.
 
-- `type: "session.input_transcript.delta"`
+- `type: "session.input_transcript.delta" (default: "session.input_transcript.delta")`
 
   The event type, always `session.input_transcript.delta`.
 
@@ -9138,7 +9622,7 @@ Schema name: `LiveOutputTranscriptDelta`
 
   The transcript text fragment for the audio in this time range. Append fragments in delivery order to build the transcript.
 
-- `end_ms: number`
+- `end_ms: integer`
 
   The end of this event on the Live session timeline, in milliseconds from the beginning of the session. For appended context, this can equal start_ms.
 
@@ -9146,11 +9630,11 @@ Schema name: `LiveOutputTranscriptDelta`
 
   The unique ID of the Live server event.
 
-- `start_ms: number`
+- `start_ms: integer`
 
   The start of this event on the Live session timeline, in milliseconds from the beginning of the session.
 
-- `type: "session.output_transcript.delta"`
+- `type: "session.output_transcript.delta" (default: "session.output_transcript.delta")`
 
   The event type, always `session.output_transcript.delta`.
 
@@ -9204,7 +9688,7 @@ Schema name: `LiveDelegationCreated`
 
       - `"decisions"`
 
-  - `type: "delegation"`
+  - `type: "delegation" (default: "delegation")`
 
     The object type, always `delegation`.
 
@@ -9218,11 +9702,11 @@ Schema name: `LiveDelegationCreated`
 
   The unique ID of the Live server event.
 
-- `offset_ms: number`
+- `offset_ms: integer`
 
   The position on the Live session timeline where the delegation was created, in milliseconds from the beginning of the session.
 
-- `type: "session.delegation.created"`
+- `type: "session.delegation.created" (default: "session.delegation.created")`
 
   The event type, always `session.delegation.created`.
 
@@ -9271,13 +9755,17 @@ Schema name: `LiveDecisionEvent`
 
       Answers in question order. Any question can return a refusal instead of an answer; other questions can still receive answers. A refusal has `type: "refusal"` and the question's `name`, or `null` if it was unnamed.
 
+      `minItems: 0`, `maxItems: 2000`
+
       - `Predicate object { name, probability, type }`
 
         - `name: string or null`
 
+          `minLength: 0`
+
         - `probability: number`
 
-        - `type: "predicate"`
+        - `type: "predicate" (default: "predicate")`
 
           The type of the object. Always `predicate`.
 
@@ -9291,13 +9779,19 @@ Schema name: `LiveDecisionEvent`
 
           - `string`
 
+            `minLength: 0`
+
           - `boolean`
 
         - `confidence: number`
 
         - `name: string or null`
 
+          `minLength: 0`
+
         - `probabilities: array of object { probability, value }`
+
+          `minItems: 0`, `maxItems: 2000`
 
           - `probability: number`
 
@@ -9307,9 +9801,11 @@ Schema name: `LiveDecisionEvent`
 
             - `string`
 
+              `minLength: 0`
+
             - `boolean`
 
-        - `type: "choice"`
+        - `type: "choice" (default: "choice")`
 
           The type of the object. Always `choice`.
 
@@ -9321,17 +9817,25 @@ Schema name: `LiveDecisionEvent`
 
         - `name: string or null`
 
+          `minLength: 0`
+
         - `probabilities: array of object { label, probability, value }`
+
+          `minItems: 0`, `maxItems: 2000`
 
           - `label: string`
 
+            `minLength: 0`
+
           - `probability: number`
 
-          - `value: number`
+          - `value: integer`
+
+            `format: int64`
 
         - `score: number`
 
-        - `type: "score"`
+        - `type: "score" (default: "score")`
 
           The type of the object. Always `score`.
 
@@ -9343,7 +9847,9 @@ Schema name: `LiveDecisionEvent`
 
         - `name: string or null`
 
-        - `type: "refusal"`
+          `minLength: 0`
+
+        - `type: "refusal" (default: "refusal")`
 
           The type of the object. Always `refusal`.
 
@@ -9353,27 +9859,41 @@ Schema name: `LiveDecisionEvent`
 
       The model used.
 
+      `minLength: 0`
+
     - `usage: object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
       Token usage for the request.
 
-      - `input_tokens: number`
+      - `input_tokens: integer`
+
+        `format: int64`, `minimum: -2147483648`, `maximum: 2147483647`
 
       - `input_tokens_details: object { cache_write_tokens, cached_tokens }`
 
-        - `cache_write_tokens: number`
+        - `cache_write_tokens: integer`
 
-        - `cached_tokens: number`
+          `format: int64`, `minimum: -2147483648`, `maximum: 2147483647`
 
-      - `output_tokens: number`
+        - `cached_tokens: integer`
+
+          `format: int64`, `minimum: -2147483648`, `maximum: 2147483647`
+
+      - `output_tokens: integer`
+
+        `format: int64`, `minimum: -2147483648`, `maximum: 2147483647`
 
       - `output_tokens_details: object { reasoning_tokens }`
 
-        - `reasoning_tokens: number`
+        - `reasoning_tokens: integer`
 
-      - `total_tokens: number`
+          `format: int64`, `minimum: -2147483648`, `maximum: 2147483647`
 
-  - `type: "decision.completed"`
+      - `total_tokens: integer`
+
+        `format: int64`, `minimum: -2147483648`, `maximum: 2147483647`
+
+  - `type: "decision.completed" (default: "decision.completed")`
 
     - `"decision.completed"`
 
@@ -9397,7 +9917,7 @@ Schema name: `LiveDecisionEvent`
 
   The Live-assigned ID of this trigger firing, or null for a delegation.
 
-- `type: "decision.event"`
+- `type: "decision.event" (default: "decision.event")`
 
   - `"decision.event"`
 
@@ -9467,6 +9987,8 @@ Schema name: `LiveDecisionItemCreated`
 
         The text input to the model.
 
+        `maxLength: 10485760`
+
       - `array of InputText { text, type }  or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
         - `InputText object { text, type }`
@@ -9475,7 +9997,9 @@ Schema name: `LiveDecisionItemCreated`
 
             The text input to the model.
 
-          - `type: "input_text"`
+            `maxLength: 10485760`
+
+          - `type: "input_text" (default: "input_text")`
 
             - `"input_text"`
 
@@ -9485,7 +10009,9 @@ Schema name: `LiveDecisionItemCreated`
 
             A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-          - `type: "input_image"`
+            `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+          - `type: "input_image" (default: "input_image")`
 
             - `"input_image"`
 
@@ -9509,17 +10035,17 @@ Schema name: `LiveDecisionItemCreated`
 
             - `array of map[unknown]`
 
-          - `type: "input_json"`
+          - `type: "input_json" (default: "input_json")`
 
             - `"input_json"`
 
-    - `role: "user"`
+    - `role: "user" (default: "user")`
 
       The message role. Always `user`.
 
       - `"user"`
 
-    - `type: optional "message"`
+    - `type: optional "message" (default: "message")`
 
       - `"message"`
 
@@ -9535,21 +10061,25 @@ Schema name: `LiveDecisionItemCreated`
 
         The text input to the model.
 
+        `maxLength: 10485760`
+
       - `array of DecisionInputText`
 
         - `text: string`
 
           The text input to the model.
 
-        - `type: "input_text"`
+          `maxLength: 10485760`
+
+        - `type: "input_text" (default: "input_text")`
 
           - `"input_text"`
 
-    - `role: "developer"`
+    - `role: "developer" (default: "developer")`
 
       - `"developer"`
 
-    - `type: optional "message"`
+    - `type: optional "message" (default: "message")`
 
       - `"message"`
 
@@ -9565,19 +10095,23 @@ Schema name: `LiveDecisionItemCreated`
 
         The text input to the model.
 
+        `maxLength: 10485760`
+
       - `array of DecisionInputText`
 
         - `text: string`
 
           The text input to the model.
 
-        - `type: "input_text"`
+          `maxLength: 10485760`
 
-    - `role: "system"`
+        - `type: "input_text" (default: "input_text")`
+
+    - `role: "system" (default: "system")`
 
       - `"system"`
 
-    - `type: optional "message"`
+    - `type: optional "message" (default: "message")`
 
       - `"message"`
 
@@ -9593,6 +10127,8 @@ Schema name: `LiveDecisionItemCreated`
 
         The text input to the model.
 
+        `maxLength: 10485760`
+
       - `array of OutputText { text, type }  or Refusal { refusal, type }`
 
         - `OutputText object { text, type }`
@@ -9601,7 +10137,9 @@ Schema name: `LiveDecisionItemCreated`
 
             The text content.
 
-          - `type: "output_text"`
+            `maxLength: 10485760`
+
+          - `type: "output_text" (default: "output_text")`
 
             - `"output_text"`
 
@@ -9611,11 +10149,13 @@ Schema name: `LiveDecisionItemCreated`
 
             The refusal text.
 
-          - `type: "refusal"`
+            `maxLength: 10485760`
+
+          - `type: "refusal" (default: "refusal")`
 
             - `"refusal"`
 
-    - `role: "assistant"`
+    - `role: "assistant" (default: "assistant")`
 
       - `"assistant"`
 
@@ -9627,7 +10167,7 @@ Schema name: `LiveDecisionItemCreated`
 
       - `"final_answer"`
 
-    - `type: optional "message"`
+    - `type: optional "message" (default: "message")`
 
       - `"message"`
 
@@ -9643,9 +10183,13 @@ Schema name: `LiveDecisionItemCreated`
 
       The unique ID of the function tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `name: string`
 
-    - `type: "function_call"`
+      `pattern: ^[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+    - `type: "function_call" (default: "function_call")`
 
       The item type. Always `function_call`.
 
@@ -9654,6 +10198,8 @@ Schema name: `LiveDecisionItemCreated`
     - `namespace: optional string or null`
 
       The namespace of the function to call.
+
+      `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -9671,6 +10217,8 @@ Schema name: `LiveDecisionItemCreated`
 
       The unique ID of the function tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `output: string or array of DecisionInputText or InputImage { image_url, type, detail }`
 
       The text input to the model.
@@ -9678,6 +10226,8 @@ Schema name: `LiveDecisionItemCreated`
       - `string`
 
         The text input to the model.
+
+        `maxLength: 10485760`
 
       - `array of DecisionInputText or InputImage { image_url, type, detail }`
 
@@ -9687,7 +10237,9 @@ Schema name: `LiveDecisionItemCreated`
 
             The text input to the model.
 
-          - `type: "input_text"`
+            `maxLength: 10485760`
+
+          - `type: "input_text" (default: "input_text")`
 
         - `InputImage object { image_url, type, detail }`
 
@@ -9695,7 +10247,9 @@ Schema name: `LiveDecisionItemCreated`
 
             A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-          - `type: "input_image"`
+            `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+          - `type: "input_image" (default: "input_image")`
 
             - `"input_image"`
 
@@ -9711,7 +10265,7 @@ Schema name: `LiveDecisionItemCreated`
 
             - `"original"`
 
-    - `type: "function_call_output"`
+    - `type: "function_call_output" (default: "function_call_output")`
 
       The type of the function tool call output. Always `function_call_output`.
 
@@ -9733,6 +10287,8 @@ Schema name: `LiveDecisionItemCreated`
 
       The unique ID of the function tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `input: string`
 
       The input to the custom tool call.
@@ -9741,7 +10297,9 @@ Schema name: `LiveDecisionItemCreated`
 
       The name of the custom tool to call.
 
-    - `type: "custom_tool_call"`
+      `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
+
+    - `type: "custom_tool_call" (default: "custom_tool_call")`
 
       The item type. Always `custom_tool_call`.
 
@@ -9750,6 +10308,8 @@ Schema name: `LiveDecisionItemCreated`
     - `namespace: optional string or null`
 
       The namespace of the function to call.
+
+      `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -9767,6 +10327,8 @@ Schema name: `LiveDecisionItemCreated`
 
       The unique ID of the function tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `output: string or array of DecisionInputText or InputImage { image_url, type, detail }`
 
       The text input to the model.
@@ -9774,6 +10336,8 @@ Schema name: `LiveDecisionItemCreated`
       - `string`
 
         The text input to the model.
+
+        `maxLength: 10485760`
 
       - `array of DecisionInputText or InputImage { image_url, type, detail }`
 
@@ -9785,7 +10349,9 @@ Schema name: `LiveDecisionItemCreated`
 
             A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-          - `type: "input_image"`
+            `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+          - `type: "input_image" (default: "input_image")`
 
             - `"input_image"`
 
@@ -9801,7 +10367,7 @@ Schema name: `LiveDecisionItemCreated`
 
             - `"original"`
 
-    - `type: "custom_tool_call_output"`
+    - `type: "custom_tool_call_output" (default: "custom_tool_call_output")`
 
       - `"custom_tool_call_output"`
 
@@ -9813,7 +10379,7 @@ Schema name: `LiveDecisionItemCreated`
 
       - `"incomplete"`
 
-- `type: "decision.item.created"`
+- `type: "decision.item.created" (default: "decision.item.created")`
 
   - `"decision.item.created"`
 
@@ -9858,7 +10424,7 @@ Schema name: `LiveDecisionItemDeleted`
 
 - `item_id: string`
 
-- `type: "decision.item.deleted"`
+- `type: "decision.item.deleted" (default: "decision.item.deleted")`
 
   - `"decision.item.deleted"`
 
@@ -9895,7 +10461,7 @@ Schema name: `LiveResponseEvent`
 
   The unique ID of the Live server event.
 
-- `type: "response.event"`
+- `type: "response.event" (default: "response.event")`
 
   The event type, always `response.event`.
 
@@ -9942,7 +10508,7 @@ Schema name: `LiveSessionUsageUpdated`
 
   The unique ID of the Live server event.
 
-- `type: "session.usage.updated"`
+- `type: "session.usage.updated" (default: "session.usage.updated")`
 
   The event type, always `session.usage.updated`.
 
@@ -10023,7 +10589,7 @@ Schema name: `LiveSessionClosed`
 
     The unique ID of the Live session. Use this ID for sideband connections, forking, and recording download.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     The Unix timestamp, in seconds, at which the Live session expires.
 
@@ -10033,13 +10599,15 @@ Schema name: `LiveSessionClosed`
 
     - `string`
 
+      `minLength: 1`
+
     - `"gpt-live-1"`
 
       The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
 
       - `"gpt-live-1"`
 
-  - `status: "active"`
+  - `status: "active" (default: "active")`
 
     The status of the session snapshot. Always `active`, including the final snapshot in session.closed; use the event type to determine that the session has closed.
 
@@ -10061,11 +10629,13 @@ Schema name: `LiveSessionClosed`
 
           Audio sample rate in hertz. Live WebSocket PCM audio supports 16000 or 24000 Hz.
 
+          `minimum: 16000`, `maximum: 24000`
+
           - `16000`
 
           - `24000`
 
-        - `type: "audio/pcm"`
+        - `type: "audio/pcm" (default: "audio/pcm")`
 
           The audio encoding. Always `audio/pcm`.
 
@@ -10075,11 +10645,13 @@ Schema name: `LiveSessionClosed`
 
         Raw, mono G.711 μ-law audio for a Live WebSocket connection.
 
-        - `rate: number`
+        - `rate: integer`
 
           Audio sample rate in hertz. G.711 audio uses 8000 Hz.
 
-        - `type: "audio/pcmu"`
+          `minimum: 8000`, `maximum: 8000`
+
+        - `type: "audio/pcmu" (default: "audio/pcmu")`
 
           The audio encoding. Always `audio/pcmu`.
 
@@ -10089,11 +10661,13 @@ Schema name: `LiveSessionClosed`
 
         Raw, mono G.711 A-law audio for a Live WebSocket connection.
 
-        - `rate: number`
+        - `rate: integer`
 
           Audio sample rate in hertz. G.711 audio uses 8000 Hz.
 
-        - `type: "audio/pcma"`
+          `minimum: 8000`, `maximum: 8000`
+
+        - `type: "audio/pcma" (default: "audio/pcma")`
 
           The audio encoding. Always `audio/pcma`.
 
@@ -10179,6 +10753,8 @@ Schema name: `LiveSessionClosed`
 
           - `id: string`
 
+            `minLength: 1`, `maxLength: 128`
+
   - `client: optional ClientConfig`
 
     Startup-only capabilities for an untrusted frontend attached to a unified WebRTC session. Trusted sideband connections are unaffected.
@@ -10197,6 +10773,8 @@ Schema name: `LiveSessionClosed`
 
         - `array of string`
 
+          `maxItems: 256`
+
       - `allowed_server_events: optional "all" or array of ServerEventSelector`
 
         Server events that may be sent to the frontend data channel. Use 'all' to allow every server event; an empty array allows none. Omission preserves the existing allow-all behavior. Responses events use an object with type 'response.event' and a response_event selector.
@@ -10207,13 +10785,19 @@ Schema name: `LiveSessionClosed`
 
         - `array of ServerEventSelector`
 
+          `maxItems: 256`
+
           - `type: string`
 
             The outer Live server event type. Use 'response.event' for Responses events.
 
+            `minLength: 1`, `maxLength: 256`
+
           - `response_event: optional string`
 
             The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
+
+            `minLength: 1`, `maxLength: 256`
 
   - `delegation: optional ClientDelegation or Responses { responses, type, acknowledgement_delay_ms }  or Decisions { decisions, type, acknowledgement_delay_ms }  or null`
 
@@ -10223,15 +10807,17 @@ Schema name: `LiveSessionClosed`
 
       Delegate tasks to your application. The Live session emits delegation events that your backend handles.
 
-      - `type: "client"`
+      - `type: "client" (default: "client")`
 
         The delegation owner. Always `client` for tasks handled by your application.
 
         - `"client"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400 for Decisions sessions and 0 (request immediately) for other sessions. Omission in a session update preserves the current value. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
     - `Responses object { responses, type, acknowledgement_delay_ms }`
 
@@ -10249,9 +10835,11 @@ Schema name: `LiveSessionClosed`
 
           Instructions for the delegated Responses model, separate from Live instructions. See [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
 
-        - `max_output_tokens: optional number or null`
+        - `max_output_tokens: optional integer or null`
 
           Maximum number of output tokens for each delegated response.
+
+          `minimum: 16`
 
         - `parallel_tool_calls: optional boolean or null`
 
@@ -10335,7 +10923,7 @@ Schema name: `LiveSessionClosed`
 
               The name of the function tool to call.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The tool to call. Always `function`.
 
@@ -10347,7 +10935,7 @@ Schema name: `LiveSessionClosed`
 
               The label of the MCP server to call.
 
-            - `type: "mcp"`
+            - `type: "mcp" (default: "mcp")`
 
               The tool to call. Always `mcp`.
 
@@ -10359,7 +10947,7 @@ Schema name: `LiveSessionClosed`
 
           - `FileSearch object { type }`
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The tool to call. Always `file_search`.
 
@@ -10367,7 +10955,7 @@ Schema name: `LiveSessionClosed`
 
           - `WebSearch object { type }`
 
-            - `type: "web_search"`
+            - `type: "web_search" (default: "web_search")`
 
               The tool to call. Always `web_search`.
 
@@ -10375,7 +10963,7 @@ Schema name: `LiveSessionClosed`
 
           - `WebSearchPreview object { type }`
 
-            - `type: "web_search_preview"`
+            - `type: "web_search_preview" (default: "web_search_preview")`
 
               The tool to call. Always `web_search_preview`.
 
@@ -10383,7 +10971,7 @@ Schema name: `LiveSessionClosed`
 
           - `ImageGeneration object { type }`
 
-            - `type: "image_generation"`
+            - `type: "image_generation" (default: "image_generation")`
 
               The tool to call. Always `image_generation`.
 
@@ -10391,7 +10979,7 @@ Schema name: `LiveSessionClosed`
 
           - `Computer object { type }`
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The tool to call. Always `computer`.
 
@@ -10399,7 +10987,7 @@ Schema name: `LiveSessionClosed`
 
           - `CodeInterpreter object { type }`
 
-            - `type: "code_interpreter"`
+            - `type: "code_interpreter" (default: "code_interpreter")`
 
               The tool to call. Always `code_interpreter`.
 
@@ -10407,7 +10995,7 @@ Schema name: `LiveSessionClosed`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The tool to call. Always `programmatic_tool_calling`.
 
@@ -10417,7 +11005,7 @@ Schema name: `LiveSessionClosed`
 
             Forces the model to call the shell tool when a tool call is required.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The tool to call. Always `shell`.
 
@@ -10429,7 +11017,7 @@ Schema name: `LiveSessionClosed`
 
               The name of the custom tool to call.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The tool to call. Always `custom`.
 
@@ -10439,7 +11027,7 @@ Schema name: `LiveSessionClosed`
 
             Forces the model to call the apply_patch tool when executing a tool call.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The tool to call. Always `apply_patch`.
 
@@ -10451,13 +11039,15 @@ Schema name: `LiveSessionClosed`
 
               The tools that the delegated Responses model may call.
 
+              `minItems: 1`, `maxItems: 128`
+
               - `Function object { name, type }`
 
                 - `name: string`
 
                   The name of the function tool to call.
 
-                - `type: "function"`
+                - `type: "function" (default: "function")`
 
                   The tool to call. Always `function`.
 
@@ -10469,7 +11059,7 @@ Schema name: `LiveSessionClosed`
 
                   The label of the MCP server to call.
 
-                - `type: "mcp"`
+                - `type: "mcp" (default: "mcp")`
 
                   The tool to call. Always `mcp`.
 
@@ -10481,7 +11071,7 @@ Schema name: `LiveSessionClosed`
 
               - `FileSearch object { type }`
 
-                - `type: "file_search"`
+                - `type: "file_search" (default: "file_search")`
 
                   The tool to call. Always `file_search`.
 
@@ -10489,7 +11079,7 @@ Schema name: `LiveSessionClosed`
 
               - `WebSearch object { type }`
 
-                - `type: "web_search"`
+                - `type: "web_search" (default: "web_search")`
 
                   The tool to call. Always `web_search`.
 
@@ -10497,7 +11087,7 @@ Schema name: `LiveSessionClosed`
 
               - `WebSearchPreview object { type }`
 
-                - `type: "web_search_preview"`
+                - `type: "web_search_preview" (default: "web_search_preview")`
 
                   The tool to call. Always `web_search_preview`.
 
@@ -10505,7 +11095,7 @@ Schema name: `LiveSessionClosed`
 
               - `ImageGeneration object { type }`
 
-                - `type: "image_generation"`
+                - `type: "image_generation" (default: "image_generation")`
 
                   The tool to call. Always `image_generation`.
 
@@ -10513,7 +11103,7 @@ Schema name: `LiveSessionClosed`
 
               - `Computer object { type }`
 
-                - `type: "computer"`
+                - `type: "computer" (default: "computer")`
 
                   The tool to call. Always `computer`.
 
@@ -10521,7 +11111,7 @@ Schema name: `LiveSessionClosed`
 
               - `CodeInterpreter object { type }`
 
-                - `type: "code_interpreter"`
+                - `type: "code_interpreter" (default: "code_interpreter")`
 
                   The tool to call. Always `code_interpreter`.
 
@@ -10529,7 +11119,7 @@ Schema name: `LiveSessionClosed`
 
               - `ProgrammaticToolCalling object { type }`
 
-                - `type: "programmatic_tool_calling"`
+                - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
                   The tool to call. Always `programmatic_tool_calling`.
 
@@ -10539,7 +11129,7 @@ Schema name: `LiveSessionClosed`
 
                 Forces the model to call the shell tool when a tool call is required.
 
-                - `type: "shell"`
+                - `type: "shell" (default: "shell")`
 
                   The tool to call. Always `shell`.
 
@@ -10551,7 +11141,7 @@ Schema name: `LiveSessionClosed`
 
                   The name of the custom tool to call.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The tool to call. Always `custom`.
 
@@ -10561,13 +11151,13 @@ Schema name: `LiveSessionClosed`
 
                 Forces the model to call the apply_patch tool when executing a tool call.
 
-                - `type: "apply_patch"`
+                - `type: "apply_patch" (default: "apply_patch")`
 
                   The tool to call. Always `apply_patch`.
 
                   - `"apply_patch"`
 
-            - `type: "allowed_tools"`
+            - `type: "allowed_tools" (default: "allowed_tools")`
 
               The tool choice type. Always `allowed_tools`.
 
@@ -10595,7 +11185,7 @@ Schema name: `LiveSessionClosed`
 
               The name the delegated Responses model uses when calling this function.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The tool type. Always `function`.
 
@@ -10617,7 +11207,7 @@ Schema name: `LiveSessionClosed`
 
             A web search tool available to the Live session’s Responses backend.
 
-            - `type: "web_search"`
+            - `type: "web_search" (default: "web_search")`
 
               The tool type. Always `web_search`.
 
@@ -10625,13 +11215,13 @@ Schema name: `LiveSessionClosed`
 
           - `FileSearch object { type }`
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               - `"file_search"`
 
           - `CodeInterpreter object { type }`
 
-            - `type: "code_interpreter"`
+            - `type: "code_interpreter" (default: "code_interpreter")`
 
               - `"code_interpreter"`
 
@@ -10639,7 +11229,7 @@ Schema name: `LiveSessionClosed`
 
             A Responses shell tool. Use a hosted container or return local shell results with response.item.create. Domain secrets are not supported.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               - `"shell"`
 
@@ -10647,7 +11237,7 @@ Schema name: `LiveSessionClosed`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -10656,6 +11246,8 @@ Schema name: `LiveSessionClosed`
                 - `file_ids: optional array of string or null`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -10675,7 +11267,7 @@ Schema name: `LiveSessionClosed`
 
                   - `Disabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -10687,7 +11279,9 @@ Schema name: `LiveSessionClosed`
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -10697,13 +11291,17 @@ Schema name: `LiveSessionClosed`
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -10731,19 +11329,21 @@ Schema name: `LiveSessionClosed`
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -10755,7 +11355,7 @@ Schema name: `LiveSessionClosed`
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -10763,7 +11363,7 @@ Schema name: `LiveSessionClosed`
 
               - `Local object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -10772,6 +11372,8 @@ Schema name: `LiveSessionClosed`
                 - `skills: optional array of object { description, name, path }  or null`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -10787,61 +11389,63 @@ Schema name: `LiveSessionClosed`
 
           - `ImageGeneration object { type }`
 
-            - `type: "image_generation"`
+            - `type: "image_generation" (default: "image_generation")`
 
               - `"image_generation"`
 
           - `Mcp object { type }`
 
-            - `type: "mcp"`
+            - `type: "mcp" (default: "mcp")`
 
               - `"mcp"`
 
           - `Custom object { type }`
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               - `"custom"`
 
           - `Namespace object { type }`
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               - `"namespace"`
 
           - `ToolSearch object { type }`
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               - `"tool_search"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               - `"programmatic_tool_calling"`
 
           - `Computer object { type }`
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               - `"computer"`
 
           - `ApplyPatch object { type }`
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               - `"apply_patch"`
 
-      - `type: "responses"`
+      - `type: "responses" (default: "responses")`
 
         The delegation owner. Always `responses` for tasks handled by the Responses API.
 
         - `"responses"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400 for Decisions sessions and 0 (request immediately) for other sessions. Omission in a session update preserves the current value. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
     - `Decisions object { decisions, type, acknowledgement_delay_ms }`
 
@@ -10849,13 +11453,19 @@ Schema name: `LiveSessionClosed`
 
         - `model: string`
 
+          `minLength: 1`
+
         - `questions: array of DecisionQuestion`
 
           Native Decision API questions evaluated together, in order.
 
+          `minItems: 1`, `maxItems: 64`
+
           - `Choice object { choices, instructions, type, name }`
 
             - `choices: array of DecisionChoiceOption`
+
+              `minItems: 2`, `maxItems: 255`
 
               - `value: string or boolean`
 
@@ -10871,13 +11481,17 @@ Schema name: `LiveSessionClosed`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                   - `text: string`
 
                     The text input to the model.
 
-                  - `type: "input_text"`
+                    `maxLength: 10485760`
+
+                  - `type: "input_text" (default: "input_text")`
 
                     - `"input_text"`
 
@@ -10887,7 +11501,9 @@ Schema name: `LiveSessionClosed`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -10911,11 +11527,11 @@ Schema name: `LiveSessionClosed`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
-            - `type: "choice"`
+            - `type: "choice" (default: "choice")`
 
               - `"choice"`
 
@@ -10929,6 +11545,8 @@ Schema name: `LiveSessionClosed`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                 - `InputImage object { image_url, type, detail }`
@@ -10937,7 +11555,9 @@ Schema name: `LiveSessionClosed`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -10961,11 +11581,11 @@ Schema name: `LiveSessionClosed`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
-            - `type: "predicate"`
+            - `type: "predicate" (default: "predicate")`
 
               - `"predicate"`
 
@@ -10979,6 +11599,8 @@ Schema name: `LiveSessionClosed`
 
               - `array of DecisionInputText or InputImage { image_url, type, detail }  or InputJSON { data, type }`
 
+                `minItems: 1`
+
                 - `DecisionInputText object { text, type }`
 
                 - `InputImage object { image_url, type, detail }`
@@ -10987,7 +11609,9 @@ Schema name: `LiveSessionClosed`
 
                     A base64-encoded image data URL or a publicly accessible HTTP(S) image URL.
 
-                  - `type: "input_image"`
+                    `pattern: ^(data:|https?://)`, `maxLength: 20971520`
+
+                  - `type: "input_image" (default: "input_image")`
 
                     - `"input_image"`
 
@@ -11011,33 +11635,39 @@ Schema name: `LiveSessionClosed`
 
                     - `array of map[unknown]`
 
-                  - `type: "input_json"`
+                  - `type: "input_json" (default: "input_json")`
 
                     - `"input_json"`
 
             - `levels: array of object { label, description }`
 
+              `minItems: 2`, `maxItems: 10`
+
               - `label: string`
 
               - `description: optional string`
 
-            - `type: "score"`
+            - `type: "score" (default: "score")`
 
               - `"score"`
 
             - `name: optional string`
 
-      - `type: "decisions"`
+      - `type: "decisions" (default: "decisions")`
 
         - `"decisions"`
 
-      - `acknowledgement_delay_ms: optional number`
+      - `acknowledgement_delay_ms: optional integer`
 
         Milliseconds to wait before requesting an automatic spoken acknowledgement for a delegation. The model may still speak before this delay. Any commentary or thinking appended to the session cancels all pending acknowledgements, including those for other delegations. Defaults to 400. Updates apply to subsequent delegations.
+
+        `minimum: 0`, `maximum: 800`
 
   - `input: optional array of InitialItem`
 
     Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and a configured rendered-token limit (8,192 by default).
+
+    `maxItems: 128`
 
     - `Developer object { content, role, id, 2 more }`
 
@@ -11047,17 +11677,19 @@ Schema name: `LiveSessionClosed`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
+        `minItems: 1`, `maxItems: 1`
+
         - `text: string`
 
           The message text to include in the Live session’s initial conversation history.
 
-        - `type: optional "input_text"`
+        - `type: optional "input_text" (default: "input_text")`
 
           The text content type. Always `input_text`.
 
           - `"input_text"`
 
-      - `role: "developer"`
+      - `role: "developer" (default: "developer")`
 
         The author of this history message. Always `developer`.
 
@@ -11075,7 +11707,7 @@ Schema name: `LiveSessionClosed`
 
         - `"completed"`
 
-      - `type: optional "message"`
+      - `type: optional "message" (default: "message")`
 
         The history item type. Always `message`.
 
@@ -11089,17 +11721,19 @@ Schema name: `LiveSessionClosed`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
+        `minItems: 1`, `maxItems: 1`
+
         - `text: string`
 
           The message text to include in the Live session’s initial conversation history.
 
-        - `type: optional "input_text"`
+        - `type: optional "input_text" (default: "input_text")`
 
           The text content type. Always `input_text`.
 
           - `"input_text"`
 
-      - `role: "user"`
+      - `role: "user" (default: "user")`
 
         The author of this history message. Always `user`.
 
@@ -11117,7 +11751,7 @@ Schema name: `LiveSessionClosed`
 
         - `"completed"`
 
-      - `type: optional "message"`
+      - `type: optional "message" (default: "message")`
 
         The history item type. Always `message`.
 
@@ -11131,6 +11765,8 @@ Schema name: `LiveSessionClosed`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
+        `minItems: 1`, `maxItems: 1`
+
         - `Text object { text, type }`
 
           Assistant text supplied as conversation history when starting a Live session.
@@ -11139,7 +11775,7 @@ Schema name: `LiveSessionClosed`
 
             The message text to include in the Live session’s initial conversation history.
 
-          - `type: optional "text"`
+          - `type: optional "text" (default: "text")`
 
             The text content type. Always `text`.
 
@@ -11153,13 +11789,13 @@ Schema name: `LiveSessionClosed`
 
             The message text to include in the Live session’s initial conversation history.
 
-          - `type: "output_text"`
+          - `type: "output_text" (default: "output_text")`
 
             The text content type. Always `output_text`.
 
             - `"output_text"`
 
-      - `role: "assistant"`
+      - `role: "assistant" (default: "assistant")`
 
         The author of this history message. Always `assistant`.
 
@@ -11177,7 +11813,7 @@ Schema name: `LiveSessionClosed`
 
         - `"completed"`
 
-      - `type: optional "message"`
+      - `type: optional "message" (default: "message")`
 
         The history item type. Always `message`.
 
@@ -11195,6 +11831,8 @@ Schema name: `LiveSessionClosed`
 
     At most one Decisions trigger per transcript event type. Triggers run independently of delegation. On update, omit triggers to keep the current configuration, send a list to replace it, or send an empty list to disable triggers.
 
+    `maxItems: 2`
+
     - `decisions: object { questions }`
 
       Questions evaluated using the current transcript and the session's shared Decision items.
@@ -11202,6 +11840,8 @@ Schema name: `LiveSessionClosed`
       - `questions: array of DecisionQuestion`
 
         Native Decision API questions evaluated together, in order.
+
+        `minItems: 1`, `maxItems: 64`
 
         - `Choice object { choices, instructions, type, name }`
 
@@ -11215,11 +11855,11 @@ Schema name: `LiveSessionClosed`
 
       - `"session.output_transcript.delta"`
 
-    - `type: "decisions"`
+    - `type: "decisions" (default: "decisions")`
 
       - `"decisions"`
 
-- `type: "session.closed"`
+- `type: "session.closed" (default: "session.closed")`
 
   The event type, always `session.closed`.
 
@@ -11309,7 +11949,7 @@ Schema name: `LiveErrorEvent`
 
   The unique ID of the Live server event.
 
-- `type: "error"`
+- `type: "error" (default: "error")`
 
   The event type, always `error`.
 
@@ -11357,7 +11997,7 @@ Schema name: `LiveInfoEvent`
 
   A human-readable explanation of the Live session notice.
 
-- `type: "info"`
+- `type: "info" (default: "info")`
 
   The event type, always `info`.
 
@@ -11392,7 +12032,7 @@ Schema name: `LiveInputAudioAppend`
 
   Base64-encoded raw mono PCM16LE at 24 kHz received from the primary transport, reflected to the sideband before model-input muting. This server event uses the same audio key as the client command, but is not an acknowledgment of it.
 
-- `type: "session.input_audio.append"`
+- `type: "session.input_audio.append" (default: "session.input_audio.append")`
 
   The event type, always `session.input_audio.append`.
 
@@ -11419,9 +12059,11 @@ Schema name: `LiveTransportDTMFReceived`
 
 - `event: string`
 
+  `pattern: ^[0-9A-D*#]$`, `minLength: 1`, `maxLength: 1`
+
 - `event_id: string`
 
-- `type: "transport.dtmf.received"`
+- `type: "transport.dtmf.received" (default: "transport.dtmf.received")`
 
   - `"transport.dtmf.received"`
 
@@ -11435,23 +12077,25 @@ Schema name: `LiveTransportDTMFReceived`
 }
 ```
 
-<a id="transport.dtmf.send"></a>
+<a id="transport.dtmf.sent"></a>
 
-### transport.dtmf.send
+### transport.dtmf.sent
 
 A SIP DTMF keypress successfully sent to the SIP trunk. Delivered only to sideband observers; this is not a client command.
 
 #### Schema
 
-Schema name: `LiveTransportDTMFSend`
+Schema name: `LiveTransportDTMFSent`
 
 - `event: string`
 
+  `pattern: ^[0-9A-D*#]$`, `minLength: 1`, `maxLength: 1`
+
 - `event_id: string`
 
-- `type: "transport.dtmf.send"`
+- `type: "transport.dtmf.sent" (default: "transport.dtmf.sent")`
 
-  - `"transport.dtmf.send"`
+  - `"transport.dtmf.sent"`
 
 - `client_event_id: optional string`
 
@@ -11461,7 +12105,7 @@ Schema name: `LiveTransportDTMFSend`
 
 ```json
 {
-  "type": "transport.dtmf.send",
+  "type": "transport.dtmf.sent",
   "event_id": "event_dtmf_2",
   "event": "#"
 }

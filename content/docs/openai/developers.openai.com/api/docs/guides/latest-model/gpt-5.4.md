@@ -167,7 +167,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.4",
-  reasoning: { effort: :minimal },
+  reasoning: { effort: :none },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)

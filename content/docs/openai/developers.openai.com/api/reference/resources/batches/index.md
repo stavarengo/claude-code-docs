@@ -20,9 +20,11 @@ Cancels an in-progress batch. The batch will be in status `cancelling` for up to
 
     The time frame within which the batch should be processed.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the batch was created.
+
+    `format: unixtime`
 
   - `endpoint: string`
 
@@ -58,17 +60,23 @@ Cancels an in-progress batch. The batch will be in status `cancelling` for up to
 
     - `"cancelled"`
 
-  - `cancelled_at: optional number or null`
+  - `cancelled_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch was cancelled.
 
-  - `cancelling_at: optional number or null`
+    `format: unixtime`
+
+  - `cancelling_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started cancelling.
 
-  - `completed_at: optional number or null`
+    `format: unixtime`
+
+  - `completed_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch was completed.
+
+    `format: unixtime`
 
   - `error_file_id: optional string or null`
 
@@ -82,7 +90,7 @@ Cancels an in-progress batch. The batch will be in status `cancelling` for up to
 
         An error code identifying the error type.
 
-      - `line: optional number or null`
+      - `line: optional integer or null`
 
         The line number of the input file where the error occurred, if applicable.
 
@@ -98,25 +106,35 @@ Cancels an in-progress batch. The batch will be in status `cancelling` for up to
 
       The object type, which is always `list`.
 
-  - `expired_at: optional number or null`
+  - `expired_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch expired.
 
-  - `expires_at: optional number or null`
+    `format: unixtime`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch will expire.
 
-  - `failed_at: optional number or null`
+    `format: unixtime`
+
+  - `failed_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch failed.
 
-  - `finalizing_at: optional number or null`
+    `format: unixtime`
+
+  - `finalizing_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started finalizing.
 
-  - `in_progress_at: optional number or null`
+    `format: unixtime`
+
+  - `in_progress_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started processing.
+
+    `format: unixtime`
 
   - `metadata: optional Metadata or null`
 
@@ -142,15 +160,15 @@ Cancels an in-progress batch. The batch will be in status `cancelling` for up to
 
     The request counts for different statuses within the batch.
 
-    - `completed: number`
+    - `completed: integer`
 
       Number of requests that have been completed successfully.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of requests that have failed.
 
-    - `total: number`
+    - `total: integer`
 
       Total number of requests in the batch.
 
@@ -160,7 +178,7 @@ Cancels an in-progress batch. The batch will be in status `cancelling` for up to
     breakdown of output tokens, and the total tokens used. Only populated on
     batches created after September 7, 2025.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -168,12 +186,12 @@ Cancels an in-progress batch. The batch will be in status `cancelling` for up to
 
       A detailed breakdown of the input tokens.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache. [More on
         prompt caching](/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -181,11 +199,11 @@ Cancels an in-progress batch. The batch will be in status `cancelling` for up to
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -197,7 +215,7 @@ curl https://api.openai.com/v1/batches/$BATCH_ID/cancel \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -261,7 +279,7 @@ curl https://api.openai.com/v1/batches/batch_abc123/cancel \
   -X POST
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -356,9 +374,11 @@ Creates and executes a batch from an uploaded file of requests
 
     - `"created_at"`
 
-  - `seconds: number`
+  - `seconds: integer`
 
     The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
+
+    `format: int64`, `minimum: 3600`, `maximum: 2592000`
 
 ### Returns
 
@@ -370,9 +390,11 @@ Creates and executes a batch from an uploaded file of requests
 
     The time frame within which the batch should be processed.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the batch was created.
+
+    `format: unixtime`
 
   - `endpoint: string`
 
@@ -408,17 +430,23 @@ Creates and executes a batch from an uploaded file of requests
 
     - `"cancelled"`
 
-  - `cancelled_at: optional number or null`
+  - `cancelled_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch was cancelled.
 
-  - `cancelling_at: optional number or null`
+    `format: unixtime`
+
+  - `cancelling_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started cancelling.
 
-  - `completed_at: optional number or null`
+    `format: unixtime`
+
+  - `completed_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch was completed.
+
+    `format: unixtime`
 
   - `error_file_id: optional string or null`
 
@@ -432,7 +460,7 @@ Creates and executes a batch from an uploaded file of requests
 
         An error code identifying the error type.
 
-      - `line: optional number or null`
+      - `line: optional integer or null`
 
         The line number of the input file where the error occurred, if applicable.
 
@@ -448,25 +476,35 @@ Creates and executes a batch from an uploaded file of requests
 
       The object type, which is always `list`.
 
-  - `expired_at: optional number or null`
+  - `expired_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch expired.
 
-  - `expires_at: optional number or null`
+    `format: unixtime`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch will expire.
 
-  - `failed_at: optional number or null`
+    `format: unixtime`
+
+  - `failed_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch failed.
 
-  - `finalizing_at: optional number or null`
+    `format: unixtime`
+
+  - `finalizing_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started finalizing.
 
-  - `in_progress_at: optional number or null`
+    `format: unixtime`
+
+  - `in_progress_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started processing.
+
+    `format: unixtime`
 
   - `metadata: optional Metadata or null`
 
@@ -492,15 +530,15 @@ Creates and executes a batch from an uploaded file of requests
 
     The request counts for different statuses within the batch.
 
-    - `completed: number`
+    - `completed: integer`
 
       Number of requests that have been completed successfully.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of requests that have failed.
 
-    - `total: number`
+    - `total: integer`
 
       Total number of requests in the batch.
 
@@ -510,7 +548,7 @@ Creates and executes a batch from an uploaded file of requests
     breakdown of output tokens, and the total tokens used. Only populated on
     batches created after September 7, 2025.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -518,12 +556,12 @@ Creates and executes a batch from an uploaded file of requests
 
       A detailed breakdown of the input tokens.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache. [More on
         prompt caching](/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -531,11 +569,11 @@ Creates and executes a batch from an uploaded file of requests
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -552,7 +590,7 @@ curl https://api.openai.com/v1/batches \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -620,7 +658,7 @@ curl https://api.openai.com/v1/batches \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -666,7 +704,7 @@ List your organization's batches.
 
   A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
 
@@ -680,9 +718,11 @@ List your organization's batches.
 
     The time frame within which the batch should be processed.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the batch was created.
+
+    `format: unixtime`
 
   - `endpoint: string`
 
@@ -718,17 +758,23 @@ List your organization's batches.
 
     - `"cancelled"`
 
-  - `cancelled_at: optional number or null`
+  - `cancelled_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch was cancelled.
 
-  - `cancelling_at: optional number or null`
+    `format: unixtime`
+
+  - `cancelling_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started cancelling.
 
-  - `completed_at: optional number or null`
+    `format: unixtime`
+
+  - `completed_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch was completed.
+
+    `format: unixtime`
 
   - `error_file_id: optional string or null`
 
@@ -742,7 +788,7 @@ List your organization's batches.
 
         An error code identifying the error type.
 
-      - `line: optional number or null`
+      - `line: optional integer or null`
 
         The line number of the input file where the error occurred, if applicable.
 
@@ -758,25 +804,35 @@ List your organization's batches.
 
       The object type, which is always `list`.
 
-  - `expired_at: optional number or null`
+  - `expired_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch expired.
 
-  - `expires_at: optional number or null`
+    `format: unixtime`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch will expire.
 
-  - `failed_at: optional number or null`
+    `format: unixtime`
+
+  - `failed_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch failed.
 
-  - `finalizing_at: optional number or null`
+    `format: unixtime`
+
+  - `finalizing_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started finalizing.
 
-  - `in_progress_at: optional number or null`
+    `format: unixtime`
+
+  - `in_progress_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started processing.
+
+    `format: unixtime`
 
   - `metadata: optional Metadata or null`
 
@@ -802,15 +858,15 @@ List your organization's batches.
 
     The request counts for different statuses within the batch.
 
-    - `completed: number`
+    - `completed: integer`
 
       Number of requests that have been completed successfully.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of requests that have failed.
 
-    - `total: number`
+    - `total: integer`
 
       Total number of requests in the batch.
 
@@ -820,7 +876,7 @@ List your organization's batches.
     breakdown of output tokens, and the total tokens used. Only populated on
     batches created after September 7, 2025.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -828,12 +884,12 @@ List your organization's batches.
 
       A detailed breakdown of the input tokens.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache. [More on
         prompt caching](/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -841,11 +897,11 @@ List your organization's batches.
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -866,7 +922,7 @@ curl https://api.openai.com/v1/batches \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -937,7 +993,7 @@ curl https://api.openai.com/v1/batches?limit=2 \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -999,9 +1055,11 @@ Retrieves a batch.
 
     The time frame within which the batch should be processed.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the batch was created.
+
+    `format: unixtime`
 
   - `endpoint: string`
 
@@ -1037,17 +1095,23 @@ Retrieves a batch.
 
     - `"cancelled"`
 
-  - `cancelled_at: optional number or null`
+  - `cancelled_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch was cancelled.
 
-  - `cancelling_at: optional number or null`
+    `format: unixtime`
+
+  - `cancelling_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started cancelling.
 
-  - `completed_at: optional number or null`
+    `format: unixtime`
+
+  - `completed_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch was completed.
+
+    `format: unixtime`
 
   - `error_file_id: optional string or null`
 
@@ -1061,7 +1125,7 @@ Retrieves a batch.
 
         An error code identifying the error type.
 
-      - `line: optional number or null`
+      - `line: optional integer or null`
 
         The line number of the input file where the error occurred, if applicable.
 
@@ -1077,25 +1141,35 @@ Retrieves a batch.
 
       The object type, which is always `list`.
 
-  - `expired_at: optional number or null`
+  - `expired_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch expired.
 
-  - `expires_at: optional number or null`
+    `format: unixtime`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch will expire.
 
-  - `failed_at: optional number or null`
+    `format: unixtime`
+
+  - `failed_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch failed.
 
-  - `finalizing_at: optional number or null`
+    `format: unixtime`
+
+  - `finalizing_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started finalizing.
 
-  - `in_progress_at: optional number or null`
+    `format: unixtime`
+
+  - `in_progress_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started processing.
+
+    `format: unixtime`
 
   - `metadata: optional Metadata or null`
 
@@ -1121,15 +1195,15 @@ Retrieves a batch.
 
     The request counts for different statuses within the batch.
 
-    - `completed: number`
+    - `completed: integer`
 
       Number of requests that have been completed successfully.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of requests that have failed.
 
-    - `total: number`
+    - `total: integer`
 
       Total number of requests in the batch.
 
@@ -1139,7 +1213,7 @@ Retrieves a batch.
     breakdown of output tokens, and the total tokens used. Only populated on
     batches created after September 7, 2025.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -1147,12 +1221,12 @@ Retrieves a batch.
 
       A detailed breakdown of the input tokens.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache. [More on
         prompt caching](/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -1160,11 +1234,11 @@ Retrieves a batch.
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -1175,7 +1249,7 @@ curl https://api.openai.com/v1/batches/$BATCH_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1238,7 +1312,7 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
   -H "Content-Type: application/json" \
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1284,9 +1358,11 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
     The time frame within which the batch should be processed.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the batch was created.
+
+    `format: unixtime`
 
   - `endpoint: string`
 
@@ -1322,17 +1398,23 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
     - `"cancelled"`
 
-  - `cancelled_at: optional number or null`
+  - `cancelled_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch was cancelled.
 
-  - `cancelling_at: optional number or null`
+    `format: unixtime`
+
+  - `cancelling_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started cancelling.
 
-  - `completed_at: optional number or null`
+    `format: unixtime`
+
+  - `completed_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch was completed.
+
+    `format: unixtime`
 
   - `error_file_id: optional string or null`
 
@@ -1346,7 +1428,7 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
         An error code identifying the error type.
 
-      - `line: optional number or null`
+      - `line: optional integer or null`
 
         The line number of the input file where the error occurred, if applicable.
 
@@ -1362,25 +1444,35 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
       The object type, which is always `list`.
 
-  - `expired_at: optional number or null`
+  - `expired_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch expired.
 
-  - `expires_at: optional number or null`
+    `format: unixtime`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch will expire.
 
-  - `failed_at: optional number or null`
+    `format: unixtime`
+
+  - `failed_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch failed.
 
-  - `finalizing_at: optional number or null`
+    `format: unixtime`
+
+  - `finalizing_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started finalizing.
 
-  - `in_progress_at: optional number or null`
+    `format: unixtime`
+
+  - `in_progress_at: optional integer or null`
 
     The Unix timestamp (in seconds) for when the batch started processing.
+
+    `format: unixtime`
 
   - `metadata: optional Metadata or null`
 
@@ -1406,15 +1498,15 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
     The request counts for different statuses within the batch.
 
-    - `completed: number`
+    - `completed: integer`
 
       Number of requests that have been completed successfully.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of requests that have failed.
 
-    - `total: number`
+    - `total: integer`
 
       Total number of requests in the batch.
 
@@ -1424,7 +1516,7 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
     breakdown of output tokens, and the total tokens used. Only populated on
     batches created after September 7, 2025.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -1432,12 +1524,12 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
       A detailed breakdown of the input tokens.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache. [More on
         prompt caching](/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -1445,11 +1537,11 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -1461,7 +1553,7 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
     An error code identifying the error type.
 
-  - `line: optional number or null`
+  - `line: optional integer or null`
 
     The line number of the input file where the error occurred, if applicable.
 
@@ -1479,15 +1571,15 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
   The request counts for different statuses within the batch.
 
-  - `completed: number`
+  - `completed: integer`
 
     Number of requests that have been completed successfully.
 
-  - `failed: number`
+  - `failed: integer`
 
     Number of requests that have failed.
 
-  - `total: number`
+  - `total: integer`
 
     Total number of requests in the batch.
 
@@ -1499,7 +1591,7 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
   breakdown of output tokens, and the total tokens used. Only populated on
   batches created after September 7, 2025.
 
-  - `input_tokens: number`
+  - `input_tokens: integer`
 
     The number of input tokens.
 
@@ -1507,12 +1599,12 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
     A detailed breakdown of the input tokens.
 
-    - `cached_tokens: number`
+    - `cached_tokens: integer`
 
       The number of tokens that were retrieved from the cache. [More on
       prompt caching](/api/docs/guides/prompt-caching).
 
-  - `output_tokens: number`
+  - `output_tokens: integer`
 
     The number of output tokens.
 
@@ -1520,10 +1612,10 @@ curl https://api.openai.com/v1/batches/batch_abc123 \
 
     A detailed breakdown of the output tokens.
 
-    - `reasoning_tokens: number`
+    - `reasoning_tokens: integer`
 
       The number of reasoning tokens.
 
-  - `total_tokens: number`
+  - `total_tokens: integer`
 
     The total number of tokens used.

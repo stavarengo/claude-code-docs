@@ -12,6 +12,8 @@ Create a conversation.
 
   Initial items to include in the conversation context. You may add up to 20 items at a time.
 
+  `maxItems: 20`
+
   - `EasyInputMessage object { content, role, phase, type }`
 
     A message input to the model with a role indicating instruction following
@@ -42,7 +44,7 @@ Create a conversation.
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -52,7 +54,7 @@ Create a conversation.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -82,7 +84,7 @@ Create a conversation.
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -96,11 +98,13 @@ Create a conversation.
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -118,7 +122,7 @@ Create a conversation.
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -146,6 +150,8 @@ Create a conversation.
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -154,7 +160,7 @@ Create a conversation.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -267,11 +273,11 @@ Create a conversation.
 
               The filename of the file cited.
 
-            - `index: number`
+            - `index: integer`
 
               The index in the output text at which to insert the file citation.
 
-            - `type: "file_citation"`
+            - `type: "file_citation" (default: "file_citation")`
 
               The type of the file citation. Always `file_citation`.
 
@@ -281,11 +287,11 @@ Create a conversation.
 
             A citation for a web resource used to generate a model response.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the URL citation in the message.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the URL citation in the message.
 
@@ -293,7 +299,7 @@ Create a conversation.
 
               The title of the web resource.
 
-            - `type: "url_citation"`
+            - `type: "url_citation" (default: "url_citation")`
 
               The type of the URL citation. Always `url_citation`.
 
@@ -303,6 +309,8 @@ Create a conversation.
 
               The URL of the web resource.
 
+              `format: uri`
+
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
             A citation for a container file used to generate a model response.
@@ -311,7 +319,7 @@ Create a conversation.
 
               The ID of the container file.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the container file citation in the message.
 
@@ -323,11 +331,11 @@ Create a conversation.
 
               The filename of the container file cited.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the container file citation in the message.
 
-            - `type: "container_file_citation"`
+            - `type: "container_file_citation" (default: "container_file_citation")`
 
               The type of the container file citation. Always `container_file_citation`.
 
@@ -341,7 +349,7 @@ Create a conversation.
 
               The ID of the file.
 
-            - `index: number`
+            - `index: integer`
 
               The index of the file in the list of files.
 
@@ -371,7 +379,7 @@ Create a conversation.
 
           The text output from the model.
 
-        - `type: "output_text"`
+        - `type: "output_text" (default: "output_text")`
 
           The type of the output text. Always `output_text`.
 
@@ -385,7 +393,7 @@ Create a conversation.
 
           The refusal explanation from the model.
 
-        - `type: "refusal"`
+        - `type: "refusal" (default: "refusal")`
 
           The type of the refusal. Always `refusal`.
 
@@ -472,6 +480,8 @@ Create a conversation.
 
         - `string`
 
+          `maxLength: 512`
+
         - `number`
 
         - `boolean`
@@ -487,6 +497,8 @@ Create a conversation.
       - `score: optional number`
 
         The relevance score of the file - a value between 0 and 1.
+
+        `format: float`
 
       - `text: optional string`
 
@@ -532,7 +544,7 @@ Create a conversation.
 
       - `"incomplete"`
 
-    - `type: "computer_call"`
+    - `type: "computer_call" (default: "computer_call")`
 
       The type of the computer call. Always `computer_call`.
 
@@ -560,17 +572,17 @@ Create a conversation.
 
           - `"forward"`
 
-        - `type: "click"`
+        - `type: "click" (default: "click")`
 
           Specifies the event type. For a click action, this property is always `click`.
 
           - `"click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the click occurred.
 
@@ -586,17 +598,17 @@ Create a conversation.
 
           The keys being held while double-clicking.
 
-        - `type: "double_click"`
+        - `type: "double_click" (default: "double_click")`
 
           Specifies the event type. For a double click action, this property is always set to `double_click`.
 
           - `"double_click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the double click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the double click occurred.
 
@@ -615,15 +627,15 @@ Create a conversation.
           ]
           ```
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate.
 
-        - `type: "drag"`
+        - `type: "drag" (default: "drag")`
 
           Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -641,7 +653,7 @@ Create a conversation.
 
           The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-        - `type: "keypress"`
+        - `type: "keypress" (default: "keypress")`
 
           Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -651,17 +663,17 @@ Create a conversation.
 
         A mouse move action.
 
-        - `type: "move"`
+        - `type: "move" (default: "move")`
 
           Specifies the event type. For a move action, this property is always set to `move`.
 
           - `"move"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate to move to.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate to move to.
 
@@ -673,7 +685,7 @@ Create a conversation.
 
         A screenshot action.
 
-        - `type: "screenshot"`
+        - `type: "screenshot" (default: "screenshot")`
 
           Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -683,25 +695,25 @@ Create a conversation.
 
         A scroll action.
 
-        - `scroll_x: number`
+        - `scroll_x: integer`
 
           The horizontal scroll distance.
 
-        - `scroll_y: number`
+        - `scroll_y: integer`
 
           The vertical scroll distance.
 
-        - `type: "scroll"`
+        - `type: "scroll" (default: "scroll")`
 
           Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
           - `"scroll"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the scroll occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the scroll occurred.
 
@@ -717,7 +729,7 @@ Create a conversation.
 
           The text to type.
 
-        - `type: "type"`
+        - `type: "type" (default: "type")`
 
           Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -727,7 +739,7 @@ Create a conversation.
 
         A wait action.
 
-        - `type: "wait"`
+        - `type: "wait" (default: "wait")`
 
           Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -782,11 +794,13 @@ Create a conversation.
 
       The ID of the computer tool call that produced the output.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `output: ResponseComputerToolCallOutputScreenshot`
 
       A computer screenshot image used with the computer use tool.
 
-      - `type: "computer_screenshot"`
+      - `type: "computer_screenshot" (default: "computer_screenshot")`
 
         Specifies the event type. For a computer screenshot, this property is
         always set to `computer_screenshot`.
@@ -801,7 +815,9 @@ Create a conversation.
 
         The URL of the screenshot image.
 
-    - `type: "computer_call_output"`
+        `format: uri`
+
+    - `type: "computer_call_output" (default: "computer_call_output")`
 
       The type of the computer tool call output. Always `computer_call_output`.
 
@@ -903,6 +919,8 @@ Create a conversation.
 
             The URL of the source.
 
+            `format: uri`
+
       - `OpenPage object { type, url }`
 
         Action type "open_page" - Opens a specific URL from search results.
@@ -916,6 +934,8 @@ Create a conversation.
         - `url: optional string or null`
 
           The URL opened by the model.
+
+          `format: uri`
 
       - `FindInPage object { pattern, type, url }`
 
@@ -934,6 +954,8 @@ Create a conversation.
         - `url: optional string or null`
 
           The URL of the page searched for the pattern, when available.
+
+          `format: uri`
 
   - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -972,7 +994,7 @@ Create a conversation.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -982,7 +1004,7 @@ Create a conversation.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -1013,6 +1035,8 @@ Create a conversation.
 
         A JSON string of the output of the function tool call.
 
+        `maxLength: 10485760`
+
       - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
         An array of content outputs (text, image, file) for the function tool call.
@@ -1025,7 +1049,9 @@ Create a conversation.
 
             The text input to the model.
 
-          - `type: "input_text"`
+            `maxLength: 10485760`
+
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -1035,7 +1061,7 @@ Create a conversation.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -1053,7 +1079,7 @@ Create a conversation.
 
           An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision)
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -1071,11 +1097,13 @@ Create a conversation.
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `maxLength: 20971520`, `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -1093,7 +1121,7 @@ Create a conversation.
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -1113,6 +1141,8 @@ Create a conversation.
 
             The base64-encoded data of the file to be sent to the model.
 
+            `maxLength: 73400320`
+
           - `file_id: optional string or null`
 
             The ID of the file to be sent to the model.
@@ -1120,6 +1150,8 @@ Create a conversation.
           - `file_url: optional string or null`
 
             The URL of the file to be sent to the model.
+
+            `format: uri`
 
           - `filename: optional string or null`
 
@@ -1129,7 +1161,7 @@ Create a conversation.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -1143,7 +1175,7 @@ Create a conversation.
 
               - `"12h"`
 
-    - `type: "function_call_output"`
+    - `type: "function_call_output" (default: "function_call_output")`
 
       The type of the function tool call output. Always `function_call_output`.
 
@@ -1157,13 +1189,15 @@ Create a conversation.
 
       The unique ID of the function tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -1175,7 +1209,9 @@ Create a conversation.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -1185,9 +1221,13 @@ Create a conversation.
 
       The name of the tool that produced the output.
 
+      `minLength: 1`, `maxLength: 128`
+
     - `namespace: optional string or null`
 
       The namespace of the tool that produced the output.
+
+      `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -1205,7 +1245,7 @@ Create a conversation.
 
       The arguments supplied to the tool search call.
 
-    - `type: "tool_search_call"`
+    - `type: "tool_search_call" (default: "tool_search_call")`
 
       The item type. Always `tool_search_call`.
 
@@ -1218,6 +1258,8 @@ Create a conversation.
     - `call_id: optional string or null`
 
       The unique ID of the tool search call generated by the model.
+
+      `minLength: 1`, `maxLength: 64`
 
     - `execution: optional "server" or "client"`
 
@@ -1259,7 +1301,7 @@ Create a conversation.
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -1291,7 +1333,7 @@ Create a conversation.
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -1313,7 +1355,7 @@ Create a conversation.
 
               The key to compare against the value.
 
-            - `type: "eq" or "ne" or "gt" or 5 more`
+            - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
               Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -1382,7 +1424,7 @@ Create a conversation.
 
               - `"or"`
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -1418,7 +1460,7 @@ Create a conversation.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -1428,11 +1470,11 @@ Create a conversation.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -1450,7 +1492,7 @@ Create a conversation.
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -1461,7 +1503,7 @@ Create a conversation.
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -1469,7 +1511,7 @@ Create a conversation.
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -1477,14 +1519,14 @@ Create a conversation.
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -1516,7 +1558,7 @@ Create a conversation.
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -1540,6 +1582,8 @@ Create a conversation.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -1619,7 +1663,7 @@ Create a conversation.
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -1676,10 +1720,14 @@ Create a conversation.
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -1699,7 +1747,7 @@ Create a conversation.
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -1708,6 +1756,8 @@ Create a conversation.
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -1727,7 +1777,7 @@ Create a conversation.
 
               - `ContainerNetworkPolicyDisabled object { type }`
 
-                - `type: "disabled"`
+                - `type: "disabled" (default: "disabled")`
 
                   Disable outbound network access. Always `disabled`.
 
@@ -1739,7 +1789,9 @@ Create a conversation.
 
                   A list of allowed domains when type is `allowlist`.
 
-                - `type: "allowlist"`
+                  `minItems: 1`
+
+                - `type: "allowlist" (default: "allowlist")`
 
                   Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -1749,17 +1801,25 @@ Create a conversation.
 
                   Optional domain-scoped secrets for allowlisted domains.
 
+                  `minItems: 1`
+
                   - `domain: string`
 
                     The domain associated with the secret.
+
+                    `minLength: 1`
 
                   - `name: string`
 
                     The name of the secret to inject for the domain.
 
+                    `minLength: 1`
+
                   - `value: string`
 
                     The secret value to inject for the domain.
+
+                    `minLength: 1`, `maxLength: 10485760`
 
         - `type: "code_interpreter"`
 
@@ -1771,13 +1831,15 @@ Create a conversation.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -1803,7 +1865,7 @@ Create a conversation.
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -1884,7 +1946,7 @@ Create a conversation.
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -1892,11 +1954,13 @@ Create a conversation.
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -1907,11 +1971,13 @@ Create a conversation.
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -1930,7 +1996,7 @@ Create a conversation.
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -1952,7 +2018,7 @@ Create a conversation.
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -1962,7 +2028,7 @@ Create a conversation.
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -1972,6 +2038,8 @@ Create a conversation.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
@@ -1980,7 +2048,7 @@ Create a conversation.
 
           - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-            - `type: "container_auto"`
+            - `type: "container_auto" (default: "container_auto")`
 
               Automatically creates a container for this request
 
@@ -1989,6 +2057,8 @@ Create a conversation.
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -2014,13 +2084,17 @@ Create a conversation.
 
               An optional list of skills referenced by id or inline data.
 
+              `maxItems: 200`
+
               - `SkillReference object { skill_id, type, version }`
 
                 - `skill_id: string`
 
                   The ID of the referenced skill.
 
-                - `type: "skill_reference"`
+                  `minLength: 1`, `maxLength: 64`
+
+                - `type: "skill_reference" (default: "skill_reference")`
 
                   References a skill created with the /v1/skills endpoint.
 
@@ -2048,19 +2122,21 @@ Create a conversation.
 
                     Base64-encoded skill zip bundle.
 
-                  - `media_type: "application/zip"`
+                    `minLength: 1`, `maxLength: 70254592`
+
+                  - `media_type: "application/zip" (default: "application/zip")`
 
                     The media type of the inline skill payload. Must be `application/zip`.
 
                     - `"application/zip"`
 
-                  - `type: "base64"`
+                  - `type: "base64" (default: "base64")`
 
                     The type of the inline skill source. Must be `base64`.
 
                     - `"base64"`
 
-                - `type: "inline"`
+                - `type: "inline" (default: "inline")`
 
                   Defines an inline skill for this request.
 
@@ -2068,7 +2144,7 @@ Create a conversation.
 
           - `LocalEnvironment object { type, skills }`
 
-            - `type: "local"`
+            - `type: "local" (default: "local")`
 
               Use a local computer environment.
 
@@ -2077,6 +2153,8 @@ Create a conversation.
             - `skills: optional array of LocalSkill`
 
               An optional list of skills.
+
+              `maxItems: 200`
 
               - `description: string`
 
@@ -2096,7 +2174,7 @@ Create a conversation.
 
               The ID of the referenced container.
 
-            - `type: "container_reference"`
+            - `type: "container_reference" (default: "container_reference")`
 
               References a container created with the /v1/containers endpoint
 
@@ -2110,7 +2188,7 @@ Create a conversation.
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -2119,6 +2197,8 @@ Create a conversation.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -2144,7 +2224,7 @@ Create a conversation.
 
             Unconstrained free-form text.
 
-            - `type: "text"`
+            - `type: "text" (default: "text")`
 
               Unconstrained text format. Always `text`.
 
@@ -2166,7 +2246,7 @@ Create a conversation.
 
               - `"regex"`
 
-            - `type: "grammar"`
+            - `type: "grammar" (default: "grammar")`
 
               Grammar format. Always `grammar`.
 
@@ -2184,9 +2264,13 @@ Create a conversation.
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools loaded inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
@@ -2194,13 +2278,17 @@ Create a conversation.
 
               The name of the loaded function tool.
 
-            - `type: "function"`
+              `pattern: ^(?![\s\S]*[\r\n])[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -2234,7 +2322,7 @@ Create a conversation.
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -2243,6 +2331,8 @@ Create a conversation.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -2264,7 +2354,7 @@ Create a conversation.
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -2274,7 +2364,7 @@ Create a conversation.
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -2300,7 +2390,7 @@ Create a conversation.
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -2328,7 +2418,7 @@ Create a conversation.
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -2354,7 +2444,7 @@ Create a conversation.
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -2364,11 +2454,13 @@ Create a conversation.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "tool_search_output"`
+    - `type: "tool_search_output" (default: "tool_search_output")`
 
       The item type. Always `tool_search_output`.
 
@@ -2381,6 +2473,8 @@ Create a conversation.
     - `call_id: optional string or null`
 
       The unique ID of the tool search call generated by the model.
+
+      `minLength: 1`, `maxLength: 64`
 
     - `execution: optional "server" or "client"`
 
@@ -2402,7 +2496,7 @@ Create a conversation.
 
   - `AdditionalTools object { role, tools, type, id }`
 
-    - `role: "developer"`
+    - `role: "developer" (default: "developer")`
 
       The role that provided the additional tools. Only `developer` is supported.
 
@@ -2428,7 +2522,7 @@ Create a conversation.
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -2460,7 +2554,7 @@ Create a conversation.
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -2482,7 +2576,7 @@ Create a conversation.
 
             Combine multiple filters using `and` or `or`.
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -2518,7 +2612,7 @@ Create a conversation.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -2528,11 +2622,11 @@ Create a conversation.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -2550,7 +2644,7 @@ Create a conversation.
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -2561,7 +2655,7 @@ Create a conversation.
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -2569,7 +2663,7 @@ Create a conversation.
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -2577,14 +2671,14 @@ Create a conversation.
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -2616,7 +2710,7 @@ Create a conversation.
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -2640,6 +2734,8 @@ Create a conversation.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -2719,7 +2815,7 @@ Create a conversation.
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -2776,10 +2872,14 @@ Create a conversation.
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -2799,7 +2899,7 @@ Create a conversation.
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -2808,6 +2908,8 @@ Create a conversation.
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -2839,13 +2941,15 @@ Create a conversation.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -2871,7 +2975,7 @@ Create a conversation.
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -2952,7 +3056,7 @@ Create a conversation.
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -2960,11 +3064,13 @@ Create a conversation.
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -2975,11 +3081,13 @@ Create a conversation.
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -2998,7 +3106,7 @@ Create a conversation.
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -3020,7 +3128,7 @@ Create a conversation.
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -3030,7 +3138,7 @@ Create a conversation.
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -3039,6 +3147,8 @@ Create a conversation.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -3060,7 +3170,7 @@ Create a conversation.
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -3069,6 +3179,8 @@ Create a conversation.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -3102,21 +3214,29 @@ Create a conversation.
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-            - `type: "function"`
+              `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -3150,7 +3270,7 @@ Create a conversation.
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -3159,6 +3279,8 @@ Create a conversation.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -3180,7 +3302,7 @@ Create a conversation.
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -3190,7 +3312,7 @@ Create a conversation.
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -3216,7 +3338,7 @@ Create a conversation.
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -3244,7 +3366,7 @@ Create a conversation.
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -3270,7 +3392,7 @@ Create a conversation.
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -3280,11 +3402,13 @@ Create a conversation.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "additional_tools"`
+    - `type: "additional_tools" (default: "additional_tools")`
 
       The item type. Always `additional_tools`.
 
@@ -3300,7 +3424,7 @@ Create a conversation.
     remains in effect for subsequent responses until it is replaced by another
     configuration update.
 
-    - `type: "configuration_update"`
+    - `type: "configuration_update" (default: "configuration_update")`
 
       The item type. Always `configuration_update`.
 
@@ -3314,7 +3438,7 @@ Create a conversation.
 
       Updates to reasoning configuration. Only effort is supported.
 
-      - `effort: optional ReasoningEffort or null`
+      - `effort: optional ReasoningEffort or null (default: "medium")`
 
         The reasoning effort to use for subsequent responses until another
         configuration update replaces it.
@@ -3352,7 +3476,7 @@ Create a conversation.
 
         A summary of the reasoning output from the model so far.
 
-      - `type: "summary_text"`
+      - `type: "summary_text" (default: "summary_text")`
 
         The type of the object. Always `summary_text`.
 
@@ -3372,7 +3496,7 @@ Create a conversation.
 
         The reasoning text from the model.
 
-      - `type: "reasoning_text"`
+      - `type: "reasoning_text" (default: "reasoning_text")`
 
         The type of the reasoning text. Always `reasoning_text`.
 
@@ -3409,7 +3533,9 @@ Create a conversation.
 
       The encrypted content of the compaction summary.
 
-    - `type: "compaction"`
+      `maxLength: 104857600`
+
+    - `type: "compaction" (default: "compaction")`
 
       The type of the item. Always `compaction`.
 
@@ -3582,7 +3708,7 @@ Create a conversation.
 
           The logs output from the code interpreter.
 
-        - `type: "logs"`
+        - `type: "logs" (default: "logs")`
 
           The type of the output. Always `logs`.
 
@@ -3592,7 +3718,7 @@ Create a conversation.
 
         The image output from the code interpreter.
 
-        - `type: "image"`
+        - `type: "image" (default: "image")`
 
           The type of the output. Always `image`.
 
@@ -3601,6 +3727,8 @@ Create a conversation.
         - `url: string`
 
           The URL of the image output from the code interpreter.
+
+          `format: uri`
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -3616,7 +3744,7 @@ Create a conversation.
 
       - `"failed"`
 
-    - `type: "code_interpreter_call"`
+    - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
       The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -3642,13 +3770,13 @@ Create a conversation.
 
         Environment variables to set for the command.
 
-      - `type: "exec"`
+      - `type: "exec" (default: "exec")`
 
         The type of the local shell action. Always `exec`.
 
         - `"exec"`
 
-      - `timeout_ms: optional number or null`
+      - `timeout_ms: optional integer or null`
 
         Optional timeout in milliseconds for the command.
 
@@ -3720,11 +3848,11 @@ Create a conversation.
 
         Ordered shell commands for the execution environment to run.
 
-      - `max_output_length: optional number or null`
+      - `max_output_length: optional integer or null`
 
         Maximum number of UTF-8 characters to capture from combined stdout and stderr output.
 
-      - `timeout_ms: optional number or null`
+      - `timeout_ms: optional integer or null`
 
         Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
@@ -3732,7 +3860,9 @@ Create a conversation.
 
       The unique ID of the shell tool call generated by the model.
 
-    - `type: "shell_call"`
+      `minLength: 1`, `maxLength: 64`
+
+    - `type: "shell_call" (default: "shell_call")`
 
       The type of the item. Always `shell_call`.
 
@@ -3748,7 +3878,7 @@ Create a conversation.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -3760,7 +3890,9 @@ Create a conversation.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -3792,6 +3924,8 @@ Create a conversation.
 
       The unique ID of the shell tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `output: array of ResponseFunctionShellCallOutputContent`
 
       Captured chunks of stdout and stderr output, along with their associated outcomes.
@@ -3804,7 +3938,7 @@ Create a conversation.
 
           Indicates that the shell call exceeded its configured time limit.
 
-          - `type: "timeout"`
+          - `type: "timeout" (default: "timeout")`
 
             The outcome type. Always `timeout`.
 
@@ -3814,11 +3948,11 @@ Create a conversation.
 
           Indicates that the shell commands finished and returned an exit code.
 
-          - `exit_code: number`
+          - `exit_code: integer`
 
             The exit code returned by the shell process.
 
-          - `type: "exit"`
+          - `type: "exit" (default: "exit")`
 
             The outcome type. Always `exit`.
 
@@ -3828,11 +3962,15 @@ Create a conversation.
 
         Captured stderr output for the shell call.
 
+        `maxLength: 10485760`
+
       - `stdout: string`
 
         Captured stdout output for the shell call.
 
-    - `type: "shell_call_output"`
+        `maxLength: 10485760`
+
+    - `type: "shell_call_output" (default: "shell_call_output")`
 
       The type of the item. Always `shell_call_output`.
 
@@ -3848,7 +3986,7 @@ Create a conversation.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -3860,13 +3998,15 @@ Create a conversation.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
           - `"program"`
 
-    - `max_output_length: optional number or null`
+    - `max_output_length: optional integer or null`
 
       The maximum number of UTF-8 characters captured for this shell call's combined output.
 
@@ -3888,6 +4028,8 @@ Create a conversation.
 
       The unique ID of the apply patch tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
       The specific create, delete, or update instruction for the apply_patch tool call.
@@ -3900,11 +4042,15 @@ Create a conversation.
 
           Unified diff content to apply when creating the file.
 
+          `maxLength: 10485760`
+
         - `path: string`
 
           Path of the file to create relative to the workspace root.
 
-        - `type: "create_file"`
+          `minLength: 1`
+
+        - `type: "create_file" (default: "create_file")`
 
           The operation type. Always `create_file`.
 
@@ -3918,7 +4064,9 @@ Create a conversation.
 
           Path of the file to delete relative to the workspace root.
 
-        - `type: "delete_file"`
+          `minLength: 1`
+
+        - `type: "delete_file" (default: "delete_file")`
 
           The operation type. Always `delete_file`.
 
@@ -3932,11 +4080,15 @@ Create a conversation.
 
           Unified diff content to apply to the existing file.
 
+          `maxLength: 10485760`
+
         - `path: string`
 
           Path of the file to update relative to the workspace root.
 
-        - `type: "update_file"`
+          `minLength: 1`
+
+        - `type: "update_file" (default: "update_file")`
 
           The operation type. Always `update_file`.
 
@@ -3950,7 +4102,7 @@ Create a conversation.
 
       - `"completed"`
 
-    - `type: "apply_patch_call"`
+    - `type: "apply_patch_call" (default: "apply_patch_call")`
 
       The type of the item. Always `apply_patch_call`.
 
@@ -3966,7 +4118,7 @@ Create a conversation.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -3978,7 +4130,9 @@ Create a conversation.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -3992,6 +4146,8 @@ Create a conversation.
 
       The unique ID of the apply patch tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `status: "completed" or "failed"`
 
       The status of the apply patch tool call output. One of `completed` or `failed`.
@@ -4000,7 +4156,7 @@ Create a conversation.
 
       - `"failed"`
 
-    - `type: "apply_patch_call_output"`
+    - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
       The type of the item. Always `apply_patch_call_output`.
 
@@ -4016,7 +4172,7 @@ Create a conversation.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -4028,7 +4184,9 @@ Create a conversation.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -4037,6 +4195,8 @@ Create a conversation.
     - `output: optional string or null`
 
       Optional human-readable log text from the apply patch tool (e.g., patch results or errors).
+
+      `maxLength: 10485760`
 
   - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -4169,11 +4329,11 @@ Create a conversation.
 
       - `McpProtocolError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "mcp_protocol_error"`
+        - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
           - `"mcp_protocol_error"`
 
@@ -4181,17 +4341,17 @@ Create a conversation.
 
         - `content: unknown`
 
-        - `type: "mcp_tool_execution_error"`
+        - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
           - `"mcp_tool_execution_error"`
 
       - `HTTPError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "http_error"`
+        - `type: "http_error" (default: "http_error")`
 
           - `"http_error"`
 
@@ -4262,7 +4422,7 @@ Create a conversation.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -4274,7 +4434,9 @@ Create a conversation.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -4316,7 +4478,7 @@ Create a conversation.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -4326,7 +4488,7 @@ Create a conversation.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -4338,7 +4500,7 @@ Create a conversation.
 
     Compacts the current context. Must be the final input item.
 
-    - `type: "compaction_trigger"`
+    - `type: "compaction_trigger" (default: "compaction_trigger")`
 
       The type of the item. Always `compaction_trigger`.
 
@@ -4356,7 +4518,7 @@ Create a conversation.
 
       The ID of the item to reference.
 
-    - `type: optional "item_reference" or null`
+    - `type: optional "item_reference" or null (default: "item_reference")`
 
       The type of item to reference. Always `item_reference`.
 
@@ -4372,15 +4534,21 @@ Create a conversation.
 
       The stable call ID of the program item.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `code: string`
 
       The JavaScript source executed by programmatic tool calling.
+
+      `maxLength: 10485760`
 
     - `fingerprint: string`
 
       Opaque program replay fingerprint that must be round-tripped.
 
-    - `type: "program"`
+      `maxLength: 10485760`
+
+    - `type: "program" (default: "program")`
 
       The item type. Always `program`.
 
@@ -4396,9 +4564,13 @@ Create a conversation.
 
       The call ID of the program item.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `result: string`
 
       The result produced by the program item.
+
+      `maxLength: 10485760`
 
     - `status: "completed" or "incomplete"`
 
@@ -4408,7 +4580,7 @@ Create a conversation.
 
       - `"incomplete"`
 
-    - `type: "program_output"`
+    - `type: "program_output" (default: "program_output")`
 
       The item type. Always `program_output`.
 
@@ -4431,16 +4603,18 @@ Create a conversation.
 
     The unique ID of the conversation.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The time at which the conversation was created, measured in seconds since the Unix epoch.
+
+    `format: unixtime`
 
   - `metadata: map[string]`
 
     Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
     Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
 
-  - `object: "conversation"`
+  - `object: "conversation" (default: "conversation")`
 
     The object type, which is always `conversation`.
 
@@ -4454,7 +4628,7 @@ curl https://api.openai.com/v1/conversations \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -4485,7 +4659,7 @@ curl https://api.openai.com/v1/conversations \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -4514,7 +4688,7 @@ Delete a conversation. Items in the conversation will not be deleted.
 
   - `deleted: boolean`
 
-  - `object: "conversation.deleted"`
+  - `object: "conversation.deleted" (default: "conversation.deleted")`
 
     - `"conversation.deleted"`
 
@@ -4526,7 +4700,7 @@ curl https://api.openai.com/v1/conversations/$CONVERSATION_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -4543,7 +4717,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -4571,16 +4745,18 @@ Get a conversation
 
     The unique ID of the conversation.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The time at which the conversation was created, measured in seconds since the Unix epoch.
+
+    `format: unixtime`
 
   - `metadata: map[string]`
 
     Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
     Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
 
-  - `object: "conversation"`
+  - `object: "conversation" (default: "conversation")`
 
     The object type, which is always `conversation`.
 
@@ -4593,7 +4769,7 @@ curl https://api.openai.com/v1/conversations/$CONVERSATION_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -4613,7 +4789,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -4649,16 +4825,18 @@ Update a conversation
 
     The unique ID of the conversation.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The time at which the conversation was created, measured in seconds since the Unix epoch.
+
+    `format: unixtime`
 
   - `metadata: map[string]`
 
     Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
     Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
 
-  - `object: "conversation"`
+  - `object: "conversation" (default: "conversation")`
 
     The object type, which is always `conversation`.
 
@@ -4677,7 +4855,7 @@ curl https://api.openai.com/v1/conversations/$CONVERSATION_ID \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -4701,7 +4879,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -4740,7 +4918,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     The URL of the screenshot image.
 
-  - `type: "computer_screenshot"`
+    `format: uri`
+
+  - `type: "computer_screenshot" (default: "computer_screenshot")`
 
     Specifies the event type. For a computer screenshot, this property is always set to `computer_screenshot`.
 
@@ -4750,7 +4930,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-    - `mode: "explicit"`
+    - `mode: "explicit" (default: "explicit")`
 
       The breakpoint mode. Always `explicit`.
 
@@ -4772,16 +4952,18 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     The unique ID of the conversation.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The time at which the conversation was created, measured in seconds since the Unix epoch.
+
+    `format: unixtime`
 
   - `metadata: map[string]`
 
     Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
     Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
 
-  - `object: "conversation"`
+  - `object: "conversation" (default: "conversation")`
 
     The object type, which is always `conversation`.
 
@@ -4795,7 +4977,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `deleted: boolean`
 
-  - `object: "conversation.deleted"`
+  - `object: "conversation.deleted" (default: "conversation.deleted")`
 
     - `"conversation.deleted"`
 
@@ -4807,7 +4989,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `deleted: boolean`
 
-  - `object: "conversation.deleted"`
+  - `object: "conversation.deleted" (default: "conversation.deleted")`
 
     - `"conversation.deleted"`
 
@@ -4833,7 +5015,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         The text input to the model.
 
-      - `type: "input_text"`
+      - `type: "input_text" (default: "input_text")`
 
         The type of the input item. Always `input_text`.
 
@@ -4843,7 +5025,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -4877,11 +5059,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             The filename of the file cited.
 
-          - `index: number`
+          - `index: integer`
 
             The index in the output text at which to insert the file citation.
 
-          - `type: "file_citation"`
+          - `type: "file_citation" (default: "file_citation")`
 
             The type of the file citation. Always `file_citation`.
 
@@ -4891,11 +5073,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
           A citation for a web resource used to generate a model response.
 
-          - `end_index: number`
+          - `end_index: integer`
 
             The index of the last character of the URL citation in the message.
 
-          - `start_index: number`
+          - `start_index: integer`
 
             The index of the first character of the URL citation in the message.
 
@@ -4903,7 +5085,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             The title of the web resource.
 
-          - `type: "url_citation"`
+          - `type: "url_citation" (default: "url_citation")`
 
             The type of the URL citation. Always `url_citation`.
 
@@ -4913,6 +5095,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             The URL of the web resource.
 
+            `format: uri`
+
         - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
           A citation for a container file used to generate a model response.
@@ -4921,7 +5105,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             The ID of the container file.
 
-          - `end_index: number`
+          - `end_index: integer`
 
             The index of the last character of the container file citation in the message.
 
@@ -4933,11 +5117,11 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             The filename of the container file cited.
 
-          - `start_index: number`
+          - `start_index: integer`
 
             The index of the first character of the container file citation in the message.
 
-          - `type: "container_file_citation"`
+          - `type: "container_file_citation" (default: "container_file_citation")`
 
             The type of the container file citation. Always `container_file_citation`.
 
@@ -4951,7 +5135,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
             The ID of the file.
 
-          - `index: number`
+          - `index: integer`
 
             The index of the file in the list of files.
 
@@ -4981,7 +5165,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         The text output from the model.
 
-      - `type: "output_text"`
+      - `type: "output_text" (default: "output_text")`
 
         The type of the output text. Always `output_text`.
 
@@ -4993,7 +5177,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       - `text: string`
 
-      - `type: "text"`
+      - `type: "text" (default: "text")`
 
         - `"text"`
 
@@ -5005,7 +5189,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         A summary of the reasoning output from the model so far.
 
-      - `type: "summary_text"`
+      - `type: "summary_text" (default: "summary_text")`
 
         The type of the object. Always `summary_text`.
 
@@ -5019,7 +5203,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         The reasoning text from the model.
 
-      - `type: "reasoning_text"`
+      - `type: "reasoning_text" (default: "reasoning_text")`
 
         The type of the reasoning text. Always `reasoning_text`.
 
@@ -5033,7 +5217,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         The refusal explanation from the model.
 
-      - `type: "refusal"`
+      - `type: "refusal" (default: "refusal")`
 
         The type of the refusal. Always `refusal`.
 
@@ -5055,7 +5239,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         - `"original"`
 
-      - `type: "input_image"`
+      - `type: "input_image" (default: "input_image")`
 
         The type of the input item. Always `input_image`.
 
@@ -5069,11 +5253,13 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+        `format: uri`
+
       - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -5103,7 +5289,9 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         The URL of the screenshot image.
 
-      - `type: "computer_screenshot"`
+        `format: uri`
+
+      - `type: "computer_screenshot" (default: "computer_screenshot")`
 
         Specifies the event type. For a computer screenshot, this property is always set to `computer_screenshot`.
 
@@ -5113,7 +5301,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -5131,7 +5319,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
       A file input to the model.
 
-      - `type: "input_file"`
+      - `type: "input_file" (default: "input_file")`
 
         The type of the input item. Always `input_file`.
 
@@ -5159,6 +5347,8 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         The URL of the file to be sent to the model.
 
+        `format: uri`
+
       - `filename: optional string`
 
         The name of the file to be sent to the model.
@@ -5167,7 +5357,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
         Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-        - `mode: "explicit"`
+        - `mode: "explicit" (default: "explicit")`
 
           The breakpoint mode. Always `explicit`.
 
@@ -5211,7 +5401,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     - `"incomplete"`
 
-  - `type: "message"`
+  - `type: "message" (default: "message")`
 
     The type of the message. Always set to `message`.
 
@@ -5235,7 +5425,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     A summary of the reasoning output from the model so far.
 
-  - `type: "summary_text"`
+  - `type: "summary_text" (default: "summary_text")`
 
     The type of the object. Always `summary_text`.
 
@@ -5249,7 +5439,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
   - `text: string`
 
-  - `type: "text"`
+  - `type: "text" (default: "text")`
 
     - `"text"`
 
@@ -5294,6 +5484,8 @@ Create items in a conversation with the given ID.
 
   The items to add to the conversation. You may add up to 20 items at a time.
 
+  `maxItems: 20`
+
   - `EasyInputMessage object { content, role, phase, type }`
 
     A message input to the model with a role indicating instruction following
@@ -5324,7 +5516,7 @@ Create items in a conversation with the given ID.
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -5334,7 +5526,7 @@ Create items in a conversation with the given ID.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -5364,7 +5556,7 @@ Create items in a conversation with the given ID.
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -5378,11 +5570,13 @@ Create items in a conversation with the given ID.
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -5400,7 +5594,7 @@ Create items in a conversation with the given ID.
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -5428,6 +5622,8 @@ Create items in a conversation with the given ID.
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -5436,7 +5632,7 @@ Create items in a conversation with the given ID.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -5549,11 +5745,11 @@ Create items in a conversation with the given ID.
 
               The filename of the file cited.
 
-            - `index: number`
+            - `index: integer`
 
               The index in the output text at which to insert the file citation.
 
-            - `type: "file_citation"`
+            - `type: "file_citation" (default: "file_citation")`
 
               The type of the file citation. Always `file_citation`.
 
@@ -5563,11 +5759,11 @@ Create items in a conversation with the given ID.
 
             A citation for a web resource used to generate a model response.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the URL citation in the message.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the URL citation in the message.
 
@@ -5575,7 +5771,7 @@ Create items in a conversation with the given ID.
 
               The title of the web resource.
 
-            - `type: "url_citation"`
+            - `type: "url_citation" (default: "url_citation")`
 
               The type of the URL citation. Always `url_citation`.
 
@@ -5585,6 +5781,8 @@ Create items in a conversation with the given ID.
 
               The URL of the web resource.
 
+              `format: uri`
+
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
             A citation for a container file used to generate a model response.
@@ -5593,7 +5791,7 @@ Create items in a conversation with the given ID.
 
               The ID of the container file.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the container file citation in the message.
 
@@ -5605,11 +5803,11 @@ Create items in a conversation with the given ID.
 
               The filename of the container file cited.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the container file citation in the message.
 
-            - `type: "container_file_citation"`
+            - `type: "container_file_citation" (default: "container_file_citation")`
 
               The type of the container file citation. Always `container_file_citation`.
 
@@ -5623,7 +5821,7 @@ Create items in a conversation with the given ID.
 
               The ID of the file.
 
-            - `index: number`
+            - `index: integer`
 
               The index of the file in the list of files.
 
@@ -5653,7 +5851,7 @@ Create items in a conversation with the given ID.
 
           The text output from the model.
 
-        - `type: "output_text"`
+        - `type: "output_text" (default: "output_text")`
 
           The type of the output text. Always `output_text`.
 
@@ -5667,7 +5865,7 @@ Create items in a conversation with the given ID.
 
           The refusal explanation from the model.
 
-        - `type: "refusal"`
+        - `type: "refusal" (default: "refusal")`
 
           The type of the refusal. Always `refusal`.
 
@@ -5754,6 +5952,8 @@ Create items in a conversation with the given ID.
 
         - `string`
 
+          `maxLength: 512`
+
         - `number`
 
         - `boolean`
@@ -5769,6 +5969,8 @@ Create items in a conversation with the given ID.
       - `score: optional number`
 
         The relevance score of the file - a value between 0 and 1.
+
+        `format: float`
 
       - `text: optional string`
 
@@ -5814,7 +6016,7 @@ Create items in a conversation with the given ID.
 
       - `"incomplete"`
 
-    - `type: "computer_call"`
+    - `type: "computer_call" (default: "computer_call")`
 
       The type of the computer call. Always `computer_call`.
 
@@ -5842,17 +6044,17 @@ Create items in a conversation with the given ID.
 
           - `"forward"`
 
-        - `type: "click"`
+        - `type: "click" (default: "click")`
 
           Specifies the event type. For a click action, this property is always `click`.
 
           - `"click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the click occurred.
 
@@ -5868,17 +6070,17 @@ Create items in a conversation with the given ID.
 
           The keys being held while double-clicking.
 
-        - `type: "double_click"`
+        - `type: "double_click" (default: "double_click")`
 
           Specifies the event type. For a double click action, this property is always set to `double_click`.
 
           - `"double_click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the double click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the double click occurred.
 
@@ -5897,15 +6099,15 @@ Create items in a conversation with the given ID.
           ]
           ```
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate.
 
-        - `type: "drag"`
+        - `type: "drag" (default: "drag")`
 
           Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -5923,7 +6125,7 @@ Create items in a conversation with the given ID.
 
           The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-        - `type: "keypress"`
+        - `type: "keypress" (default: "keypress")`
 
           Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -5933,17 +6135,17 @@ Create items in a conversation with the given ID.
 
         A mouse move action.
 
-        - `type: "move"`
+        - `type: "move" (default: "move")`
 
           Specifies the event type. For a move action, this property is always set to `move`.
 
           - `"move"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate to move to.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate to move to.
 
@@ -5955,7 +6157,7 @@ Create items in a conversation with the given ID.
 
         A screenshot action.
 
-        - `type: "screenshot"`
+        - `type: "screenshot" (default: "screenshot")`
 
           Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -5965,25 +6167,25 @@ Create items in a conversation with the given ID.
 
         A scroll action.
 
-        - `scroll_x: number`
+        - `scroll_x: integer`
 
           The horizontal scroll distance.
 
-        - `scroll_y: number`
+        - `scroll_y: integer`
 
           The vertical scroll distance.
 
-        - `type: "scroll"`
+        - `type: "scroll" (default: "scroll")`
 
           Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
           - `"scroll"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the scroll occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the scroll occurred.
 
@@ -5999,7 +6201,7 @@ Create items in a conversation with the given ID.
 
           The text to type.
 
-        - `type: "type"`
+        - `type: "type" (default: "type")`
 
           Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -6009,7 +6211,7 @@ Create items in a conversation with the given ID.
 
         A wait action.
 
-        - `type: "wait"`
+        - `type: "wait" (default: "wait")`
 
           Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -6064,11 +6266,13 @@ Create items in a conversation with the given ID.
 
       The ID of the computer tool call that produced the output.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `output: ResponseComputerToolCallOutputScreenshot`
 
       A computer screenshot image used with the computer use tool.
 
-      - `type: "computer_screenshot"`
+      - `type: "computer_screenshot" (default: "computer_screenshot")`
 
         Specifies the event type. For a computer screenshot, this property is
         always set to `computer_screenshot`.
@@ -6083,7 +6287,9 @@ Create items in a conversation with the given ID.
 
         The URL of the screenshot image.
 
-    - `type: "computer_call_output"`
+        `format: uri`
+
+    - `type: "computer_call_output" (default: "computer_call_output")`
 
       The type of the computer tool call output. Always `computer_call_output`.
 
@@ -6185,6 +6391,8 @@ Create items in a conversation with the given ID.
 
             The URL of the source.
 
+            `format: uri`
+
       - `OpenPage object { type, url }`
 
         Action type "open_page" - Opens a specific URL from search results.
@@ -6198,6 +6406,8 @@ Create items in a conversation with the given ID.
         - `url: optional string or null`
 
           The URL opened by the model.
+
+          `format: uri`
 
       - `FindInPage object { pattern, type, url }`
 
@@ -6216,6 +6426,8 @@ Create items in a conversation with the given ID.
         - `url: optional string or null`
 
           The URL of the page searched for the pattern, when available.
+
+          `format: uri`
 
   - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -6254,7 +6466,7 @@ Create items in a conversation with the given ID.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -6264,7 +6476,7 @@ Create items in a conversation with the given ID.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -6295,6 +6507,8 @@ Create items in a conversation with the given ID.
 
         A JSON string of the output of the function tool call.
 
+        `maxLength: 10485760`
+
       - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
         An array of content outputs (text, image, file) for the function tool call.
@@ -6307,7 +6521,9 @@ Create items in a conversation with the given ID.
 
             The text input to the model.
 
-          - `type: "input_text"`
+            `maxLength: 10485760`
+
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -6317,7 +6533,7 @@ Create items in a conversation with the given ID.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -6335,7 +6551,7 @@ Create items in a conversation with the given ID.
 
           An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision)
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -6353,11 +6569,13 @@ Create items in a conversation with the given ID.
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `maxLength: 20971520`, `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -6375,7 +6593,7 @@ Create items in a conversation with the given ID.
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -6395,6 +6613,8 @@ Create items in a conversation with the given ID.
 
             The base64-encoded data of the file to be sent to the model.
 
+            `maxLength: 73400320`
+
           - `file_id: optional string or null`
 
             The ID of the file to be sent to the model.
@@ -6402,6 +6622,8 @@ Create items in a conversation with the given ID.
           - `file_url: optional string or null`
 
             The URL of the file to be sent to the model.
+
+            `format: uri`
 
           - `filename: optional string or null`
 
@@ -6411,7 +6633,7 @@ Create items in a conversation with the given ID.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -6425,7 +6647,7 @@ Create items in a conversation with the given ID.
 
               - `"12h"`
 
-    - `type: "function_call_output"`
+    - `type: "function_call_output" (default: "function_call_output")`
 
       The type of the function tool call output. Always `function_call_output`.
 
@@ -6439,13 +6661,15 @@ Create items in a conversation with the given ID.
 
       The unique ID of the function tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -6457,7 +6681,9 @@ Create items in a conversation with the given ID.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -6467,9 +6693,13 @@ Create items in a conversation with the given ID.
 
       The name of the tool that produced the output.
 
+      `minLength: 1`, `maxLength: 128`
+
     - `namespace: optional string or null`
 
       The namespace of the tool that produced the output.
+
+      `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -6487,7 +6717,7 @@ Create items in a conversation with the given ID.
 
       The arguments supplied to the tool search call.
 
-    - `type: "tool_search_call"`
+    - `type: "tool_search_call" (default: "tool_search_call")`
 
       The item type. Always `tool_search_call`.
 
@@ -6500,6 +6730,8 @@ Create items in a conversation with the given ID.
     - `call_id: optional string or null`
 
       The unique ID of the tool search call generated by the model.
+
+      `minLength: 1`, `maxLength: 64`
 
     - `execution: optional "server" or "client"`
 
@@ -6541,7 +6773,7 @@ Create items in a conversation with the given ID.
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -6573,7 +6805,7 @@ Create items in a conversation with the given ID.
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -6595,7 +6827,7 @@ Create items in a conversation with the given ID.
 
               The key to compare against the value.
 
-            - `type: "eq" or "ne" or "gt" or 5 more`
+            - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
               Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -6664,7 +6896,7 @@ Create items in a conversation with the given ID.
 
               - `"or"`
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -6700,7 +6932,7 @@ Create items in a conversation with the given ID.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -6710,11 +6942,11 @@ Create items in a conversation with the given ID.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -6732,7 +6964,7 @@ Create items in a conversation with the given ID.
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -6743,7 +6975,7 @@ Create items in a conversation with the given ID.
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -6751,7 +6983,7 @@ Create items in a conversation with the given ID.
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -6759,14 +6991,14 @@ Create items in a conversation with the given ID.
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -6798,7 +7030,7 @@ Create items in a conversation with the given ID.
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -6822,6 +7054,8 @@ Create items in a conversation with the given ID.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -6901,7 +7135,7 @@ Create items in a conversation with the given ID.
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -6958,10 +7192,14 @@ Create items in a conversation with the given ID.
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -6981,7 +7219,7 @@ Create items in a conversation with the given ID.
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -6990,6 +7228,8 @@ Create items in a conversation with the given ID.
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -7009,7 +7249,7 @@ Create items in a conversation with the given ID.
 
               - `ContainerNetworkPolicyDisabled object { type }`
 
-                - `type: "disabled"`
+                - `type: "disabled" (default: "disabled")`
 
                   Disable outbound network access. Always `disabled`.
 
@@ -7021,7 +7261,9 @@ Create items in a conversation with the given ID.
 
                   A list of allowed domains when type is `allowlist`.
 
-                - `type: "allowlist"`
+                  `minItems: 1`
+
+                - `type: "allowlist" (default: "allowlist")`
 
                   Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -7031,17 +7273,25 @@ Create items in a conversation with the given ID.
 
                   Optional domain-scoped secrets for allowlisted domains.
 
+                  `minItems: 1`
+
                   - `domain: string`
 
                     The domain associated with the secret.
+
+                    `minLength: 1`
 
                   - `name: string`
 
                     The name of the secret to inject for the domain.
 
+                    `minLength: 1`
+
                   - `value: string`
 
                     The secret value to inject for the domain.
+
+                    `minLength: 1`, `maxLength: 10485760`
 
         - `type: "code_interpreter"`
 
@@ -7053,13 +7303,15 @@ Create items in a conversation with the given ID.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -7085,7 +7337,7 @@ Create items in a conversation with the given ID.
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -7166,7 +7418,7 @@ Create items in a conversation with the given ID.
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -7174,11 +7426,13 @@ Create items in a conversation with the given ID.
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -7189,11 +7443,13 @@ Create items in a conversation with the given ID.
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -7212,7 +7468,7 @@ Create items in a conversation with the given ID.
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -7234,7 +7490,7 @@ Create items in a conversation with the given ID.
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -7244,7 +7500,7 @@ Create items in a conversation with the given ID.
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -7254,6 +7510,8 @@ Create items in a conversation with the given ID.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
@@ -7262,7 +7520,7 @@ Create items in a conversation with the given ID.
 
           - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-            - `type: "container_auto"`
+            - `type: "container_auto" (default: "container_auto")`
 
               Automatically creates a container for this request
 
@@ -7271,6 +7529,8 @@ Create items in a conversation with the given ID.
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -7296,13 +7556,17 @@ Create items in a conversation with the given ID.
 
               An optional list of skills referenced by id or inline data.
 
+              `maxItems: 200`
+
               - `SkillReference object { skill_id, type, version }`
 
                 - `skill_id: string`
 
                   The ID of the referenced skill.
 
-                - `type: "skill_reference"`
+                  `minLength: 1`, `maxLength: 64`
+
+                - `type: "skill_reference" (default: "skill_reference")`
 
                   References a skill created with the /v1/skills endpoint.
 
@@ -7330,19 +7594,21 @@ Create items in a conversation with the given ID.
 
                     Base64-encoded skill zip bundle.
 
-                  - `media_type: "application/zip"`
+                    `minLength: 1`, `maxLength: 70254592`
+
+                  - `media_type: "application/zip" (default: "application/zip")`
 
                     The media type of the inline skill payload. Must be `application/zip`.
 
                     - `"application/zip"`
 
-                  - `type: "base64"`
+                  - `type: "base64" (default: "base64")`
 
                     The type of the inline skill source. Must be `base64`.
 
                     - `"base64"`
 
-                - `type: "inline"`
+                - `type: "inline" (default: "inline")`
 
                   Defines an inline skill for this request.
 
@@ -7350,7 +7616,7 @@ Create items in a conversation with the given ID.
 
           - `LocalEnvironment object { type, skills }`
 
-            - `type: "local"`
+            - `type: "local" (default: "local")`
 
               Use a local computer environment.
 
@@ -7359,6 +7625,8 @@ Create items in a conversation with the given ID.
             - `skills: optional array of LocalSkill`
 
               An optional list of skills.
+
+              `maxItems: 200`
 
               - `description: string`
 
@@ -7378,7 +7646,7 @@ Create items in a conversation with the given ID.
 
               The ID of the referenced container.
 
-            - `type: "container_reference"`
+            - `type: "container_reference" (default: "container_reference")`
 
               References a container created with the /v1/containers endpoint
 
@@ -7392,7 +7660,7 @@ Create items in a conversation with the given ID.
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -7401,6 +7669,8 @@ Create items in a conversation with the given ID.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -7426,7 +7696,7 @@ Create items in a conversation with the given ID.
 
             Unconstrained free-form text.
 
-            - `type: "text"`
+            - `type: "text" (default: "text")`
 
               Unconstrained text format. Always `text`.
 
@@ -7448,7 +7718,7 @@ Create items in a conversation with the given ID.
 
               - `"regex"`
 
-            - `type: "grammar"`
+            - `type: "grammar" (default: "grammar")`
 
               Grammar format. Always `grammar`.
 
@@ -7466,9 +7736,13 @@ Create items in a conversation with the given ID.
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools loaded inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
@@ -7476,13 +7750,17 @@ Create items in a conversation with the given ID.
 
               The name of the loaded function tool.
 
-            - `type: "function"`
+              `pattern: ^(?![\s\S]*[\r\n])[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -7516,7 +7794,7 @@ Create items in a conversation with the given ID.
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -7525,6 +7803,8 @@ Create items in a conversation with the given ID.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -7546,7 +7826,7 @@ Create items in a conversation with the given ID.
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -7556,7 +7836,7 @@ Create items in a conversation with the given ID.
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -7582,7 +7862,7 @@ Create items in a conversation with the given ID.
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -7610,7 +7890,7 @@ Create items in a conversation with the given ID.
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -7636,7 +7916,7 @@ Create items in a conversation with the given ID.
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -7646,11 +7926,13 @@ Create items in a conversation with the given ID.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "tool_search_output"`
+    - `type: "tool_search_output" (default: "tool_search_output")`
 
       The item type. Always `tool_search_output`.
 
@@ -7663,6 +7945,8 @@ Create items in a conversation with the given ID.
     - `call_id: optional string or null`
 
       The unique ID of the tool search call generated by the model.
+
+      `minLength: 1`, `maxLength: 64`
 
     - `execution: optional "server" or "client"`
 
@@ -7684,7 +7968,7 @@ Create items in a conversation with the given ID.
 
   - `AdditionalTools object { role, tools, type, id }`
 
-    - `role: "developer"`
+    - `role: "developer" (default: "developer")`
 
       The role that provided the additional tools. Only `developer` is supported.
 
@@ -7710,7 +7994,7 @@ Create items in a conversation with the given ID.
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -7742,7 +8026,7 @@ Create items in a conversation with the given ID.
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -7764,7 +8048,7 @@ Create items in a conversation with the given ID.
 
             Combine multiple filters using `and` or `or`.
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -7800,7 +8084,7 @@ Create items in a conversation with the given ID.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -7810,11 +8094,11 @@ Create items in a conversation with the given ID.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -7832,7 +8116,7 @@ Create items in a conversation with the given ID.
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -7843,7 +8127,7 @@ Create items in a conversation with the given ID.
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -7851,7 +8135,7 @@ Create items in a conversation with the given ID.
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -7859,14 +8143,14 @@ Create items in a conversation with the given ID.
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -7898,7 +8182,7 @@ Create items in a conversation with the given ID.
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -7922,6 +8206,8 @@ Create items in a conversation with the given ID.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -8001,7 +8287,7 @@ Create items in a conversation with the given ID.
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -8058,10 +8344,14 @@ Create items in a conversation with the given ID.
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -8081,7 +8371,7 @@ Create items in a conversation with the given ID.
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -8090,6 +8380,8 @@ Create items in a conversation with the given ID.
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -8121,13 +8413,15 @@ Create items in a conversation with the given ID.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -8153,7 +8447,7 @@ Create items in a conversation with the given ID.
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -8234,7 +8528,7 @@ Create items in a conversation with the given ID.
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -8242,11 +8536,13 @@ Create items in a conversation with the given ID.
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -8257,11 +8553,13 @@ Create items in a conversation with the given ID.
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -8280,7 +8578,7 @@ Create items in a conversation with the given ID.
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -8302,7 +8600,7 @@ Create items in a conversation with the given ID.
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -8312,7 +8610,7 @@ Create items in a conversation with the given ID.
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -8321,6 +8619,8 @@ Create items in a conversation with the given ID.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -8342,7 +8642,7 @@ Create items in a conversation with the given ID.
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -8351,6 +8651,8 @@ Create items in a conversation with the given ID.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -8384,21 +8686,29 @@ Create items in a conversation with the given ID.
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-            - `type: "function"`
+              `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -8432,7 +8742,7 @@ Create items in a conversation with the given ID.
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -8441,6 +8751,8 @@ Create items in a conversation with the given ID.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -8462,7 +8774,7 @@ Create items in a conversation with the given ID.
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -8472,7 +8784,7 @@ Create items in a conversation with the given ID.
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -8498,7 +8810,7 @@ Create items in a conversation with the given ID.
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -8526,7 +8838,7 @@ Create items in a conversation with the given ID.
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -8552,7 +8864,7 @@ Create items in a conversation with the given ID.
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -8562,11 +8874,13 @@ Create items in a conversation with the given ID.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "additional_tools"`
+    - `type: "additional_tools" (default: "additional_tools")`
 
       The item type. Always `additional_tools`.
 
@@ -8582,7 +8896,7 @@ Create items in a conversation with the given ID.
     remains in effect for subsequent responses until it is replaced by another
     configuration update.
 
-    - `type: "configuration_update"`
+    - `type: "configuration_update" (default: "configuration_update")`
 
       The item type. Always `configuration_update`.
 
@@ -8596,7 +8910,7 @@ Create items in a conversation with the given ID.
 
       Updates to reasoning configuration. Only effort is supported.
 
-      - `effort: optional ReasoningEffort or null`
+      - `effort: optional ReasoningEffort or null (default: "medium")`
 
         The reasoning effort to use for subsequent responses until another
         configuration update replaces it.
@@ -8634,7 +8948,7 @@ Create items in a conversation with the given ID.
 
         A summary of the reasoning output from the model so far.
 
-      - `type: "summary_text"`
+      - `type: "summary_text" (default: "summary_text")`
 
         The type of the object. Always `summary_text`.
 
@@ -8654,7 +8968,7 @@ Create items in a conversation with the given ID.
 
         The reasoning text from the model.
 
-      - `type: "reasoning_text"`
+      - `type: "reasoning_text" (default: "reasoning_text")`
 
         The type of the reasoning text. Always `reasoning_text`.
 
@@ -8691,7 +9005,9 @@ Create items in a conversation with the given ID.
 
       The encrypted content of the compaction summary.
 
-    - `type: "compaction"`
+      `maxLength: 104857600`
+
+    - `type: "compaction" (default: "compaction")`
 
       The type of the item. Always `compaction`.
 
@@ -8864,7 +9180,7 @@ Create items in a conversation with the given ID.
 
           The logs output from the code interpreter.
 
-        - `type: "logs"`
+        - `type: "logs" (default: "logs")`
 
           The type of the output. Always `logs`.
 
@@ -8874,7 +9190,7 @@ Create items in a conversation with the given ID.
 
         The image output from the code interpreter.
 
-        - `type: "image"`
+        - `type: "image" (default: "image")`
 
           The type of the output. Always `image`.
 
@@ -8883,6 +9199,8 @@ Create items in a conversation with the given ID.
         - `url: string`
 
           The URL of the image output from the code interpreter.
+
+          `format: uri`
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -8898,7 +9216,7 @@ Create items in a conversation with the given ID.
 
       - `"failed"`
 
-    - `type: "code_interpreter_call"`
+    - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
       The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -8924,13 +9242,13 @@ Create items in a conversation with the given ID.
 
         Environment variables to set for the command.
 
-      - `type: "exec"`
+      - `type: "exec" (default: "exec")`
 
         The type of the local shell action. Always `exec`.
 
         - `"exec"`
 
-      - `timeout_ms: optional number or null`
+      - `timeout_ms: optional integer or null`
 
         Optional timeout in milliseconds for the command.
 
@@ -9002,11 +9320,11 @@ Create items in a conversation with the given ID.
 
         Ordered shell commands for the execution environment to run.
 
-      - `max_output_length: optional number or null`
+      - `max_output_length: optional integer or null`
 
         Maximum number of UTF-8 characters to capture from combined stdout and stderr output.
 
-      - `timeout_ms: optional number or null`
+      - `timeout_ms: optional integer or null`
 
         Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
@@ -9014,7 +9332,9 @@ Create items in a conversation with the given ID.
 
       The unique ID of the shell tool call generated by the model.
 
-    - `type: "shell_call"`
+      `minLength: 1`, `maxLength: 64`
+
+    - `type: "shell_call" (default: "shell_call")`
 
       The type of the item. Always `shell_call`.
 
@@ -9030,7 +9350,7 @@ Create items in a conversation with the given ID.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -9042,7 +9362,9 @@ Create items in a conversation with the given ID.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -9074,6 +9396,8 @@ Create items in a conversation with the given ID.
 
       The unique ID of the shell tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `output: array of ResponseFunctionShellCallOutputContent`
 
       Captured chunks of stdout and stderr output, along with their associated outcomes.
@@ -9086,7 +9410,7 @@ Create items in a conversation with the given ID.
 
           Indicates that the shell call exceeded its configured time limit.
 
-          - `type: "timeout"`
+          - `type: "timeout" (default: "timeout")`
 
             The outcome type. Always `timeout`.
 
@@ -9096,11 +9420,11 @@ Create items in a conversation with the given ID.
 
           Indicates that the shell commands finished and returned an exit code.
 
-          - `exit_code: number`
+          - `exit_code: integer`
 
             The exit code returned by the shell process.
 
-          - `type: "exit"`
+          - `type: "exit" (default: "exit")`
 
             The outcome type. Always `exit`.
 
@@ -9110,11 +9434,15 @@ Create items in a conversation with the given ID.
 
         Captured stderr output for the shell call.
 
+        `maxLength: 10485760`
+
       - `stdout: string`
 
         Captured stdout output for the shell call.
 
-    - `type: "shell_call_output"`
+        `maxLength: 10485760`
+
+    - `type: "shell_call_output" (default: "shell_call_output")`
 
       The type of the item. Always `shell_call_output`.
 
@@ -9130,7 +9458,7 @@ Create items in a conversation with the given ID.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -9142,13 +9470,15 @@ Create items in a conversation with the given ID.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
           - `"program"`
 
-    - `max_output_length: optional number or null`
+    - `max_output_length: optional integer or null`
 
       The maximum number of UTF-8 characters captured for this shell call's combined output.
 
@@ -9170,6 +9500,8 @@ Create items in a conversation with the given ID.
 
       The unique ID of the apply patch tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
       The specific create, delete, or update instruction for the apply_patch tool call.
@@ -9182,11 +9514,15 @@ Create items in a conversation with the given ID.
 
           Unified diff content to apply when creating the file.
 
+          `maxLength: 10485760`
+
         - `path: string`
 
           Path of the file to create relative to the workspace root.
 
-        - `type: "create_file"`
+          `minLength: 1`
+
+        - `type: "create_file" (default: "create_file")`
 
           The operation type. Always `create_file`.
 
@@ -9200,7 +9536,9 @@ Create items in a conversation with the given ID.
 
           Path of the file to delete relative to the workspace root.
 
-        - `type: "delete_file"`
+          `minLength: 1`
+
+        - `type: "delete_file" (default: "delete_file")`
 
           The operation type. Always `delete_file`.
 
@@ -9214,11 +9552,15 @@ Create items in a conversation with the given ID.
 
           Unified diff content to apply to the existing file.
 
+          `maxLength: 10485760`
+
         - `path: string`
 
           Path of the file to update relative to the workspace root.
 
-        - `type: "update_file"`
+          `minLength: 1`
+
+        - `type: "update_file" (default: "update_file")`
 
           The operation type. Always `update_file`.
 
@@ -9232,7 +9574,7 @@ Create items in a conversation with the given ID.
 
       - `"completed"`
 
-    - `type: "apply_patch_call"`
+    - `type: "apply_patch_call" (default: "apply_patch_call")`
 
       The type of the item. Always `apply_patch_call`.
 
@@ -9248,7 +9590,7 @@ Create items in a conversation with the given ID.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -9260,7 +9602,9 @@ Create items in a conversation with the given ID.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -9274,6 +9618,8 @@ Create items in a conversation with the given ID.
 
       The unique ID of the apply patch tool call generated by the model.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `status: "completed" or "failed"`
 
       The status of the apply patch tool call output. One of `completed` or `failed`.
@@ -9282,7 +9628,7 @@ Create items in a conversation with the given ID.
 
       - `"failed"`
 
-    - `type: "apply_patch_call_output"`
+    - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
       The type of the item. Always `apply_patch_call_output`.
 
@@ -9298,7 +9644,7 @@ Create items in a conversation with the given ID.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -9310,7 +9656,9 @@ Create items in a conversation with the given ID.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -9319,6 +9667,8 @@ Create items in a conversation with the given ID.
     - `output: optional string or null`
 
       Optional human-readable log text from the apply patch tool (e.g., patch results or errors).
+
+      `maxLength: 10485760`
 
   - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -9451,11 +9801,11 @@ Create items in a conversation with the given ID.
 
       - `McpProtocolError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "mcp_protocol_error"`
+        - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
           - `"mcp_protocol_error"`
 
@@ -9463,17 +9813,17 @@ Create items in a conversation with the given ID.
 
         - `content: unknown`
 
-        - `type: "mcp_tool_execution_error"`
+        - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
           - `"mcp_tool_execution_error"`
 
       - `HTTPError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "http_error"`
+        - `type: "http_error" (default: "http_error")`
 
           - `"http_error"`
 
@@ -9544,7 +9894,7 @@ Create items in a conversation with the given ID.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -9556,7 +9906,9 @@ Create items in a conversation with the given ID.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -9598,7 +9950,7 @@ Create items in a conversation with the given ID.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -9608,7 +9960,7 @@ Create items in a conversation with the given ID.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -9620,7 +9972,7 @@ Create items in a conversation with the given ID.
 
     Compacts the current context. Must be the final input item.
 
-    - `type: "compaction_trigger"`
+    - `type: "compaction_trigger" (default: "compaction_trigger")`
 
       The type of the item. Always `compaction_trigger`.
 
@@ -9638,7 +9990,7 @@ Create items in a conversation with the given ID.
 
       The ID of the item to reference.
 
-    - `type: optional "item_reference" or null`
+    - `type: optional "item_reference" or null (default: "item_reference")`
 
       The type of item to reference. Always `item_reference`.
 
@@ -9654,15 +10006,21 @@ Create items in a conversation with the given ID.
 
       The stable call ID of the program item.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `code: string`
 
       The JavaScript source executed by programmatic tool calling.
+
+      `maxLength: 10485760`
 
     - `fingerprint: string`
 
       Opaque program replay fingerprint that must be round-tripped.
 
-    - `type: "program"`
+      `maxLength: 10485760`
+
+    - `type: "program" (default: "program")`
 
       The item type. Always `program`.
 
@@ -9678,9 +10036,13 @@ Create items in a conversation with the given ID.
 
       The call ID of the program item.
 
+      `minLength: 1`, `maxLength: 64`
+
     - `result: string`
 
       The result produced by the program item.
+
+      `maxLength: 10485760`
 
     - `status: "completed" or "incomplete"`
 
@@ -9690,7 +10052,7 @@ Create items in a conversation with the given ID.
 
       - `"incomplete"`
 
-    - `type: "program_output"`
+    - `type: "program_output" (default: "program_output")`
 
       The item type. Always `program_output`.
 
@@ -9726,7 +10088,7 @@ Create items in a conversation with the given ID.
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -9736,7 +10098,7 @@ Create items in a conversation with the given ID.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -9770,11 +10132,11 @@ Create items in a conversation with the given ID.
 
                 The filename of the file cited.
 
-              - `index: number`
+              - `index: integer`
 
                 The index in the output text at which to insert the file citation.
 
-              - `type: "file_citation"`
+              - `type: "file_citation" (default: "file_citation")`
 
                 The type of the file citation. Always `file_citation`.
 
@@ -9784,11 +10146,11 @@ Create items in a conversation with the given ID.
 
               A citation for a web resource used to generate a model response.
 
-              - `end_index: number`
+              - `end_index: integer`
 
                 The index of the last character of the URL citation in the message.
 
-              - `start_index: number`
+              - `start_index: integer`
 
                 The index of the first character of the URL citation in the message.
 
@@ -9796,7 +10158,7 @@ Create items in a conversation with the given ID.
 
                 The title of the web resource.
 
-              - `type: "url_citation"`
+              - `type: "url_citation" (default: "url_citation")`
 
                 The type of the URL citation. Always `url_citation`.
 
@@ -9806,6 +10168,8 @@ Create items in a conversation with the given ID.
 
                 The URL of the web resource.
 
+                `format: uri`
+
             - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
               A citation for a container file used to generate a model response.
@@ -9814,7 +10178,7 @@ Create items in a conversation with the given ID.
 
                 The ID of the container file.
 
-              - `end_index: number`
+              - `end_index: integer`
 
                 The index of the last character of the container file citation in the message.
 
@@ -9826,11 +10190,11 @@ Create items in a conversation with the given ID.
 
                 The filename of the container file cited.
 
-              - `start_index: number`
+              - `start_index: integer`
 
                 The index of the first character of the container file citation in the message.
 
-              - `type: "container_file_citation"`
+              - `type: "container_file_citation" (default: "container_file_citation")`
 
                 The type of the container file citation. Always `container_file_citation`.
 
@@ -9844,7 +10208,7 @@ Create items in a conversation with the given ID.
 
                 The ID of the file.
 
-              - `index: number`
+              - `index: integer`
 
                 The index of the file in the list of files.
 
@@ -9874,7 +10238,7 @@ Create items in a conversation with the given ID.
 
             The text output from the model.
 
-          - `type: "output_text"`
+          - `type: "output_text" (default: "output_text")`
 
             The type of the output text. Always `output_text`.
 
@@ -9886,7 +10250,7 @@ Create items in a conversation with the given ID.
 
           - `text: string`
 
-          - `type: "text"`
+          - `type: "text" (default: "text")`
 
             - `"text"`
 
@@ -9898,7 +10262,7 @@ Create items in a conversation with the given ID.
 
             A summary of the reasoning output from the model so far.
 
-          - `type: "summary_text"`
+          - `type: "summary_text" (default: "summary_text")`
 
             The type of the object. Always `summary_text`.
 
@@ -9912,7 +10276,7 @@ Create items in a conversation with the given ID.
 
             The reasoning text from the model.
 
-          - `type: "reasoning_text"`
+          - `type: "reasoning_text" (default: "reasoning_text")`
 
             The type of the reasoning text. Always `reasoning_text`.
 
@@ -9926,7 +10290,7 @@ Create items in a conversation with the given ID.
 
             The refusal explanation from the model.
 
-          - `type: "refusal"`
+          - `type: "refusal" (default: "refusal")`
 
             The type of the refusal. Always `refusal`.
 
@@ -9948,7 +10312,7 @@ Create items in a conversation with the given ID.
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -9962,11 +10326,13 @@ Create items in a conversation with the given ID.
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -9996,7 +10362,9 @@ Create items in a conversation with the given ID.
 
             The URL of the screenshot image.
 
-          - `type: "computer_screenshot"`
+            `format: uri`
+
+          - `type: "computer_screenshot" (default: "computer_screenshot")`
 
             Specifies the event type. For a computer screenshot, this property is always set to `computer_screenshot`.
 
@@ -10006,7 +10374,7 @@ Create items in a conversation with the given ID.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -10024,7 +10392,7 @@ Create items in a conversation with the given ID.
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -10052,6 +10420,8 @@ Create items in a conversation with the given ID.
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -10060,7 +10430,7 @@ Create items in a conversation with the given ID.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -10104,7 +10474,7 @@ Create items in a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "message"`
+      - `type: "message" (default: "message")`
 
         The type of the message. Always set to `message`.
 
@@ -10163,7 +10533,7 @@ Create items in a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -10173,7 +10543,7 @@ Create items in a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -10243,7 +10613,7 @@ Create items in a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -10255,7 +10625,9 @@ Create items in a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -10321,6 +10693,8 @@ Create items in a conversation with the given ID.
 
           - `string`
 
+            `maxLength: 512`
+
           - `number`
 
           - `boolean`
@@ -10336,6 +10710,8 @@ Create items in a conversation with the given ID.
         - `score: optional number`
 
           The relevance score of the file - a value between 0 and 1.
+
+          `format: float`
 
         - `text: optional string`
 
@@ -10407,6 +10783,8 @@ Create items in a conversation with the given ID.
 
               The URL of the source.
 
+              `format: uri`
+
         - `OpenPage object { type, url }`
 
           Action type "open_page" - Opens a specific URL from search results.
@@ -10420,6 +10798,8 @@ Create items in a conversation with the given ID.
           - `url: optional string or null`
 
             The URL opened by the model.
+
+            `format: uri`
 
         - `FindInPage object { pattern, type, url }`
 
@@ -10438,6 +10818,8 @@ Create items in a conversation with the given ID.
           - `url: optional string or null`
 
             The URL of the page searched for the pattern, when available.
+
+            `format: uri`
 
     - `ImageGenerationCall object { id, result, status, 8 more }`
 
@@ -10613,7 +10995,7 @@ Create items in a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "computer_call"`
+      - `type: "computer_call" (default: "computer_call")`
 
         The type of the computer call. Always `computer_call`.
 
@@ -10641,17 +11023,17 @@ Create items in a conversation with the given ID.
 
             - `"forward"`
 
-          - `type: "click"`
+          - `type: "click" (default: "click")`
 
             Specifies the event type. For a click action, this property is always `click`.
 
             - `"click"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the click occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the click occurred.
 
@@ -10667,17 +11049,17 @@ Create items in a conversation with the given ID.
 
             The keys being held while double-clicking.
 
-          - `type: "double_click"`
+          - `type: "double_click" (default: "double_click")`
 
             Specifies the event type. For a double click action, this property is always set to `double_click`.
 
             - `"double_click"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the double click occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the double click occurred.
 
@@ -10696,15 +11078,15 @@ Create items in a conversation with the given ID.
             ]
             ```
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate.
 
-          - `type: "drag"`
+          - `type: "drag" (default: "drag")`
 
             Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -10722,7 +11104,7 @@ Create items in a conversation with the given ID.
 
             The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-          - `type: "keypress"`
+          - `type: "keypress" (default: "keypress")`
 
             Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -10732,17 +11114,17 @@ Create items in a conversation with the given ID.
 
           A mouse move action.
 
-          - `type: "move"`
+          - `type: "move" (default: "move")`
 
             Specifies the event type. For a move action, this property is always set to `move`.
 
             - `"move"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate to move to.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate to move to.
 
@@ -10754,7 +11136,7 @@ Create items in a conversation with the given ID.
 
           A screenshot action.
 
-          - `type: "screenshot"`
+          - `type: "screenshot" (default: "screenshot")`
 
             Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -10764,25 +11146,25 @@ Create items in a conversation with the given ID.
 
           A scroll action.
 
-          - `scroll_x: number`
+          - `scroll_x: integer`
 
             The horizontal scroll distance.
 
-          - `scroll_y: number`
+          - `scroll_y: integer`
 
             The vertical scroll distance.
 
-          - `type: "scroll"`
+          - `type: "scroll" (default: "scroll")`
 
             Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
             - `"scroll"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the scroll occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the scroll occurred.
 
@@ -10798,7 +11180,7 @@ Create items in a conversation with the given ID.
 
             The text to type.
 
-          - `type: "type"`
+          - `type: "type" (default: "type")`
 
             Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -10808,7 +11190,7 @@ Create items in a conversation with the given ID.
 
           A wait action.
 
-          - `type: "wait"`
+          - `type: "wait" (default: "wait")`
 
             Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -10869,7 +11251,7 @@ Create items in a conversation with the given ID.
 
         A computer screenshot image used with the computer use tool.
 
-        - `type: "computer_screenshot"`
+        - `type: "computer_screenshot" (default: "computer_screenshot")`
 
           Specifies the event type. For a computer screenshot, this property is
           always set to `computer_screenshot`.
@@ -10884,6 +11266,8 @@ Create items in a conversation with the given ID.
 
           The URL of the screenshot image.
 
+          `format: uri`
+
       - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
         The status of the message input. One of `in_progress`, `completed`, or
@@ -10897,7 +11281,7 @@ Create items in a conversation with the given ID.
 
         - `"in_progress"`
 
-      - `type: "computer_call_output"`
+      - `type: "computer_call_output" (default: "computer_call_output")`
 
         The type of the computer tool call output. Always `computer_call_output`.
 
@@ -10956,7 +11340,7 @@ Create items in a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "tool_search_call"`
+      - `type: "tool_search_call" (default: "tool_search_call")`
 
         The type of the item. Always `tool_search_call`.
 
@@ -11014,7 +11398,7 @@ Create items in a conversation with the given ID.
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -11046,7 +11430,7 @@ Create items in a conversation with the given ID.
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -11068,7 +11452,7 @@ Create items in a conversation with the given ID.
 
                 The key to compare against the value.
 
-              - `type: "eq" or "ne" or "gt" or 5 more`
+              - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                 Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -11137,7 +11521,7 @@ Create items in a conversation with the given ID.
 
                 - `"or"`
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -11173,7 +11557,7 @@ Create items in a conversation with the given ID.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -11183,11 +11567,11 @@ Create items in a conversation with the given ID.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -11205,7 +11589,7 @@ Create items in a conversation with the given ID.
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -11216,7 +11600,7 @@ Create items in a conversation with the given ID.
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -11224,7 +11608,7 @@ Create items in a conversation with the given ID.
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -11232,14 +11616,14 @@ Create items in a conversation with the given ID.
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -11271,7 +11655,7 @@ Create items in a conversation with the given ID.
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -11295,6 +11679,8 @@ Create items in a conversation with the given ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -11374,7 +11760,7 @@ Create items in a conversation with the given ID.
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -11431,10 +11817,14 @@ Create items in a conversation with the given ID.
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -11454,7 +11844,7 @@ Create items in a conversation with the given ID.
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -11463,6 +11853,8 @@ Create items in a conversation with the given ID.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -11482,7 +11874,7 @@ Create items in a conversation with the given ID.
 
                 - `ContainerNetworkPolicyDisabled object { type }`
 
-                  - `type: "disabled"`
+                  - `type: "disabled" (default: "disabled")`
 
                     Disable outbound network access. Always `disabled`.
 
@@ -11494,7 +11886,9 @@ Create items in a conversation with the given ID.
 
                     A list of allowed domains when type is `allowlist`.
 
-                  - `type: "allowlist"`
+                    `minItems: 1`
+
+                  - `type: "allowlist" (default: "allowlist")`
 
                     Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -11504,17 +11898,25 @@ Create items in a conversation with the given ID.
 
                     Optional domain-scoped secrets for allowlisted domains.
 
+                    `minItems: 1`
+
                     - `domain: string`
 
                       The domain associated with the secret.
+
+                      `minLength: 1`
 
                     - `name: string`
 
                       The name of the secret to inject for the domain.
 
+                      `minLength: 1`
+
                     - `value: string`
 
                       The secret value to inject for the domain.
+
+                      `minLength: 1`, `maxLength: 10485760`
 
           - `type: "code_interpreter"`
 
@@ -11526,13 +11928,15 @@ Create items in a conversation with the given ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -11558,7 +11962,7 @@ Create items in a conversation with the given ID.
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -11639,7 +12043,7 @@ Create items in a conversation with the given ID.
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -11647,11 +12051,13 @@ Create items in a conversation with the given ID.
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -11662,11 +12068,13 @@ Create items in a conversation with the given ID.
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -11685,7 +12093,7 @@ Create items in a conversation with the given ID.
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -11707,7 +12115,7 @@ Create items in a conversation with the given ID.
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -11717,7 +12125,7 @@ Create items in a conversation with the given ID.
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -11727,6 +12135,8 @@ Create items in a conversation with the given ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -11735,7 +12145,7 @@ Create items in a conversation with the given ID.
 
             - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-              - `type: "container_auto"`
+              - `type: "container_auto" (default: "container_auto")`
 
                 Automatically creates a container for this request
 
@@ -11744,6 +12154,8 @@ Create items in a conversation with the given ID.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -11769,13 +12181,17 @@ Create items in a conversation with the given ID.
 
                 An optional list of skills referenced by id or inline data.
 
+                `maxItems: 200`
+
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
                     The ID of the referenced skill.
 
-                  - `type: "skill_reference"`
+                    `minLength: 1`, `maxLength: 64`
+
+                  - `type: "skill_reference" (default: "skill_reference")`
 
                     References a skill created with the /v1/skills endpoint.
 
@@ -11803,19 +12219,21 @@ Create items in a conversation with the given ID.
 
                       Base64-encoded skill zip bundle.
 
-                    - `media_type: "application/zip"`
+                      `minLength: 1`, `maxLength: 70254592`
+
+                    - `media_type: "application/zip" (default: "application/zip")`
 
                       The media type of the inline skill payload. Must be `application/zip`.
 
                       - `"application/zip"`
 
-                    - `type: "base64"`
+                    - `type: "base64" (default: "base64")`
 
                       The type of the inline skill source. Must be `base64`.
 
                       - `"base64"`
 
-                  - `type: "inline"`
+                  - `type: "inline" (default: "inline")`
 
                     Defines an inline skill for this request.
 
@@ -11823,7 +12241,7 @@ Create items in a conversation with the given ID.
 
             - `LocalEnvironment object { type, skills }`
 
-              - `type: "local"`
+              - `type: "local" (default: "local")`
 
                 Use a local computer environment.
 
@@ -11832,6 +12250,8 @@ Create items in a conversation with the given ID.
               - `skills: optional array of LocalSkill`
 
                 An optional list of skills.
+
+                `maxItems: 200`
 
                 - `description: string`
 
@@ -11851,7 +12271,7 @@ Create items in a conversation with the given ID.
 
                 The ID of the referenced container.
 
-              - `type: "container_reference"`
+              - `type: "container_reference" (default: "container_reference")`
 
                 References a container created with the /v1/containers endpoint
 
@@ -11865,7 +12285,7 @@ Create items in a conversation with the given ID.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -11874,6 +12294,8 @@ Create items in a conversation with the given ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -11899,7 +12321,7 @@ Create items in a conversation with the given ID.
 
               Unconstrained free-form text.
 
-              - `type: "text"`
+              - `type: "text" (default: "text")`
 
                 Unconstrained text format. Always `text`.
 
@@ -11921,7 +12343,7 @@ Create items in a conversation with the given ID.
 
                 - `"regex"`
 
-              - `type: "grammar"`
+              - `type: "grammar" (default: "grammar")`
 
                 Grammar format. Always `grammar`.
 
@@ -11939,21 +12361,29 @@ Create items in a conversation with the given ID.
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -11987,7 +12417,7 @@ Create items in a conversation with the given ID.
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -11996,6 +12426,8 @@ Create items in a conversation with the given ID.
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -12017,7 +12449,7 @@ Create items in a conversation with the given ID.
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -12027,7 +12459,7 @@ Create items in a conversation with the given ID.
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -12053,7 +12485,7 @@ Create items in a conversation with the given ID.
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -12081,7 +12513,7 @@ Create items in a conversation with the given ID.
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -12107,7 +12539,7 @@ Create items in a conversation with the given ID.
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -12117,11 +12549,13 @@ Create items in a conversation with the given ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "tool_search_output"`
+      - `type: "tool_search_output" (default: "tool_search_output")`
 
         The type of the item. Always `tool_search_output`.
 
@@ -12177,7 +12611,7 @@ Create items in a conversation with the given ID.
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -12209,7 +12643,7 @@ Create items in a conversation with the given ID.
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -12231,7 +12665,7 @@ Create items in a conversation with the given ID.
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -12267,7 +12701,7 @@ Create items in a conversation with the given ID.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -12277,11 +12711,11 @@ Create items in a conversation with the given ID.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -12299,7 +12733,7 @@ Create items in a conversation with the given ID.
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -12310,7 +12744,7 @@ Create items in a conversation with the given ID.
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -12318,7 +12752,7 @@ Create items in a conversation with the given ID.
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -12326,14 +12760,14 @@ Create items in a conversation with the given ID.
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -12365,7 +12799,7 @@ Create items in a conversation with the given ID.
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -12389,6 +12823,8 @@ Create items in a conversation with the given ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -12468,7 +12904,7 @@ Create items in a conversation with the given ID.
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -12525,10 +12961,14 @@ Create items in a conversation with the given ID.
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -12548,7 +12988,7 @@ Create items in a conversation with the given ID.
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -12557,6 +12997,8 @@ Create items in a conversation with the given ID.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -12588,13 +13030,15 @@ Create items in a conversation with the given ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -12620,7 +13064,7 @@ Create items in a conversation with the given ID.
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -12701,7 +13145,7 @@ Create items in a conversation with the given ID.
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -12709,11 +13153,13 @@ Create items in a conversation with the given ID.
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -12724,11 +13170,13 @@ Create items in a conversation with the given ID.
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -12747,7 +13195,7 @@ Create items in a conversation with the given ID.
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -12769,7 +13217,7 @@ Create items in a conversation with the given ID.
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -12779,7 +13227,7 @@ Create items in a conversation with the given ID.
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -12788,6 +13236,8 @@ Create items in a conversation with the given ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -12809,7 +13259,7 @@ Create items in a conversation with the given ID.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -12818,6 +13268,8 @@ Create items in a conversation with the given ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -12851,21 +13303,29 @@ Create items in a conversation with the given ID.
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -12899,7 +13359,7 @@ Create items in a conversation with the given ID.
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -12908,6 +13368,8 @@ Create items in a conversation with the given ID.
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -12929,7 +13391,7 @@ Create items in a conversation with the given ID.
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -12939,7 +13401,7 @@ Create items in a conversation with the given ID.
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -12965,7 +13427,7 @@ Create items in a conversation with the given ID.
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -12993,7 +13455,7 @@ Create items in a conversation with the given ID.
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -13019,7 +13481,7 @@ Create items in a conversation with the given ID.
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -13029,11 +13491,13 @@ Create items in a conversation with the given ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "additional_tools"`
+      - `type: "additional_tools" (default: "additional_tools")`
 
         The type of the item. Always `additional_tools`.
 
@@ -13048,7 +13512,7 @@ Create items in a conversation with the given ID.
 
         The unique ID of the configuration update item.
 
-      - `type: "configuration_update"`
+      - `type: "configuration_update" (default: "configuration_update")`
 
         The item type. Always `configuration_update`.
 
@@ -13058,7 +13522,7 @@ Create items in a conversation with the given ID.
 
         The reasoning configuration applied by this update.
 
-        - `effort: optional ReasoningEffort or null`
+        - `effort: optional ReasoningEffort or null (default: "medium")`
 
           The reasoning effort used for subsequent responses until another
           configuration update replaces it.
@@ -13096,7 +13560,7 @@ Create items in a conversation with the given ID.
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -13114,7 +13578,7 @@ Create items in a conversation with the given ID.
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -13161,7 +13625,7 @@ Create items in a conversation with the given ID.
 
         Opaque program replay fingerprint that must be round-tripped.
 
-      - `type: "program"`
+      - `type: "program" (default: "program")`
 
         The type of the item. Always `program`.
 
@@ -13189,7 +13653,7 @@ Create items in a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "program_output"`
+      - `type: "program_output" (default: "program_output")`
 
         The type of the item. Always `program_output`.
 
@@ -13207,7 +13671,7 @@ Create items in a conversation with the given ID.
 
         The encrypted content that was produced by compaction.
 
-      - `type: "compaction"`
+      - `type: "compaction" (default: "compaction")`
 
         The type of the item. Always `compaction`.
 
@@ -13246,7 +13710,7 @@ Create items in a conversation with the given ID.
 
             The logs output from the code interpreter.
 
-          - `type: "logs"`
+          - `type: "logs" (default: "logs")`
 
             The type of the output. Always `logs`.
 
@@ -13256,7 +13720,7 @@ Create items in a conversation with the given ID.
 
           The image output from the code interpreter.
 
-          - `type: "image"`
+          - `type: "image" (default: "image")`
 
             The type of the output. Always `image`.
 
@@ -13265,6 +13729,8 @@ Create items in a conversation with the given ID.
           - `url: string`
 
             The URL of the image output from the code interpreter.
+
+            `format: uri`
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -13280,7 +13746,7 @@ Create items in a conversation with the given ID.
 
         - `"failed"`
 
-      - `type: "code_interpreter_call"`
+      - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
         The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -13306,13 +13772,13 @@ Create items in a conversation with the given ID.
 
           Environment variables to set for the command.
 
-        - `type: "exec"`
+        - `type: "exec" (default: "exec")`
 
           The type of the local shell action. Always `exec`.
 
           - `"exec"`
 
-        - `timeout_ms: optional number or null`
+        - `timeout_ms: optional integer or null`
 
           Optional timeout in milliseconds for the command.
 
@@ -13386,11 +13852,11 @@ Create items in a conversation with the given ID.
 
         - `commands: array of string`
 
-        - `max_output_length: number or null`
+        - `max_output_length: integer or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number or null`
+        - `timeout_ms: integer or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -13406,7 +13872,7 @@ Create items in a conversation with the given ID.
 
           Represents the use of a local environment to perform shell actions.
 
-          - `type: "local"`
+          - `type: "local" (default: "local")`
 
             The environment type. Always `local`.
 
@@ -13418,7 +13884,7 @@ Create items in a conversation with the given ID.
 
           - `container_id: string`
 
-          - `type: "container_reference"`
+          - `type: "container_reference" (default: "container_reference")`
 
             The environment type. Always `container_reference`.
 
@@ -13434,7 +13900,7 @@ Create items in a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "shell_call"`
+      - `type: "shell_call" (default: "shell_call")`
 
         The type of the item. Always `shell_call`.
 
@@ -13446,7 +13912,7 @@ Create items in a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -13456,7 +13922,7 @@ Create items in a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -13476,7 +13942,7 @@ Create items in a conversation with the given ID.
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -13492,7 +13958,7 @@ Create items in a conversation with the given ID.
 
             Indicates that the shell call exceeded its configured time limit.
 
-            - `type: "timeout"`
+            - `type: "timeout" (default: "timeout")`
 
               The outcome type. Always `timeout`.
 
@@ -13502,11 +13968,11 @@ Create items in a conversation with the given ID.
 
             Indicates that the shell commands finished and returned an exit code.
 
-            - `exit_code: number`
+            - `exit_code: integer`
 
               Exit code from the shell process.
 
-            - `type: "exit"`
+            - `type: "exit" (default: "exit")`
 
               The outcome type. Always `exit`.
 
@@ -13534,7 +14000,7 @@ Create items in a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "shell_call_output"`
+      - `type: "shell_call_output" (default: "shell_call_output")`
 
         The type of the shell call output. Always `shell_call_output`.
 
@@ -13546,7 +14012,7 @@ Create items in a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -13556,7 +14022,7 @@ Create items in a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -13592,7 +14058,7 @@ Create items in a conversation with the given ID.
 
             Path of the file to create.
 
-          - `type: "create_file"`
+          - `type: "create_file" (default: "create_file")`
 
             Create a new file with the provided diff.
 
@@ -13606,7 +14072,7 @@ Create items in a conversation with the given ID.
 
             Path of the file to delete.
 
-          - `type: "delete_file"`
+          - `type: "delete_file" (default: "delete_file")`
 
             Delete the specified file.
 
@@ -13624,7 +14090,7 @@ Create items in a conversation with the given ID.
 
             Path of the file to update.
 
-          - `type: "update_file"`
+          - `type: "update_file" (default: "update_file")`
 
             Update an existing file with the provided diff.
 
@@ -13638,7 +14104,7 @@ Create items in a conversation with the given ID.
 
         - `"completed"`
 
-      - `type: "apply_patch_call"`
+      - `type: "apply_patch_call" (default: "apply_patch_call")`
 
         The type of the item. Always `apply_patch_call`.
 
@@ -13650,7 +14116,7 @@ Create items in a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -13660,7 +14126,7 @@ Create items in a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -13688,7 +14154,7 @@ Create items in a conversation with the given ID.
 
         - `"failed"`
 
-      - `type: "apply_patch_call_output"`
+      - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
         The type of the item. Always `apply_patch_call_output`.
 
@@ -13700,7 +14166,7 @@ Create items in a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -13710,7 +14176,7 @@ Create items in a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -13853,11 +14319,11 @@ Create items in a conversation with the given ID.
 
         - `McpProtocolError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
-          - `type: "mcp_protocol_error"`
+          - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
             - `"mcp_protocol_error"`
 
@@ -13865,17 +14331,17 @@ Create items in a conversation with the given ID.
 
           - `content: unknown`
 
-          - `type: "mcp_tool_execution_error"`
+          - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
             - `"mcp_tool_execution_error"`
 
         - `HTTPError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
-          - `type: "http_error"`
+          - `type: "http_error" (default: "http_error")`
 
             - `"http_error"`
 
@@ -13933,7 +14399,7 @@ Create items in a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -13943,7 +14409,7 @@ Create items in a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -14000,7 +14466,7 @@ Create items in a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -14012,7 +14478,9 @@ Create items in a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -14045,7 +14513,7 @@ curl https://api.openai.com/v1/conversations/$CONVERSATION_ID/items \
     -d '{}'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -14101,7 +14569,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -14152,16 +14620,18 @@ Delete an item from a conversation with the given IDs.
 
     The unique ID of the conversation.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The time at which the conversation was created, measured in seconds since the Unix epoch.
+
+    `format: unixtime`
 
   - `metadata: map[string]`
 
     Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
     Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
 
-  - `object: "conversation"`
+  - `object: "conversation" (default: "conversation")`
 
     The object type, which is always `conversation`.
 
@@ -14175,7 +14645,7 @@ curl https://api.openai.com/v1/conversations/$CONVERSATION_ID/items/$ITEM_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -14195,7 +14665,7 @@ curl -X DELETE https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -14250,7 +14720,7 @@ List all items for a conversation with the given ID.
 
   - `"message.output_text.logprobs"`
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between
   1 and 100, and the default is 20.
@@ -14296,7 +14766,7 @@ List all items for a conversation with the given ID.
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -14306,7 +14776,7 @@ List all items for a conversation with the given ID.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -14340,11 +14810,11 @@ List all items for a conversation with the given ID.
 
                 The filename of the file cited.
 
-              - `index: number`
+              - `index: integer`
 
                 The index in the output text at which to insert the file citation.
 
-              - `type: "file_citation"`
+              - `type: "file_citation" (default: "file_citation")`
 
                 The type of the file citation. Always `file_citation`.
 
@@ -14354,11 +14824,11 @@ List all items for a conversation with the given ID.
 
               A citation for a web resource used to generate a model response.
 
-              - `end_index: number`
+              - `end_index: integer`
 
                 The index of the last character of the URL citation in the message.
 
-              - `start_index: number`
+              - `start_index: integer`
 
                 The index of the first character of the URL citation in the message.
 
@@ -14366,7 +14836,7 @@ List all items for a conversation with the given ID.
 
                 The title of the web resource.
 
-              - `type: "url_citation"`
+              - `type: "url_citation" (default: "url_citation")`
 
                 The type of the URL citation. Always `url_citation`.
 
@@ -14376,6 +14846,8 @@ List all items for a conversation with the given ID.
 
                 The URL of the web resource.
 
+                `format: uri`
+
             - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
               A citation for a container file used to generate a model response.
@@ -14384,7 +14856,7 @@ List all items for a conversation with the given ID.
 
                 The ID of the container file.
 
-              - `end_index: number`
+              - `end_index: integer`
 
                 The index of the last character of the container file citation in the message.
 
@@ -14396,11 +14868,11 @@ List all items for a conversation with the given ID.
 
                 The filename of the container file cited.
 
-              - `start_index: number`
+              - `start_index: integer`
 
                 The index of the first character of the container file citation in the message.
 
-              - `type: "container_file_citation"`
+              - `type: "container_file_citation" (default: "container_file_citation")`
 
                 The type of the container file citation. Always `container_file_citation`.
 
@@ -14414,7 +14886,7 @@ List all items for a conversation with the given ID.
 
                 The ID of the file.
 
-              - `index: number`
+              - `index: integer`
 
                 The index of the file in the list of files.
 
@@ -14444,7 +14916,7 @@ List all items for a conversation with the given ID.
 
             The text output from the model.
 
-          - `type: "output_text"`
+          - `type: "output_text" (default: "output_text")`
 
             The type of the output text. Always `output_text`.
 
@@ -14456,7 +14928,7 @@ List all items for a conversation with the given ID.
 
           - `text: string`
 
-          - `type: "text"`
+          - `type: "text" (default: "text")`
 
             - `"text"`
 
@@ -14468,7 +14940,7 @@ List all items for a conversation with the given ID.
 
             A summary of the reasoning output from the model so far.
 
-          - `type: "summary_text"`
+          - `type: "summary_text" (default: "summary_text")`
 
             The type of the object. Always `summary_text`.
 
@@ -14482,7 +14954,7 @@ List all items for a conversation with the given ID.
 
             The reasoning text from the model.
 
-          - `type: "reasoning_text"`
+          - `type: "reasoning_text" (default: "reasoning_text")`
 
             The type of the reasoning text. Always `reasoning_text`.
 
@@ -14496,7 +14968,7 @@ List all items for a conversation with the given ID.
 
             The refusal explanation from the model.
 
-          - `type: "refusal"`
+          - `type: "refusal" (default: "refusal")`
 
             The type of the refusal. Always `refusal`.
 
@@ -14518,7 +14990,7 @@ List all items for a conversation with the given ID.
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -14532,11 +15004,13 @@ List all items for a conversation with the given ID.
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -14566,7 +15040,9 @@ List all items for a conversation with the given ID.
 
             The URL of the screenshot image.
 
-          - `type: "computer_screenshot"`
+            `format: uri`
+
+          - `type: "computer_screenshot" (default: "computer_screenshot")`
 
             Specifies the event type. For a computer screenshot, this property is always set to `computer_screenshot`.
 
@@ -14576,7 +15052,7 @@ List all items for a conversation with the given ID.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -14594,7 +15070,7 @@ List all items for a conversation with the given ID.
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -14622,6 +15098,8 @@ List all items for a conversation with the given ID.
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -14630,7 +15108,7 @@ List all items for a conversation with the given ID.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -14674,7 +15152,7 @@ List all items for a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "message"`
+      - `type: "message" (default: "message")`
 
         The type of the message. Always set to `message`.
 
@@ -14733,7 +15211,7 @@ List all items for a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -14743,7 +15221,7 @@ List all items for a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -14813,7 +15291,7 @@ List all items for a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -14825,7 +15303,9 @@ List all items for a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -14891,6 +15371,8 @@ List all items for a conversation with the given ID.
 
           - `string`
 
+            `maxLength: 512`
+
           - `number`
 
           - `boolean`
@@ -14906,6 +15388,8 @@ List all items for a conversation with the given ID.
         - `score: optional number`
 
           The relevance score of the file - a value between 0 and 1.
+
+          `format: float`
 
         - `text: optional string`
 
@@ -14977,6 +15461,8 @@ List all items for a conversation with the given ID.
 
               The URL of the source.
 
+              `format: uri`
+
         - `OpenPage object { type, url }`
 
           Action type "open_page" - Opens a specific URL from search results.
@@ -14990,6 +15476,8 @@ List all items for a conversation with the given ID.
           - `url: optional string or null`
 
             The URL opened by the model.
+
+            `format: uri`
 
         - `FindInPage object { pattern, type, url }`
 
@@ -15008,6 +15496,8 @@ List all items for a conversation with the given ID.
           - `url: optional string or null`
 
             The URL of the page searched for the pattern, when available.
+
+            `format: uri`
 
     - `ImageGenerationCall object { id, result, status, 8 more }`
 
@@ -15183,7 +15673,7 @@ List all items for a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "computer_call"`
+      - `type: "computer_call" (default: "computer_call")`
 
         The type of the computer call. Always `computer_call`.
 
@@ -15211,17 +15701,17 @@ List all items for a conversation with the given ID.
 
             - `"forward"`
 
-          - `type: "click"`
+          - `type: "click" (default: "click")`
 
             Specifies the event type. For a click action, this property is always `click`.
 
             - `"click"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the click occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the click occurred.
 
@@ -15237,17 +15727,17 @@ List all items for a conversation with the given ID.
 
             The keys being held while double-clicking.
 
-          - `type: "double_click"`
+          - `type: "double_click" (default: "double_click")`
 
             Specifies the event type. For a double click action, this property is always set to `double_click`.
 
             - `"double_click"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the double click occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the double click occurred.
 
@@ -15266,15 +15756,15 @@ List all items for a conversation with the given ID.
             ]
             ```
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate.
 
-          - `type: "drag"`
+          - `type: "drag" (default: "drag")`
 
             Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -15292,7 +15782,7 @@ List all items for a conversation with the given ID.
 
             The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-          - `type: "keypress"`
+          - `type: "keypress" (default: "keypress")`
 
             Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -15302,17 +15792,17 @@ List all items for a conversation with the given ID.
 
           A mouse move action.
 
-          - `type: "move"`
+          - `type: "move" (default: "move")`
 
             Specifies the event type. For a move action, this property is always set to `move`.
 
             - `"move"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate to move to.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate to move to.
 
@@ -15324,7 +15814,7 @@ List all items for a conversation with the given ID.
 
           A screenshot action.
 
-          - `type: "screenshot"`
+          - `type: "screenshot" (default: "screenshot")`
 
             Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -15334,25 +15824,25 @@ List all items for a conversation with the given ID.
 
           A scroll action.
 
-          - `scroll_x: number`
+          - `scroll_x: integer`
 
             The horizontal scroll distance.
 
-          - `scroll_y: number`
+          - `scroll_y: integer`
 
             The vertical scroll distance.
 
-          - `type: "scroll"`
+          - `type: "scroll" (default: "scroll")`
 
             Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
             - `"scroll"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the scroll occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the scroll occurred.
 
@@ -15368,7 +15858,7 @@ List all items for a conversation with the given ID.
 
             The text to type.
 
-          - `type: "type"`
+          - `type: "type" (default: "type")`
 
             Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -15378,7 +15868,7 @@ List all items for a conversation with the given ID.
 
           A wait action.
 
-          - `type: "wait"`
+          - `type: "wait" (default: "wait")`
 
             Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -15439,7 +15929,7 @@ List all items for a conversation with the given ID.
 
         A computer screenshot image used with the computer use tool.
 
-        - `type: "computer_screenshot"`
+        - `type: "computer_screenshot" (default: "computer_screenshot")`
 
           Specifies the event type. For a computer screenshot, this property is
           always set to `computer_screenshot`.
@@ -15454,6 +15944,8 @@ List all items for a conversation with the given ID.
 
           The URL of the screenshot image.
 
+          `format: uri`
+
       - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
         The status of the message input. One of `in_progress`, `completed`, or
@@ -15467,7 +15959,7 @@ List all items for a conversation with the given ID.
 
         - `"in_progress"`
 
-      - `type: "computer_call_output"`
+      - `type: "computer_call_output" (default: "computer_call_output")`
 
         The type of the computer tool call output. Always `computer_call_output`.
 
@@ -15526,7 +16018,7 @@ List all items for a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "tool_search_call"`
+      - `type: "tool_search_call" (default: "tool_search_call")`
 
         The type of the item. Always `tool_search_call`.
 
@@ -15584,7 +16076,7 @@ List all items for a conversation with the given ID.
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -15616,7 +16108,7 @@ List all items for a conversation with the given ID.
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -15638,7 +16130,7 @@ List all items for a conversation with the given ID.
 
                 The key to compare against the value.
 
-              - `type: "eq" or "ne" or "gt" or 5 more`
+              - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                 Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -15707,7 +16199,7 @@ List all items for a conversation with the given ID.
 
                 - `"or"`
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -15743,7 +16235,7 @@ List all items for a conversation with the given ID.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -15753,11 +16245,11 @@ List all items for a conversation with the given ID.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -15775,7 +16267,7 @@ List all items for a conversation with the given ID.
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -15786,7 +16278,7 @@ List all items for a conversation with the given ID.
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -15794,7 +16286,7 @@ List all items for a conversation with the given ID.
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -15802,14 +16294,14 @@ List all items for a conversation with the given ID.
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -15841,7 +16333,7 @@ List all items for a conversation with the given ID.
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -15865,6 +16357,8 @@ List all items for a conversation with the given ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -15944,7 +16438,7 @@ List all items for a conversation with the given ID.
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -16001,10 +16495,14 @@ List all items for a conversation with the given ID.
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -16024,7 +16522,7 @@ List all items for a conversation with the given ID.
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -16033,6 +16531,8 @@ List all items for a conversation with the given ID.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -16052,7 +16552,7 @@ List all items for a conversation with the given ID.
 
                 - `ContainerNetworkPolicyDisabled object { type }`
 
-                  - `type: "disabled"`
+                  - `type: "disabled" (default: "disabled")`
 
                     Disable outbound network access. Always `disabled`.
 
@@ -16064,7 +16564,9 @@ List all items for a conversation with the given ID.
 
                     A list of allowed domains when type is `allowlist`.
 
-                  - `type: "allowlist"`
+                    `minItems: 1`
+
+                  - `type: "allowlist" (default: "allowlist")`
 
                     Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -16074,17 +16576,25 @@ List all items for a conversation with the given ID.
 
                     Optional domain-scoped secrets for allowlisted domains.
 
+                    `minItems: 1`
+
                     - `domain: string`
 
                       The domain associated with the secret.
+
+                      `minLength: 1`
 
                     - `name: string`
 
                       The name of the secret to inject for the domain.
 
+                      `minLength: 1`
+
                     - `value: string`
 
                       The secret value to inject for the domain.
+
+                      `minLength: 1`, `maxLength: 10485760`
 
           - `type: "code_interpreter"`
 
@@ -16096,13 +16606,15 @@ List all items for a conversation with the given ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -16128,7 +16640,7 @@ List all items for a conversation with the given ID.
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -16209,7 +16721,7 @@ List all items for a conversation with the given ID.
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -16217,11 +16729,13 @@ List all items for a conversation with the given ID.
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -16232,11 +16746,13 @@ List all items for a conversation with the given ID.
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -16255,7 +16771,7 @@ List all items for a conversation with the given ID.
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -16277,7 +16793,7 @@ List all items for a conversation with the given ID.
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -16287,7 +16803,7 @@ List all items for a conversation with the given ID.
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -16297,6 +16813,8 @@ List all items for a conversation with the given ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -16305,7 +16823,7 @@ List all items for a conversation with the given ID.
 
             - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-              - `type: "container_auto"`
+              - `type: "container_auto" (default: "container_auto")`
 
                 Automatically creates a container for this request
 
@@ -16314,6 +16832,8 @@ List all items for a conversation with the given ID.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -16339,13 +16859,17 @@ List all items for a conversation with the given ID.
 
                 An optional list of skills referenced by id or inline data.
 
+                `maxItems: 200`
+
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
                     The ID of the referenced skill.
 
-                  - `type: "skill_reference"`
+                    `minLength: 1`, `maxLength: 64`
+
+                  - `type: "skill_reference" (default: "skill_reference")`
 
                     References a skill created with the /v1/skills endpoint.
 
@@ -16373,19 +16897,21 @@ List all items for a conversation with the given ID.
 
                       Base64-encoded skill zip bundle.
 
-                    - `media_type: "application/zip"`
+                      `minLength: 1`, `maxLength: 70254592`
+
+                    - `media_type: "application/zip" (default: "application/zip")`
 
                       The media type of the inline skill payload. Must be `application/zip`.
 
                       - `"application/zip"`
 
-                    - `type: "base64"`
+                    - `type: "base64" (default: "base64")`
 
                       The type of the inline skill source. Must be `base64`.
 
                       - `"base64"`
 
-                  - `type: "inline"`
+                  - `type: "inline" (default: "inline")`
 
                     Defines an inline skill for this request.
 
@@ -16393,7 +16919,7 @@ List all items for a conversation with the given ID.
 
             - `LocalEnvironment object { type, skills }`
 
-              - `type: "local"`
+              - `type: "local" (default: "local")`
 
                 Use a local computer environment.
 
@@ -16402,6 +16928,8 @@ List all items for a conversation with the given ID.
               - `skills: optional array of LocalSkill`
 
                 An optional list of skills.
+
+                `maxItems: 200`
 
                 - `description: string`
 
@@ -16421,7 +16949,7 @@ List all items for a conversation with the given ID.
 
                 The ID of the referenced container.
 
-              - `type: "container_reference"`
+              - `type: "container_reference" (default: "container_reference")`
 
                 References a container created with the /v1/containers endpoint
 
@@ -16435,7 +16963,7 @@ List all items for a conversation with the given ID.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -16444,6 +16972,8 @@ List all items for a conversation with the given ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -16469,7 +16999,7 @@ List all items for a conversation with the given ID.
 
               Unconstrained free-form text.
 
-              - `type: "text"`
+              - `type: "text" (default: "text")`
 
                 Unconstrained text format. Always `text`.
 
@@ -16491,7 +17021,7 @@ List all items for a conversation with the given ID.
 
                 - `"regex"`
 
-              - `type: "grammar"`
+              - `type: "grammar" (default: "grammar")`
 
                 Grammar format. Always `grammar`.
 
@@ -16509,21 +17039,29 @@ List all items for a conversation with the given ID.
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -16557,7 +17095,7 @@ List all items for a conversation with the given ID.
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -16566,6 +17104,8 @@ List all items for a conversation with the given ID.
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -16587,7 +17127,7 @@ List all items for a conversation with the given ID.
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -16597,7 +17137,7 @@ List all items for a conversation with the given ID.
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -16623,7 +17163,7 @@ List all items for a conversation with the given ID.
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -16651,7 +17191,7 @@ List all items for a conversation with the given ID.
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -16677,7 +17217,7 @@ List all items for a conversation with the given ID.
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -16687,11 +17227,13 @@ List all items for a conversation with the given ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "tool_search_output"`
+      - `type: "tool_search_output" (default: "tool_search_output")`
 
         The type of the item. Always `tool_search_output`.
 
@@ -16747,7 +17289,7 @@ List all items for a conversation with the given ID.
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -16779,7 +17321,7 @@ List all items for a conversation with the given ID.
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -16801,7 +17343,7 @@ List all items for a conversation with the given ID.
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -16837,7 +17379,7 @@ List all items for a conversation with the given ID.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -16847,11 +17389,11 @@ List all items for a conversation with the given ID.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -16869,7 +17411,7 @@ List all items for a conversation with the given ID.
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -16880,7 +17422,7 @@ List all items for a conversation with the given ID.
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -16888,7 +17430,7 @@ List all items for a conversation with the given ID.
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -16896,14 +17438,14 @@ List all items for a conversation with the given ID.
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -16935,7 +17477,7 @@ List all items for a conversation with the given ID.
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -16959,6 +17501,8 @@ List all items for a conversation with the given ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -17038,7 +17582,7 @@ List all items for a conversation with the given ID.
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -17095,10 +17639,14 @@ List all items for a conversation with the given ID.
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -17118,7 +17666,7 @@ List all items for a conversation with the given ID.
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -17127,6 +17675,8 @@ List all items for a conversation with the given ID.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -17158,13 +17708,15 @@ List all items for a conversation with the given ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -17190,7 +17742,7 @@ List all items for a conversation with the given ID.
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -17271,7 +17823,7 @@ List all items for a conversation with the given ID.
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -17279,11 +17831,13 @@ List all items for a conversation with the given ID.
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -17294,11 +17848,13 @@ List all items for a conversation with the given ID.
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -17317,7 +17873,7 @@ List all items for a conversation with the given ID.
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -17339,7 +17895,7 @@ List all items for a conversation with the given ID.
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -17349,7 +17905,7 @@ List all items for a conversation with the given ID.
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -17358,6 +17914,8 @@ List all items for a conversation with the given ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -17379,7 +17937,7 @@ List all items for a conversation with the given ID.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -17388,6 +17946,8 @@ List all items for a conversation with the given ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -17421,21 +17981,29 @@ List all items for a conversation with the given ID.
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -17469,7 +18037,7 @@ List all items for a conversation with the given ID.
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -17478,6 +18046,8 @@ List all items for a conversation with the given ID.
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -17499,7 +18069,7 @@ List all items for a conversation with the given ID.
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -17509,7 +18079,7 @@ List all items for a conversation with the given ID.
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -17535,7 +18105,7 @@ List all items for a conversation with the given ID.
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -17563,7 +18133,7 @@ List all items for a conversation with the given ID.
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -17589,7 +18159,7 @@ List all items for a conversation with the given ID.
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -17599,11 +18169,13 @@ List all items for a conversation with the given ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "additional_tools"`
+      - `type: "additional_tools" (default: "additional_tools")`
 
         The type of the item. Always `additional_tools`.
 
@@ -17618,7 +18190,7 @@ List all items for a conversation with the given ID.
 
         The unique ID of the configuration update item.
 
-      - `type: "configuration_update"`
+      - `type: "configuration_update" (default: "configuration_update")`
 
         The item type. Always `configuration_update`.
 
@@ -17628,7 +18200,7 @@ List all items for a conversation with the given ID.
 
         The reasoning configuration applied by this update.
 
-        - `effort: optional ReasoningEffort or null`
+        - `effort: optional ReasoningEffort or null (default: "medium")`
 
           The reasoning effort used for subsequent responses until another
           configuration update replaces it.
@@ -17666,7 +18238,7 @@ List all items for a conversation with the given ID.
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -17684,7 +18256,7 @@ List all items for a conversation with the given ID.
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -17731,7 +18303,7 @@ List all items for a conversation with the given ID.
 
         Opaque program replay fingerprint that must be round-tripped.
 
-      - `type: "program"`
+      - `type: "program" (default: "program")`
 
         The type of the item. Always `program`.
 
@@ -17759,7 +18331,7 @@ List all items for a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "program_output"`
+      - `type: "program_output" (default: "program_output")`
 
         The type of the item. Always `program_output`.
 
@@ -17777,7 +18349,7 @@ List all items for a conversation with the given ID.
 
         The encrypted content that was produced by compaction.
 
-      - `type: "compaction"`
+      - `type: "compaction" (default: "compaction")`
 
         The type of the item. Always `compaction`.
 
@@ -17816,7 +18388,7 @@ List all items for a conversation with the given ID.
 
             The logs output from the code interpreter.
 
-          - `type: "logs"`
+          - `type: "logs" (default: "logs")`
 
             The type of the output. Always `logs`.
 
@@ -17826,7 +18398,7 @@ List all items for a conversation with the given ID.
 
           The image output from the code interpreter.
 
-          - `type: "image"`
+          - `type: "image" (default: "image")`
 
             The type of the output. Always `image`.
 
@@ -17835,6 +18407,8 @@ List all items for a conversation with the given ID.
           - `url: string`
 
             The URL of the image output from the code interpreter.
+
+            `format: uri`
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -17850,7 +18424,7 @@ List all items for a conversation with the given ID.
 
         - `"failed"`
 
-      - `type: "code_interpreter_call"`
+      - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
         The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -17876,13 +18450,13 @@ List all items for a conversation with the given ID.
 
           Environment variables to set for the command.
 
-        - `type: "exec"`
+        - `type: "exec" (default: "exec")`
 
           The type of the local shell action. Always `exec`.
 
           - `"exec"`
 
-        - `timeout_ms: optional number or null`
+        - `timeout_ms: optional integer or null`
 
           Optional timeout in milliseconds for the command.
 
@@ -17956,11 +18530,11 @@ List all items for a conversation with the given ID.
 
         - `commands: array of string`
 
-        - `max_output_length: number or null`
+        - `max_output_length: integer or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number or null`
+        - `timeout_ms: integer or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -17976,7 +18550,7 @@ List all items for a conversation with the given ID.
 
           Represents the use of a local environment to perform shell actions.
 
-          - `type: "local"`
+          - `type: "local" (default: "local")`
 
             The environment type. Always `local`.
 
@@ -17988,7 +18562,7 @@ List all items for a conversation with the given ID.
 
           - `container_id: string`
 
-          - `type: "container_reference"`
+          - `type: "container_reference" (default: "container_reference")`
 
             The environment type. Always `container_reference`.
 
@@ -18004,7 +18578,7 @@ List all items for a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "shell_call"`
+      - `type: "shell_call" (default: "shell_call")`
 
         The type of the item. Always `shell_call`.
 
@@ -18016,7 +18590,7 @@ List all items for a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -18026,7 +18600,7 @@ List all items for a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -18046,7 +18620,7 @@ List all items for a conversation with the given ID.
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -18062,7 +18636,7 @@ List all items for a conversation with the given ID.
 
             Indicates that the shell call exceeded its configured time limit.
 
-            - `type: "timeout"`
+            - `type: "timeout" (default: "timeout")`
 
               The outcome type. Always `timeout`.
 
@@ -18072,11 +18646,11 @@ List all items for a conversation with the given ID.
 
             Indicates that the shell commands finished and returned an exit code.
 
-            - `exit_code: number`
+            - `exit_code: integer`
 
               Exit code from the shell process.
 
-            - `type: "exit"`
+            - `type: "exit" (default: "exit")`
 
               The outcome type. Always `exit`.
 
@@ -18104,7 +18678,7 @@ List all items for a conversation with the given ID.
 
         - `"incomplete"`
 
-      - `type: "shell_call_output"`
+      - `type: "shell_call_output" (default: "shell_call_output")`
 
         The type of the shell call output. Always `shell_call_output`.
 
@@ -18116,7 +18690,7 @@ List all items for a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -18126,7 +18700,7 @@ List all items for a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -18162,7 +18736,7 @@ List all items for a conversation with the given ID.
 
             Path of the file to create.
 
-          - `type: "create_file"`
+          - `type: "create_file" (default: "create_file")`
 
             Create a new file with the provided diff.
 
@@ -18176,7 +18750,7 @@ List all items for a conversation with the given ID.
 
             Path of the file to delete.
 
-          - `type: "delete_file"`
+          - `type: "delete_file" (default: "delete_file")`
 
             Delete the specified file.
 
@@ -18194,7 +18768,7 @@ List all items for a conversation with the given ID.
 
             Path of the file to update.
 
-          - `type: "update_file"`
+          - `type: "update_file" (default: "update_file")`
 
             Update an existing file with the provided diff.
 
@@ -18208,7 +18782,7 @@ List all items for a conversation with the given ID.
 
         - `"completed"`
 
-      - `type: "apply_patch_call"`
+      - `type: "apply_patch_call" (default: "apply_patch_call")`
 
         The type of the item. Always `apply_patch_call`.
 
@@ -18220,7 +18794,7 @@ List all items for a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -18230,7 +18804,7 @@ List all items for a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -18258,7 +18832,7 @@ List all items for a conversation with the given ID.
 
         - `"failed"`
 
-      - `type: "apply_patch_call_output"`
+      - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
         The type of the item. Always `apply_patch_call_output`.
 
@@ -18270,7 +18844,7 @@ List all items for a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -18280,7 +18854,7 @@ List all items for a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -18423,11 +18997,11 @@ List all items for a conversation with the given ID.
 
         - `McpProtocolError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
-          - `type: "mcp_protocol_error"`
+          - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
             - `"mcp_protocol_error"`
 
@@ -18435,17 +19009,17 @@ List all items for a conversation with the given ID.
 
           - `content: unknown`
 
-          - `type: "mcp_tool_execution_error"`
+          - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
             - `"mcp_tool_execution_error"`
 
         - `HTTPError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
-          - `type: "http_error"`
+          - `type: "http_error" (default: "http_error")`
 
             - `"http_error"`
 
@@ -18503,7 +19077,7 @@ List all items for a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -18513,7 +19087,7 @@ List all items for a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -18570,7 +19144,7 @@ List all items for a conversation with the given ID.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -18582,7 +19156,9 @@ List all items for a conversation with the given ID.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -18613,7 +19189,7 @@ curl https://api.openai.com/v1/conversations/$CONVERSATION_ID/items \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -18650,7 +19226,7 @@ curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -18733,7 +19309,7 @@ Get a single item from a conversation with the given IDs.
 
           The text input to the model.
 
-        - `type: "input_text"`
+        - `type: "input_text" (default: "input_text")`
 
           The type of the input item. Always `input_text`.
 
@@ -18743,7 +19319,7 @@ Get a single item from a conversation with the given IDs.
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -18777,11 +19353,11 @@ Get a single item from a conversation with the given IDs.
 
               The filename of the file cited.
 
-            - `index: number`
+            - `index: integer`
 
               The index in the output text at which to insert the file citation.
 
-            - `type: "file_citation"`
+            - `type: "file_citation" (default: "file_citation")`
 
               The type of the file citation. Always `file_citation`.
 
@@ -18791,11 +19367,11 @@ Get a single item from a conversation with the given IDs.
 
             A citation for a web resource used to generate a model response.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the URL citation in the message.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the URL citation in the message.
 
@@ -18803,7 +19379,7 @@ Get a single item from a conversation with the given IDs.
 
               The title of the web resource.
 
-            - `type: "url_citation"`
+            - `type: "url_citation" (default: "url_citation")`
 
               The type of the URL citation. Always `url_citation`.
 
@@ -18813,6 +19389,8 @@ Get a single item from a conversation with the given IDs.
 
               The URL of the web resource.
 
+              `format: uri`
+
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
             A citation for a container file used to generate a model response.
@@ -18821,7 +19399,7 @@ Get a single item from a conversation with the given IDs.
 
               The ID of the container file.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the container file citation in the message.
 
@@ -18833,11 +19411,11 @@ Get a single item from a conversation with the given IDs.
 
               The filename of the container file cited.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the container file citation in the message.
 
-            - `type: "container_file_citation"`
+            - `type: "container_file_citation" (default: "container_file_citation")`
 
               The type of the container file citation. Always `container_file_citation`.
 
@@ -18851,7 +19429,7 @@ Get a single item from a conversation with the given IDs.
 
               The ID of the file.
 
-            - `index: number`
+            - `index: integer`
 
               The index of the file in the list of files.
 
@@ -18881,7 +19459,7 @@ Get a single item from a conversation with the given IDs.
 
           The text output from the model.
 
-        - `type: "output_text"`
+        - `type: "output_text" (default: "output_text")`
 
           The type of the output text. Always `output_text`.
 
@@ -18893,7 +19471,7 @@ Get a single item from a conversation with the given IDs.
 
         - `text: string`
 
-        - `type: "text"`
+        - `type: "text" (default: "text")`
 
           - `"text"`
 
@@ -18905,7 +19483,7 @@ Get a single item from a conversation with the given IDs.
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -18919,7 +19497,7 @@ Get a single item from a conversation with the given IDs.
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -18933,7 +19511,7 @@ Get a single item from a conversation with the given IDs.
 
           The refusal explanation from the model.
 
-        - `type: "refusal"`
+        - `type: "refusal" (default: "refusal")`
 
           The type of the refusal. Always `refusal`.
 
@@ -18955,7 +19533,7 @@ Get a single item from a conversation with the given IDs.
 
           - `"original"`
 
-        - `type: "input_image"`
+        - `type: "input_image" (default: "input_image")`
 
           The type of the input item. Always `input_image`.
 
@@ -18969,11 +19547,13 @@ Get a single item from a conversation with the given IDs.
 
           The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+          `format: uri`
+
         - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -19003,7 +19583,9 @@ Get a single item from a conversation with the given IDs.
 
           The URL of the screenshot image.
 
-        - `type: "computer_screenshot"`
+          `format: uri`
+
+        - `type: "computer_screenshot" (default: "computer_screenshot")`
 
           Specifies the event type. For a computer screenshot, this property is always set to `computer_screenshot`.
 
@@ -19013,7 +19595,7 @@ Get a single item from a conversation with the given IDs.
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -19031,7 +19613,7 @@ Get a single item from a conversation with the given IDs.
 
         A file input to the model.
 
-        - `type: "input_file"`
+        - `type: "input_file" (default: "input_file")`
 
           The type of the input item. Always `input_file`.
 
@@ -19059,6 +19641,8 @@ Get a single item from a conversation with the given IDs.
 
           The URL of the file to be sent to the model.
 
+          `format: uri`
+
         - `filename: optional string`
 
           The name of the file to be sent to the model.
@@ -19067,7 +19651,7 @@ Get a single item from a conversation with the given IDs.
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -19111,7 +19695,7 @@ Get a single item from a conversation with the given IDs.
 
       - `"incomplete"`
 
-    - `type: "message"`
+    - `type: "message" (default: "message")`
 
       The type of the message. Always set to `message`.
 
@@ -19170,7 +19754,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -19180,7 +19764,7 @@ Get a single item from a conversation with the given IDs.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -19250,7 +19834,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -19262,7 +19846,9 @@ Get a single item from a conversation with the given IDs.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -19328,6 +19914,8 @@ Get a single item from a conversation with the given IDs.
 
         - `string`
 
+          `maxLength: 512`
+
         - `number`
 
         - `boolean`
@@ -19343,6 +19931,8 @@ Get a single item from a conversation with the given IDs.
       - `score: optional number`
 
         The relevance score of the file - a value between 0 and 1.
+
+        `format: float`
 
       - `text: optional string`
 
@@ -19414,6 +20004,8 @@ Get a single item from a conversation with the given IDs.
 
             The URL of the source.
 
+            `format: uri`
+
       - `OpenPage object { type, url }`
 
         Action type "open_page" - Opens a specific URL from search results.
@@ -19427,6 +20019,8 @@ Get a single item from a conversation with the given IDs.
         - `url: optional string or null`
 
           The URL opened by the model.
+
+          `format: uri`
 
       - `FindInPage object { pattern, type, url }`
 
@@ -19445,6 +20039,8 @@ Get a single item from a conversation with the given IDs.
         - `url: optional string or null`
 
           The URL of the page searched for the pattern, when available.
+
+          `format: uri`
 
   - `ImageGenerationCall object { id, result, status, 8 more }`
 
@@ -19620,7 +20216,7 @@ Get a single item from a conversation with the given IDs.
 
       - `"incomplete"`
 
-    - `type: "computer_call"`
+    - `type: "computer_call" (default: "computer_call")`
 
       The type of the computer call. Always `computer_call`.
 
@@ -19648,17 +20244,17 @@ Get a single item from a conversation with the given IDs.
 
           - `"forward"`
 
-        - `type: "click"`
+        - `type: "click" (default: "click")`
 
           Specifies the event type. For a click action, this property is always `click`.
 
           - `"click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the click occurred.
 
@@ -19674,17 +20270,17 @@ Get a single item from a conversation with the given IDs.
 
           The keys being held while double-clicking.
 
-        - `type: "double_click"`
+        - `type: "double_click" (default: "double_click")`
 
           Specifies the event type. For a double click action, this property is always set to `double_click`.
 
           - `"double_click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the double click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the double click occurred.
 
@@ -19703,15 +20299,15 @@ Get a single item from a conversation with the given IDs.
           ]
           ```
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate.
 
-        - `type: "drag"`
+        - `type: "drag" (default: "drag")`
 
           Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -19729,7 +20325,7 @@ Get a single item from a conversation with the given IDs.
 
           The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-        - `type: "keypress"`
+        - `type: "keypress" (default: "keypress")`
 
           Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -19739,17 +20335,17 @@ Get a single item from a conversation with the given IDs.
 
         A mouse move action.
 
-        - `type: "move"`
+        - `type: "move" (default: "move")`
 
           Specifies the event type. For a move action, this property is always set to `move`.
 
           - `"move"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate to move to.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate to move to.
 
@@ -19761,7 +20357,7 @@ Get a single item from a conversation with the given IDs.
 
         A screenshot action.
 
-        - `type: "screenshot"`
+        - `type: "screenshot" (default: "screenshot")`
 
           Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -19771,25 +20367,25 @@ Get a single item from a conversation with the given IDs.
 
         A scroll action.
 
-        - `scroll_x: number`
+        - `scroll_x: integer`
 
           The horizontal scroll distance.
 
-        - `scroll_y: number`
+        - `scroll_y: integer`
 
           The vertical scroll distance.
 
-        - `type: "scroll"`
+        - `type: "scroll" (default: "scroll")`
 
           Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
           - `"scroll"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the scroll occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the scroll occurred.
 
@@ -19805,7 +20401,7 @@ Get a single item from a conversation with the given IDs.
 
           The text to type.
 
-        - `type: "type"`
+        - `type: "type" (default: "type")`
 
           Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -19815,7 +20411,7 @@ Get a single item from a conversation with the given IDs.
 
         A wait action.
 
-        - `type: "wait"`
+        - `type: "wait" (default: "wait")`
 
           Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -19876,7 +20472,7 @@ Get a single item from a conversation with the given IDs.
 
       A computer screenshot image used with the computer use tool.
 
-      - `type: "computer_screenshot"`
+      - `type: "computer_screenshot" (default: "computer_screenshot")`
 
         Specifies the event type. For a computer screenshot, this property is
         always set to `computer_screenshot`.
@@ -19891,6 +20487,8 @@ Get a single item from a conversation with the given IDs.
 
         The URL of the screenshot image.
 
+        `format: uri`
+
     - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
       The status of the message input. One of `in_progress`, `completed`, or
@@ -19904,7 +20502,7 @@ Get a single item from a conversation with the given IDs.
 
       - `"in_progress"`
 
-    - `type: "computer_call_output"`
+    - `type: "computer_call_output" (default: "computer_call_output")`
 
       The type of the computer tool call output. Always `computer_call_output`.
 
@@ -19963,7 +20561,7 @@ Get a single item from a conversation with the given IDs.
 
       - `"incomplete"`
 
-    - `type: "tool_search_call"`
+    - `type: "tool_search_call" (default: "tool_search_call")`
 
       The type of the item. Always `tool_search_call`.
 
@@ -20021,7 +20619,7 @@ Get a single item from a conversation with the given IDs.
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -20053,7 +20651,7 @@ Get a single item from a conversation with the given IDs.
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -20075,7 +20673,7 @@ Get a single item from a conversation with the given IDs.
 
               The key to compare against the value.
 
-            - `type: "eq" or "ne" or "gt" or 5 more`
+            - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
               Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -20144,7 +20742,7 @@ Get a single item from a conversation with the given IDs.
 
               - `"or"`
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -20180,7 +20778,7 @@ Get a single item from a conversation with the given IDs.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -20190,11 +20788,11 @@ Get a single item from a conversation with the given IDs.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -20212,7 +20810,7 @@ Get a single item from a conversation with the given IDs.
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -20223,7 +20821,7 @@ Get a single item from a conversation with the given IDs.
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -20231,7 +20829,7 @@ Get a single item from a conversation with the given IDs.
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -20239,14 +20837,14 @@ Get a single item from a conversation with the given IDs.
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -20278,7 +20876,7 @@ Get a single item from a conversation with the given IDs.
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -20302,6 +20900,8 @@ Get a single item from a conversation with the given IDs.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -20381,7 +20981,7 @@ Get a single item from a conversation with the given IDs.
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -20438,10 +21038,14 @@ Get a single item from a conversation with the given IDs.
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -20461,7 +21065,7 @@ Get a single item from a conversation with the given IDs.
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -20470,6 +21074,8 @@ Get a single item from a conversation with the given IDs.
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -20489,7 +21095,7 @@ Get a single item from a conversation with the given IDs.
 
               - `ContainerNetworkPolicyDisabled object { type }`
 
-                - `type: "disabled"`
+                - `type: "disabled" (default: "disabled")`
 
                   Disable outbound network access. Always `disabled`.
 
@@ -20501,7 +21107,9 @@ Get a single item from a conversation with the given IDs.
 
                   A list of allowed domains when type is `allowlist`.
 
-                - `type: "allowlist"`
+                  `minItems: 1`
+
+                - `type: "allowlist" (default: "allowlist")`
 
                   Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -20511,17 +21119,25 @@ Get a single item from a conversation with the given IDs.
 
                   Optional domain-scoped secrets for allowlisted domains.
 
+                  `minItems: 1`
+
                   - `domain: string`
 
                     The domain associated with the secret.
+
+                    `minLength: 1`
 
                   - `name: string`
 
                     The name of the secret to inject for the domain.
 
+                    `minLength: 1`
+
                   - `value: string`
 
                     The secret value to inject for the domain.
+
+                    `minLength: 1`, `maxLength: 10485760`
 
         - `type: "code_interpreter"`
 
@@ -20533,13 +21149,15 @@ Get a single item from a conversation with the given IDs.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -20565,7 +21183,7 @@ Get a single item from a conversation with the given IDs.
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -20646,7 +21264,7 @@ Get a single item from a conversation with the given IDs.
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -20654,11 +21272,13 @@ Get a single item from a conversation with the given IDs.
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -20669,11 +21289,13 @@ Get a single item from a conversation with the given IDs.
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -20692,7 +21314,7 @@ Get a single item from a conversation with the given IDs.
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -20714,7 +21336,7 @@ Get a single item from a conversation with the given IDs.
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -20724,7 +21346,7 @@ Get a single item from a conversation with the given IDs.
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -20734,6 +21356,8 @@ Get a single item from a conversation with the given IDs.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
@@ -20742,7 +21366,7 @@ Get a single item from a conversation with the given IDs.
 
           - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-            - `type: "container_auto"`
+            - `type: "container_auto" (default: "container_auto")`
 
               Automatically creates a container for this request
 
@@ -20751,6 +21375,8 @@ Get a single item from a conversation with the given IDs.
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -20776,13 +21402,17 @@ Get a single item from a conversation with the given IDs.
 
               An optional list of skills referenced by id or inline data.
 
+              `maxItems: 200`
+
               - `SkillReference object { skill_id, type, version }`
 
                 - `skill_id: string`
 
                   The ID of the referenced skill.
 
-                - `type: "skill_reference"`
+                  `minLength: 1`, `maxLength: 64`
+
+                - `type: "skill_reference" (default: "skill_reference")`
 
                   References a skill created with the /v1/skills endpoint.
 
@@ -20810,19 +21440,21 @@ Get a single item from a conversation with the given IDs.
 
                     Base64-encoded skill zip bundle.
 
-                  - `media_type: "application/zip"`
+                    `minLength: 1`, `maxLength: 70254592`
+
+                  - `media_type: "application/zip" (default: "application/zip")`
 
                     The media type of the inline skill payload. Must be `application/zip`.
 
                     - `"application/zip"`
 
-                  - `type: "base64"`
+                  - `type: "base64" (default: "base64")`
 
                     The type of the inline skill source. Must be `base64`.
 
                     - `"base64"`
 
-                - `type: "inline"`
+                - `type: "inline" (default: "inline")`
 
                   Defines an inline skill for this request.
 
@@ -20830,7 +21462,7 @@ Get a single item from a conversation with the given IDs.
 
           - `LocalEnvironment object { type, skills }`
 
-            - `type: "local"`
+            - `type: "local" (default: "local")`
 
               Use a local computer environment.
 
@@ -20839,6 +21471,8 @@ Get a single item from a conversation with the given IDs.
             - `skills: optional array of LocalSkill`
 
               An optional list of skills.
+
+              `maxItems: 200`
 
               - `description: string`
 
@@ -20858,7 +21492,7 @@ Get a single item from a conversation with the given IDs.
 
               The ID of the referenced container.
 
-            - `type: "container_reference"`
+            - `type: "container_reference" (default: "container_reference")`
 
               References a container created with the /v1/containers endpoint
 
@@ -20872,7 +21506,7 @@ Get a single item from a conversation with the given IDs.
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -20881,6 +21515,8 @@ Get a single item from a conversation with the given IDs.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -20906,7 +21542,7 @@ Get a single item from a conversation with the given IDs.
 
             Unconstrained free-form text.
 
-            - `type: "text"`
+            - `type: "text" (default: "text")`
 
               Unconstrained text format. Always `text`.
 
@@ -20928,7 +21564,7 @@ Get a single item from a conversation with the given IDs.
 
               - `"regex"`
 
-            - `type: "grammar"`
+            - `type: "grammar" (default: "grammar")`
 
               Grammar format. Always `grammar`.
 
@@ -20946,21 +21582,29 @@ Get a single item from a conversation with the given IDs.
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-            - `type: "function"`
+              `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -20994,7 +21638,7 @@ Get a single item from a conversation with the given IDs.
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -21003,6 +21647,8 @@ Get a single item from a conversation with the given IDs.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -21024,7 +21670,7 @@ Get a single item from a conversation with the given IDs.
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -21034,7 +21680,7 @@ Get a single item from a conversation with the given IDs.
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -21060,7 +21706,7 @@ Get a single item from a conversation with the given IDs.
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -21088,7 +21734,7 @@ Get a single item from a conversation with the given IDs.
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -21114,7 +21760,7 @@ Get a single item from a conversation with the given IDs.
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -21124,11 +21770,13 @@ Get a single item from a conversation with the given IDs.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "tool_search_output"`
+    - `type: "tool_search_output" (default: "tool_search_output")`
 
       The type of the item. Always `tool_search_output`.
 
@@ -21184,7 +21832,7 @@ Get a single item from a conversation with the given IDs.
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -21216,7 +21864,7 @@ Get a single item from a conversation with the given IDs.
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -21238,7 +21886,7 @@ Get a single item from a conversation with the given IDs.
 
             Combine multiple filters using `and` or `or`.
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -21274,7 +21922,7 @@ Get a single item from a conversation with the given IDs.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -21284,11 +21932,11 @@ Get a single item from a conversation with the given IDs.
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -21306,7 +21954,7 @@ Get a single item from a conversation with the given IDs.
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -21317,7 +21965,7 @@ Get a single item from a conversation with the given IDs.
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -21325,7 +21973,7 @@ Get a single item from a conversation with the given IDs.
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -21333,14 +21981,14 @@ Get a single item from a conversation with the given IDs.
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -21372,7 +22020,7 @@ Get a single item from a conversation with the given IDs.
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -21396,6 +22044,8 @@ Get a single item from a conversation with the given IDs.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -21475,7 +22125,7 @@ Get a single item from a conversation with the given IDs.
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -21532,10 +22182,14 @@ Get a single item from a conversation with the given IDs.
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -21555,7 +22209,7 @@ Get a single item from a conversation with the given IDs.
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -21564,6 +22218,8 @@ Get a single item from a conversation with the given IDs.
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -21595,13 +22251,15 @@ Get a single item from a conversation with the given IDs.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -21627,7 +22285,7 @@ Get a single item from a conversation with the given IDs.
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -21708,7 +22366,7 @@ Get a single item from a conversation with the given IDs.
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -21716,11 +22374,13 @@ Get a single item from a conversation with the given IDs.
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -21731,11 +22391,13 @@ Get a single item from a conversation with the given IDs.
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -21754,7 +22416,7 @@ Get a single item from a conversation with the given IDs.
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -21776,7 +22438,7 @@ Get a single item from a conversation with the given IDs.
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -21786,7 +22448,7 @@ Get a single item from a conversation with the given IDs.
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -21795,6 +22457,8 @@ Get a single item from a conversation with the given IDs.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -21816,7 +22480,7 @@ Get a single item from a conversation with the given IDs.
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -21825,6 +22489,8 @@ Get a single item from a conversation with the given IDs.
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -21858,21 +22524,29 @@ Get a single item from a conversation with the given IDs.
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-            - `type: "function"`
+              `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -21906,7 +22580,7 @@ Get a single item from a conversation with the given IDs.
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -21915,6 +22589,8 @@ Get a single item from a conversation with the given IDs.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -21936,7 +22612,7 @@ Get a single item from a conversation with the given IDs.
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -21946,7 +22622,7 @@ Get a single item from a conversation with the given IDs.
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -21972,7 +22648,7 @@ Get a single item from a conversation with the given IDs.
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -22000,7 +22676,7 @@ Get a single item from a conversation with the given IDs.
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -22026,7 +22702,7 @@ Get a single item from a conversation with the given IDs.
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -22036,11 +22712,13 @@ Get a single item from a conversation with the given IDs.
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "additional_tools"`
+    - `type: "additional_tools" (default: "additional_tools")`
 
       The type of the item. Always `additional_tools`.
 
@@ -22055,7 +22733,7 @@ Get a single item from a conversation with the given IDs.
 
       The unique ID of the configuration update item.
 
-    - `type: "configuration_update"`
+    - `type: "configuration_update" (default: "configuration_update")`
 
       The item type. Always `configuration_update`.
 
@@ -22065,7 +22743,7 @@ Get a single item from a conversation with the given IDs.
 
       The reasoning configuration applied by this update.
 
-      - `effort: optional ReasoningEffort or null`
+      - `effort: optional ReasoningEffort or null (default: "medium")`
 
         The reasoning effort used for subsequent responses until another
         configuration update replaces it.
@@ -22103,7 +22781,7 @@ Get a single item from a conversation with the given IDs.
 
         A summary of the reasoning output from the model so far.
 
-      - `type: "summary_text"`
+      - `type: "summary_text" (default: "summary_text")`
 
         The type of the object. Always `summary_text`.
 
@@ -22121,7 +22799,7 @@ Get a single item from a conversation with the given IDs.
 
         The reasoning text from the model.
 
-      - `type: "reasoning_text"`
+      - `type: "reasoning_text" (default: "reasoning_text")`
 
         The type of the reasoning text. Always `reasoning_text`.
 
@@ -22168,7 +22846,7 @@ Get a single item from a conversation with the given IDs.
 
       Opaque program replay fingerprint that must be round-tripped.
 
-    - `type: "program"`
+    - `type: "program" (default: "program")`
 
       The type of the item. Always `program`.
 
@@ -22196,7 +22874,7 @@ Get a single item from a conversation with the given IDs.
 
       - `"incomplete"`
 
-    - `type: "program_output"`
+    - `type: "program_output" (default: "program_output")`
 
       The type of the item. Always `program_output`.
 
@@ -22214,7 +22892,7 @@ Get a single item from a conversation with the given IDs.
 
       The encrypted content that was produced by compaction.
 
-    - `type: "compaction"`
+    - `type: "compaction" (default: "compaction")`
 
       The type of the item. Always `compaction`.
 
@@ -22253,7 +22931,7 @@ Get a single item from a conversation with the given IDs.
 
           The logs output from the code interpreter.
 
-        - `type: "logs"`
+        - `type: "logs" (default: "logs")`
 
           The type of the output. Always `logs`.
 
@@ -22263,7 +22941,7 @@ Get a single item from a conversation with the given IDs.
 
         The image output from the code interpreter.
 
-        - `type: "image"`
+        - `type: "image" (default: "image")`
 
           The type of the output. Always `image`.
 
@@ -22272,6 +22950,8 @@ Get a single item from a conversation with the given IDs.
         - `url: string`
 
           The URL of the image output from the code interpreter.
+
+          `format: uri`
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -22287,7 +22967,7 @@ Get a single item from a conversation with the given IDs.
 
       - `"failed"`
 
-    - `type: "code_interpreter_call"`
+    - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
       The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -22313,13 +22993,13 @@ Get a single item from a conversation with the given IDs.
 
         Environment variables to set for the command.
 
-      - `type: "exec"`
+      - `type: "exec" (default: "exec")`
 
         The type of the local shell action. Always `exec`.
 
         - `"exec"`
 
-      - `timeout_ms: optional number or null`
+      - `timeout_ms: optional integer or null`
 
         Optional timeout in milliseconds for the command.
 
@@ -22393,11 +23073,11 @@ Get a single item from a conversation with the given IDs.
 
       - `commands: array of string`
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         Optional maximum number of characters to return from each command.
 
-      - `timeout_ms: number or null`
+      - `timeout_ms: integer or null`
 
         Optional timeout in milliseconds for the commands.
 
@@ -22413,7 +23093,7 @@ Get a single item from a conversation with the given IDs.
 
         Represents the use of a local environment to perform shell actions.
 
-        - `type: "local"`
+        - `type: "local" (default: "local")`
 
           The environment type. Always `local`.
 
@@ -22425,7 +23105,7 @@ Get a single item from a conversation with the given IDs.
 
         - `container_id: string`
 
-        - `type: "container_reference"`
+        - `type: "container_reference" (default: "container_reference")`
 
           The environment type. Always `container_reference`.
 
@@ -22441,7 +23121,7 @@ Get a single item from a conversation with the given IDs.
 
       - `"incomplete"`
 
-    - `type: "shell_call"`
+    - `type: "shell_call" (default: "shell_call")`
 
       The type of the item. Always `shell_call`.
 
@@ -22453,7 +23133,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -22463,7 +23143,7 @@ Get a single item from a conversation with the given IDs.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -22483,7 +23163,7 @@ Get a single item from a conversation with the given IDs.
 
       The unique ID of the shell tool call generated by the model.
 
-    - `max_output_length: number or null`
+    - `max_output_length: integer or null`
 
       The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -22499,7 +23179,7 @@ Get a single item from a conversation with the given IDs.
 
           Indicates that the shell call exceeded its configured time limit.
 
-          - `type: "timeout"`
+          - `type: "timeout" (default: "timeout")`
 
             The outcome type. Always `timeout`.
 
@@ -22509,11 +23189,11 @@ Get a single item from a conversation with the given IDs.
 
           Indicates that the shell commands finished and returned an exit code.
 
-          - `exit_code: number`
+          - `exit_code: integer`
 
             Exit code from the shell process.
 
-          - `type: "exit"`
+          - `type: "exit" (default: "exit")`
 
             The outcome type. Always `exit`.
 
@@ -22541,7 +23221,7 @@ Get a single item from a conversation with the given IDs.
 
       - `"incomplete"`
 
-    - `type: "shell_call_output"`
+    - `type: "shell_call_output" (default: "shell_call_output")`
 
       The type of the shell call output. Always `shell_call_output`.
 
@@ -22553,7 +23233,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -22563,7 +23243,7 @@ Get a single item from a conversation with the given IDs.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -22599,7 +23279,7 @@ Get a single item from a conversation with the given IDs.
 
           Path of the file to create.
 
-        - `type: "create_file"`
+        - `type: "create_file" (default: "create_file")`
 
           Create a new file with the provided diff.
 
@@ -22613,7 +23293,7 @@ Get a single item from a conversation with the given IDs.
 
           Path of the file to delete.
 
-        - `type: "delete_file"`
+        - `type: "delete_file" (default: "delete_file")`
 
           Delete the specified file.
 
@@ -22631,7 +23311,7 @@ Get a single item from a conversation with the given IDs.
 
           Path of the file to update.
 
-        - `type: "update_file"`
+        - `type: "update_file" (default: "update_file")`
 
           Update an existing file with the provided diff.
 
@@ -22645,7 +23325,7 @@ Get a single item from a conversation with the given IDs.
 
       - `"completed"`
 
-    - `type: "apply_patch_call"`
+    - `type: "apply_patch_call" (default: "apply_patch_call")`
 
       The type of the item. Always `apply_patch_call`.
 
@@ -22657,7 +23337,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -22667,7 +23347,7 @@ Get a single item from a conversation with the given IDs.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -22695,7 +23375,7 @@ Get a single item from a conversation with the given IDs.
 
       - `"failed"`
 
-    - `type: "apply_patch_call_output"`
+    - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
       The type of the item. Always `apply_patch_call_output`.
 
@@ -22707,7 +23387,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -22717,7 +23397,7 @@ Get a single item from a conversation with the given IDs.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -22860,11 +23540,11 @@ Get a single item from a conversation with the given IDs.
 
       - `McpProtocolError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "mcp_protocol_error"`
+        - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
           - `"mcp_protocol_error"`
 
@@ -22872,17 +23552,17 @@ Get a single item from a conversation with the given IDs.
 
         - `content: unknown`
 
-        - `type: "mcp_tool_execution_error"`
+        - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
           - `"mcp_tool_execution_error"`
 
       - `HTTPError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "http_error"`
+        - `type: "http_error" (default: "http_error")`
 
           - `"http_error"`
 
@@ -22940,7 +23620,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -22950,7 +23630,7 @@ Get a single item from a conversation with the given IDs.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -23007,7 +23687,7 @@ Get a single item from a conversation with the given IDs.
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -23019,7 +23699,9 @@ Get a single item from a conversation with the given IDs.
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -23032,7 +23714,7 @@ curl https://api.openai.com/v1/conversations/$CONVERSATION_ID/items/$ITEM_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -23061,7 +23743,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -23103,7 +23785,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The text input to the model.
 
-        - `type: "input_text"`
+        - `type: "input_text" (default: "input_text")`
 
           The type of the input item. Always `input_text`.
 
@@ -23113,7 +23795,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -23147,11 +23829,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The filename of the file cited.
 
-            - `index: number`
+            - `index: integer`
 
               The index in the output text at which to insert the file citation.
 
-            - `type: "file_citation"`
+            - `type: "file_citation" (default: "file_citation")`
 
               The type of the file citation. Always `file_citation`.
 
@@ -23161,11 +23843,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             A citation for a web resource used to generate a model response.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the URL citation in the message.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the URL citation in the message.
 
@@ -23173,7 +23855,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The title of the web resource.
 
-            - `type: "url_citation"`
+            - `type: "url_citation" (default: "url_citation")`
 
               The type of the URL citation. Always `url_citation`.
 
@@ -23183,6 +23865,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The URL of the web resource.
 
+              `format: uri`
+
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
             A citation for a container file used to generate a model response.
@@ -23191,7 +23875,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The ID of the container file.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the container file citation in the message.
 
@@ -23203,11 +23887,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The filename of the container file cited.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the container file citation in the message.
 
-            - `type: "container_file_citation"`
+            - `type: "container_file_citation" (default: "container_file_citation")`
 
               The type of the container file citation. Always `container_file_citation`.
 
@@ -23221,7 +23905,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The ID of the file.
 
-            - `index: number`
+            - `index: integer`
 
               The index of the file in the list of files.
 
@@ -23251,7 +23935,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The text output from the model.
 
-        - `type: "output_text"`
+        - `type: "output_text" (default: "output_text")`
 
           The type of the output text. Always `output_text`.
 
@@ -23263,7 +23947,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `text: string`
 
-        - `type: "text"`
+        - `type: "text" (default: "text")`
 
           - `"text"`
 
@@ -23275,7 +23959,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -23289,7 +23973,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -23303,7 +23987,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The refusal explanation from the model.
 
-        - `type: "refusal"`
+        - `type: "refusal" (default: "refusal")`
 
           The type of the refusal. Always `refusal`.
 
@@ -23325,7 +24009,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"original"`
 
-        - `type: "input_image"`
+        - `type: "input_image" (default: "input_image")`
 
           The type of the input item. Always `input_image`.
 
@@ -23339,11 +24023,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+          `format: uri`
+
         - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -23373,7 +24059,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The URL of the screenshot image.
 
-        - `type: "computer_screenshot"`
+          `format: uri`
+
+        - `type: "computer_screenshot" (default: "computer_screenshot")`
 
           Specifies the event type. For a computer screenshot, this property is always set to `computer_screenshot`.
 
@@ -23383,7 +24071,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -23401,7 +24089,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A file input to the model.
 
-        - `type: "input_file"`
+        - `type: "input_file" (default: "input_file")`
 
           The type of the input item. Always `input_file`.
 
@@ -23429,6 +24117,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The URL of the file to be sent to the model.
 
+          `format: uri`
+
         - `filename: optional string`
 
           The name of the file to be sent to the model.
@@ -23437,7 +24127,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -23481,7 +24171,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"incomplete"`
 
-    - `type: "message"`
+    - `type: "message" (default: "message")`
 
       The type of the message. Always set to `message`.
 
@@ -23540,7 +24230,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -23550,7 +24240,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -23620,7 +24310,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -23632,7 +24322,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -23698,6 +24390,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `string`
 
+          `maxLength: 512`
+
         - `number`
 
         - `boolean`
@@ -23713,6 +24407,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
       - `score: optional number`
 
         The relevance score of the file - a value between 0 and 1.
+
+        `format: float`
 
       - `text: optional string`
 
@@ -23784,6 +24480,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The URL of the source.
 
+            `format: uri`
+
       - `OpenPage object { type, url }`
 
         Action type "open_page" - Opens a specific URL from search results.
@@ -23797,6 +24495,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `url: optional string or null`
 
           The URL opened by the model.
+
+          `format: uri`
 
       - `FindInPage object { pattern, type, url }`
 
@@ -23815,6 +24515,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `url: optional string or null`
 
           The URL of the page searched for the pattern, when available.
+
+          `format: uri`
 
   - `ImageGenerationCall object { id, result, status, 8 more }`
 
@@ -23990,7 +24692,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"incomplete"`
 
-    - `type: "computer_call"`
+    - `type: "computer_call" (default: "computer_call")`
 
       The type of the computer call. Always `computer_call`.
 
@@ -24018,17 +24720,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"forward"`
 
-        - `type: "click"`
+        - `type: "click" (default: "click")`
 
           Specifies the event type. For a click action, this property is always `click`.
 
           - `"click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the click occurred.
 
@@ -24044,17 +24746,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The keys being held while double-clicking.
 
-        - `type: "double_click"`
+        - `type: "double_click" (default: "double_click")`
 
           Specifies the event type. For a double click action, this property is always set to `double_click`.
 
           - `"double_click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the double click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the double click occurred.
 
@@ -24073,15 +24775,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           ]
           ```
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate.
 
-        - `type: "drag"`
+        - `type: "drag" (default: "drag")`
 
           Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -24099,7 +24801,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-        - `type: "keypress"`
+        - `type: "keypress" (default: "keypress")`
 
           Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -24109,17 +24811,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A mouse move action.
 
-        - `type: "move"`
+        - `type: "move" (default: "move")`
 
           Specifies the event type. For a move action, this property is always set to `move`.
 
           - `"move"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate to move to.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate to move to.
 
@@ -24131,7 +24833,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A screenshot action.
 
-        - `type: "screenshot"`
+        - `type: "screenshot" (default: "screenshot")`
 
           Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -24141,25 +24843,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A scroll action.
 
-        - `scroll_x: number`
+        - `scroll_x: integer`
 
           The horizontal scroll distance.
 
-        - `scroll_y: number`
+        - `scroll_y: integer`
 
           The vertical scroll distance.
 
-        - `type: "scroll"`
+        - `type: "scroll" (default: "scroll")`
 
           Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
           - `"scroll"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the scroll occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the scroll occurred.
 
@@ -24175,7 +24877,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The text to type.
 
-        - `type: "type"`
+        - `type: "type" (default: "type")`
 
           Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -24185,7 +24887,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A wait action.
 
-        - `type: "wait"`
+        - `type: "wait" (default: "wait")`
 
           Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -24246,7 +24948,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       A computer screenshot image used with the computer use tool.
 
-      - `type: "computer_screenshot"`
+      - `type: "computer_screenshot" (default: "computer_screenshot")`
 
         Specifies the event type. For a computer screenshot, this property is
         always set to `computer_screenshot`.
@@ -24261,6 +24963,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         The URL of the screenshot image.
 
+        `format: uri`
+
     - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
       The status of the message input. One of `in_progress`, `completed`, or
@@ -24274,7 +24978,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"in_progress"`
 
-    - `type: "computer_call_output"`
+    - `type: "computer_call_output" (default: "computer_call_output")`
 
       The type of the computer tool call output. Always `computer_call_output`.
 
@@ -24333,7 +25037,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"incomplete"`
 
-    - `type: "tool_search_call"`
+    - `type: "tool_search_call" (default: "tool_search_call")`
 
       The type of the item. Always `tool_search_call`.
 
@@ -24391,7 +25095,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -24423,7 +25127,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -24445,7 +25149,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The key to compare against the value.
 
-            - `type: "eq" or "ne" or "gt" or 5 more`
+            - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
               Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -24514,7 +25218,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `"or"`
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -24550,7 +25254,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -24560,11 +25264,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -24582,7 +25286,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -24593,7 +25297,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -24601,7 +25305,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -24609,14 +25313,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -24648,7 +25352,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -24672,6 +25376,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -24751,7 +25457,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -24808,10 +25514,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -24831,7 +25541,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -24840,6 +25550,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -24859,7 +25571,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `ContainerNetworkPolicyDisabled object { type }`
 
-                - `type: "disabled"`
+                - `type: "disabled" (default: "disabled")`
 
                   Disable outbound network access. Always `disabled`.
 
@@ -24871,7 +25583,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   A list of allowed domains when type is `allowlist`.
 
-                - `type: "allowlist"`
+                  `minItems: 1`
+
+                - `type: "allowlist" (default: "allowlist")`
 
                   Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -24881,17 +25595,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                   Optional domain-scoped secrets for allowlisted domains.
 
+                  `minItems: 1`
+
                   - `domain: string`
 
                     The domain associated with the secret.
+
+                    `minLength: 1`
 
                   - `name: string`
 
                     The name of the secret to inject for the domain.
 
+                    `minLength: 1`
+
                   - `value: string`
 
                     The secret value to inject for the domain.
+
+                    `minLength: 1`, `maxLength: 10485760`
 
         - `type: "code_interpreter"`
 
@@ -24903,13 +25625,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -24935,7 +25659,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -25016,7 +25740,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -25024,11 +25748,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -25039,11 +25765,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -25062,7 +25790,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -25084,7 +25812,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -25094,7 +25822,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -25104,6 +25832,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
@@ -25112,7 +25842,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-            - `type: "container_auto"`
+            - `type: "container_auto" (default: "container_auto")`
 
               Automatically creates a container for this request
 
@@ -25121,6 +25851,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -25146,13 +25878,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               An optional list of skills referenced by id or inline data.
 
+              `maxItems: 200`
+
               - `SkillReference object { skill_id, type, version }`
 
                 - `skill_id: string`
 
                   The ID of the referenced skill.
 
-                - `type: "skill_reference"`
+                  `minLength: 1`, `maxLength: 64`
+
+                - `type: "skill_reference" (default: "skill_reference")`
 
                   References a skill created with the /v1/skills endpoint.
 
@@ -25180,19 +25916,21 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                     Base64-encoded skill zip bundle.
 
-                  - `media_type: "application/zip"`
+                    `minLength: 1`, `maxLength: 70254592`
+
+                  - `media_type: "application/zip" (default: "application/zip")`
 
                     The media type of the inline skill payload. Must be `application/zip`.
 
                     - `"application/zip"`
 
-                  - `type: "base64"`
+                  - `type: "base64" (default: "base64")`
 
                     The type of the inline skill source. Must be `base64`.
 
                     - `"base64"`
 
-                - `type: "inline"`
+                - `type: "inline" (default: "inline")`
 
                   Defines an inline skill for this request.
 
@@ -25200,7 +25938,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `LocalEnvironment object { type, skills }`
 
-            - `type: "local"`
+            - `type: "local" (default: "local")`
 
               Use a local computer environment.
 
@@ -25209,6 +25947,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `skills: optional array of LocalSkill`
 
               An optional list of skills.
+
+              `maxItems: 200`
 
               - `description: string`
 
@@ -25228,7 +25968,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The ID of the referenced container.
 
-            - `type: "container_reference"`
+            - `type: "container_reference" (default: "container_reference")`
 
               References a container created with the /v1/containers endpoint
 
@@ -25242,7 +25982,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -25251,6 +25991,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -25276,7 +26018,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Unconstrained free-form text.
 
-            - `type: "text"`
+            - `type: "text" (default: "text")`
 
               Unconstrained text format. Always `text`.
 
@@ -25298,7 +26040,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `"regex"`
 
-            - `type: "grammar"`
+            - `type: "grammar" (default: "grammar")`
 
               Grammar format. Always `grammar`.
 
@@ -25316,21 +26058,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-            - `type: "function"`
+              `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -25364,7 +26114,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -25373,6 +26123,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -25394,7 +26146,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -25404,7 +26156,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -25430,7 +26182,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -25458,7 +26210,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -25484,7 +26236,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -25494,11 +26246,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "tool_search_output"`
+    - `type: "tool_search_output" (default: "tool_search_output")`
 
       The type of the item. Always `tool_search_output`.
 
@@ -25554,7 +26308,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -25586,7 +26340,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -25608,7 +26362,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Combine multiple filters using `and` or `or`.
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -25644,7 +26398,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -25654,11 +26408,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -25676,7 +26430,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -25687,7 +26441,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -25695,7 +26449,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -25703,14 +26457,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -25742,7 +26496,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -25766,6 +26520,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -25845,7 +26601,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -25902,10 +26658,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -25925,7 +26685,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -25934,6 +26694,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -25965,13 +26727,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -25997,7 +26761,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -26078,7 +26842,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -26086,11 +26850,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -26101,11 +26867,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -26124,7 +26892,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -26146,7 +26914,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -26156,7 +26924,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -26165,6 +26933,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -26186,7 +26956,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -26195,6 +26965,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -26228,21 +27000,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-            - `type: "function"`
+              `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -26276,7 +27056,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -26285,6 +27065,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -26306,7 +27088,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -26316,7 +27098,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -26342,7 +27124,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -26370,7 +27152,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -26396,7 +27178,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -26406,11 +27188,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "additional_tools"`
+    - `type: "additional_tools" (default: "additional_tools")`
 
       The type of the item. Always `additional_tools`.
 
@@ -26425,7 +27209,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       The unique ID of the configuration update item.
 
-    - `type: "configuration_update"`
+    - `type: "configuration_update" (default: "configuration_update")`
 
       The item type. Always `configuration_update`.
 
@@ -26435,7 +27219,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       The reasoning configuration applied by this update.
 
-      - `effort: optional ReasoningEffort or null`
+      - `effort: optional ReasoningEffort or null (default: "medium")`
 
         The reasoning effort used for subsequent responses until another
         configuration update replaces it.
@@ -26473,7 +27257,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A summary of the reasoning output from the model so far.
 
-      - `type: "summary_text"`
+      - `type: "summary_text" (default: "summary_text")`
 
         The type of the object. Always `summary_text`.
 
@@ -26491,7 +27275,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         The reasoning text from the model.
 
-      - `type: "reasoning_text"`
+      - `type: "reasoning_text" (default: "reasoning_text")`
 
         The type of the reasoning text. Always `reasoning_text`.
 
@@ -26538,7 +27322,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       Opaque program replay fingerprint that must be round-tripped.
 
-    - `type: "program"`
+    - `type: "program" (default: "program")`
 
       The type of the item. Always `program`.
 
@@ -26566,7 +27350,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"incomplete"`
 
-    - `type: "program_output"`
+    - `type: "program_output" (default: "program_output")`
 
       The type of the item. Always `program_output`.
 
@@ -26584,7 +27368,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       The encrypted content that was produced by compaction.
 
-    - `type: "compaction"`
+    - `type: "compaction" (default: "compaction")`
 
       The type of the item. Always `compaction`.
 
@@ -26623,7 +27407,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The logs output from the code interpreter.
 
-        - `type: "logs"`
+        - `type: "logs" (default: "logs")`
 
           The type of the output. Always `logs`.
 
@@ -26633,7 +27417,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         The image output from the code interpreter.
 
-        - `type: "image"`
+        - `type: "image" (default: "image")`
 
           The type of the output. Always `image`.
 
@@ -26642,6 +27426,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `url: string`
 
           The URL of the image output from the code interpreter.
+
+          `format: uri`
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -26657,7 +27443,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"failed"`
 
-    - `type: "code_interpreter_call"`
+    - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
       The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -26683,13 +27469,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         Environment variables to set for the command.
 
-      - `type: "exec"`
+      - `type: "exec" (default: "exec")`
 
         The type of the local shell action. Always `exec`.
 
         - `"exec"`
 
-      - `timeout_ms: optional number or null`
+      - `timeout_ms: optional integer or null`
 
         Optional timeout in milliseconds for the command.
 
@@ -26763,11 +27549,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `commands: array of string`
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         Optional maximum number of characters to return from each command.
 
-      - `timeout_ms: number or null`
+      - `timeout_ms: integer or null`
 
         Optional timeout in milliseconds for the commands.
 
@@ -26783,7 +27569,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         Represents the use of a local environment to perform shell actions.
 
-        - `type: "local"`
+        - `type: "local" (default: "local")`
 
           The environment type. Always `local`.
 
@@ -26795,7 +27581,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `container_id: string`
 
-        - `type: "container_reference"`
+        - `type: "container_reference" (default: "container_reference")`
 
           The environment type. Always `container_reference`.
 
@@ -26811,7 +27597,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"incomplete"`
 
-    - `type: "shell_call"`
+    - `type: "shell_call" (default: "shell_call")`
 
       The type of the item. Always `shell_call`.
 
@@ -26823,7 +27609,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -26833,7 +27619,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -26853,7 +27639,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       The unique ID of the shell tool call generated by the model.
 
-    - `max_output_length: number or null`
+    - `max_output_length: integer or null`
 
       The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -26869,7 +27655,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Indicates that the shell call exceeded its configured time limit.
 
-          - `type: "timeout"`
+          - `type: "timeout" (default: "timeout")`
 
             The outcome type. Always `timeout`.
 
@@ -26879,11 +27665,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Indicates that the shell commands finished and returned an exit code.
 
-          - `exit_code: number`
+          - `exit_code: integer`
 
             Exit code from the shell process.
 
-          - `type: "exit"`
+          - `type: "exit" (default: "exit")`
 
             The outcome type. Always `exit`.
 
@@ -26911,7 +27697,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"incomplete"`
 
-    - `type: "shell_call_output"`
+    - `type: "shell_call_output" (default: "shell_call_output")`
 
       The type of the shell call output. Always `shell_call_output`.
 
@@ -26923,7 +27709,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -26933,7 +27719,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -26969,7 +27755,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Path of the file to create.
 
-        - `type: "create_file"`
+        - `type: "create_file" (default: "create_file")`
 
           Create a new file with the provided diff.
 
@@ -26983,7 +27769,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Path of the file to delete.
 
-        - `type: "delete_file"`
+        - `type: "delete_file" (default: "delete_file")`
 
           Delete the specified file.
 
@@ -27001,7 +27787,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Path of the file to update.
 
-        - `type: "update_file"`
+        - `type: "update_file" (default: "update_file")`
 
           Update an existing file with the provided diff.
 
@@ -27015,7 +27801,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"completed"`
 
-    - `type: "apply_patch_call"`
+    - `type: "apply_patch_call" (default: "apply_patch_call")`
 
       The type of the item. Always `apply_patch_call`.
 
@@ -27027,7 +27813,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -27037,7 +27823,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -27065,7 +27851,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `"failed"`
 
-    - `type: "apply_patch_call_output"`
+    - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
       The type of the item. Always `apply_patch_call_output`.
 
@@ -27077,7 +27863,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -27087,7 +27873,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -27230,11 +28016,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `McpProtocolError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "mcp_protocol_error"`
+        - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
           - `"mcp_protocol_error"`
 
@@ -27242,17 +28028,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `content: unknown`
 
-        - `type: "mcp_tool_execution_error"`
+        - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
           - `"mcp_tool_execution_error"`
 
       - `HTTPError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "http_error"`
+        - `type: "http_error" (default: "http_error")`
 
           - `"http_error"`
 
@@ -27310,7 +28096,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -27320,7 +28106,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -27377,7 +28163,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -27389,7 +28175,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -27425,7 +28213,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -27435,7 +28223,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -27469,11 +28257,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The filename of the file cited.
 
-              - `index: number`
+              - `index: integer`
 
                 The index in the output text at which to insert the file citation.
 
-              - `type: "file_citation"`
+              - `type: "file_citation" (default: "file_citation")`
 
                 The type of the file citation. Always `file_citation`.
 
@@ -27483,11 +28271,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               A citation for a web resource used to generate a model response.
 
-              - `end_index: number`
+              - `end_index: integer`
 
                 The index of the last character of the URL citation in the message.
 
-              - `start_index: number`
+              - `start_index: integer`
 
                 The index of the first character of the URL citation in the message.
 
@@ -27495,7 +28283,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The title of the web resource.
 
-              - `type: "url_citation"`
+              - `type: "url_citation" (default: "url_citation")`
 
                 The type of the URL citation. Always `url_citation`.
 
@@ -27505,6 +28293,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The URL of the web resource.
 
+                `format: uri`
+
             - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
               A citation for a container file used to generate a model response.
@@ -27513,7 +28303,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The ID of the container file.
 
-              - `end_index: number`
+              - `end_index: integer`
 
                 The index of the last character of the container file citation in the message.
 
@@ -27525,11 +28315,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The filename of the container file cited.
 
-              - `start_index: number`
+              - `start_index: integer`
 
                 The index of the first character of the container file citation in the message.
 
-              - `type: "container_file_citation"`
+              - `type: "container_file_citation" (default: "container_file_citation")`
 
                 The type of the container file citation. Always `container_file_citation`.
 
@@ -27543,7 +28333,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The ID of the file.
 
-              - `index: number`
+              - `index: integer`
 
                 The index of the file in the list of files.
 
@@ -27573,7 +28363,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The text output from the model.
 
-          - `type: "output_text"`
+          - `type: "output_text" (default: "output_text")`
 
             The type of the output text. Always `output_text`.
 
@@ -27585,7 +28375,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `text: string`
 
-          - `type: "text"`
+          - `type: "text" (default: "text")`
 
             - `"text"`
 
@@ -27597,7 +28387,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             A summary of the reasoning output from the model so far.
 
-          - `type: "summary_text"`
+          - `type: "summary_text" (default: "summary_text")`
 
             The type of the object. Always `summary_text`.
 
@@ -27611,7 +28401,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The reasoning text from the model.
 
-          - `type: "reasoning_text"`
+          - `type: "reasoning_text" (default: "reasoning_text")`
 
             The type of the reasoning text. Always `reasoning_text`.
 
@@ -27625,7 +28415,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The refusal explanation from the model.
 
-          - `type: "refusal"`
+          - `type: "refusal" (default: "refusal")`
 
             The type of the refusal. Always `refusal`.
 
@@ -27647,7 +28437,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -27661,11 +28451,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -27695,7 +28487,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The URL of the screenshot image.
 
-          - `type: "computer_screenshot"`
+            `format: uri`
+
+          - `type: "computer_screenshot" (default: "computer_screenshot")`
 
             Specifies the event type. For a computer screenshot, this property is always set to `computer_screenshot`.
 
@@ -27705,7 +28499,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -27723,7 +28517,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -27751,6 +28545,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -27759,7 +28555,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -27803,7 +28599,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"incomplete"`
 
-      - `type: "message"`
+      - `type: "message" (default: "message")`
 
         The type of the message. Always set to `message`.
 
@@ -27862,7 +28658,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -27872,7 +28668,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -27942,7 +28738,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -27954,7 +28750,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -28020,6 +28818,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `string`
 
+            `maxLength: 512`
+
           - `number`
 
           - `boolean`
@@ -28035,6 +28835,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
         - `score: optional number`
 
           The relevance score of the file - a value between 0 and 1.
+
+          `format: float`
 
         - `text: optional string`
 
@@ -28106,6 +28908,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The URL of the source.
 
+              `format: uri`
+
         - `OpenPage object { type, url }`
 
           Action type "open_page" - Opens a specific URL from search results.
@@ -28119,6 +28923,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           - `url: optional string or null`
 
             The URL opened by the model.
+
+            `format: uri`
 
         - `FindInPage object { pattern, type, url }`
 
@@ -28137,6 +28943,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           - `url: optional string or null`
 
             The URL of the page searched for the pattern, when available.
+
+            `format: uri`
 
     - `ImageGenerationCall object { id, result, status, 8 more }`
 
@@ -28312,7 +29120,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"incomplete"`
 
-      - `type: "computer_call"`
+      - `type: "computer_call" (default: "computer_call")`
 
         The type of the computer call. Always `computer_call`.
 
@@ -28340,17 +29148,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"forward"`
 
-          - `type: "click"`
+          - `type: "click" (default: "click")`
 
             Specifies the event type. For a click action, this property is always `click`.
 
             - `"click"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the click occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the click occurred.
 
@@ -28366,17 +29174,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The keys being held while double-clicking.
 
-          - `type: "double_click"`
+          - `type: "double_click" (default: "double_click")`
 
             Specifies the event type. For a double click action, this property is always set to `double_click`.
 
             - `"double_click"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the double click occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the double click occurred.
 
@@ -28395,15 +29203,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             ]
             ```
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate.
 
-          - `type: "drag"`
+          - `type: "drag" (default: "drag")`
 
             Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -28421,7 +29229,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-          - `type: "keypress"`
+          - `type: "keypress" (default: "keypress")`
 
             Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -28431,17 +29239,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A mouse move action.
 
-          - `type: "move"`
+          - `type: "move" (default: "move")`
 
             Specifies the event type. For a move action, this property is always set to `move`.
 
             - `"move"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate to move to.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate to move to.
 
@@ -28453,7 +29261,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A screenshot action.
 
-          - `type: "screenshot"`
+          - `type: "screenshot" (default: "screenshot")`
 
             Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -28463,25 +29271,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A scroll action.
 
-          - `scroll_x: number`
+          - `scroll_x: integer`
 
             The horizontal scroll distance.
 
-          - `scroll_y: number`
+          - `scroll_y: integer`
 
             The vertical scroll distance.
 
-          - `type: "scroll"`
+          - `type: "scroll" (default: "scroll")`
 
             Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
             - `"scroll"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the scroll occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the scroll occurred.
 
@@ -28497,7 +29305,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The text to type.
 
-          - `type: "type"`
+          - `type: "type" (default: "type")`
 
             Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -28507,7 +29315,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A wait action.
 
-          - `type: "wait"`
+          - `type: "wait" (default: "wait")`
 
             Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -28568,7 +29376,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         A computer screenshot image used with the computer use tool.
 
-        - `type: "computer_screenshot"`
+        - `type: "computer_screenshot" (default: "computer_screenshot")`
 
           Specifies the event type. For a computer screenshot, this property is
           always set to `computer_screenshot`.
@@ -28583,6 +29391,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The URL of the screenshot image.
 
+          `format: uri`
+
       - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
         The status of the message input. One of `in_progress`, `completed`, or
@@ -28596,7 +29406,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"in_progress"`
 
-      - `type: "computer_call_output"`
+      - `type: "computer_call_output" (default: "computer_call_output")`
 
         The type of the computer tool call output. Always `computer_call_output`.
 
@@ -28655,7 +29465,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"incomplete"`
 
-      - `type: "tool_search_call"`
+      - `type: "tool_search_call" (default: "tool_search_call")`
 
         The type of the item. Always `tool_search_call`.
 
@@ -28713,7 +29523,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -28745,7 +29555,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -28767,7 +29577,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The key to compare against the value.
 
-              - `type: "eq" or "ne" or "gt" or 5 more`
+              - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                 Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -28836,7 +29646,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `"or"`
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -28872,7 +29682,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -28882,11 +29692,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -28904,7 +29714,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -28915,7 +29725,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -28923,7 +29733,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -28931,14 +29741,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -28970,7 +29780,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -28994,6 +29804,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -29073,7 +29885,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -29130,10 +29942,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -29153,7 +29969,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -29162,6 +29978,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -29181,7 +29999,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `ContainerNetworkPolicyDisabled object { type }`
 
-                  - `type: "disabled"`
+                  - `type: "disabled" (default: "disabled")`
 
                     Disable outbound network access. Always `disabled`.
 
@@ -29193,7 +30011,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                     A list of allowed domains when type is `allowlist`.
 
-                  - `type: "allowlist"`
+                    `minItems: 1`
+
+                  - `type: "allowlist" (default: "allowlist")`
 
                     Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -29203,17 +30023,25 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                     Optional domain-scoped secrets for allowlisted domains.
 
+                    `minItems: 1`
+
                     - `domain: string`
 
                       The domain associated with the secret.
+
+                      `minLength: 1`
 
                     - `name: string`
 
                       The name of the secret to inject for the domain.
 
+                      `minLength: 1`
+
                     - `value: string`
 
                       The secret value to inject for the domain.
+
+                      `minLength: 1`, `maxLength: 10485760`
 
           - `type: "code_interpreter"`
 
@@ -29225,13 +30053,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -29257,7 +30087,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -29338,7 +30168,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -29346,11 +30176,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -29361,11 +30193,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -29384,7 +30218,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -29406,7 +30240,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -29416,7 +30250,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -29426,6 +30260,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -29434,7 +30270,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-              - `type: "container_auto"`
+              - `type: "container_auto" (default: "container_auto")`
 
                 Automatically creates a container for this request
 
@@ -29443,6 +30279,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -29468,13 +30306,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 An optional list of skills referenced by id or inline data.
 
+                `maxItems: 200`
+
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
                     The ID of the referenced skill.
 
-                  - `type: "skill_reference"`
+                    `minLength: 1`, `maxLength: 64`
+
+                  - `type: "skill_reference" (default: "skill_reference")`
 
                     References a skill created with the /v1/skills endpoint.
 
@@ -29502,19 +30344,21 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                       Base64-encoded skill zip bundle.
 
-                    - `media_type: "application/zip"`
+                      `minLength: 1`, `maxLength: 70254592`
+
+                    - `media_type: "application/zip" (default: "application/zip")`
 
                       The media type of the inline skill payload. Must be `application/zip`.
 
                       - `"application/zip"`
 
-                    - `type: "base64"`
+                    - `type: "base64" (default: "base64")`
 
                       The type of the inline skill source. Must be `base64`.
 
                       - `"base64"`
 
-                  - `type: "inline"`
+                  - `type: "inline" (default: "inline")`
 
                     Defines an inline skill for this request.
 
@@ -29522,7 +30366,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `LocalEnvironment object { type, skills }`
 
-              - `type: "local"`
+              - `type: "local" (default: "local")`
 
                 Use a local computer environment.
 
@@ -29531,6 +30375,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
               - `skills: optional array of LocalSkill`
 
                 An optional list of skills.
+
+                `maxItems: 200`
 
                 - `description: string`
 
@@ -29550,7 +30396,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The ID of the referenced container.
 
-              - `type: "container_reference"`
+              - `type: "container_reference" (default: "container_reference")`
 
                 References a container created with the /v1/containers endpoint
 
@@ -29564,7 +30410,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -29573,6 +30419,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -29598,7 +30446,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               Unconstrained free-form text.
 
-              - `type: "text"`
+              - `type: "text" (default: "text")`
 
                 Unconstrained text format. Always `text`.
 
@@ -29620,7 +30468,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 - `"regex"`
 
-              - `type: "grammar"`
+              - `type: "grammar" (default: "grammar")`
 
                 Grammar format. Always `grammar`.
 
@@ -29638,21 +30486,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -29686,7 +30542,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -29695,6 +30551,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -29716,7 +30574,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -29726,7 +30584,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -29752,7 +30610,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -29780,7 +30638,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -29806,7 +30664,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -29816,11 +30674,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "tool_search_output"`
+      - `type: "tool_search_output" (default: "tool_search_output")`
 
         The type of the item. Always `tool_search_output`.
 
@@ -29876,7 +30736,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -29908,7 +30768,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -29930,7 +30790,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -29966,7 +30826,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -29976,11 +30836,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -29998,7 +30858,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -30009,7 +30869,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -30017,7 +30877,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -30025,14 +30885,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -30064,7 +30924,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -30088,6 +30948,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -30167,7 +31029,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -30224,10 +31086,14 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -30247,7 +31113,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -30256,6 +31122,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -30287,13 +31155,15 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -30319,7 +31189,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -30400,7 +31270,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -30408,11 +31278,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -30423,11 +31295,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -30446,7 +31320,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -30468,7 +31342,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -30478,7 +31352,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -30487,6 +31361,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -30508,7 +31384,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -30517,6 +31393,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -30550,21 +31428,29 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -30598,7 +31484,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -30607,6 +31493,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -30628,7 +31516,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -30638,7 +31526,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -30664,7 +31552,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -30692,7 +31580,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -30718,7 +31606,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -30728,11 +31616,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "additional_tools"`
+      - `type: "additional_tools" (default: "additional_tools")`
 
         The type of the item. Always `additional_tools`.
 
@@ -30747,7 +31637,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         The unique ID of the configuration update item.
 
-      - `type: "configuration_update"`
+      - `type: "configuration_update" (default: "configuration_update")`
 
         The item type. Always `configuration_update`.
 
@@ -30757,7 +31647,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         The reasoning configuration applied by this update.
 
-        - `effort: optional ReasoningEffort or null`
+        - `effort: optional ReasoningEffort or null (default: "medium")`
 
           The reasoning effort used for subsequent responses until another
           configuration update replaces it.
@@ -30795,7 +31685,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -30813,7 +31703,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -30860,7 +31750,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         Opaque program replay fingerprint that must be round-tripped.
 
-      - `type: "program"`
+      - `type: "program" (default: "program")`
 
         The type of the item. Always `program`.
 
@@ -30888,7 +31778,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"incomplete"`
 
-      - `type: "program_output"`
+      - `type: "program_output" (default: "program_output")`
 
         The type of the item. Always `program_output`.
 
@@ -30906,7 +31796,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         The encrypted content that was produced by compaction.
 
-      - `type: "compaction"`
+      - `type: "compaction" (default: "compaction")`
 
         The type of the item. Always `compaction`.
 
@@ -30945,7 +31835,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The logs output from the code interpreter.
 
-          - `type: "logs"`
+          - `type: "logs" (default: "logs")`
 
             The type of the output. Always `logs`.
 
@@ -30955,7 +31845,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           The image output from the code interpreter.
 
-          - `type: "image"`
+          - `type: "image" (default: "image")`
 
             The type of the output. Always `image`.
 
@@ -30964,6 +31854,8 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
           - `url: string`
 
             The URL of the image output from the code interpreter.
+
+            `format: uri`
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -30979,7 +31871,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"failed"`
 
-      - `type: "code_interpreter_call"`
+      - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
         The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -31005,13 +31897,13 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Environment variables to set for the command.
 
-        - `type: "exec"`
+        - `type: "exec" (default: "exec")`
 
           The type of the local shell action. Always `exec`.
 
           - `"exec"`
 
-        - `timeout_ms: optional number or null`
+        - `timeout_ms: optional integer or null`
 
           Optional timeout in milliseconds for the command.
 
@@ -31085,11 +31977,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `commands: array of string`
 
-        - `max_output_length: number or null`
+        - `max_output_length: integer or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number or null`
+        - `timeout_ms: integer or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -31105,7 +31997,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           Represents the use of a local environment to perform shell actions.
 
-          - `type: "local"`
+          - `type: "local" (default: "local")`
 
             The environment type. Always `local`.
 
@@ -31117,7 +32009,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `container_id: string`
 
-          - `type: "container_reference"`
+          - `type: "container_reference" (default: "container_reference")`
 
             The environment type. Always `container_reference`.
 
@@ -31133,7 +32025,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"incomplete"`
 
-      - `type: "shell_call"`
+      - `type: "shell_call" (default: "shell_call")`
 
         The type of the item. Always `shell_call`.
 
@@ -31145,7 +32037,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -31155,7 +32047,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -31175,7 +32067,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -31191,7 +32083,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Indicates that the shell call exceeded its configured time limit.
 
-            - `type: "timeout"`
+            - `type: "timeout" (default: "timeout")`
 
               The outcome type. Always `timeout`.
 
@@ -31201,11 +32093,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Indicates that the shell commands finished and returned an exit code.
 
-            - `exit_code: number`
+            - `exit_code: integer`
 
               Exit code from the shell process.
 
-            - `type: "exit"`
+            - `type: "exit" (default: "exit")`
 
               The outcome type. Always `exit`.
 
@@ -31233,7 +32125,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"incomplete"`
 
-      - `type: "shell_call_output"`
+      - `type: "shell_call_output" (default: "shell_call_output")`
 
         The type of the shell call output. Always `shell_call_output`.
 
@@ -31245,7 +32137,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -31255,7 +32147,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -31291,7 +32183,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Path of the file to create.
 
-          - `type: "create_file"`
+          - `type: "create_file" (default: "create_file")`
 
             Create a new file with the provided diff.
 
@@ -31305,7 +32197,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Path of the file to delete.
 
-          - `type: "delete_file"`
+          - `type: "delete_file" (default: "delete_file")`
 
             Delete the specified file.
 
@@ -31323,7 +32215,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             Path of the file to update.
 
-          - `type: "update_file"`
+          - `type: "update_file" (default: "update_file")`
 
             Update an existing file with the provided diff.
 
@@ -31337,7 +32229,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"completed"`
 
-      - `type: "apply_patch_call"`
+      - `type: "apply_patch_call" (default: "apply_patch_call")`
 
         The type of the item. Always `apply_patch_call`.
 
@@ -31349,7 +32241,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -31359,7 +32251,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -31387,7 +32279,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `"failed"`
 
-      - `type: "apply_patch_call_output"`
+      - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
         The type of the item. Always `apply_patch_call_output`.
 
@@ -31399,7 +32291,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -31409,7 +32301,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -31552,11 +32444,11 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `McpProtocolError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
-          - `type: "mcp_protocol_error"`
+          - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
             - `"mcp_protocol_error"`
 
@@ -31564,17 +32456,17 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
           - `content: unknown`
 
-          - `type: "mcp_tool_execution_error"`
+          - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
             - `"mcp_tool_execution_error"`
 
         - `HTTPError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
-          - `type: "http_error"`
+          - `type: "http_error" (default: "http_error")`
 
             - `"http_error"`
 
@@ -31632,7 +32524,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -31642,7 +32534,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -31699,7 +32591,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -31711,7 +32603,9 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 

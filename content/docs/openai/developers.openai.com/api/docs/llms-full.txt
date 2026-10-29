@@ -1702,6 +1702,10 @@ client = OpenAI::Client.new
 conversations_by_session = {}
 
 handle_message = lambda do |session_id:, content:|
+  unless session_id.is_a?(String) && !session_id.strip.empty? && content.is_a?(String) && !content.strip.empty?
+    raise ArgumentError, "session_id and content are required"
+  end
+
   conversation_id = conversations_by_session[session_id]
   unless conversation_id
     conversation_id = client.conversations.create.id
@@ -2991,7 +2995,7 @@ spend_alert = openai.admin.organization.projects.spend_alerts.create(
   notification_channel: {
     recipients: ["billing@example.com"],
     type: :email,
-    subject_prefix: "[OpenAI spend]"
+    subject_prefix: "OpenAI spend"
   },
   threshold_amount: 50_000
 )
@@ -4984,6 +4988,122 @@ Use the [Agents overview](https://developers.openai.com/api/docs/guides/agents#c
 
 ---
 
+# API credits for ChatGPT subscribers
+
+Eligible ChatGPT Pro and Business subscriptions can claim free API credits as part of their subscription benefits. Activate the benefit by linking your subscription to an API organization you own, then use the credits to build apps and agents with the OpenAI API.
+
+- **Up to $500 per month:** Your allowance depends on your Pro plan or your Business workspace’s paid seats.
+- **Activate once:** Receive credits automatically when your subscription renews, while these benefits are available and your subscription is eligible.
+- **Use them before your billing cycle ends:** Unused credits expire at the end of the billing cycle and don't roll over.
+- **No API payment method required:** You can use the API with active free credits.
+
+The benefit is subject to [API terms](https://openai.com/policies/service-credit-terms/) and [policies](https://openai.com/policies/usage-policies/) including [API rate limits](https://developers.openai.com/api/docs/guides/rate-limits). Check the limits for your organization and models in [organization limits](https://platform.openai.com/settings/organization/limits).
+
+## Credit amounts
+
+| ChatGPT subscription | Monthly API credits (USD)  |
+| -------------------- | -------------------------- |
+| Pro ($100 tier)      | $100                       |
+| Pro ($200 tier)      | $200                       |
+| Pro ($500 tier)      | $500                       |
+| Business Standard    | $20 per paid Standard seat |
+| Business Premium     | $100 per paid Premium seat |
+
+Your first grant is prorated for the time left in your current subscription billing cycle and expires at the end of that billing cycle.
+
+Business API Credits are pooled and capped at $500 per workspace per month. Business workspaces that pay annually upfront receive the full year’s grant in one issuance, and the grant expires at the end of the annual billing cycle.
+
+## Eligibility
+
+To claim the benefit:
+
+- Have an active, paid ChatGPT Pro or Business subscription that is at least seven days old. Free trials and complimentary subscriptions don't qualify.
+- Be an owner of the ChatGPT subscription or Business workspace and an owner of the API organization receiving the credits.
+- Use the same email address for your ChatGPT account and the API account used to link the organization.
+
+## Claim your credits
+
+Choose where to start. Both paths link the same subscription benefit to your selected API organization.
+
+If you’re new to the API, you will be able to link your subscription to your Personal API Organization. Use the email address associated with your eligible ChatGPT subscription.
+
+
+
+  
+
+
+1. Sign in to [**ChatGPT**](https://chatgpt.com/) with the account that owns the eligible subscription.
+2. For Pro, open [**Settings → Billing**](https://chatgpt.com/settings/billing). For Business, open your workspace’s billing settings in ChatGPT or the [**Admin Console**](https://admin.openai.com/).
+3. Find the API credits benefit and start the claim flow.
+4. Review the API organization that will receive the credits. If you own multiple eligible organizations, select the one you would like to link.
+5. Confirm to activate the benefit.
+
+  
+
+  
+
+
+1. Sign in to [**API Platform**](https://platform.openai.com/) with the email address associated with your eligible ChatGPT subscription.
+2. Select the API organization you own that should receive the credits.
+3. Open [**Billing**](https://platform.openai.com/settings/organization/billing/) and find the API credit benefit.
+4. Select the eligible ChatGPT subscription or Business workspace you own to link.
+5. Confirm to activate the benefit.
+
+  
+
+
+
+
+After claiming, open [API Platform billing settings](https://platform.openai.com/settings/organization/billing/overview) to see your credits. Now, you're ready to start building with the API!
+
+- Follow the [**API quickstart**](https://developers.openai.com/api/docs/quickstart) to make your first request.
+- Build an agent with the [Agents API](https://platform.openai.com/agents).
+- Start building and testing prompts in the [Responses](https://platform.openai.com/chat/), [Decisions](https://platform.openai.com/decisions), and [Audio](https://platform.openai.com/audio/live) playgrounds.
+- Track usage in the [**Usage dashboard**](https://platform.openai.com/usage).
+- Use the [**OpenAI Developers Plugin**](https://chatgpt.com/plugins/openai-developers?open_in_app) in ChatGPT to build with the API, securely create API keys directly in ChatGPT, and build together with the API and ChatGPT Sites.
+
+## What the credits cover
+
+These benefits cover paid API Platform usage billed to the linked organization, including:
+
+- **[Responses API](https://developers.openai.com/api/docs/guides/text)** for text, code, and image understanding.
+- **[Agents API](https://developers.openai.com/api/docs/guides/agents-api/overview)** for running agents, including OpenAI-hosted sandbox charges.
+- **[Decisions API](https://developers.openai.com/api/docs/guides/decisions)** for structured decisions.
+- **[GPT-Live](https://developers.openai.com/api/docs/guides/live)** and the **[Realtime API](https://developers.openai.com/api/docs/guides/realtime)** for real-time voice interactions.
+- **[Images API](https://developers.openai.com/api/docs/guides/image-generation)** for image generation and editing.
+- **[Built-in tools](https://developers.openai.com/api/docs/guides/tools)** and their associated usage and storage charges, such as web search, file search, and Code Interpreter.
+- Other APIs are available through [API Platform](https://platform.openai.com).
+
+Codex usage through API keys is not supported by this benefit. These API
+  credits also don't increase your ChatGPT or signed-in Codex usage limits.
+
+## When your free credits run out
+
+Your organization uses free API credits before purchased API credits. When your free API credit balance runs out:
+
+| Organization balance         | What happens                                                                 |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| Purchased API credits remain | API usage continues using your purchased credits.                            |
+| No credits remain            | API requests fail with HTTP `429` and error code `credit_balance_exhausted`. |
+
+To continue when no credits remain:
+
+- Add paid API credits in your organization’s [**billing settings**](https://platform.openai.com/settings/organization/billing/overview).
+- Set up Auto Recharge to add paid credits to continue building without errors and interruptions.
+
+## More about this benefit
+
+- **Organization-specific credits:** Grants apply only to the linked API organization. Select that organization and use one of its project API keys when making requests.
+- **Subscription changes:** Upgrading your Pro plan can provide extra prorated credits for the rest of the billing cycle. Later grants reflect the eligible plan's allowance, up to $500 per billing cycle.
+- **Business seat changes:** Adding paid seats or upgrading seat types during a billing cycle can provide extra prorated credits, subject to a shared workspace cap of $500 per monthly billing cycle or $6,000 per annual billing cycle. Seat reductions affect the next billing cycle. Reassigning an existing seat to another person doesn't create extra credits.
+- **Cancellation or an ineligible plan:** New grants stop when your subscription is no longer eligible. Cancellation alone doesn't revoke credits already issued; you can use them until they expire.
+- **Downgrading to an ineligible plan:** If you downgrade to an ineligible ChatGPT plan, such as Plus, Go, or Free, your API organization link is removed at the end of the billing cycle.
+- **Moving from Pro to Business:** Moving to Business ends the Pro link. After the workspace's paid subscription has been active for seven days, a Business workspace owner can create a new link to claim the Business benefit.
+- **Moving from Business to Enterprise:** If your ChatGPT Business subscription moves to ChatGPT Enterprise, your API organization link is removed at the end of the billing cycle. ChatGPT Enterprise is not eligible for this benefit.
+- **Changing the receiving organization:** Contact support if you need to change the linked API Organization.
+
+---
+
 # API deployment checklist
 
 | Contents                                                                                                | Expected impact                     |
@@ -6794,49 +6914,109 @@ Start a Responses API WebSocket session
 import OpenAI from "openai";
 import { ResponsesWS } from "openai/resources/responses/ws";
 
-const openai = new OpenAI();
+const testLogTool = {
+  type: "function",
+  name: "search_test_logs",
+  description: "Search test logs for a query.",
+  parameters: {
+    type: "object",
+    properties: { query: { type: "string" } },
+    required: ["query"],
+    additionalProperties: false,
+  },
+  strict: true,
+};
 
+const codeSearchTool = {
+  type: "function",
+  name: "search_code",
+  description: "Search the codebase for a query.",
+  parameters: {
+    type: "object",
+    properties: { query: { type: "string" } },
+    required: ["query"],
+    additionalProperties: false,
+  },
+  strict: true,
+};
+
+const openai = new OpenAI();
 const ws = new ResponsesWS(openai);
 
-ws.on("event", (event) => {
-  console.log(event.type);
-  if (
-    event.type === "response.completed" ||
-    event.type === "response.failed" ||
-    event.type === "response.incomplete"
-  ) {
-    ws.close();
+try {
+  ws.send({
+    type: "response.create",
+    model: "gpt-6-astra",
+    store: false,
+    input: [
+      {
+        type: "message",
+        role: "user",
+        content: [
+          {
+            type: "input_text",
+            text:
+              "Find the flaky test in this run, call the tools you need, " +
+              "and keep going until you can explain the root cause.",
+          },
+        ],
+      },
+    ],
+    tools: [testLogTool, codeSearchTool],
+  });
+  let completed = false;
+  for await (const event of ws) {
+    if (event.type === "error") throw event.error;
+    if (event.type !== "message") continue;
+    const message = event.message;
+    if (message.type === "response.completed") {
+      console.log(JSON.stringify(message.response.output));
+      completed = true;
+      break;
+    }
+    if (
+      message.type === "response.failed" ||
+      message.type === "response.incomplete"
+    ) {
+      throw new Error(JSON.stringify(message));
+    }
   }
-});
-ws.on("error", (error) => {
-  console.error(error);
+  if (!completed) {
+    throw new Error("Connection closed before the response finished.");
+  }
+} finally {
   ws.close();
-});
-
-ws.send({
-  type: "response.create",
-  model: "gpt-6-astra",
-  store: false,
-  input: [
-    {
-      type: "message",
-      role: "user",
-      content: [
-        {
-          type: "input_text",
-          text:
-            "Find the flaky test in this run, call the tools you need, " +
-            "and keep going until you can explain the root cause.",
-        },
-      ],
-    },
-  ],
-  tools: [testLogTool, codeSearchTool],
-});
+}
 ```
 
 ```python
 from openai import OpenAI
+from openai.types.responses import FunctionToolParam
+
+test_log_tool: FunctionToolParam = {
+    "type": "function",
+    "name": "search_test_logs",
+    "description": "Search test logs.",
+    "parameters": {
+        "type": "object",
+        "properties": {"query": {"type": "string"}},
+        "required": ["query"],
+        "additionalProperties": False,
+    },
+    "strict": True,
+}
+code_search_tool: FunctionToolParam = {
+    "type": "function",
+    "name": "search_code",
+    "description": "Search source code.",
+    "parameters": {
+        "type": "object",
+        "properties": {"query": {"type": "string"}},
+        "required": ["query"],
+        "additionalProperties": False,
+    },
+    "strict": True,
+}
 
 client = OpenAI()
 
@@ -6863,8 +7043,14 @@ with client.responses.connect() as connection:
         ],
         tools=[test_log_tool, code_search_tool],
     )
-    first_event = connection.recv()
-    print(first_event.type)
+    for event in connection:
+        if event.type == "response.completed":
+            print(event.response.output)
+            break
+        if event.type in {"response.failed", "response.incomplete", "error"}:
+            raise RuntimeError(event.to_json())
+    else:
+        raise RuntimeError("Connection closed before the response finished.")
 ```
 
 ```go
@@ -7261,14 +7447,16 @@ client.responses().create(params).output().stream()
 require "openai"
 
 client = OpenAI::Client.new
+files = {
+  "lib/fib.py" => "def fib(n):\n    if n <= 1:\n        return n\n    return fib(n-1) + fib(n-2)\n",
+  "run.py" => "from lib.fib import fib\n\ndef main():\n  print(fib(42))\n"
+}
+context = files.map { |path, content| "===== #{path}\n#{content}" }.join
 response = client.responses.create(
   model: "gpt-6-astra",
-  input: "Rename fib() to fibonacci() in lib/fib.py and update run.py to use the new name.",
+  input: "The user has the following files:\n<BEGIN_FILES>\n#{context}<END_FILES>\nHelp me rename fib() to fibonacci() in both existing files.",
   tools: [{ type: :apply_patch }]
 )
-
-patch_calls = response.output.select { |item| item.type == :apply_patch_call }
-puts(patch_calls)
 ```
 
 
@@ -7430,26 +7618,34 @@ client.responses().create(params).output().stream()
 ```
 
 ```ruby
-require "openai"
+9.times do |turn|
+  raise "Response ended with status #{response.status}" unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
 
-client = OpenAI::Client.new
-response_id = ENV.fetch("OPENAI_RESPONSE_ID")
-patch_call_id = ENV.fetch("OPENAI_APPLY_PATCH_CALL_ID")
-response = client.responses.create(
-  model: "gpt-6-astra",
-  previous_response_id: response_id,
-  input: [
+  patch_calls = response.output.grep(OpenAI::Models::Responses::ResponseApplyPatchToolCall)
+  if patch_calls.empty?
+    puts(response.output_text)
+    break
+  end
+  raise "Patch workflow exceeded eight tool turns" if turn == 8
+
+  # apply_operation is application-owned; see "Implementing the patch harness" in the guide.
+  results = patch_calls.map do |call|
+    success, output = apply_operation(files, call.operation)
     {
       type: :apply_patch_call_output,
-      call_id: patch_call_id,
-      status: :completed,
-      output: "Patch applied successfully."
+      call_id: call.call_id,
+      status: success ? :completed : :failed,
+      output: output
     }
-  ],
-  tools: [{ type: :apply_patch }]
-)
-
-puts(response.output_text)
+  end
+  response = client.responses.create(
+    model: "gpt-6-astra",
+    previous_response_id: response.id,
+    input: results,
+    tools: [{ type: :apply_patch }]
+  )
+end
+files.each { |path, content| print("===== #{path}\n#{content}") }
 ```
 
 
@@ -9013,10 +9209,11 @@ completion = client.chat.completions.create(
     voice: :alloy,
     format: :wav
   },
-  store: true
+  store: false
 )
 
-puts(completion.choices.fetch(0).message.content)
+message = completion.choices.fetch(0).message
+puts(message.audio&.transcript || message.content)
 ```
 
 ```bash
@@ -9510,6 +9707,7 @@ while [:queued, :in_progress].include?(response.status)
 end
 
 puts("Final status: #{response.status}")
+puts("Output:")
 puts(response.output_text)
 ```
 
@@ -9894,7 +10092,8 @@ if (!completed)
 ```ruby
 require "openai"
 
-client = OpenAI::Client.new
+# An uncapped background novel can run beyond the SDK's default ten minutes.
+client = OpenAI::Client.new(timeout: 30 * 60)
 stream = client.responses.stream(
   model: "gpt-6-astra",
   input: "Write a very long novel about otters in space.",
@@ -9903,15 +10102,20 @@ stream = client.responses.stream(
 
 last_sequence_number = -1
 response_id = ""
-stream.each do |event|
-  puts(event.type)
-  last_sequence_number = event.sequence_number || last_sequence_number
-  if event.is_a?(OpenAI::Models::Responses::ResponseCreatedEvent)
-    response_id = event.response.id
+begin
+  stream.each do |event|
+    puts(event.type)
+    # The SDK filters transport keepalives before yielding stored events.
+    last_sequence_number = event.sequence_number || last_sequence_number
+    if event.is_a?(OpenAI::Models::Responses::ResponseCreatedEvent)
+      response_id = event.response.id
+    end
   end
+ensure
+  stream.close
 end
 
-puts("Response #{response_id}; last sequence number #{last_sequence_number}")
+puts("response #{response_id} last cursor #{last_sequence_number}")
 
 # If the connection drops, resume from the last sequence number:
 # client.responses.stream(response_id: response_id, starting_after: last_sequence_number).each do |event|
@@ -13980,35 +14184,29 @@ conversation = [
   }
 ]
 
-response = client.responses.create(
-  model: "gpt-5.3-codex",
-  input: conversation,
-  store: false,
-  context_management: [
-    {
-      type: :compaction,
-      compact_threshold: 200_000
-    }
-  ]
-)
-conversation.concat(response.output)
-conversation << {
-  type: :message,
-  role: :user,
-  content: "Now implement the next step."
-}
-next_response = client.responses.create(
-  model: "gpt-5.3-codex",
-  input: conversation,
-  store: false,
-  context_management: [
-    {
-      type: :compaction,
-      compact_threshold: 200_000
-    }
-  ]
-)
-puts(next_response.output_text)
+loop do
+  response = client.responses.create(
+    model: "gpt-5.3-codex",
+    input: conversation,
+    store: false,
+    context_management: [
+      {
+        type: :compaction,
+        compact_threshold: 200_000
+      }
+    ]
+  )
+  conversation.concat(response.output)
+  puts(response.output_text)
+  line = $stdin.gets
+  break unless line
+
+  conversation << {
+    type: :message,
+    role: :user,
+    content: line.chomp
+  }
+end
 ```
 
 
@@ -35658,7 +35856,7 @@ The table below indicates when application state is stored for each endpoint. Ze
 | -------------------------- | :--------------------: | :------------------------: | :----------------------------: | :----------------------------: | :------------------------------------------------------: |
 | `/v1/chat/completions`     |           No           |          30 days           | None, see below for exceptions | Yes, see below for limitations |              Yes, see below for limitations              |
 | `/v1/responses`            |           No           |          30 days           | None, see below for exceptions | Yes, see below for limitations |              Yes, see below for limitations              |
-| `/v1/decisions`            |           No           |          30 days           | None, see below for exceptions | Yes, see below for limitations |                   Pending confirmation                   |
+| `/v1/decisions`            |           No           |          30 days           | None, see below for exceptions | Yes, see below for limitations |              Yes, see below for limitations              |
 | `/v1/conversations`        |           No           |       Until deleted        |         Until deleted          |               No               |                            No                            |
 | `/v1/conversations/items`  |           No           |       Until deleted        |         Until deleted          |               No               |                            No                            |
 | `/v1/chatkit/threads`      |           No           |       Until deleted        |         Until deleted          |               No               |                            No                            |
@@ -35708,7 +35906,13 @@ The table below indicates when application state is stored for each endpoint. Ze
 
 #### `/v1/decisions`
 
-By default, abuse monitoring logs are retained for up to 30 days. Eligible customers can use Zero Data Retention, subject to the limitations below.
+By default, abuse monitoring logs are retained for up to 30 days.
+
+The Decisions API supports [Zero Data Retention](#zero-data-retention), [Private Retention with PSP](#private-retention-with-private-safety-processing), and [Safety Retention](#safety-retention), subject to the eligibility and account configuration requirements described above.
+
+The Decisions API follows the same Private Retention with PSP policy as the Responses API. Flagged content and a sample of requests may be retained for automated safety review. See [Private Retention with PSP](#private-retention-with-private-safety-processing) for details.
+
+The following limitations apply:
 
 - Prompt caching may store encrypted key/value tensors in GPU-local storage as application state. This data is stored on the local GPU machines and is not retained after the 24-hour expiration. To learn more, see the [prompt caching guide](https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-retention).
 - See [image and file inputs](#image-and-file-inputs) for the CSAM retention exception for image inputs.
@@ -35833,7 +36037,8 @@ response = client.with_options(data_residency: :us).responses.create(
 )
 puts(response.output_text)
 
-response = client.with_options(data_residency: :eu).responses.create(
+# EU processing requires a key from an EU-region project.
+response = client.with_options(data_residency: :eu, api_key: ENV.fetch("OPENAI_EU_API_KEY"), organization: nil, project: nil).responses.create(
   model: "gpt-5.6-terra",
   input: "Reply with OK."
 )
@@ -44538,7 +44743,7 @@ transcript = client.audio.transcriptions.create(
 )
 raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
 
-pp(transcript[:words])
+pp(transcript.deep_to_h.fetch(:words))
 ```
 
 ```bash
@@ -47333,13 +47538,7 @@ stream.each do |event|
     item = event.item
     next unless item.is_a?(OpenAI::Models::Responses::ResponseFunctionToolCall)
 
-    final_tool_calls[event.output_index] = {
-      id: item.id,
-      call_id: item.call_id,
-      name: item.name,
-      type: item.type,
-      arguments: item.arguments.dup
-    }
+    final_tool_calls[event.output_index] = item.to_h.merge(arguments: item.arguments.dup)
   when OpenAI::Models::Responses::ResponseFunctionCallArgumentsDeltaEvent
     tool_call = final_tool_calls[event.output_index]
     tool_call[:arguments] << event.delta if tool_call
@@ -48931,19 +49130,18 @@ grader = {
     }
   ],
   "pass_threshold" => 0.5,
-  "model" => "o4-mini-2025-04-16",
+  "model" => "gpt-4.1-2025-04-14",
   "range" => [0, 1],
   "sampling_params" => {
     "max_completions_tokens" => 32768,
-    "top_p" => 1,
-    "reasoning_effort" => "medium"
+    "top_p" => 1
   }
 }
 item = { reference_answer: 1.0 }
 model_sample = "0.9"
 
-pp(client.fine_tuning.alpha.graders.validate(grader: grader))
-pp(client.fine_tuning.alpha.graders.run(grader: grader, item: item, model_sample: model_sample))
+puts(client.fine_tuning.alpha.graders.validate(grader: grader).to_json)
+puts(client.fine_tuning.alpha.graders.run(grader: grader, item: item, model_sample: model_sample).to_json)
 ```
 
 
@@ -49115,8 +49313,8 @@ grader = {
 item = { reference_answer: "fuzzy wuzzy had no hair" }
 model_sample = "fuzzy wuzzy was a bear"
 
-pp(client.fine_tuning.alpha.graders.validate(grader: grader))
-pp(client.fine_tuning.alpha.graders.run(grader: grader, item: item, model_sample: model_sample))
+puts(client.fine_tuning.alpha.graders.validate(grader: grader).to_json)
+puts(client.fine_tuning.alpha.graders.run(grader: grader, item: item, model_sample: model_sample).to_json)
 ```
 
 
@@ -51997,7 +52195,7 @@ require "pathname"
 
 client = OpenAI::Client.new
 images = %w[body-lotion.png bath-bomb.png incense-kit.png soap.png].map do |path|
-  Pathname(path)
+  OpenAI::FilePart.new(Pathname(path), content_type: "image/png")
 end
 result = client.images.edit(
   image: images,
@@ -52497,8 +52695,8 @@ require "pathname"
 require "base64"
 
 client = OpenAI::Client.new
-image = Pathname("sunlit_lounge.png")
-mask = Pathname("mask.png")
+image = OpenAI::FilePart.new(Pathname("sunlit_lounge.png"), content_type: "image/png")
+mask = OpenAI::FilePart.new(Pathname("mask.png"), content_type: "image/png")
 result = client.images.edit(
   image: image,
   mask: mask,
@@ -52909,6 +53107,7 @@ rescue OpenAI::Errors::BadRequestError => error
   raise unless error.code == "moderation_blocked"
 
   body = Hash.try_convert(error.body) || {}
+  body = Hash.try_convert(body[:error] || body["error"]) || body
   moderation_details = body[:moderation_details] || body["moderation_details"] || {}
   categories = moderation_details[:categories] || moderation_details["categories"] || []
   stage = moderation_details[:moderation_stage] || moderation_details["moderation_stage"]
@@ -55797,19 +55996,19 @@ require "pathname"
 
 client = OpenAI::Client.new
 result = client.images.generate(
-  model: "gpt-image-2",
+  model: "gpt-image-2.5-sunburst",
   prompt: "Create an original logo for Field & Flour, a local bakery. Use warm, simple shapes on a fully transparent background, with clean alpha edges and no shadow or checkerboard.",
   size: "1024x1536", quality: :medium, background: :transparent, output_format: :png, n: 4
 )
 Array(result.data).each_with_index do |item, index|
-  File.binwrite("logo-generation-#{index + 1}-gpt-image-2.png", Base64.strict_decode64(item.b64_json || raise("No PNG returned")))
+  File.binwrite("logo-generation-#{index + 1}-gpt-image-2.5-sunburst.png", Base64.strict_decode64(item.b64_json || raise("No PNG returned")))
 end
 result = client.images.edit(
-  model: "gpt-image-2", image: OpenAI::FilePart.new(Pathname("input_images/shampoo.webp"), content_type: "image/webp"),
+  model: "gpt-image-2.5-sunburst", image: OpenAI::FilePart.new(Pathname("input_images/shampoo.webp"), content_type: "image/webp"),
   prompt: "Extract the product onto a fully transparent background. Preserve its geometry and label, with clean edges and no shadow or restyling.",
   size: "1024x1536", quality: :medium, background: :transparent, output_format: :png
 )
-File.binwrite("extract-product-gpt-image-2.png", Base64.strict_decode64(Array(result.data).fetch(0).b64_json || raise("No PNG returned")))
+File.binwrite("extract-product-gpt-image-2.5-sunburst.png", Base64.strict_decode64(Array(result.data).fetch(0).b64_json || raise("No PNG returned")))
 ```
 
 
@@ -60449,6 +60648,7 @@ import { ForksWS } from "openai/resources/live/forks/ws";
 async function forkSession(sourceSessionId) {
   const ws = new ForksWS(new OpenAI(), { session_id: sourceSessionId });
   let finalized = false;
+  let closeRequested = false;
   try {
     for await (const event of ws) {
       if (event.type === "open") {
@@ -60460,8 +60660,12 @@ async function forkSession(sourceSessionId) {
           console.log("Fork ready:", event.message.session.id);
           // This startup example closes the fork after confirming it is ready.
           ws.send({ type: "session.close" });
+          closeRequested = true;
         } else if (event.message.type === "session.closed") {
           console.log("Final usage:", event.message.usage);
+          if (!closeRequested) {
+            throw new Error("Fork ended before startup completed");
+          }
           finalized = true;
           break;
         }
@@ -60483,13 +60687,17 @@ def fork_session(source_session_id: str) -> None:
     with client.live.forks.connect(session_id=source_session_id) as connection:
         connection.session.start(session={})
         finalized = False
+        close_requested = False
         for event in connection:
             if event.type == "session.started":
                 print("Fork ready:", event.session.id)
                 # This startup example closes the fork after confirming it is ready.
                 connection.session.close()
+                close_requested = True
             elif event.type == "session.closed":
                 print("Final usage:", event.usage)
+                if not close_requested:
+                    raise RuntimeError("Fork ended before startup completed")
                 finalized = True
                 break
             elif event.type == "error":
@@ -63185,7 +63393,7 @@ Sync do |task|
   task.with_timeout(120) do
     client.responses.connect(request_options: { timeout: 10 }) do |connection|
       connection.response.create(
-        model: "gpt-6-astra", reasoning: { effort: "medium" },
+        model: "gpt-6-astra", store: false, reasoning: { effort: "medium" },
         input: "Draft a project plan for building a task-tracking app."
       )
       state = {}
@@ -70407,21 +70615,36 @@ System.out.println(turn.subagentId());
 ```
 
 ```ruby
-# Replace the illustrative IDs and URLs below with your own resource values.
+# Replace the illustrative IDs below with values from your command item.
 require "openai"
 
-client = OpenAI::Client.new
-result = client.beta.agents.sessions.turns.list(
-  "sess_123",
-  limit: 20,
-  order: "desc"
-)
-puts result.data
-turn = client.beta.agents.sessions.turns.retrieve(
-  "turn_123",
-  session_id: "sess_123"
-)
-puts turn.subagent_id
+# Discover the owning agent before retrieving the turn.
+def find_turn(client, session_id, turn_id)
+  turns = client.beta.agents.sessions.turns.list(session_id, limit: 100)
+  turns.auto_paging_each do |turn|
+    if turn.id == turn_id
+      return client.beta.agents.sessions.turns.retrieve(turn_id, session_id: session_id)
+    end
+  end
+
+  subagents = client.beta.agents.sessions.subagents.list(session_id, limit: 100)
+  subagents.auto_paging_each do |subagent|
+    turns = client.beta.agents.sessions.subagents.turns.list(
+      subagent.id, session_id: session_id, limit: 100
+    )
+    turns.auto_paging_each do |turn|
+      if turn.id == turn_id
+        return client.beta.agents.sessions.subagents.turns.retrieve(
+          turn_id, session_id: session_id, subagent_id: subagent.id
+        )
+      end
+    end
+  end
+  raise "Turn #{turn_id} not found in session #{session_id}"
+end
+
+turn = find_turn(OpenAI::Client.new, "sess_123", "turn_123")
+puts(turn.subagent_id || "main agent")
 ```
 
 ```bash
@@ -80462,6 +80685,7 @@ META_SCHEMA = {
   "schema" => {
     "type" => "object",
     "properties" => {
+      "description" => { "type" => "string" },
       "name" => {
         "type" => "string",
         "description" => "The name of the schema"
@@ -80514,6 +80738,7 @@ META_SCHEMA = {
       "schema_definition" => {
         "type" => "object",
         "properties" => {
+          "description" => { "type" => "string" },
           "type" => {
             "type" => "string",
             "enum" => ["object", "array", "string", "number", "boolean", "null"]
@@ -81931,6 +82156,7 @@ META_SCHEMA = {
       "schema_definition" => {
         "type" => "object",
         "properties" => {
+          "description" => { "type" => "string" },
           "type" => {
             "type" => "string",
             "enum" => ["object", "array", "string", "number", "boolean", "null"]
@@ -86410,7 +86636,7 @@ const event = {
 };
 
 // WebRTC data channel and WebSocket both have .send()
-dataChannel.send(JSON.stringify(event));
+ws.send(JSON.stringify(event));
 ```
 
 ```python
@@ -86472,6 +86698,14 @@ connection.conversation.items.create(
     }
   ]
 )
+
+receipt = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+  next unless event.is_a?(OpenAI::Realtime::ConversationItemDone)
+
+  event.item.is_a?(OpenAI::Realtime::RealtimeConversationItemUserMessage)
+end
+raise "Connection closed before the conversation item was acknowledged" unless receipt
 ```
 
 
@@ -86488,7 +86722,7 @@ const event = {
 };
 
 // WebRTC data channel and WebSocket both have .send()
-dataChannel.send(JSON.stringify(event));
+ws.send(JSON.stringify(event));
 ```
 
 ```python
@@ -86535,6 +86769,16 @@ connection.response.create(
   output_modalities: [:text],
   instructions: "Respond with a concise text message."
 )
+
+response_done = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+  next unless event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
+
+  raise "Response failed: #{event.response.status}" unless event.response.status == :completed
+
+  true
+end
+raise "Connection closed before the response completed" unless response_done
 ```
 
 
@@ -86552,10 +86796,10 @@ function handleEvent(message) {
 }
 
 // Listen for server messages (WebRTC)
-dataChannel.addEventListener("message", handleEvent);
+// dataChannel.addEventListener("message", handleEvent);
 
 // Listen for server messages (WebSocket)
-// ws.on("message", handleEvent);
+ws.on("message", handleEvent);
 ```
 
 ```python
@@ -87109,6 +87353,14 @@ connection.conversation.items.create(
     }
   ]
 )
+
+receipt = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+
+  event.is_a?(OpenAI::Realtime::ConversationItemDone) &&
+    event.item.is_a?(OpenAI::Realtime::RealtimeConversationItemUserMessage)
+end
+raise "Connection closed before the audio item was acknowledged" unless receipt
 ```
 
 
@@ -87131,8 +87383,8 @@ Listen for response.output_audio.delta events
 function handleEvent(message) {
   const serverEvent = JSON.parse(message.toString());
   if (serverEvent.type === "response.output_audio.delta") {
-    // Access Base64-encoded audio chunks
-    // console.log(serverEvent.delta);
+    const audio = Buffer.from(serverEvent.delta, "base64");
+    console.log(`Received ${audio.length} audio bytes`);
   }
 }
 
@@ -87173,15 +87425,20 @@ internal static void HandleEvent(RealtimeServerUpdate update)
 ```
 
 ```ruby
-connection.each do |event|
+response_done = connection.find do |event|
   case event
   when OpenAI::Realtime::ResponseAudioDeltaEvent
     audio_bytes = Base64.strict_decode64(event.delta)
     puts("Received #{audio_bytes.bytesize} audio bytes")
+  when OpenAI::Realtime::RealtimeErrorEvent
+    raise event.error.message
   when OpenAI::Realtime::ResponseDoneEvent
-    break
+    raise "Response failed: #{event.response.status}" unless event.response.status == :completed
+
+    true
   end
 end
+raise "Connection closed before the response completed" unless response_done
 ```
 
 
@@ -87230,6 +87487,15 @@ connection.conversation.items.create(
   ]
 )
 connection.response.create(output_modalities: [:text])
+
+completion = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+
+  event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
+end
+unless completion.is_a?(OpenAI::Realtime::ResponseDoneEvent) && completion.response.status == :completed
+  raise "The Realtime response did not complete"
+end
 ```
 
 
@@ -87271,24 +87537,24 @@ Analyze the conversation so far. If it is related to support, output
 "support". If it is related to sales, output "sales".
 `;
 
-const event = {
-  type: "response.create",
-  response: {
-    // Setting to "none" indicates the response is out of band
-    // and will not be added to the default conversation
-    conversation: "none",
+  const event = {
+    type: "response.create",
+    response: {
+      // Setting to "none" indicates the response is out of band
+      // and will not be added to the default conversation
+      conversation: "none",
 
-    // Set metadata to help identify responses sent back from the model
-    metadata: { topic: "classification" },
+      // Set metadata to help identify responses sent back from the model
+      metadata: { topic: "classification" },
 
-    // Set any other available response fields
-    output_modalities: ["text"],
-    instructions: prompt,
-  },
-};
+      // Set any other available response fields
+      output_modalities: ["text"],
+      instructions: prompt,
+    },
+  };
 
-// WebRTC data channel and WebSocket both have .send()
-dataChannel.send(JSON.stringify(event));
+  // WebRTC data channel and WebSocket both have .send()
+  ws.send(JSON.stringify(event));
 ```
 
 ```python
@@ -87369,6 +87635,16 @@ connection.response.create(
   output_modalities: [:text],
   instructions: "Classify the conversation as support or sales."
 )
+
+response_done = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+  next unless event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
+
+  raise "Response failed: #{event.response.status}" unless event.response.status == :completed
+
+  true
+end
+raise "Connection closed before the response completed" unless response_done
 ```
 
 
@@ -87395,10 +87671,10 @@ function handleEvent(message) {
 }
 
 // Listen for server messages (WebRTC)
-dataChannel.addEventListener("message", handleEvent);
+// dataChannel.addEventListener("message", handleEvent);
 
 // Listen for server messages (WebSocket)
-// ws.on("message", handleEvent);
+ws.on("message", handleEvent);
 ```
 
 ```python
@@ -87498,7 +87774,7 @@ const event = {
       // potentially include existing conversation items:
       {
         type: "item_reference",
-        id: "some_conversation_item_id",
+        id: existingItemId,
       },
       {
         type: "message",
@@ -87515,7 +87791,7 @@ const event = {
 };
 
 // WebRTC data channel and WebSocket both have .send()
-dataChannel.send(JSON.stringify(event));
+ws.send(JSON.stringify(event));
 ```
 
 ```python
@@ -87586,17 +87862,18 @@ I'm a little teapot, short and stout!
 This is my handle, this is my spout!
 `;
 
-const event = {
-  type: "response.create",
-  response: {
-    // An empty input array removes existing context
-    input: [],
-    instructions: prompt,
-  },
-};
+  const event = {
+    type: "response.create",
+    response: {
+      // An empty input array removes existing context
+      input: [],
+      output_modalities: ["text"],
+      instructions: prompt,
+    },
+  };
 
-// WebRTC data channel and WebSocket both have .send()
-dataChannel.send(JSON.stringify(event));
+  // WebRTC data channel and WebSocket both have .send()
+  ws.send(JSON.stringify(event));
 ```
 
 ```python
@@ -87663,6 +87940,16 @@ connection.response.create(
   output_modalities: [:text],
   instructions: "Generate a concise greeting without conversation context."
 )
+
+response_done = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+  next unless event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
+
+  raise "Response failed: #{event.response.status}" unless event.response.status == :completed
+
+  true
+end
+raise "Connection closed before the response completed" unless response_done
 ```
 
 
@@ -87764,26 +88051,25 @@ Instead of immediately returning a text or audio response, the model will instea
 
 ```json
 {
-    "type": "response.done",
-    "event_id": "event_AeqLA8iR6FK20L4XZs2P6",
-    "response": {
-        "object": "realtime.response",
-        "id": "resp_AeqL8XwMUOri9OhcQJIu9",
+  "type": "response.done",
+  "event_id": "event_AeqLA8iR6FK20L4XZs2P6",
+  "response": {
+    "object": "realtime.response",
+    "id": "resp_AeqL8XwMUOri9OhcQJIu9",
+    "status": "completed",
+    "status_details": null,
+    "output": [
+      {
+        "object": "realtime.item",
+        "id": "item_AeqL8gmRWDn9bIsUM2T35",
+        "type": "function_call",
         "status": "completed",
-        "status_details": null,
-        "output": [
-            {
-                "object": "realtime.item",
-                "id": "item_AeqL8gmRWDn9bIsUM2T35",
-                "type": "function_call",
-                "status": "completed",
-                "name": "generate_horoscope",
-                "call_id": "call_sHlR7iaFwQ2YQOqm",
-                "arguments": "{\"sign\":\"Aquarius\"}"
-            }
-        ],
-        ...
-    }
+        "name": "generate_horoscope",
+        "call_id": "call_sHlR7iaFwQ2YQOqm",
+        "arguments": "{\"sign\":\"Aquarius\"}"
+      }
+    ]
+  }
 }
 ```
 
@@ -87847,11 +88133,15 @@ This unsuccessful event sent from the client will emit an error event like the f
 
 ```json
 {
-  "type": "invalid_request_error",
-  "code": "invalid_value",
-  "message": "Invalid value: 'scooby.dooby.doo' ...",
-  "param": "type",
-  "event_id": "my_awesome_event"
+  "type": "error",
+  "event_id": "event_error_123",
+  "error": {
+    "type": "invalid_request_error",
+    "code": "invalid_value",
+    "message": "Invalid value: 'scooby.dooby.doo'.",
+    "param": "type",
+    "event_id": "my_awesome_event"
+  }
 }
 ```
 
@@ -88929,6 +89219,13 @@ connection.session.update(
   ],
   tool_choice: :auto
 )
+
+updated = connection.find do |event|
+  raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+
+  event.is_a?(OpenAI::Realtime::SessionUpdatedEvent)
+end
+raise "Connection closed before the session update was acknowledged" unless updated
 ```
 
 
@@ -88950,7 +89247,12 @@ const event = {
 };
 
 ws.send(JSON.stringify(event));
-ws.send(JSON.stringify({ type: "response.create" }));
+ws.send(
+  JSON.stringify({
+    type: "response.create",
+    response: { output_modalities: ["text"], tool_choice: "none" },
+  })
+);
 ```
 
 ```python
@@ -89053,7 +89355,7 @@ connection.conversation.items.create(
   call_id: call_id,
   output: JSON.generate(status: "shipped", delivery_date: "2026-05-09")
 )
-connection.response.create(tool_choice: :none)
+connection.response.create(output_modalities: [:text], tool_choice: :none)
 ```
 
 
@@ -89524,13 +89826,15 @@ def on_message(ws, message):
 ```
 
 ```ruby
-connection.each do |event|
+completed_events = {}
+expected_calls = []
+completed_calls = {}
+complete = connection.find do |event|
   case event
   when OpenAI::Realtime::McpListToolsInProgress
     puts("Listing MCP tools for item: #{event.item_id}")
   when OpenAI::Realtime::McpListToolsFailed
-    warn("MCP tool listing failed for item: #{event.item_id}")
-    break
+    raise "MCP tool listing failed for item: #{event.item_id}"
   when OpenAI::Realtime::McpListToolsCompleted
     puts("MCP tools ready for item: #{event.item_id}")
     connection.response.create(
@@ -89547,7 +89851,8 @@ connection.each do |event|
           ]
         }
       ],
-      tool_choice: :required
+      tool_choice: :required,
+      parallel_tool_calls: false
     )
   when OpenAI::Realtime::ConversationItemDone
     item = event.item
@@ -89565,12 +89870,14 @@ connection.each do |event|
   when OpenAI::Realtime::ResponseMcpCallCompleted
     puts("MCP tool call completed: #{event.item_id}")
   when OpenAI::Realtime::ResponseMcpCallFailed
-    warn("MCP tool call failed: #{event.item_id}")
-    break
+    raise "MCP tool call failed: #{event.item_id}"
   when OpenAI::Realtime::ResponseOutputItemDoneEvent
     item = event.item
     case item
     when OpenAI::Realtime::RealtimeMcpToolCall
+      raise "MCP tool call failed" if item.error || item.output.nil?
+
+      completed_calls[item.id] = true
       puts("MCP output from #{item.server_label}.#{item.name}: #{item.output}")
     when OpenAI::Realtime::RealtimeConversationItemAssistantMessage
       text = item.content.filter_map do |content|
@@ -89579,13 +89886,23 @@ connection.each do |event|
       puts("Assistant: #{text}")
     end
   when OpenAI::Realtime::RealtimeErrorEvent
-    warn("Realtime API error: #{event.error.message}")
-    break
+    raise "Realtime API error: #{event.error.message}"
   when OpenAI::Realtime::ResponseDoneEvent
+    raise "Realtime response did not complete" unless event.response.status == :completed
+
+    expected_calls.replace(Array(event.response.output).grep(OpenAI::Realtime::RealtimeMcpToolCall).map(&:id))
+    raise "The response did not call an MCP tool" if expected_calls.empty?
+
+    completed_events[:response] = true
+  end
+  if completed_events[:response] && expected_calls.all? { |id| completed_calls[id] }
     puts("Realtime turn complete.")
-    break
+    true
+  else
+    false
   end
 end
+raise "Connection closed before the MCP tool result arrived" unless complete
 ```
 
 
@@ -89698,7 +90015,7 @@ approval_request_id = item.id
 
 connection.conversation.items.create(
   type: :mcp_approval_response,
-  id: "mcp_approval_#{approval_request_id}",
+  id: "approval_#{SecureRandom.hex(8)}",
   approval_request_id: approval_request_id,
   approve: true
 )
@@ -89790,6 +90107,8 @@ connection.send(
         ResponseCreateEvent.builder()
             .response(
                 RealtimeResponseCreateParams.builder()
+                    .toolChoice(com.openai.models.responses.ToolChoiceOptions.REQUIRED)
+                    .parallelToolCalls(false)
                     .metadata(
                         RealtimeResponseCreateParams.Metadata.builder()
                             .putAdditionalProperty(
@@ -89861,6 +90180,8 @@ await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
 ```ruby
 connection.response.create(
   output_modalities: [:text],
+  tool_choice: :required,
+  parallel_tool_calls: false,
   input: [
     {
       type: :message,
@@ -94804,7 +95125,11 @@ System.out.println(file.id());
 require "openai"
 
 client = OpenAI::Client.new
-file = client.vector_stores.files.create("vs_123", file_id: "file_123")
+file = client.vector_stores.files.create_and_poll("vs_123", file_id: "file_123")
+unless file.status == OpenAI::VectorStores::VectorStoreFile::Status::COMPLETED
+  raise "File indexing did not complete: #{file.last_error&.message || file.status}"
+end
+
 puts(file.id)
 ```
 
@@ -104162,7 +104487,7 @@ require "openai"
 
 client = OpenAI::Client.new
 client.containers.delete("container_id")
-puts("Deleted container_id")
+puts("Container deleted")
 ```
 
 
@@ -105477,8 +105802,23 @@ print(response.output_text)
 ```go
 // The surrounding program prepares an isolated sandbox with the skill files.
 client := openai.NewClient()
-tool := responses.ToolUnionParam{OfShell: &responses.FunctionShellToolParam{Environment: responses.FunctionShellToolEnvironmentUnionParam{OfLocal: &responses.LocalEnvironmentParam{Skills: []responses.LocalSkillParam{{Name: "csv-insights", Description: "Summarize CSV files and produce a markdown report.", Path: "/workspace/skills/csv-insights"}}}}}}
-params := responses.ResponseNewParams{Model: "gpt-6-astra", Tools: []responses.ToolUnionParam{tool}, Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Use the csv-insights skill and run locally to summarize /workspace/reports.csv. Read the skill instructions, write /workspace/report.md, and include the total in your final answer.")}}
+tool := responses.ToolUnionParam{OfShell: &responses.FunctionShellToolParam{
+	Environment: responses.FunctionShellToolEnvironmentUnionParam{
+		OfLocal: &responses.LocalEnvironmentParam{
+			Skills: []responses.LocalSkillParam{{
+				Name:        "csv-insights",
+				Description: "Summarize CSV files and produce a markdown report.",
+				Path:        "/workspace/skills/csv-insights",
+			}},
+		},
+	},
+}}
+params := responses.ResponseNewParams{
+	Model: "gpt-6-astra",
+	Tools: []responses.ToolUnionParam{tool},
+	Input: responses.ResponseNewParamsInputUnion{OfString: openai.String(
+		"Use the csv-insights skill and run locally to summarize /workspace/reports.csv. Read the skill instructions, write /workspace/report.md, and include the total in your final answer.")},
+}
 for turn := 0; turn <= 8; turn++ {
 	response, err := client.Responses.New(ctx, params)
 	if err != nil {
@@ -105560,29 +105900,57 @@ client.responses().create(params).output().stream()
 
 ```ruby
 require "openai"
+require "open3"
+require "securerandom"
 
-client = OpenAI::Client.new
-response = client.responses.create(
-  model: "gpt-6-astra",
-  input: "Use the csv-insights skill to summarize today's CSV reports.",
-  tools: [
-    {
-      type: :shell,
-      environment: {
-        type: :local,
-        skills: [
-          {
-            name: "csv-insights",
-            description: "Summarize CSV files and produce a Markdown report.",
-            path: "<path-to-skill-folder>"
+# LocalSkillSandbox is the application-owned Docker executor defined in this
+# complete example. It prepares the skill files, bounds execution, and cleans up.
+def run_local_skill(name)
+  sandbox = LocalSkillSandbox.new(name)
+  begin
+    # Reserve teardown before creation, even if Docker creation is interrupted.
+    sandbox.prepare
+    client = OpenAI::Client.new(max_retries: 0)
+    params = {
+      model: "gpt-6-astra",
+      input: "Use the csv-insights skill and run locally to summarize /workspace/reports.csv. Read the skill instructions, write /workspace/report.md, and include the total in your final answer.",
+      tools: [
+        {
+          type: :shell,
+          environment: {
+            type: :local,
+            skills: [
+              {
+                name: "csv-insights",
+                description: "Summarize CSV files and produce a Markdown report.",
+                path: "/workspace/skills/csv-insights"
+              }
+            ]
           }
-        ]
-      }
+        }
+      ]
     }
-  ]
-)
+    9.times do |turn|
+      response = client.responses.create(**params, request_options: { timeout: sandbox.remaining })
+      raise "Response did not complete" unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
 
-puts(response.output_text)
+      calls = response.output.grep(OpenAI::Models::Responses::ResponseFunctionShellToolCall)
+      if calls.empty?
+        puts(response.output_text)
+        puts("Report:\n#{sandbox.report}")
+        return response
+      end
+      raise "Shell workflow exceeded eight tool turns" if turn == 8
+
+      params[:input] = calls.map { |call| sandbox.execute(call) }
+      params[:previous_response_id] = response.id
+    end
+  ensure
+    sandbox.close
+  end
+end
+
+run_local_skill("ruby-skill-#{SecureRandom.hex(8)}")
 ```
 
 
@@ -111214,9 +111582,15 @@ After acceptance, connect a [sideband WebSocket](https://developers.openai.com/a
 
 SIP carries the call audio. Use the sideband for transcripts, delegation, tools, commands, and reflected audio. Choose one owner for each side effect, even if multiple connections observe an event.
 
-#### Observe keypad events
 
-The sideband receives `transport.dtmf.received` when the caller presses a key and `transport.dtmf.send` after a hosted tool successfully sends a tone. Both are notifications only. The `event` field contains one of `0`–`9`, `*`, `#`, or `A`–`D`.
+
+
+
+#### Send and receive keypad events
+
+The sideband receives [`transport.dtmf.received`](https://developers.openai.com/api/reference/resources/live/sideband-websocket#transport.dtmf.received) when the caller presses a key. To send a DTMF tone to the SIP trunk, send a [`transport.dtmf.send` client event](https://developers.openai.com/api/reference/resources/live/sideband-websocket#transport.dtmf.send) over the sideband WebSocket. After the tone is successfully sent, the sideband receives [`transport.dtmf.sent`](https://developers.openai.com/api/reference/resources/live/sideband-websocket#transport.dtmf.sent).
+
+If you supply an `event_id`, the notification includes it as `client_event_id`; failures return an `error` event with `error.client_event_id`.
 
 #### Transfer or end the call
 
@@ -116321,16 +116695,31 @@ client.responses().create(params).output().forEach(System.out::println);
 ```
 
 ```ruby
+require "json"
 require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-4.1",
   instructions: "Act as a coding agent. Inspect the reported failure, identify the smallest correct change, and explain how you would verify it.",
-  input: "The parser rejects an empty optional field even though the schema permits it. Diagnose the likely validation bug."
+  input: "The parser rejects an empty optional field even though the schema permits it. Diagnose the likely validation bug.",
+  tools: [
+    {
+      type: :function,
+      name: "python",
+      description: "Run Python code or a terminal command prefixed with an exclamation mark in the repository environment.",
+      parameters: {
+        type: "object",
+        properties: { input: { type: "string" } },
+        required: ["input"],
+        additionalProperties: false
+      },
+      strict: true
+    }
+  ]
 )
 
-puts(response.output_text)
+puts(JSON.pretty_generate(response.output.map(&:to_h)))
 ```
 
 
@@ -116779,16 +117168,48 @@ private static FunctionTool customerServiceTool(
 ```
 
 ```ruby
+require "json"
 require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-4.1",
   instructions: "You are a customer service assistant. Confirm the customer's goal, use only supplied account facts, and clearly explain the next action.",
-  input: "A customer says a replacement order still has not shipped. Draft a concise response."
+  input: "A customer says a replacement order still has not shipped. Draft a concise response.",
+  tools: [
+    {
+      type: :function,
+      name: "lookup_policy_document",
+      description: "Look up company policies and documents by topic.",
+      parameters: {
+        type: "object",
+        properties: { topic: { type: "string" } },
+        required: ["topic"],
+        additionalProperties: false
+      },
+      strict: true
+    },
+    {
+      type: :function,
+      name: "get_user_account_info",
+      description: "Get user account information.",
+      parameters: {
+        type: "object",
+        properties: {
+          phone_number: {
+            type: "string",
+            description: "Formatted as '(xxx) xxx-xxxx'"
+          }
+        },
+        required: ["phone_number"],
+        additionalProperties: false
+      },
+      strict: true
+    }
+  ]
 )
 
-puts(response.output_text)
+puts(JSON.pretty_generate(response.output.map(&:to_h)))
 ```
 
 
@@ -119023,7 +119444,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.2",
-  reasoning: { effort: :minimal },
+  reasoning: { effort: :none },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)
@@ -120320,10 +120741,10 @@ input = <<~PROMPT
 PROMPT
 response = client.responses.create(
   model: "gpt-5.3-codex", input: input,
-  tools: [{ type: :apply_patch }], parallel_tool_calls: false
+  tools: [{ type: :apply_patch }], tool_choice: :required, parallel_tool_calls: false
 )
 response.output.each do |item|
-  pp(item.operation) if item.is_a?(OpenAI::Responses::ResponseApplyPatchToolCall)
+  puts(item.operation.to_json) if item.is_a?(OpenAI::Responses::ResponseApplyPatchToolCall)
 end
 
 APPLY_PATCH_GRAMMAR = <<~GRAMMAR
@@ -120364,7 +120785,7 @@ response = client.responses.create(
       }
     }
   ],
-  parallel_tool_calls: false
+  tool_choice: :required, parallel_tool_calls: false
 )
 response.output.each do |item|
   puts(item.input) if item.is_a?(OpenAI::Responses::ResponseCustomToolCall)
@@ -120893,7 +121314,7 @@ require "openai"
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-5.4",
-  reasoning: { effort: :minimal },
+  reasoning: { effort: :none },
   input: "Explain the bug and propose a fix."
 )
 puts(response.output_text)
@@ -127008,7 +127429,7 @@ You can adjust the following properties to fine-tune the VAD settings:
 
 Here is an example VAD configuration:
 
-```json
+```jsonc
 {
   "type": "session.update",
   "session": {
@@ -127021,11 +127442,11 @@ Here is an example VAD configuration:
           "prefix_padding_ms": 300,
           "silence_duration_ms": 500,
           "create_response": true, // only in conversation mode
-          "interrupt_response": true // only in conversation mode
-        }
-      }
-    }
-  }
+          "interrupt_response": true, // only in conversation mode
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -127045,7 +127466,7 @@ Semantic VAD can be activated by setting `session.audio.input.turn_detection.typ
 
 It can be configured like this:
 
-```json
+```jsonc
 {
   "type": "session.update",
   "session": {
@@ -127054,13 +127475,13 @@ It can be configured like this:
       "input": {
         "turn_detection": {
           "type": "semantic_vad",
-          "eagerness": "low" | "medium" | "high" | "auto", // optional
+          "eagerness": "auto", // optional
           "create_response": true, // only in conversation mode
           "interrupt_response": true, // only in conversation mode
-        }
-      }
-    }
-  }
+        },
+      },
+    },
+  },
 }
 ```
 
@@ -131673,12 +132094,19 @@ const ws = new WebSocket(url, {
   },
 });
 
-ws.on("open", function open() {
-  console.log("Connected to server.");
-});
-
+let connected = false;
 ws.on("message", function incoming(message) {
-  console.log(JSON.parse(message.toString()));
+  const event = JSON.parse(message.toString());
+  if (event.type === "error") throw new Error(event.error.message);
+  if (event.type === "session.created") {
+    connected = true;
+    console.log(`Connected to the Realtime API: ${event.session.id}`);
+    ws.close(1000);
+  }
+});
+ws.on("close", () => {
+  if (!connected)
+    throw new Error("Connection closed before the session was created");
 });
 ```
 
@@ -131708,23 +132136,30 @@ headers = [
 ]
 
 
-def on_open(ws):
-    print("Connected to server.")
+session_created = False
 
 
 def on_message(ws, message):
+    global session_created
     data = json.loads(message)
     print("Received event:", json.dumps(data, indent=2))
+    if data["type"] == "session.created":
+        session_created = True
+        print("Connected to the Realtime API.")
+        ws.close()
+    elif data["type"] == "error":
+        ws.close()
 
 
 ws = websocket.WebSocketApp(
     url,
     header=headers,
-    on_open=on_open,
     on_message=on_message,
 )
 
 ws.run_forever()
+if not session_created:
+    raise RuntimeError("Connection closed before the Realtime session was created.")
 ```
 
   
@@ -131750,8 +132185,15 @@ client = OpenAI::Client.new(
 )
 
 client.realtime.connect(model: "gpt-realtime-2.1") do |connection|
-  puts("Connected to the Realtime API: #{connection.url.host}")
-  connection.each { |event| puts("Received event: #{event.type}") }
+  created = connection.find do |event|
+    raise event.error.message if event.is_a?(OpenAI::Realtime::RealtimeErrorEvent)
+
+    next unless event.is_a?(OpenAI::Realtime::SessionCreatedEvent)
+
+    puts("Connected to the Realtime API: #{event.session[:id]}")
+    true
+  end
+  raise "Connection closed before the session was created" unless created
 end
 ```
 
@@ -131867,9 +132309,6 @@ const ws = new WebSocket(
     "realtime",
     // Use a short-lived token fetched from your application server.
     "openai-insecure-api-key." + OPENAI_REALTIME_EPHEMERAL_KEY,
-    // Optional
-    "openai-organization." + OPENAI_ORG_ID,
-    "openai-project." + OPENAI_PROJECT_ID,
   ]
 );
 
@@ -132268,6 +132707,7 @@ evaluation = client.evals.create(
   name: "Support answer quality",
   data_source_config: {
     type: :custom,
+    include_sample_schema: true,
     item_schema: {
       type: :object,
       properties: { input: { type: :string } },
@@ -132279,7 +132719,7 @@ evaluation = client.evals.create(
       type: :string_check,
       name: "mentions_refund",
       input: "{{sample.output_text}}",
-      operation: :contains,
+      operation: :like,
       reference: "refund"
     }
   ]

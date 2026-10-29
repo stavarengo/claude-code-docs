@@ -16,9 +16,11 @@ List ChatKit threads with optional pagination and user filters.
 
   List items created before this thread item ID. Defaults to null for the newest results.
 
-- `limit: optional number`
+- `limit: optional integer`
 
   Maximum number of thread items to return. Defaults to 20.
+
+  `minimum: 0`, `maximum: 100`
 
 - `order: optional "asc" or "desc"`
 
@@ -32,6 +34,8 @@ List ChatKit threads with optional pagination and user filters.
 
   Filter threads that belong to this user identifier. Defaults to null to return all users.
 
+  `minLength: 1`, `maxLength: 512`
+
 ### Returns
 
 - `data: array of ChatKitThread`
@@ -42,11 +46,13 @@ List ChatKit threads with optional pagination and user filters.
 
     Identifier of the thread.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) for when the thread was created.
 
-  - `object: "chatkit.thread"`
+    `format: unixtime`
+
+  - `object: "chatkit.thread" (default: "chatkit.thread")`
 
     Type discriminator that is always `chatkit.thread`.
 
@@ -60,7 +66,7 @@ List ChatKit threads with optional pagination and user filters.
 
       Indicates that a thread is active.
 
-      - `type: "active"`
+      - `type: "active" (default: "active")`
 
         Status discriminator that is always `active`.
 
@@ -74,7 +80,7 @@ List ChatKit threads with optional pagination and user filters.
 
         Reason that the thread was locked. Defaults to null when no reason is recorded.
 
-      - `type: "locked"`
+      - `type: "locked" (default: "locked")`
 
         Status discriminator that is always `locked`.
 
@@ -88,7 +94,7 @@ List ChatKit threads with optional pagination and user filters.
 
         Reason that the thread was closed. Defaults to null when no reason is recorded.
 
-      - `type: "closed"`
+      - `type: "closed" (default: "closed")`
 
         Status discriminator that is always `closed`.
 
@@ -114,7 +120,7 @@ List ChatKit threads with optional pagination and user filters.
 
   The ID of the last item in the list.
 
-- `object: "list"`
+- `object: "list" (default: "list")`
 
   The type of object returned, must be `list`.
 
@@ -128,7 +134,7 @@ curl https://api.openai.com/v1/chatkit/threads \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -159,7 +165,7 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

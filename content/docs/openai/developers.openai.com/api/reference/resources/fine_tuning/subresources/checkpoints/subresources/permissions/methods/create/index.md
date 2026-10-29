@@ -24,9 +24,11 @@ This enables organization owners to share fine-tuned models with other projects 
 
     The permission identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the permission was created.
+
+    `format: unixtime`
 
   - `object: "checkpoint.permission"`
 
@@ -61,7 +63,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/$FINE_TUNED_MODEL_CHECKPO
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -88,7 +90,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
   -d '{"project_ids": ["proj_abGMw1llN8IrBb6SvvY5A1iH"]}'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

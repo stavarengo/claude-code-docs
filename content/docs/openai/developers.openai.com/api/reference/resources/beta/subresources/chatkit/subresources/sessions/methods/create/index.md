@@ -10,6 +10,8 @@ Create a ChatKit session.
 
   A free-form string that identifies your end user; ensures this Session can access other objects that have the same `user` scope.
 
+  `minLength: 1`
+
 - `workflow: ChatSessionWorkflowParam`
 
   Workflow that powers the session.
@@ -23,6 +25,8 @@ Create a ChatKit session.
     State variables forwarded to the workflow. Keys may be up to 64 characters, values must be primitive types, and the map defaults to an empty object.
 
     - `string`
+
+      `maxLength: 10485760`
 
     - `boolean`
 
@@ -60,13 +64,17 @@ Create a ChatKit session.
 
       Enable uploads for this session. Defaults to false.
 
-    - `max_file_size: optional number`
+    - `max_file_size: optional integer`
 
       Maximum size in megabytes for each uploaded file. Defaults to 512 MB, which is the maximum allowable size.
 
-    - `max_files: optional number`
+      `minimum: 1`, `maximum: 512`
+
+    - `max_files: optional integer`
 
       Maximum number of files that can be uploaded to the session. Defaults to 10.
+
+      `minimum: 1`
 
   - `history: optional object { enabled, recent_threads }`
 
@@ -76,31 +84,37 @@ Create a ChatKit session.
 
       Enables chat users to access previous ChatKit threads. Defaults to true.
 
-    - `recent_threads: optional number`
+    - `recent_threads: optional integer`
 
       Number of recent ChatKit threads users have access to. Defaults to unlimited when unset.
+
+      `minimum: 1`
 
 - `expires_after: optional ChatSessionExpiresAfterParam`
 
   Optional override for session expiration timing in seconds from creation. Defaults to 10 minutes.
 
-  - `anchor: "created_at"`
+  - `anchor: "created_at" (default: "created_at")`
 
     Base timestamp used to calculate expiration. Currently fixed to `created_at`.
 
     - `"created_at"`
 
-  - `seconds: number`
+  - `seconds: integer`
 
     Number of seconds after the anchor when the session expires.
+
+    `format: int64`, `minimum: 1`, `maximum: 600`
 
 - `rate_limits: optional ChatSessionRateLimitsParam`
 
   Optional override for per-minute request limits. When omitted, defaults to 10.
 
-  - `max_requests_per_1_minute: optional number`
+  - `max_requests_per_1_minute: optional integer`
 
     Maximum number of requests allowed per minute for the session. Defaults to 10.
+
+    `minimum: 1`
 
 ### Returns
 
@@ -132,11 +146,11 @@ Create a ChatKit session.
 
         Indicates if uploads are enabled for the session.
 
-      - `max_file_size: number or null`
+      - `max_file_size: integer or null`
 
         Maximum upload size in megabytes.
 
-      - `max_files: number or null`
+      - `max_files: integer or null`
 
         Maximum number of uploads allowed during the session.
 
@@ -148,7 +162,7 @@ Create a ChatKit session.
 
         Indicates if chat history is persisted for the session.
 
-      - `recent_threads: number or null`
+      - `recent_threads: integer or null`
 
         Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -156,15 +170,17 @@ Create a ChatKit session.
 
     Ephemeral client secret that authenticates session requests.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Unix timestamp (in seconds) for when the session expires.
 
-  - `max_requests_per_1_minute: number`
+    `format: unixtime`
+
+  - `max_requests_per_1_minute: integer`
 
     Convenience copy of the per-minute request limit.
 
-  - `object: "chatkit.session"`
+  - `object: "chatkit.session" (default: "chatkit.session")`
 
     Type discriminator that is always `chatkit.session`.
 
@@ -174,7 +190,7 @@ Create a ChatKit session.
 
     Resolved rate limit values.
 
-    - `max_requests_per_1_minute: number`
+    - `max_requests_per_1_minute: integer`
 
       Maximum allowed requests per one-minute window.
 
@@ -237,7 +253,7 @@ curl https://api.openai.com/v1/chatkit/sessions \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -291,7 +307,7 @@ curl https://api.openai.com/v1/chatkit/sessions \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

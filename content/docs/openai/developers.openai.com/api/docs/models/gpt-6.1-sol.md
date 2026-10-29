@@ -43,10 +43,11 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 - Cached input tokens are priced at 5% of the uncached input token rate.
 - Cache writes are billed at 1.25x the uncached input token rate.
-- Prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.
+- API prompts with more than 272K input tokens are priced at 2x input and cache rates and 1.5x output for the full request.
 - Fast mode prices are 2x Standard. Batch and Flex prices are 50% lower than Standard.
 - Ultrafast mode prices are 6x Standard.
 - Regional processing adds a 10% premium where available.
+- GPT-6.1 Sol uses a default context window of 500K tokens in Codex and ChatGPT Work. Usage drawn from your subscription has no long-context surcharge. See [Codex pricing](/codex/pricing).
 
 ## Endpoints
 

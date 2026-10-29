@@ -64,9 +64,11 @@ Assigns an organization role to a user within the organization.
 
     The identifier, which can be referenced in API endpoints
 
-  - `added_at: number`
+  - `added_at: integer`
 
     The Unix timestamp (in seconds) of when the user was added.
+
+    `format: unixtime`
 
   - `object: "organization.user"`
 
@@ -74,13 +76,17 @@ Assigns an organization role to a user within the organization.
 
     - `"organization.user"`
 
-  - `api_key_last_used_at: optional number or null`
+  - `api_key_last_used_at: optional integer or null`
 
     The Unix timestamp (in seconds) of the user's last API key usage.
 
-  - `created: optional number`
+    `format: unixtime`
+
+  - `created: optional integer`
 
     The Unix timestamp (in seconds) of when the user was created.
+
+    `format: unixtime`
 
   - `developer_persona: optional string or null`
 
@@ -146,7 +152,9 @@ Assigns an organization role to a user within the organization.
 
     - `banned: optional boolean or null`
 
-    - `banned_at: optional number or null`
+    - `banned_at: optional integer or null`
+
+      `format: unixtime`
 
     - `email: optional string or null`
 
@@ -167,7 +175,7 @@ curl https://api.openai.com/v1/organization/users/$USER_ID/roles \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -233,7 +241,7 @@ curl -X POST https://api.openai.com/v1/organization/users/user_abc123/roles \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

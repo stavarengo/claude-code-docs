@@ -12,9 +12,11 @@ Lists the currently available models, and provides basic information about each 
 
     The model identifier, which can be referenced in the API endpoints.
 
-  - `created: number`
+  - `created: integer`
 
     The Unix timestamp (in seconds) when the model was created.
+
+    `format: unixtime`
 
   - `object: "model"`
 
@@ -30,6 +32,8 @@ Lists the currently available models, and provides basic information about each 
 
     The date when the model will shut down, or null if not announced.
 
+    `format: date`
+
 - `object: "list"`
 
   - `"list"`
@@ -41,7 +45,7 @@ curl https://api.openai.com/v1/models \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -65,7 +69,7 @@ curl https://api.openai.com/v1/models \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

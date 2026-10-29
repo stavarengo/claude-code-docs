@@ -26,13 +26,13 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
       The json schema for each row in the data source.
 
-    - `type: "custom"`
+    - `type: "custom" (default: "custom")`
 
       The type of data source. Always `custom`.
 
       - `"custom"`
 
-    - `include_sample_schema: optional boolean`
+    - `include_sample_schema: optional boolean (default: false)`
 
       Whether the eval should expect you to populate the sample namespace (ie, by generating responses off of your data source)
 
@@ -41,7 +41,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
     A data source config which specifies the metadata property of your logs query.
     This is usually metadata like `usecase=chatbot` or `prompt-version=v2`, etc.
 
-    - `type: "logs"`
+    - `type: "logs" (default: "logs")`
 
       The type of data source. Always `logs`.
 
@@ -55,7 +55,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
     Deprecated in favor of LogsDataSourceConfig.
 
-    - `type: "stored_completions"`
+    - `type: "stored_completions" (default: "stored_completions")`
 
       The type of data source. Always `stored_completions`.
 
@@ -112,7 +112,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -122,7 +122,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -157,6 +157,8 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -227,6 +229,8 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
               - `image_url: string`
 
                 The URL of the image input.
+
+                `format: uri`
 
               - `type: "input_image"`
 
@@ -360,9 +364,11 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
   Unique identifier for the evaluation.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) for when the eval was created.
+
+  `format: unixtime`
 
 - `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
@@ -381,7 +387,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "custom"`
+    - `type: "custom" (default: "custom")`
 
       The type of data source. Always `custom`.
 
@@ -399,7 +405,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "logs"`
+    - `type: "logs" (default: "logs")`
 
       The type of data source. Always `logs`.
 
@@ -423,7 +429,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "stored_completions"`
+    - `type: "stored_completions" (default: "stored_completions")`
 
       The type of data source. Always `stored_completions`.
 
@@ -451,7 +457,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
   The name of the evaluation.
 
-- `object: "eval"`
+- `object: "eval" (default: "eval")`
 
   The object type.
 
@@ -484,7 +490,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -494,7 +500,7 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -529,6 +535,8 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
           - `image_url: string`
 
             The URL of the image input.
+
+            `format: uri`
 
           - `type: "input_image"`
 
@@ -599,6 +607,8 @@ For more information, see the [Evals guide](/api/docs/guides/evals).
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -748,7 +758,7 @@ curl https://api.openai.com/v1/evals \
         }'
 ```
 
-#### Response
+#### 201 — Example
 
 ```json
 {
@@ -846,7 +856,7 @@ curl https://api.openai.com/v1/evals \
       }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -940,7 +950,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -958,7 +968,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -980,11 +990,11 @@ List evaluations for a project.
 
   Identifier for the last eval from the previous pagination request.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   Number of evals to retrieve.
 
-- `order: optional "asc" or "desc"`
+- `order: optional "asc" or "desc" (default: "asc")`
 
   Sort order for evals by timestamp. Use `asc` for ascending order or `desc` for descending order.
 
@@ -992,7 +1002,7 @@ List evaluations for a project.
 
   - `"desc"`
 
-- `order_by: optional "created_at" or "updated_at"`
+- `order_by: optional "created_at" or "updated_at" (default: "created_at")`
 
   Evals can be ordered by creation time or last updated time. Use
   `created_at` for creation time or `updated_at` for last updated time.
@@ -1011,9 +1021,11 @@ List evaluations for a project.
 
     Unique identifier for the evaluation.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the eval was created.
+
+    `format: unixtime`
 
   - `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
@@ -1032,7 +1044,7 @@ List evaluations for a project.
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of data source. Always `custom`.
 
@@ -1050,7 +1062,7 @@ List evaluations for a project.
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "logs"`
+      - `type: "logs" (default: "logs")`
 
         The type of data source. Always `logs`.
 
@@ -1074,7 +1086,7 @@ List evaluations for a project.
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "stored_completions"`
+      - `type: "stored_completions" (default: "stored_completions")`
 
         The type of data source. Always `stored_completions`.
 
@@ -1102,7 +1114,7 @@ List evaluations for a project.
 
     The name of the evaluation.
 
-  - `object: "eval"`
+  - `object: "eval" (default: "eval")`
 
     The object type.
 
@@ -1135,7 +1147,7 @@ List evaluations for a project.
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -1145,7 +1157,7 @@ List evaluations for a project.
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -1180,6 +1192,8 @@ List evaluations for a project.
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -1250,6 +1264,8 @@ List evaluations for a project.
               - `image_url: string`
 
                 The URL of the image input.
+
+                `format: uri`
 
               - `type: "input_image"`
 
@@ -1376,7 +1392,7 @@ List evaluations for a project.
 
   The identifier of the last eval in the data array.
 
-- `object: "list"`
+- `object: "list" (default: "list")`
 
   The type of this object. It is always set to "list".
 
@@ -1389,7 +1405,7 @@ curl https://api.openai.com/v1/evals \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1461,7 +1477,7 @@ curl https://api.openai.com/v1/evals?limit=1 \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1554,9 +1570,11 @@ Get an evaluation by ID.
 
   Unique identifier for the evaluation.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) for when the eval was created.
+
+  `format: unixtime`
 
 - `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
@@ -1575,7 +1593,7 @@ Get an evaluation by ID.
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "custom"`
+    - `type: "custom" (default: "custom")`
 
       The type of data source. Always `custom`.
 
@@ -1593,7 +1611,7 @@ Get an evaluation by ID.
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "logs"`
+    - `type: "logs" (default: "logs")`
 
       The type of data source. Always `logs`.
 
@@ -1617,7 +1635,7 @@ Get an evaluation by ID.
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "stored_completions"`
+    - `type: "stored_completions" (default: "stored_completions")`
 
       The type of data source. Always `stored_completions`.
 
@@ -1645,7 +1663,7 @@ Get an evaluation by ID.
 
   The name of the evaluation.
 
-- `object: "eval"`
+- `object: "eval" (default: "eval")`
 
   The object type.
 
@@ -1678,7 +1696,7 @@ Get an evaluation by ID.
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -1688,7 +1706,7 @@ Get an evaluation by ID.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -1723,6 +1741,8 @@ Get an evaluation by ID.
           - `image_url: string`
 
             The URL of the image input.
+
+            `format: uri`
 
           - `type: "input_image"`
 
@@ -1793,6 +1813,8 @@ Get an evaluation by ID.
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -1914,7 +1936,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1978,7 +2000,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2057,9 +2079,11 @@ Update certain properties of an evaluation.
 
   Unique identifier for the evaluation.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) for when the eval was created.
+
+  `format: unixtime`
 
 - `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
@@ -2078,7 +2102,7 @@ Update certain properties of an evaluation.
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "custom"`
+    - `type: "custom" (default: "custom")`
 
       The type of data source. Always `custom`.
 
@@ -2096,7 +2120,7 @@ Update certain properties of an evaluation.
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "logs"`
+    - `type: "logs" (default: "logs")`
 
       The type of data source. Always `logs`.
 
@@ -2120,7 +2144,7 @@ Update certain properties of an evaluation.
       The json schema for the run data source items.
       Learn how to build JSON schemas [here](https://json-schema.org/).
 
-    - `type: "stored_completions"`
+    - `type: "stored_completions" (default: "stored_completions")`
 
       The type of data source. Always `stored_completions`.
 
@@ -2148,7 +2172,7 @@ Update certain properties of an evaluation.
 
   The name of the evaluation.
 
-- `object: "eval"`
+- `object: "eval" (default: "eval")`
 
   The object type.
 
@@ -2181,7 +2205,7 @@ Update certain properties of an evaluation.
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -2191,7 +2215,7 @@ Update certain properties of an evaluation.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -2226,6 +2250,8 @@ Update certain properties of an evaluation.
           - `image_url: string`
 
             The URL of the image input.
+
+            `format: uri`
 
           - `type: "input_image"`
 
@@ -2296,6 +2322,8 @@ Update certain properties of an evaluation.
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -2419,7 +2447,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID \
     -d '{}'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2484,7 +2512,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
   -d '{"name": "Updated Eval", "metadata": {"description": "Updated description"}}'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2550,9 +2578,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     Unique identifier for the evaluation.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the eval was created.
+
+    `format: unixtime`
 
   - `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
@@ -2571,7 +2601,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of data source. Always `custom`.
 
@@ -2589,7 +2619,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "logs"`
+      - `type: "logs" (default: "logs")`
 
         The type of data source. Always `logs`.
 
@@ -2613,7 +2643,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "stored_completions"`
+      - `type: "stored_completions" (default: "stored_completions")`
 
         The type of data source. Always `stored_completions`.
 
@@ -2641,7 +2671,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     The name of the evaluation.
 
-  - `object: "eval"`
+  - `object: "eval" (default: "eval")`
 
     The object type.
 
@@ -2674,7 +2704,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -2684,7 +2714,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -2719,6 +2749,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -2789,6 +2821,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
               - `image_url: string`
 
                 The URL of the image input.
+
+                `format: uri`
 
               - `type: "input_image"`
 
@@ -2918,7 +2952,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
     The json schema for the run data source items.
     Learn how to build JSON schemas [here](https://json-schema.org/).
 
-  - `type: "custom"`
+  - `type: "custom" (default: "custom")`
 
     The type of data source. Always `custom`.
 
@@ -2950,9 +2984,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     Unique identifier for the evaluation.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the eval was created.
+
+    `format: unixtime`
 
   - `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
@@ -2971,7 +3007,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of data source. Always `custom`.
 
@@ -2989,7 +3025,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "logs"`
+      - `type: "logs" (default: "logs")`
 
         The type of data source. Always `logs`.
 
@@ -3013,7 +3049,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "stored_completions"`
+      - `type: "stored_completions" (default: "stored_completions")`
 
         The type of data source. Always `stored_completions`.
 
@@ -3041,7 +3077,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     The name of the evaluation.
 
-  - `object: "eval"`
+  - `object: "eval" (default: "eval")`
 
     The object type.
 
@@ -3074,7 +3110,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -3084,7 +3120,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -3119,6 +3155,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -3189,6 +3227,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
               - `image_url: string`
 
                 The URL of the image input.
+
+                `format: uri`
 
               - `type: "input_image"`
 
@@ -3319,9 +3359,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     Unique identifier for the evaluation.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the eval was created.
+
+    `format: unixtime`
 
   - `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
@@ -3340,7 +3382,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of data source. Always `custom`.
 
@@ -3358,7 +3400,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "logs"`
+      - `type: "logs" (default: "logs")`
 
         The type of data source. Always `logs`.
 
@@ -3382,7 +3424,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "stored_completions"`
+      - `type: "stored_completions" (default: "stored_completions")`
 
         The type of data source. Always `stored_completions`.
 
@@ -3410,7 +3452,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     The name of the evaluation.
 
-  - `object: "eval"`
+  - `object: "eval" (default: "eval")`
 
     The object type.
 
@@ -3443,7 +3485,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -3453,7 +3495,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -3488,6 +3530,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -3558,6 +3602,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
               - `image_url: string`
 
                 The URL of the image input.
+
+                `format: uri`
 
               - `type: "input_image"`
 
@@ -3683,7 +3729,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
     The json schema for the run data source items.
     Learn how to build JSON schemas [here](https://json-schema.org/).
 
-  - `type: "stored_completions"`
+  - `type: "stored_completions" (default: "stored_completions")`
 
     The type of data source. Always `stored_completions`.
 
@@ -3714,9 +3760,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     Unique identifier for the evaluation.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the eval was created.
+
+    `format: unixtime`
 
   - `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
@@ -3735,7 +3783,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of data source. Always `custom`.
 
@@ -3753,7 +3801,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "logs"`
+      - `type: "logs" (default: "logs")`
 
         The type of data source. Always `logs`.
 
@@ -3777,7 +3825,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "stored_completions"`
+      - `type: "stored_completions" (default: "stored_completions")`
 
         The type of data source. Always `stored_completions`.
 
@@ -3805,7 +3853,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
     The name of the evaluation.
 
-  - `object: "eval"`
+  - `object: "eval" (default: "eval")`
 
     The object type.
 
@@ -3838,7 +3886,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -3848,7 +3896,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -3883,6 +3931,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -3953,6 +4003,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
               - `image_url: string`
 
                 The URL of the image input.
+
+                `format: uri`
 
               - `type: "input_image"`
 
@@ -4087,9 +4139,11 @@ Cancel an ongoing evaluation run.
 
   Unique identifier for the evaluation run.
 
-- `created_at: number`
+- `created_at: integer`
 
   Unix timestamp (in seconds) when the evaluation run was created.
+
+  `format: unixtime`
 
 - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or ResponsesRunDataSource { source, type, input_messages, 2 more }`
 
@@ -4113,7 +4167,7 @@ Cancel an ongoing evaluation run.
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -4125,13 +4179,13 @@ Cancel an ongoing evaluation run.
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
           - `"file_id"`
 
-    - `type: "jsonl"`
+    - `type: "jsonl" (default: "jsonl")`
 
       The type of data source. Always `jsonl`.
 
@@ -4155,7 +4209,7 @@ Cancel an ongoing evaluation run.
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -4167,7 +4221,7 @@ Cancel an ongoing evaluation run.
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
@@ -4177,21 +4231,21 @@ Cancel an ongoing evaluation run.
 
         A StoredCompletionsRunDataSource configuration describing a set of filters
 
-        - `type: "stored_completions"`
+        - `type: "stored_completions" (default: "stored_completions")`
 
           The type of source. Always `stored_completions`.
 
           - `"stored_completions"`
 
-        - `created_after: optional number or null`
+        - `created_after: optional integer or null`
 
           An optional Unix timestamp to filter items created after this time.
 
-        - `created_before: optional number or null`
+        - `created_before: optional integer or null`
 
           An optional Unix timestamp to filter items created before this time.
 
-        - `limit: optional number or null`
+        - `limit: optional integer or null`
 
           An optional maximum number of items to return.
 
@@ -4208,7 +4262,7 @@ Cancel an ongoing evaluation run.
 
           An optional model to filter by (e.g., 'gpt-6-astra').
 
-    - `type: "completions"`
+    - `type: "completions" (default: "completions")`
 
       The type of run data source. Always `completions`.
 
@@ -4254,7 +4308,7 @@ Cancel an ongoing evaluation run.
 
                     The text input to the model.
 
-                  - `type: "input_text"`
+                  - `type: "input_text" (default: "input_text")`
 
                     The type of the input item. Always `input_text`.
 
@@ -4264,7 +4318,7 @@ Cancel an ongoing evaluation run.
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -4294,7 +4348,7 @@ Cancel an ongoing evaluation run.
 
                     - `"original"`
 
-                  - `type: "input_image"`
+                  - `type: "input_image" (default: "input_image")`
 
                     The type of the input item. Always `input_image`.
 
@@ -4308,11 +4362,13 @@ Cancel an ongoing evaluation run.
 
                     The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                    `format: uri`
+
                   - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -4330,7 +4386,7 @@ Cancel an ongoing evaluation run.
 
                   A file input to the model.
 
-                  - `type: "input_file"`
+                  - `type: "input_file" (default: "input_file")`
 
                     The type of the input item. Always `input_file`.
 
@@ -4358,6 +4414,8 @@ Cancel an ongoing evaluation run.
 
                     The URL of the file to be sent to the model.
 
+                    `format: uri`
+
                   - `filename: optional string`
 
                     The name of the file to be sent to the model.
@@ -4366,7 +4424,7 @@ Cancel an ongoing evaluation run.
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -4451,6 +4509,8 @@ Cancel an ongoing evaluation run.
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -4521,6 +4581,8 @@ Cancel an ongoing evaluation run.
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -4578,11 +4640,11 @@ Cancel an ongoing evaluation run.
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
-      - `max_completion_tokens: optional number`
+      - `max_completion_tokens: optional integer`
 
         The maximum number of tokens in the generated output.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -4653,7 +4715,7 @@ Cancel an ongoing evaluation run.
               The schema for the response format, described as a JSON Schema object.
               Learn how to build JSON schemas [here](https://json-schema.org/).
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -4680,11 +4742,11 @@ Cancel an ongoing evaluation run.
 
             - `"json_object"`
 
-      - `seed: optional number`
+      - `seed: optional integer (default: 42)`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number (default: 1)`
 
         A higher temperature increases randomness in the outputs.
 
@@ -4708,7 +4770,7 @@ Cancel an ongoing evaluation run.
 
             Omitting `parameters` defines a function with an empty parameter list.
 
-          - `strict: optional boolean or null`
+          - `strict: optional boolean or null (default: false)`
 
             Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
@@ -4718,7 +4780,7 @@ Cancel an ongoing evaluation run.
 
           - `"function"`
 
-      - `top_p: optional number`
+      - `top_p: optional number (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -4740,7 +4802,7 @@ Cancel an ongoing evaluation run.
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -4752,7 +4814,7 @@ Cancel an ongoing evaluation run.
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
@@ -4768,13 +4830,17 @@ Cancel an ongoing evaluation run.
 
           - `"responses"`
 
-        - `created_after: optional number or null`
+        - `created_after: optional integer or null`
 
           Only include items created after this timestamp (inclusive). This is a query parameter used to select responses.
 
-        - `created_before: optional number or null`
+          `minimum: 0`
+
+        - `created_before: optional integer or null`
 
           Only include items created before this timestamp (inclusive). This is a query parameter used to select responses.
+
+          `minimum: 0`
 
         - `instructions_search: optional string or null`
 
@@ -4788,7 +4854,7 @@ Cancel an ongoing evaluation run.
 
           The name of the model to find responses for. This is a query parameter used to select responses.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -4814,7 +4880,7 @@ Cancel an ongoing evaluation run.
 
           List of user identifiers. This is a query parameter used to select responses.
 
-    - `type: "responses"`
+    - `type: "responses" (default: "responses")`
 
       The type of run data source. Always `responses`.
 
@@ -4882,6 +4948,8 @@ Cancel an ongoing evaluation run.
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -4944,11 +5012,11 @@ Cancel an ongoing evaluation run.
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
-      - `max_completion_tokens: optional number`
+      - `max_completion_tokens: optional integer`
 
         The maximum number of tokens in the generated output.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -4958,11 +5026,11 @@ Cancel an ongoing evaluation run.
         [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
-      - `seed: optional number`
+      - `seed: optional integer (default: 42)`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number (default: 1)`
 
         A higher temperature increases randomness in the outputs.
 
@@ -5020,7 +5088,7 @@ Cancel an ongoing evaluation run.
               A description of what the response format is for, used by the model to
               determine how to respond in the format.
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -5066,7 +5134,7 @@ Cancel an ongoing evaluation run.
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -5098,7 +5166,7 @@ Cancel an ongoing evaluation run.
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -5120,7 +5188,7 @@ Cancel an ongoing evaluation run.
 
                 The key to compare against the value.
 
-              - `type: "eq" or "ne" or "gt" or 5 more`
+              - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                 Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -5189,7 +5257,7 @@ Cancel an ongoing evaluation run.
 
                 - `"or"`
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -5225,7 +5293,7 @@ Cancel an ongoing evaluation run.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -5235,11 +5303,11 @@ Cancel an ongoing evaluation run.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -5257,7 +5325,7 @@ Cancel an ongoing evaluation run.
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -5268,7 +5336,7 @@ Cancel an ongoing evaluation run.
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -5276,7 +5344,7 @@ Cancel an ongoing evaluation run.
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -5284,14 +5352,14 @@ Cancel an ongoing evaluation run.
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -5323,7 +5391,7 @@ Cancel an ongoing evaluation run.
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -5347,6 +5415,8 @@ Cancel an ongoing evaluation run.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -5426,7 +5496,7 @@ Cancel an ongoing evaluation run.
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -5483,10 +5553,14 @@ Cancel an ongoing evaluation run.
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -5506,7 +5580,7 @@ Cancel an ongoing evaluation run.
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -5515,6 +5589,8 @@ Cancel an ongoing evaluation run.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -5534,7 +5610,7 @@ Cancel an ongoing evaluation run.
 
                 - `ContainerNetworkPolicyDisabled object { type }`
 
-                  - `type: "disabled"`
+                  - `type: "disabled" (default: "disabled")`
 
                     Disable outbound network access. Always `disabled`.
 
@@ -5546,7 +5622,9 @@ Cancel an ongoing evaluation run.
 
                     A list of allowed domains when type is `allowlist`.
 
-                  - `type: "allowlist"`
+                    `minItems: 1`
+
+                  - `type: "allowlist" (default: "allowlist")`
 
                     Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -5556,17 +5634,25 @@ Cancel an ongoing evaluation run.
 
                     Optional domain-scoped secrets for allowlisted domains.
 
+                    `minItems: 1`
+
                     - `domain: string`
 
                       The domain associated with the secret.
+
+                      `minLength: 1`
 
                     - `name: string`
 
                       The name of the secret to inject for the domain.
 
+                      `minLength: 1`
+
                     - `value: string`
 
                       The secret value to inject for the domain.
+
+                      `minLength: 1`, `maxLength: 10485760`
 
           - `type: "code_interpreter"`
 
@@ -5578,13 +5664,15 @@ Cancel an ongoing evaluation run.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -5610,7 +5698,7 @@ Cancel an ongoing evaluation run.
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -5691,7 +5779,7 @@ Cancel an ongoing evaluation run.
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -5699,11 +5787,13 @@ Cancel an ongoing evaluation run.
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -5714,11 +5804,13 @@ Cancel an ongoing evaluation run.
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -5737,7 +5829,7 @@ Cancel an ongoing evaluation run.
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -5759,7 +5851,7 @@ Cancel an ongoing evaluation run.
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -5769,7 +5861,7 @@ Cancel an ongoing evaluation run.
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -5779,6 +5871,8 @@ Cancel an ongoing evaluation run.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -5787,7 +5881,7 @@ Cancel an ongoing evaluation run.
 
             - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-              - `type: "container_auto"`
+              - `type: "container_auto" (default: "container_auto")`
 
                 Automatically creates a container for this request
 
@@ -5796,6 +5890,8 @@ Cancel an ongoing evaluation run.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -5821,13 +5917,17 @@ Cancel an ongoing evaluation run.
 
                 An optional list of skills referenced by id or inline data.
 
+                `maxItems: 200`
+
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
                     The ID of the referenced skill.
 
-                  - `type: "skill_reference"`
+                    `minLength: 1`, `maxLength: 64`
+
+                  - `type: "skill_reference" (default: "skill_reference")`
 
                     References a skill created with the /v1/skills endpoint.
 
@@ -5855,19 +5955,21 @@ Cancel an ongoing evaluation run.
 
                       Base64-encoded skill zip bundle.
 
-                    - `media_type: "application/zip"`
+                      `minLength: 1`, `maxLength: 70254592`
+
+                    - `media_type: "application/zip" (default: "application/zip")`
 
                       The media type of the inline skill payload. Must be `application/zip`.
 
                       - `"application/zip"`
 
-                    - `type: "base64"`
+                    - `type: "base64" (default: "base64")`
 
                       The type of the inline skill source. Must be `base64`.
 
                       - `"base64"`
 
-                  - `type: "inline"`
+                  - `type: "inline" (default: "inline")`
 
                     Defines an inline skill for this request.
 
@@ -5875,7 +5977,7 @@ Cancel an ongoing evaluation run.
 
             - `LocalEnvironment object { type, skills }`
 
-              - `type: "local"`
+              - `type: "local" (default: "local")`
 
                 Use a local computer environment.
 
@@ -5884,6 +5986,8 @@ Cancel an ongoing evaluation run.
               - `skills: optional array of LocalSkill`
 
                 An optional list of skills.
+
+                `maxItems: 200`
 
                 - `description: string`
 
@@ -5903,7 +6007,7 @@ Cancel an ongoing evaluation run.
 
                 The ID of the referenced container.
 
-              - `type: "container_reference"`
+              - `type: "container_reference" (default: "container_reference")`
 
                 References a container created with the /v1/containers endpoint
 
@@ -5917,7 +6021,7 @@ Cancel an ongoing evaluation run.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -5926,6 +6030,8 @@ Cancel an ongoing evaluation run.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -5951,7 +6057,7 @@ Cancel an ongoing evaluation run.
 
               Unconstrained free-form text.
 
-              - `type: "text"`
+              - `type: "text" (default: "text")`
 
                 Unconstrained text format. Always `text`.
 
@@ -5973,7 +6079,7 @@ Cancel an ongoing evaluation run.
 
                 - `"regex"`
 
-              - `type: "grammar"`
+              - `type: "grammar" (default: "grammar")`
 
                 Grammar format. Always `grammar`.
 
@@ -5991,21 +6097,29 @@ Cancel an ongoing evaluation run.
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -6039,7 +6153,7 @@ Cancel an ongoing evaluation run.
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -6048,6 +6162,8 @@ Cancel an ongoing evaluation run.
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -6069,7 +6185,7 @@ Cancel an ongoing evaluation run.
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -6079,7 +6195,7 @@ Cancel an ongoing evaluation run.
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -6105,7 +6221,7 @@ Cancel an ongoing evaluation run.
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -6133,7 +6249,7 @@ Cancel an ongoing evaluation run.
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -6159,7 +6275,7 @@ Cancel an ongoing evaluation run.
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -6169,11 +6285,13 @@ Cancel an ongoing evaluation run.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `top_p: optional number`
+      - `top_p: optional number (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -6210,7 +6328,7 @@ Cancel an ongoing evaluation run.
 
   The name of the evaluation run.
 
-- `object: "eval.run"`
+- `object: "eval.run" (default: "eval.run")`
 
   The type of the object. Always "eval.run".
 
@@ -6220,15 +6338,15 @@ Cancel an ongoing evaluation run.
 
   Usage statistics for each model during the evaluation run.
 
-  - `cached_tokens: number`
+  - `cached_tokens: integer`
 
     The number of tokens retrieved from cache.
 
-  - `completion_tokens: number`
+  - `completion_tokens: integer`
 
     The number of completion tokens generated.
 
-  - `invocation_count: number`
+  - `invocation_count: integer`
 
     The number of invocations.
 
@@ -6236,11 +6354,11 @@ Cancel an ongoing evaluation run.
 
     The name of the model.
 
-  - `prompt_tokens: number`
+  - `prompt_tokens: integer`
 
     The number of prompt tokens used.
 
-  - `total_tokens: number`
+  - `total_tokens: integer`
 
     The total number of tokens used.
 
@@ -6248,11 +6366,11 @@ Cancel an ongoing evaluation run.
 
   Results per testing criteria applied during the evaluation run.
 
-  - `failed: number`
+  - `failed: integer`
 
     Number of tests failed for this criteria.
 
-  - `passed: number`
+  - `passed: integer`
 
     Number of tests passed for this criteria.
 
@@ -6264,23 +6382,25 @@ Cancel an ongoing evaluation run.
 
   The URL to the rendered evaluation run report on the UI dashboard.
 
+  `format: uri`
+
 - `result_counts: object { errored, failed, passed, total }`
 
   Counters summarizing the outcomes of the evaluation run.
 
-  - `errored: number`
+  - `errored: integer`
 
     Number of output items that resulted in an error.
 
-  - `failed: number`
+  - `failed: integer`
 
     Number of output items that failed to pass the evaluation.
 
-  - `passed: number`
+  - `passed: integer`
 
     Number of output items that passed the evaluation.
 
-  - `total: number`
+  - `total: integer`
 
     Total number of executed output items.
 
@@ -6296,7 +6416,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID/runs/$RUN_ID/cancel \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -6366,7 +6486,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -6548,7 +6668,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -6560,13 +6680,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
           - `"file_id"`
 
-    - `type: "jsonl"`
+    - `type: "jsonl" (default: "jsonl")`
 
       The type of data source. Always `jsonl`.
 
@@ -6590,7 +6710,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -6602,7 +6722,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
@@ -6612,21 +6732,21 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         A StoredCompletionsRunDataSource configuration describing a set of filters
 
-        - `type: "stored_completions"`
+        - `type: "stored_completions" (default: "stored_completions")`
 
           The type of source. Always `stored_completions`.
 
           - `"stored_completions"`
 
-        - `created_after: optional number or null`
+        - `created_after: optional integer or null`
 
           An optional Unix timestamp to filter items created after this time.
 
-        - `created_before: optional number or null`
+        - `created_before: optional integer or null`
 
           An optional Unix timestamp to filter items created before this time.
 
-        - `limit: optional number or null`
+        - `limit: optional integer or null`
 
           An optional maximum number of items to return.
 
@@ -6643,7 +6763,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           An optional model to filter by (e.g., 'gpt-6-astra').
 
-    - `type: "completions"`
+    - `type: "completions" (default: "completions")`
 
       The type of run data source. Always `completions`.
 
@@ -6689,7 +6809,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     The text input to the model.
 
-                  - `type: "input_text"`
+                  - `type: "input_text" (default: "input_text")`
 
                     The type of the input item. Always `input_text`.
 
@@ -6699,7 +6819,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -6729,7 +6849,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     - `"original"`
 
-                  - `type: "input_image"`
+                  - `type: "input_image" (default: "input_image")`
 
                     The type of the input item. Always `input_image`.
 
@@ -6743,11 +6863,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                    `format: uri`
+
                   - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -6765,7 +6887,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                   A file input to the model.
 
-                  - `type: "input_file"`
+                  - `type: "input_file" (default: "input_file")`
 
                     The type of the input item. Always `input_file`.
 
@@ -6793,6 +6915,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     The URL of the file to be sent to the model.
 
+                    `format: uri`
+
                   - `filename: optional string`
 
                     The name of the file to be sent to the model.
@@ -6801,7 +6925,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -6886,6 +7010,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -6956,6 +7082,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -7013,11 +7141,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
-      - `max_completion_tokens: optional number`
+      - `max_completion_tokens: optional integer`
 
         The maximum number of tokens in the generated output.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -7088,7 +7216,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               The schema for the response format, described as a JSON Schema object.
               Learn how to build JSON schemas [here](https://json-schema.org/).
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -7115,11 +7243,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"json_object"`
 
-      - `seed: optional number`
+      - `seed: optional integer (default: 42)`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number (default: 1)`
 
         A higher temperature increases randomness in the outputs.
 
@@ -7143,7 +7271,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             Omitting `parameters` defines a function with an empty parameter list.
 
-          - `strict: optional boolean or null`
+          - `strict: optional boolean or null (default: false)`
 
             Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
@@ -7153,7 +7281,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `"function"`
 
-      - `top_p: optional number`
+      - `top_p: optional number (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -7175,7 +7303,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -7187,7 +7315,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
@@ -7203,13 +7331,17 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `"responses"`
 
-        - `created_after: optional number or null`
+        - `created_after: optional integer or null`
 
           Only include items created after this timestamp (inclusive). This is a query parameter used to select responses.
 
-        - `created_before: optional number or null`
+          `minimum: 0`
+
+        - `created_before: optional integer or null`
 
           Only include items created before this timestamp (inclusive). This is a query parameter used to select responses.
+
+          `minimum: 0`
 
         - `instructions_search: optional string or null`
 
@@ -7223,7 +7355,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           The name of the model to find responses for. This is a query parameter used to select responses.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -7249,7 +7381,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           List of user identifiers. This is a query parameter used to select responses.
 
-    - `type: "responses"`
+    - `type: "responses" (default: "responses")`
 
       The type of run data source. Always `responses`.
 
@@ -7317,6 +7449,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -7379,11 +7513,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
-      - `max_completion_tokens: optional number`
+      - `max_completion_tokens: optional integer`
 
         The maximum number of tokens in the generated output.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -7393,11 +7527,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
-      - `seed: optional number`
+      - `seed: optional integer (default: 42)`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number (default: 1)`
 
         A higher temperature increases randomness in the outputs.
 
@@ -7455,7 +7589,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               A description of what the response format is for, used by the model to
               determine how to respond in the format.
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -7501,7 +7635,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -7533,7 +7667,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -7555,7 +7689,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 The key to compare against the value.
 
-              - `type: "eq" or "ne" or "gt" or 5 more`
+              - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                 Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -7624,7 +7758,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 - `"or"`
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -7660,7 +7794,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -7670,11 +7804,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -7692,7 +7826,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -7703,7 +7837,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -7711,7 +7845,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -7719,14 +7853,14 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -7758,7 +7892,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -7782,6 +7916,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -7861,7 +7997,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -7918,10 +8054,14 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -7941,7 +8081,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -7950,6 +8090,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -7969,7 +8111,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 - `ContainerNetworkPolicyDisabled object { type }`
 
-                  - `type: "disabled"`
+                  - `type: "disabled" (default: "disabled")`
 
                     Disable outbound network access. Always `disabled`.
 
@@ -7981,7 +8123,9 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     A list of allowed domains when type is `allowlist`.
 
-                  - `type: "allowlist"`
+                    `minItems: 1`
+
+                  - `type: "allowlist" (default: "allowlist")`
 
                     Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -7991,17 +8135,25 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     Optional domain-scoped secrets for allowlisted domains.
 
+                    `minItems: 1`
+
                     - `domain: string`
 
                       The domain associated with the secret.
+
+                      `minLength: 1`
 
                     - `name: string`
 
                       The name of the secret to inject for the domain.
 
+                      `minLength: 1`
+
                     - `value: string`
 
                       The secret value to inject for the domain.
+
+                      `minLength: 1`, `maxLength: 10485760`
 
           - `type: "code_interpreter"`
 
@@ -8013,13 +8165,15 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -8045,7 +8199,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -8126,7 +8280,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -8134,11 +8288,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -8149,11 +8305,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -8172,7 +8330,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -8194,7 +8352,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -8204,7 +8362,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -8214,6 +8372,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -8222,7 +8382,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-              - `type: "container_auto"`
+              - `type: "container_auto" (default: "container_auto")`
 
                 Automatically creates a container for this request
 
@@ -8231,6 +8391,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -8256,13 +8418,17 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 An optional list of skills referenced by id or inline data.
 
+                `maxItems: 200`
+
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
                     The ID of the referenced skill.
 
-                  - `type: "skill_reference"`
+                    `minLength: 1`, `maxLength: 64`
+
+                  - `type: "skill_reference" (default: "skill_reference")`
 
                     References a skill created with the /v1/skills endpoint.
 
@@ -8290,19 +8456,21 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                       Base64-encoded skill zip bundle.
 
-                    - `media_type: "application/zip"`
+                      `minLength: 1`, `maxLength: 70254592`
+
+                    - `media_type: "application/zip" (default: "application/zip")`
 
                       The media type of the inline skill payload. Must be `application/zip`.
 
                       - `"application/zip"`
 
-                    - `type: "base64"`
+                    - `type: "base64" (default: "base64")`
 
                       The type of the inline skill source. Must be `base64`.
 
                       - `"base64"`
 
-                  - `type: "inline"`
+                  - `type: "inline" (default: "inline")`
 
                     Defines an inline skill for this request.
 
@@ -8310,7 +8478,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `LocalEnvironment object { type, skills }`
 
-              - `type: "local"`
+              - `type: "local" (default: "local")`
 
                 Use a local computer environment.
 
@@ -8319,6 +8487,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               - `skills: optional array of LocalSkill`
 
                 An optional list of skills.
+
+                `maxItems: 200`
 
                 - `description: string`
 
@@ -8338,7 +8508,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 The ID of the referenced container.
 
-              - `type: "container_reference"`
+              - `type: "container_reference" (default: "container_reference")`
 
                 References a container created with the /v1/containers endpoint
 
@@ -8352,7 +8522,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -8361,6 +8531,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -8386,7 +8558,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
               Unconstrained free-form text.
 
-              - `type: "text"`
+              - `type: "text" (default: "text")`
 
                 Unconstrained text format. Always `text`.
 
@@ -8408,7 +8580,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 - `"regex"`
 
-              - `type: "grammar"`
+              - `type: "grammar" (default: "grammar")`
 
                 Grammar format. Always `grammar`.
 
@@ -8426,21 +8598,29 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -8474,7 +8654,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -8483,6 +8663,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -8504,7 +8686,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -8514,7 +8696,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -8540,7 +8722,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -8568,7 +8750,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -8594,7 +8776,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -8604,11 +8786,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `top_p: optional number`
+      - `top_p: optional number (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -8631,9 +8815,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
   Unique identifier for the evaluation run.
 
-- `created_at: number`
+- `created_at: integer`
 
   Unix timestamp (in seconds) when the evaluation run was created.
+
+  `format: unixtime`
 
 - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or ResponsesRunDataSource { source, type, input_messages, 2 more }`
 
@@ -8657,7 +8843,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -8669,13 +8855,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
           - `"file_id"`
 
-    - `type: "jsonl"`
+    - `type: "jsonl" (default: "jsonl")`
 
       The type of data source. Always `jsonl`.
 
@@ -8699,7 +8885,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -8711,7 +8897,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
@@ -8721,21 +8907,21 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
         A StoredCompletionsRunDataSource configuration describing a set of filters
 
-        - `type: "stored_completions"`
+        - `type: "stored_completions" (default: "stored_completions")`
 
           The type of source. Always `stored_completions`.
 
           - `"stored_completions"`
 
-        - `created_after: optional number or null`
+        - `created_after: optional integer or null`
 
           An optional Unix timestamp to filter items created after this time.
 
-        - `created_before: optional number or null`
+        - `created_before: optional integer or null`
 
           An optional Unix timestamp to filter items created before this time.
 
-        - `limit: optional number or null`
+        - `limit: optional integer or null`
 
           An optional maximum number of items to return.
 
@@ -8752,7 +8938,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           An optional model to filter by (e.g., 'gpt-6-astra').
 
-    - `type: "completions"`
+    - `type: "completions" (default: "completions")`
 
       The type of run data source. Always `completions`.
 
@@ -8798,7 +8984,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     The text input to the model.
 
-                  - `type: "input_text"`
+                  - `type: "input_text" (default: "input_text")`
 
                     The type of the input item. Always `input_text`.
 
@@ -8808,7 +8994,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -8838,7 +9024,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     - `"original"`
 
-                  - `type: "input_image"`
+                  - `type: "input_image" (default: "input_image")`
 
                     The type of the input item. Always `input_image`.
 
@@ -8852,11 +9038,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                    `format: uri`
+
                   - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -8874,7 +9062,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                   A file input to the model.
 
-                  - `type: "input_file"`
+                  - `type: "input_file" (default: "input_file")`
 
                     The type of the input item. Always `input_file`.
 
@@ -8902,6 +9090,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     The URL of the file to be sent to the model.
 
+                    `format: uri`
+
                   - `filename: optional string`
 
                     The name of the file to be sent to the model.
@@ -8910,7 +9100,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -8995,6 +9185,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -9065,6 +9257,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -9122,11 +9316,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
-      - `max_completion_tokens: optional number`
+      - `max_completion_tokens: optional integer`
 
         The maximum number of tokens in the generated output.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -9197,7 +9391,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               The schema for the response format, described as a JSON Schema object.
               Learn how to build JSON schemas [here](https://json-schema.org/).
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -9224,11 +9418,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"json_object"`
 
-      - `seed: optional number`
+      - `seed: optional integer (default: 42)`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number (default: 1)`
 
         A higher temperature increases randomness in the outputs.
 
@@ -9252,7 +9446,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             Omitting `parameters` defines a function with an empty parameter list.
 
-          - `strict: optional boolean or null`
+          - `strict: optional boolean or null (default: false)`
 
             Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
@@ -9262,7 +9456,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `"function"`
 
-      - `top_p: optional number`
+      - `top_p: optional number (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -9284,7 +9478,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -9296,7 +9490,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
@@ -9312,13 +9506,17 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           - `"responses"`
 
-        - `created_after: optional number or null`
+        - `created_after: optional integer or null`
 
           Only include items created after this timestamp (inclusive). This is a query parameter used to select responses.
 
-        - `created_before: optional number or null`
+          `minimum: 0`
+
+        - `created_before: optional integer or null`
 
           Only include items created before this timestamp (inclusive). This is a query parameter used to select responses.
+
+          `minimum: 0`
 
         - `instructions_search: optional string or null`
 
@@ -9332,7 +9530,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           The name of the model to find responses for. This is a query parameter used to select responses.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -9358,7 +9556,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           List of user identifiers. This is a query parameter used to select responses.
 
-    - `type: "responses"`
+    - `type: "responses" (default: "responses")`
 
       The type of run data source. Always `responses`.
 
@@ -9426,6 +9624,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -9488,11 +9688,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
-      - `max_completion_tokens: optional number`
+      - `max_completion_tokens: optional integer`
 
         The maximum number of tokens in the generated output.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -9502,11 +9702,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
         [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
-      - `seed: optional number`
+      - `seed: optional integer (default: 42)`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number (default: 1)`
 
         A higher temperature increases randomness in the outputs.
 
@@ -9564,7 +9764,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               A description of what the response format is for, used by the model to
               determine how to respond in the format.
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -9610,7 +9810,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -9642,7 +9842,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -9664,7 +9864,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 The key to compare against the value.
 
-              - `type: "eq" or "ne" or "gt" or 5 more`
+              - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                 Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -9733,7 +9933,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 - `"or"`
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -9769,7 +9969,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -9779,11 +9979,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -9801,7 +10001,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -9812,7 +10012,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -9820,7 +10020,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -9828,14 +10028,14 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -9867,7 +10067,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -9891,6 +10091,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -9970,7 +10172,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -10027,10 +10229,14 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -10050,7 +10256,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -10059,6 +10265,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -10078,7 +10286,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 - `ContainerNetworkPolicyDisabled object { type }`
 
-                  - `type: "disabled"`
+                  - `type: "disabled" (default: "disabled")`
 
                     Disable outbound network access. Always `disabled`.
 
@@ -10090,7 +10298,9 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     A list of allowed domains when type is `allowlist`.
 
-                  - `type: "allowlist"`
+                    `minItems: 1`
+
+                  - `type: "allowlist" (default: "allowlist")`
 
                     Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -10100,17 +10310,25 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                     Optional domain-scoped secrets for allowlisted domains.
 
+                    `minItems: 1`
+
                     - `domain: string`
 
                       The domain associated with the secret.
+
+                      `minLength: 1`
 
                     - `name: string`
 
                       The name of the secret to inject for the domain.
 
+                      `minLength: 1`
+
                     - `value: string`
 
                       The secret value to inject for the domain.
+
+                      `minLength: 1`, `maxLength: 10485760`
 
           - `type: "code_interpreter"`
 
@@ -10122,13 +10340,15 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -10154,7 +10374,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -10235,7 +10455,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -10243,11 +10463,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -10258,11 +10480,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -10281,7 +10505,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -10303,7 +10527,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -10313,7 +10537,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -10323,6 +10547,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -10331,7 +10557,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-              - `type: "container_auto"`
+              - `type: "container_auto" (default: "container_auto")`
 
                 Automatically creates a container for this request
 
@@ -10340,6 +10566,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -10365,13 +10593,17 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 An optional list of skills referenced by id or inline data.
 
+                `maxItems: 200`
+
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
                     The ID of the referenced skill.
 
-                  - `type: "skill_reference"`
+                    `minLength: 1`, `maxLength: 64`
+
+                  - `type: "skill_reference" (default: "skill_reference")`
 
                     References a skill created with the /v1/skills endpoint.
 
@@ -10399,19 +10631,21 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                       Base64-encoded skill zip bundle.
 
-                    - `media_type: "application/zip"`
+                      `minLength: 1`, `maxLength: 70254592`
+
+                    - `media_type: "application/zip" (default: "application/zip")`
 
                       The media type of the inline skill payload. Must be `application/zip`.
 
                       - `"application/zip"`
 
-                    - `type: "base64"`
+                    - `type: "base64" (default: "base64")`
 
                       The type of the inline skill source. Must be `base64`.
 
                       - `"base64"`
 
-                  - `type: "inline"`
+                  - `type: "inline" (default: "inline")`
 
                     Defines an inline skill for this request.
 
@@ -10419,7 +10653,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             - `LocalEnvironment object { type, skills }`
 
-              - `type: "local"`
+              - `type: "local" (default: "local")`
 
                 Use a local computer environment.
 
@@ -10428,6 +10662,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               - `skills: optional array of LocalSkill`
 
                 An optional list of skills.
+
+                `maxItems: 200`
 
                 - `description: string`
 
@@ -10447,7 +10683,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 The ID of the referenced container.
 
-              - `type: "container_reference"`
+              - `type: "container_reference" (default: "container_reference")`
 
                 References a container created with the /v1/containers endpoint
 
@@ -10461,7 +10697,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -10470,6 +10706,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -10495,7 +10733,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
               Unconstrained free-form text.
 
-              - `type: "text"`
+              - `type: "text" (default: "text")`
 
                 Unconstrained text format. Always `text`.
 
@@ -10517,7 +10755,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 - `"regex"`
 
-              - `type: "grammar"`
+              - `type: "grammar" (default: "grammar")`
 
                 Grammar format. Always `grammar`.
 
@@ -10535,21 +10773,29 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -10583,7 +10829,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -10592,6 +10838,8 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -10613,7 +10861,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -10623,7 +10871,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -10649,7 +10897,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -10677,7 +10925,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -10703,7 +10951,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -10713,11 +10961,13 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `top_p: optional number`
+      - `top_p: optional number (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -10754,7 +11004,7 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
   The name of the evaluation run.
 
-- `object: "eval.run"`
+- `object: "eval.run" (default: "eval.run")`
 
   The type of the object. Always "eval.run".
 
@@ -10764,15 +11014,15 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
   Usage statistics for each model during the evaluation run.
 
-  - `cached_tokens: number`
+  - `cached_tokens: integer`
 
     The number of tokens retrieved from cache.
 
-  - `completion_tokens: number`
+  - `completion_tokens: integer`
 
     The number of completion tokens generated.
 
-  - `invocation_count: number`
+  - `invocation_count: integer`
 
     The number of invocations.
 
@@ -10780,11 +11030,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
     The name of the model.
 
-  - `prompt_tokens: number`
+  - `prompt_tokens: integer`
 
     The number of prompt tokens used.
 
-  - `total_tokens: number`
+  - `total_tokens: integer`
 
     The total number of tokens used.
 
@@ -10792,11 +11042,11 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
   Results per testing criteria applied during the evaluation run.
 
-  - `failed: number`
+  - `failed: integer`
 
     Number of tests failed for this criteria.
 
-  - `passed: number`
+  - `passed: integer`
 
     Number of tests passed for this criteria.
 
@@ -10808,23 +11058,25 @@ Kicks off a new run for a given evaluation, specifying the data source, and what
 
   The URL to the rendered evaluation run report on the UI dashboard.
 
+  `format: uri`
+
 - `result_counts: object { errored, failed, passed, total }`
 
   Counters summarizing the outcomes of the evaluation run.
 
-  - `errored: number`
+  - `errored: integer`
 
     Number of output items that resulted in an error.
 
-  - `failed: number`
+  - `failed: integer`
 
     Number of output items that failed to pass the evaluation.
 
-  - `passed: number`
+  - `passed: integer`
 
     Number of output items that passed the evaluation.
 
-  - `total: number`
+  - `total: integer`
 
     Total number of executed output items.
 
@@ -10855,7 +11107,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID/runs \
         }'
 ```
 
-#### Response
+#### 201 — Example
 
 ```json
 {
@@ -10926,7 +11178,7 @@ curl https://api.openai.com/v1/evals/eval_67e579652b548190aaa83ada4b125f47/runs 
   -d '{"name":"gpt-6-astra","data_source":{"type":"completions","input_messages":{"type":"template","template":[{"role":"developer","content":"Categorize a given news headline into one of the following topics: Technology, Markets, World, Business, or Sports.\n\n# Steps\n\n1. Analyze the content of the news headline to understand its primary focus.\n2. Extract the subject matter, identifying any key indicators or keywords.\n3. Use the identified indicators to determine the most suitable category out of the five options: Technology, Markets, World, Business, or Sports.\n4. Ensure only one category is selected per headline.\n\n# Output Format\n\nRespond with the chosen category as a single word. For instance: \"Technology\", \"Markets\", \"World\", \"Business\", or \"Sports\".\n\n# Examples\n\n**Input**: \"Apple Unveils New iPhone Model, Featuring Advanced AI Features\"  \n**Output**: \"Technology\"\n\n**Input**: \"Global Stocks Mixed as Investors Await Central Bank Decisions\"  \n**Output**: \"Markets\"\n\n**Input**: \"War in Ukraine: Latest Updates on Negotiation Status\"  \n**Output**: \"World\"\n\n**Input**: \"Microsoft in Talks to Acquire Gaming Company for $2 Billion\"  \n**Output**: \"Business\"\n\n**Input**: \"Manchester United Secures Win in Premier League Football Match\"  \n**Output**: \"Sports\" \n\n# Notes\n\n- If the headline appears to fit into more than one category, choose the most dominant theme.\n- Keywords or phrases such as \"stocks\", \"company acquisition\", \"match\", or technological brands can be good indicators for classification.\n"} , {"role":"user","content":"{{item.input}}"}]} ,"sampling_params":{"max_completions_tokens":2048},"model":"gpt-6-astra","source":{"type":"file_content","content":[{"item":{"input":"Tech Company Launches Advanced Artificial Intelligence Platform","ground_truth":"Technology"}}]}}}'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -11018,7 +11270,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID/runs/$RUN_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -11037,7 +11289,7 @@ curl https://api.openai.com/v1/evals/eval_123abc/runs/evalrun_abc456 \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -11063,11 +11315,11 @@ Get a list of runs for an evaluation.
 
   Identifier for the last run from the previous pagination request.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   Number of runs to retrieve.
 
-- `order: optional "asc" or "desc"`
+- `order: optional "asc" or "desc" (default: "asc")`
 
   Sort order for runs by timestamp. Use `asc` for ascending order or `desc` for descending order. Defaults to `asc`.
 
@@ -11099,9 +11351,11 @@ Get a list of runs for an evaluation.
 
     Unique identifier for the evaluation run.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the evaluation run was created.
+
+    `format: unixtime`
 
   - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or ResponsesRunDataSource { source, type, input_messages, 2 more }`
 
@@ -11125,7 +11379,7 @@ Get a list of runs for an evaluation.
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -11137,13 +11391,13 @@ Get a list of runs for an evaluation.
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
             - `"file_id"`
 
-      - `type: "jsonl"`
+      - `type: "jsonl" (default: "jsonl")`
 
         The type of data source. Always `jsonl`.
 
@@ -11167,7 +11421,7 @@ Get a list of runs for an evaluation.
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -11179,7 +11433,7 @@ Get a list of runs for an evaluation.
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
@@ -11189,21 +11443,21 @@ Get a list of runs for an evaluation.
 
           A StoredCompletionsRunDataSource configuration describing a set of filters
 
-          - `type: "stored_completions"`
+          - `type: "stored_completions" (default: "stored_completions")`
 
             The type of source. Always `stored_completions`.
 
             - `"stored_completions"`
 
-          - `created_after: optional number or null`
+          - `created_after: optional integer or null`
 
             An optional Unix timestamp to filter items created after this time.
 
-          - `created_before: optional number or null`
+          - `created_before: optional integer or null`
 
             An optional Unix timestamp to filter items created before this time.
 
-          - `limit: optional number or null`
+          - `limit: optional integer or null`
 
             An optional maximum number of items to return.
 
@@ -11220,7 +11474,7 @@ Get a list of runs for an evaluation.
 
             An optional model to filter by (e.g., 'gpt-6-astra').
 
-      - `type: "completions"`
+      - `type: "completions" (default: "completions")`
 
         The type of run data source. Always `completions`.
 
@@ -11266,7 +11520,7 @@ Get a list of runs for an evaluation.
 
                       The text input to the model.
 
-                    - `type: "input_text"`
+                    - `type: "input_text" (default: "input_text")`
 
                       The type of the input item. Always `input_text`.
 
@@ -11276,7 +11530,7 @@ Get a list of runs for an evaluation.
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -11306,7 +11560,7 @@ Get a list of runs for an evaluation.
 
                       - `"original"`
 
-                    - `type: "input_image"`
+                    - `type: "input_image" (default: "input_image")`
 
                       The type of the input item. Always `input_image`.
 
@@ -11320,11 +11574,13 @@ Get a list of runs for an evaluation.
 
                       The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                      `format: uri`
+
                     - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -11342,7 +11598,7 @@ Get a list of runs for an evaluation.
 
                     A file input to the model.
 
-                    - `type: "input_file"`
+                    - `type: "input_file" (default: "input_file")`
 
                       The type of the input item. Always `input_file`.
 
@@ -11370,6 +11626,8 @@ Get a list of runs for an evaluation.
 
                       The URL of the file to be sent to the model.
 
+                      `format: uri`
+
                     - `filename: optional string`
 
                       The name of the file to be sent to the model.
@@ -11378,7 +11636,7 @@ Get a list of runs for an evaluation.
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -11463,6 +11721,8 @@ Get a list of runs for an evaluation.
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -11533,6 +11793,8 @@ Get a list of runs for an evaluation.
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -11590,11 +11852,11 @@ Get a list of runs for an evaluation.
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
-        - `max_completion_tokens: optional number`
+        - `max_completion_tokens: optional integer`
 
           The maximum number of tokens in the generated output.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -11665,7 +11927,7 @@ Get a list of runs for an evaluation.
                 The schema for the response format, described as a JSON Schema object.
                 Learn how to build JSON schemas [here](https://json-schema.org/).
 
-              - `strict: optional boolean or null`
+              - `strict: optional boolean or null (default: false)`
 
                 Whether to enable strict schema adherence when generating the output.
                 If set to true, the model will always follow the exact schema defined
@@ -11692,11 +11954,11 @@ Get a list of runs for an evaluation.
 
               - `"json_object"`
 
-        - `seed: optional number`
+        - `seed: optional integer (default: 42)`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number (default: 1)`
 
           A higher temperature increases randomness in the outputs.
 
@@ -11720,7 +11982,7 @@ Get a list of runs for an evaluation.
 
               Omitting `parameters` defines a function with an empty parameter list.
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
@@ -11730,7 +11992,7 @@ Get a list of runs for an evaluation.
 
             - `"function"`
 
-        - `top_p: optional number`
+        - `top_p: optional number (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -11752,7 +12014,7 @@ Get a list of runs for an evaluation.
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -11764,7 +12026,7 @@ Get a list of runs for an evaluation.
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
@@ -11780,13 +12042,17 @@ Get a list of runs for an evaluation.
 
             - `"responses"`
 
-          - `created_after: optional number or null`
+          - `created_after: optional integer or null`
 
             Only include items created after this timestamp (inclusive). This is a query parameter used to select responses.
 
-          - `created_before: optional number or null`
+            `minimum: 0`
+
+          - `created_before: optional integer or null`
 
             Only include items created before this timestamp (inclusive). This is a query parameter used to select responses.
+
+            `minimum: 0`
 
           - `instructions_search: optional string or null`
 
@@ -11800,7 +12066,7 @@ Get a list of runs for an evaluation.
 
             The name of the model to find responses for. This is a query parameter used to select responses.
 
-          - `reasoning_effort: optional ReasoningEffort or null`
+          - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
             Constrains effort on reasoning for reasoning models. Currently supported
             values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -11826,7 +12092,7 @@ Get a list of runs for an evaluation.
 
             List of user identifiers. This is a query parameter used to select responses.
 
-      - `type: "responses"`
+      - `type: "responses" (default: "responses")`
 
         The type of run data source. Always `responses`.
 
@@ -11894,6 +12160,8 @@ Get a list of runs for an evaluation.
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -11956,11 +12224,11 @@ Get a list of runs for an evaluation.
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
-        - `max_completion_tokens: optional number`
+        - `max_completion_tokens: optional integer`
 
           The maximum number of tokens in the generated output.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -11970,11 +12238,11 @@ Get a list of runs for an evaluation.
           [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
-        - `seed: optional number`
+        - `seed: optional integer (default: 42)`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number (default: 1)`
 
           A higher temperature increases randomness in the outputs.
 
@@ -12032,7 +12300,7 @@ Get a list of runs for an evaluation.
                 A description of what the response format is for, used by the model to
                 determine how to respond in the format.
 
-              - `strict: optional boolean or null`
+              - `strict: optional boolean or null (default: false)`
 
                 Whether to enable strict schema adherence when generating the output.
                 If set to true, the model will always follow the exact schema defined
@@ -12078,7 +12346,7 @@ Get a list of runs for an evaluation.
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -12110,7 +12378,7 @@ Get a list of runs for an evaluation.
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -12132,7 +12400,7 @@ Get a list of runs for an evaluation.
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -12201,7 +12469,7 @@ Get a list of runs for an evaluation.
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -12237,7 +12505,7 @@ Get a list of runs for an evaluation.
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -12247,11 +12515,11 @@ Get a list of runs for an evaluation.
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -12269,7 +12537,7 @@ Get a list of runs for an evaluation.
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -12280,7 +12548,7 @@ Get a list of runs for an evaluation.
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -12288,7 +12556,7 @@ Get a list of runs for an evaluation.
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -12296,14 +12564,14 @@ Get a list of runs for an evaluation.
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -12335,7 +12603,7 @@ Get a list of runs for an evaluation.
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -12359,6 +12627,8 @@ Get a list of runs for an evaluation.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -12438,7 +12708,7 @@ Get a list of runs for an evaluation.
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -12495,10 +12765,14 @@ Get a list of runs for an evaluation.
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -12518,7 +12792,7 @@ Get a list of runs for an evaluation.
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -12527,6 +12801,8 @@ Get a list of runs for an evaluation.
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -12546,7 +12822,7 @@ Get a list of runs for an evaluation.
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -12558,7 +12834,9 @@ Get a list of runs for an evaluation.
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -12568,17 +12846,25 @@ Get a list of runs for an evaluation.
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -12590,13 +12876,15 @@ Get a list of runs for an evaluation.
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -12622,7 +12910,7 @@ Get a list of runs for an evaluation.
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -12703,7 +12991,7 @@ Get a list of runs for an evaluation.
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -12711,11 +12999,13 @@ Get a list of runs for an evaluation.
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -12726,11 +13016,13 @@ Get a list of runs for an evaluation.
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -12749,7 +13041,7 @@ Get a list of runs for an evaluation.
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -12771,7 +13063,7 @@ Get a list of runs for an evaluation.
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -12781,7 +13073,7 @@ Get a list of runs for an evaluation.
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -12791,6 +13083,8 @@ Get a list of runs for an evaluation.
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -12799,7 +13093,7 @@ Get a list of runs for an evaluation.
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -12808,6 +13102,8 @@ Get a list of runs for an evaluation.
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -12833,13 +13129,17 @@ Get a list of runs for an evaluation.
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -12867,19 +13167,21 @@ Get a list of runs for an evaluation.
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -12887,7 +13189,7 @@ Get a list of runs for an evaluation.
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -12896,6 +13198,8 @@ Get a list of runs for an evaluation.
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -12915,7 +13219,7 @@ Get a list of runs for an evaluation.
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -12929,7 +13233,7 @@ Get a list of runs for an evaluation.
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -12938,6 +13242,8 @@ Get a list of runs for an evaluation.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -12963,7 +13269,7 @@ Get a list of runs for an evaluation.
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -12985,7 +13291,7 @@ Get a list of runs for an evaluation.
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -13003,21 +13309,29 @@ Get a list of runs for an evaluation.
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -13051,7 +13365,7 @@ Get a list of runs for an evaluation.
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -13060,6 +13374,8 @@ Get a list of runs for an evaluation.
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -13081,7 +13397,7 @@ Get a list of runs for an evaluation.
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -13091,7 +13407,7 @@ Get a list of runs for an evaluation.
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -13117,7 +13433,7 @@ Get a list of runs for an evaluation.
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -13145,7 +13461,7 @@ Get a list of runs for an evaluation.
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -13171,7 +13487,7 @@ Get a list of runs for an evaluation.
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -13181,11 +13497,13 @@ Get a list of runs for an evaluation.
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `top_p: optional number`
+        - `top_p: optional number (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -13222,7 +13540,7 @@ Get a list of runs for an evaluation.
 
     The name of the evaluation run.
 
-  - `object: "eval.run"`
+  - `object: "eval.run" (default: "eval.run")`
 
     The type of the object. Always "eval.run".
 
@@ -13232,15 +13550,15 @@ Get a list of runs for an evaluation.
 
     Usage statistics for each model during the evaluation run.
 
-    - `cached_tokens: number`
+    - `cached_tokens: integer`
 
       The number of tokens retrieved from cache.
 
-    - `completion_tokens: number`
+    - `completion_tokens: integer`
 
       The number of completion tokens generated.
 
-    - `invocation_count: number`
+    - `invocation_count: integer`
 
       The number of invocations.
 
@@ -13248,11 +13566,11 @@ Get a list of runs for an evaluation.
 
       The name of the model.
 
-    - `prompt_tokens: number`
+    - `prompt_tokens: integer`
 
       The number of prompt tokens used.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -13260,11 +13578,11 @@ Get a list of runs for an evaluation.
 
     Results per testing criteria applied during the evaluation run.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of tests failed for this criteria.
 
-    - `passed: number`
+    - `passed: integer`
 
       Number of tests passed for this criteria.
 
@@ -13276,23 +13594,25 @@ Get a list of runs for an evaluation.
 
     The URL to the rendered evaluation run report on the UI dashboard.
 
+    `format: uri`
+
   - `result_counts: object { errored, failed, passed, total }`
 
     Counters summarizing the outcomes of the evaluation run.
 
-    - `errored: number`
+    - `errored: integer`
 
       Number of output items that resulted in an error.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of output items that failed to pass the evaluation.
 
-    - `passed: number`
+    - `passed: integer`
 
       Number of output items that passed the evaluation.
 
-    - `total: number`
+    - `total: integer`
 
       Total number of executed output items.
 
@@ -13312,7 +13632,7 @@ Get a list of runs for an evaluation.
 
   The identifier of the last eval run in the data array.
 
-- `object: "list"`
+- `object: "list" (default: "list")`
 
   The type of this object. It is always set to "list".
 
@@ -13325,7 +13645,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID/runs \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -13402,7 +13722,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -13503,9 +13823,11 @@ Get an evaluation run by ID.
 
   Unique identifier for the evaluation run.
 
-- `created_at: number`
+- `created_at: integer`
 
   Unix timestamp (in seconds) when the evaluation run was created.
+
+  `format: unixtime`
 
 - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or ResponsesRunDataSource { source, type, input_messages, 2 more }`
 
@@ -13529,7 +13851,7 @@ Get an evaluation run by ID.
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -13541,13 +13863,13 @@ Get an evaluation run by ID.
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
           - `"file_id"`
 
-    - `type: "jsonl"`
+    - `type: "jsonl" (default: "jsonl")`
 
       The type of data source. Always `jsonl`.
 
@@ -13571,7 +13893,7 @@ Get an evaluation run by ID.
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -13583,7 +13905,7 @@ Get an evaluation run by ID.
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
@@ -13593,21 +13915,21 @@ Get an evaluation run by ID.
 
         A StoredCompletionsRunDataSource configuration describing a set of filters
 
-        - `type: "stored_completions"`
+        - `type: "stored_completions" (default: "stored_completions")`
 
           The type of source. Always `stored_completions`.
 
           - `"stored_completions"`
 
-        - `created_after: optional number or null`
+        - `created_after: optional integer or null`
 
           An optional Unix timestamp to filter items created after this time.
 
-        - `created_before: optional number or null`
+        - `created_before: optional integer or null`
 
           An optional Unix timestamp to filter items created before this time.
 
-        - `limit: optional number or null`
+        - `limit: optional integer or null`
 
           An optional maximum number of items to return.
 
@@ -13624,7 +13946,7 @@ Get an evaluation run by ID.
 
           An optional model to filter by (e.g., 'gpt-6-astra').
 
-    - `type: "completions"`
+    - `type: "completions" (default: "completions")`
 
       The type of run data source. Always `completions`.
 
@@ -13670,7 +13992,7 @@ Get an evaluation run by ID.
 
                     The text input to the model.
 
-                  - `type: "input_text"`
+                  - `type: "input_text" (default: "input_text")`
 
                     The type of the input item. Always `input_text`.
 
@@ -13680,7 +14002,7 @@ Get an evaluation run by ID.
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -13710,7 +14032,7 @@ Get an evaluation run by ID.
 
                     - `"original"`
 
-                  - `type: "input_image"`
+                  - `type: "input_image" (default: "input_image")`
 
                     The type of the input item. Always `input_image`.
 
@@ -13724,11 +14046,13 @@ Get an evaluation run by ID.
 
                     The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                    `format: uri`
+
                   - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -13746,7 +14070,7 @@ Get an evaluation run by ID.
 
                   A file input to the model.
 
-                  - `type: "input_file"`
+                  - `type: "input_file" (default: "input_file")`
 
                     The type of the input item. Always `input_file`.
 
@@ -13774,6 +14098,8 @@ Get an evaluation run by ID.
 
                     The URL of the file to be sent to the model.
 
+                    `format: uri`
+
                   - `filename: optional string`
 
                     The name of the file to be sent to the model.
@@ -13782,7 +14108,7 @@ Get an evaluation run by ID.
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -13867,6 +14193,8 @@ Get an evaluation run by ID.
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -13937,6 +14265,8 @@ Get an evaluation run by ID.
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -13994,11 +14324,11 @@ Get an evaluation run by ID.
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
-      - `max_completion_tokens: optional number`
+      - `max_completion_tokens: optional integer`
 
         The maximum number of tokens in the generated output.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -14069,7 +14399,7 @@ Get an evaluation run by ID.
               The schema for the response format, described as a JSON Schema object.
               Learn how to build JSON schemas [here](https://json-schema.org/).
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -14096,11 +14426,11 @@ Get an evaluation run by ID.
 
             - `"json_object"`
 
-      - `seed: optional number`
+      - `seed: optional integer (default: 42)`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number (default: 1)`
 
         A higher temperature increases randomness in the outputs.
 
@@ -14124,7 +14454,7 @@ Get an evaluation run by ID.
 
             Omitting `parameters` defines a function with an empty parameter list.
 
-          - `strict: optional boolean or null`
+          - `strict: optional boolean or null (default: false)`
 
             Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
@@ -14134,7 +14464,7 @@ Get an evaluation run by ID.
 
           - `"function"`
 
-      - `top_p: optional number`
+      - `top_p: optional number (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -14156,7 +14486,7 @@ Get an evaluation run by ID.
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -14168,7 +14498,7 @@ Get an evaluation run by ID.
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
@@ -14184,13 +14514,17 @@ Get an evaluation run by ID.
 
           - `"responses"`
 
-        - `created_after: optional number or null`
+        - `created_after: optional integer or null`
 
           Only include items created after this timestamp (inclusive). This is a query parameter used to select responses.
 
-        - `created_before: optional number or null`
+          `minimum: 0`
+
+        - `created_before: optional integer or null`
 
           Only include items created before this timestamp (inclusive). This is a query parameter used to select responses.
+
+          `minimum: 0`
 
         - `instructions_search: optional string or null`
 
@@ -14204,7 +14538,7 @@ Get an evaluation run by ID.
 
           The name of the model to find responses for. This is a query parameter used to select responses.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -14230,7 +14564,7 @@ Get an evaluation run by ID.
 
           List of user identifiers. This is a query parameter used to select responses.
 
-    - `type: "responses"`
+    - `type: "responses" (default: "responses")`
 
       The type of run data source. Always `responses`.
 
@@ -14298,6 +14632,8 @@ Get an evaluation run by ID.
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -14360,11 +14696,11 @@ Get an evaluation run by ID.
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
-      - `max_completion_tokens: optional number`
+      - `max_completion_tokens: optional integer`
 
         The maximum number of tokens in the generated output.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -14374,11 +14710,11 @@ Get an evaluation run by ID.
         [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
-      - `seed: optional number`
+      - `seed: optional integer (default: 42)`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number (default: 1)`
 
         A higher temperature increases randomness in the outputs.
 
@@ -14436,7 +14772,7 @@ Get an evaluation run by ID.
               A description of what the response format is for, used by the model to
               determine how to respond in the format.
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -14482,7 +14818,7 @@ Get an evaluation run by ID.
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -14514,7 +14850,7 @@ Get an evaluation run by ID.
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -14536,7 +14872,7 @@ Get an evaluation run by ID.
 
                 The key to compare against the value.
 
-              - `type: "eq" or "ne" or "gt" or 5 more`
+              - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                 Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -14605,7 +14941,7 @@ Get an evaluation run by ID.
 
                 - `"or"`
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -14641,7 +14977,7 @@ Get an evaluation run by ID.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -14651,11 +14987,11 @@ Get an evaluation run by ID.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -14673,7 +15009,7 @@ Get an evaluation run by ID.
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -14684,7 +15020,7 @@ Get an evaluation run by ID.
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -14692,7 +15028,7 @@ Get an evaluation run by ID.
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -14700,14 +15036,14 @@ Get an evaluation run by ID.
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -14739,7 +15075,7 @@ Get an evaluation run by ID.
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -14763,6 +15099,8 @@ Get an evaluation run by ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -14842,7 +15180,7 @@ Get an evaluation run by ID.
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -14899,10 +15237,14 @@ Get an evaluation run by ID.
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -14922,7 +15264,7 @@ Get an evaluation run by ID.
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -14931,6 +15273,8 @@ Get an evaluation run by ID.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -14950,7 +15294,7 @@ Get an evaluation run by ID.
 
                 - `ContainerNetworkPolicyDisabled object { type }`
 
-                  - `type: "disabled"`
+                  - `type: "disabled" (default: "disabled")`
 
                     Disable outbound network access. Always `disabled`.
 
@@ -14962,7 +15306,9 @@ Get an evaluation run by ID.
 
                     A list of allowed domains when type is `allowlist`.
 
-                  - `type: "allowlist"`
+                    `minItems: 1`
+
+                  - `type: "allowlist" (default: "allowlist")`
 
                     Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -14972,17 +15318,25 @@ Get an evaluation run by ID.
 
                     Optional domain-scoped secrets for allowlisted domains.
 
+                    `minItems: 1`
+
                     - `domain: string`
 
                       The domain associated with the secret.
+
+                      `minLength: 1`
 
                     - `name: string`
 
                       The name of the secret to inject for the domain.
 
+                      `minLength: 1`
+
                     - `value: string`
 
                       The secret value to inject for the domain.
+
+                      `minLength: 1`, `maxLength: 10485760`
 
           - `type: "code_interpreter"`
 
@@ -14994,13 +15348,15 @@ Get an evaluation run by ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -15026,7 +15382,7 @@ Get an evaluation run by ID.
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -15107,7 +15463,7 @@ Get an evaluation run by ID.
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -15115,11 +15471,13 @@ Get an evaluation run by ID.
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -15130,11 +15488,13 @@ Get an evaluation run by ID.
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -15153,7 +15513,7 @@ Get an evaluation run by ID.
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -15175,7 +15535,7 @@ Get an evaluation run by ID.
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -15185,7 +15545,7 @@ Get an evaluation run by ID.
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -15195,6 +15555,8 @@ Get an evaluation run by ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -15203,7 +15565,7 @@ Get an evaluation run by ID.
 
             - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-              - `type: "container_auto"`
+              - `type: "container_auto" (default: "container_auto")`
 
                 Automatically creates a container for this request
 
@@ -15212,6 +15574,8 @@ Get an evaluation run by ID.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -15237,13 +15601,17 @@ Get an evaluation run by ID.
 
                 An optional list of skills referenced by id or inline data.
 
+                `maxItems: 200`
+
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
                     The ID of the referenced skill.
 
-                  - `type: "skill_reference"`
+                    `minLength: 1`, `maxLength: 64`
+
+                  - `type: "skill_reference" (default: "skill_reference")`
 
                     References a skill created with the /v1/skills endpoint.
 
@@ -15271,19 +15639,21 @@ Get an evaluation run by ID.
 
                       Base64-encoded skill zip bundle.
 
-                    - `media_type: "application/zip"`
+                      `minLength: 1`, `maxLength: 70254592`
+
+                    - `media_type: "application/zip" (default: "application/zip")`
 
                       The media type of the inline skill payload. Must be `application/zip`.
 
                       - `"application/zip"`
 
-                    - `type: "base64"`
+                    - `type: "base64" (default: "base64")`
 
                       The type of the inline skill source. Must be `base64`.
 
                       - `"base64"`
 
-                  - `type: "inline"`
+                  - `type: "inline" (default: "inline")`
 
                     Defines an inline skill for this request.
 
@@ -15291,7 +15661,7 @@ Get an evaluation run by ID.
 
             - `LocalEnvironment object { type, skills }`
 
-              - `type: "local"`
+              - `type: "local" (default: "local")`
 
                 Use a local computer environment.
 
@@ -15300,6 +15670,8 @@ Get an evaluation run by ID.
               - `skills: optional array of LocalSkill`
 
                 An optional list of skills.
+
+                `maxItems: 200`
 
                 - `description: string`
 
@@ -15319,7 +15691,7 @@ Get an evaluation run by ID.
 
                 The ID of the referenced container.
 
-              - `type: "container_reference"`
+              - `type: "container_reference" (default: "container_reference")`
 
                 References a container created with the /v1/containers endpoint
 
@@ -15333,7 +15705,7 @@ Get an evaluation run by ID.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -15342,6 +15714,8 @@ Get an evaluation run by ID.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -15367,7 +15741,7 @@ Get an evaluation run by ID.
 
               Unconstrained free-form text.
 
-              - `type: "text"`
+              - `type: "text" (default: "text")`
 
                 Unconstrained text format. Always `text`.
 
@@ -15389,7 +15763,7 @@ Get an evaluation run by ID.
 
                 - `"regex"`
 
-              - `type: "grammar"`
+              - `type: "grammar" (default: "grammar")`
 
                 Grammar format. Always `grammar`.
 
@@ -15407,21 +15781,29 @@ Get an evaluation run by ID.
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -15455,7 +15837,7 @@ Get an evaluation run by ID.
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -15464,6 +15846,8 @@ Get an evaluation run by ID.
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -15485,7 +15869,7 @@ Get an evaluation run by ID.
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -15495,7 +15879,7 @@ Get an evaluation run by ID.
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -15521,7 +15905,7 @@ Get an evaluation run by ID.
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -15549,7 +15933,7 @@ Get an evaluation run by ID.
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -15575,7 +15959,7 @@ Get an evaluation run by ID.
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -15585,11 +15969,13 @@ Get an evaluation run by ID.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `top_p: optional number`
+      - `top_p: optional number (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -15626,7 +16012,7 @@ Get an evaluation run by ID.
 
   The name of the evaluation run.
 
-- `object: "eval.run"`
+- `object: "eval.run" (default: "eval.run")`
 
   The type of the object. Always "eval.run".
 
@@ -15636,15 +16022,15 @@ Get an evaluation run by ID.
 
   Usage statistics for each model during the evaluation run.
 
-  - `cached_tokens: number`
+  - `cached_tokens: integer`
 
     The number of tokens retrieved from cache.
 
-  - `completion_tokens: number`
+  - `completion_tokens: integer`
 
     The number of completion tokens generated.
 
-  - `invocation_count: number`
+  - `invocation_count: integer`
 
     The number of invocations.
 
@@ -15652,11 +16038,11 @@ Get an evaluation run by ID.
 
     The name of the model.
 
-  - `prompt_tokens: number`
+  - `prompt_tokens: integer`
 
     The number of prompt tokens used.
 
-  - `total_tokens: number`
+  - `total_tokens: integer`
 
     The total number of tokens used.
 
@@ -15664,11 +16050,11 @@ Get an evaluation run by ID.
 
   Results per testing criteria applied during the evaluation run.
 
-  - `failed: number`
+  - `failed: integer`
 
     Number of tests failed for this criteria.
 
-  - `passed: number`
+  - `passed: integer`
 
     Number of tests passed for this criteria.
 
@@ -15680,23 +16066,25 @@ Get an evaluation run by ID.
 
   The URL to the rendered evaluation run report on the UI dashboard.
 
+  `format: uri`
+
 - `result_counts: object { errored, failed, passed, total }`
 
   Counters summarizing the outcomes of the evaluation run.
 
-  - `errored: number`
+  - `errored: integer`
 
     Number of output items that resulted in an error.
 
-  - `failed: number`
+  - `failed: integer`
 
     Number of output items that failed to pass the evaluation.
 
-  - `passed: number`
+  - `passed: integer`
 
     Number of output items that passed the evaluation.
 
-  - `total: number`
+  - `total: integer`
 
     Total number of executed output items.
 
@@ -15711,7 +16099,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID/runs/$RUN_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -15780,7 +16168,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -15950,7 +16338,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `sample: optional map[unknown]`
 
-      - `type: "file_content"`
+      - `type: "file_content" (default: "file_content")`
 
         The type of jsonl source. Always `file_content`.
 
@@ -15962,7 +16350,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         The identifier of the file.
 
-      - `type: "file_id"`
+      - `type: "file_id" (default: "file_id")`
 
         The type of jsonl source. Always `file_id`.
 
@@ -15972,21 +16360,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       A StoredCompletionsRunDataSource configuration describing a set of filters
 
-      - `type: "stored_completions"`
+      - `type: "stored_completions" (default: "stored_completions")`
 
         The type of source. Always `stored_completions`.
 
         - `"stored_completions"`
 
-      - `created_after: optional number or null`
+      - `created_after: optional integer or null`
 
         An optional Unix timestamp to filter items created after this time.
 
-      - `created_before: optional number or null`
+      - `created_before: optional integer or null`
 
         An optional Unix timestamp to filter items created before this time.
 
-      - `limit: optional number or null`
+      - `limit: optional integer or null`
 
         An optional maximum number of items to return.
 
@@ -16003,7 +16391,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         An optional model to filter by (e.g., 'gpt-6-astra').
 
-  - `type: "completions"`
+  - `type: "completions" (default: "completions")`
 
     The type of run data source. Always `completions`.
 
@@ -16049,7 +16437,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The text input to the model.
 
-                - `type: "input_text"`
+                - `type: "input_text" (default: "input_text")`
 
                   The type of the input item. Always `input_text`.
 
@@ -16059,7 +16447,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                  - `mode: "explicit"`
+                  - `mode: "explicit" (default: "explicit")`
 
                     The breakpoint mode. Always `explicit`.
 
@@ -16089,7 +16477,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `"original"`
 
-                - `type: "input_image"`
+                - `type: "input_image" (default: "input_image")`
 
                   The type of the input item. Always `input_image`.
 
@@ -16103,11 +16491,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                  `format: uri`
+
                 - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                   Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                  - `mode: "explicit"`
+                  - `mode: "explicit" (default: "explicit")`
 
                     The breakpoint mode. Always `explicit`.
 
@@ -16125,7 +16515,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 A file input to the model.
 
-                - `type: "input_file"`
+                - `type: "input_file" (default: "input_file")`
 
                   The type of the input item. Always `input_file`.
 
@@ -16153,6 +16543,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The URL of the file to be sent to the model.
 
+                  `format: uri`
+
                 - `filename: optional string`
 
                   The name of the file to be sent to the model.
@@ -16161,7 +16553,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                  - `mode: "explicit"`
+                  - `mode: "explicit" (default: "explicit")`
 
                     The breakpoint mode. Always `explicit`.
 
@@ -16246,6 +16638,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 The URL of the image input.
 
+                `format: uri`
+
               - `type: "input_image"`
 
                 The type of the image input. Always `input_image`.
@@ -16316,6 +16710,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -16373,11 +16769,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
   - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
-    - `max_completion_tokens: optional number`
+    - `max_completion_tokens: optional integer`
 
       The maximum number of tokens in the generated output.
 
-    - `reasoning_effort: optional ReasoningEffort or null`
+    - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
       Constrains effort on reasoning for reasoning models. Currently supported
       values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -16448,7 +16844,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             The schema for the response format, described as a JSON Schema object.
             Learn how to build JSON schemas [here](https://json-schema.org/).
 
-          - `strict: optional boolean or null`
+          - `strict: optional boolean or null (default: false)`
 
             Whether to enable strict schema adherence when generating the output.
             If set to true, the model will always follow the exact schema defined
@@ -16475,11 +16871,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           - `"json_object"`
 
-    - `seed: optional number`
+    - `seed: optional integer (default: 42)`
 
       A seed value to initialize the randomness, during sampling.
 
-    - `temperature: optional number`
+    - `temperature: optional number (default: 1)`
 
       A higher temperature increases randomness in the outputs.
 
@@ -16503,7 +16899,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           Omitting `parameters` defines a function with an empty parameter list.
 
-        - `strict: optional boolean or null`
+        - `strict: optional boolean or null (default: false)`
 
           Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
@@ -16513,7 +16909,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `"function"`
 
-    - `top_p: optional number`
+    - `top_p: optional number (default: 1)`
 
       An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -16537,7 +16933,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         - `sample: optional map[unknown]`
 
-      - `type: "file_content"`
+      - `type: "file_content" (default: "file_content")`
 
         The type of jsonl source. Always `file_content`.
 
@@ -16549,13 +16945,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         The identifier of the file.
 
-      - `type: "file_id"`
+      - `type: "file_id" (default: "file_id")`
 
         The type of jsonl source. Always `file_id`.
 
         - `"file_id"`
 
-  - `type: "jsonl"`
+  - `type: "jsonl" (default: "jsonl")`
 
     The type of data source. Always `jsonl`.
 
@@ -16585,9 +16981,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Unique identifier for the evaluation run.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the evaluation run was created.
+
+    `format: unixtime`
 
   - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or ResponsesRunDataSource { source, type, input_messages, 2 more }`
 
@@ -16611,7 +17009,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -16623,13 +17021,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
             - `"file_id"`
 
-      - `type: "jsonl"`
+      - `type: "jsonl" (default: "jsonl")`
 
         The type of data source. Always `jsonl`.
 
@@ -16653,7 +17051,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -16665,7 +17063,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
@@ -16675,21 +17073,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           A StoredCompletionsRunDataSource configuration describing a set of filters
 
-          - `type: "stored_completions"`
+          - `type: "stored_completions" (default: "stored_completions")`
 
             The type of source. Always `stored_completions`.
 
             - `"stored_completions"`
 
-          - `created_after: optional number or null`
+          - `created_after: optional integer or null`
 
             An optional Unix timestamp to filter items created after this time.
 
-          - `created_before: optional number or null`
+          - `created_before: optional integer or null`
 
             An optional Unix timestamp to filter items created before this time.
 
-          - `limit: optional number or null`
+          - `limit: optional integer or null`
 
             An optional maximum number of items to return.
 
@@ -16706,7 +17104,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             An optional model to filter by (e.g., 'gpt-6-astra').
 
-      - `type: "completions"`
+      - `type: "completions" (default: "completions")`
 
         The type of run data source. Always `completions`.
 
@@ -16752,7 +17150,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The text input to the model.
 
-                    - `type: "input_text"`
+                    - `type: "input_text" (default: "input_text")`
 
                       The type of the input item. Always `input_text`.
 
@@ -16762,7 +17160,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -16792,7 +17190,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       - `"original"`
 
-                    - `type: "input_image"`
+                    - `type: "input_image" (default: "input_image")`
 
                       The type of the input item. Always `input_image`.
 
@@ -16806,11 +17204,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                      `format: uri`
+
                     - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -16828,7 +17228,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     A file input to the model.
 
-                    - `type: "input_file"`
+                    - `type: "input_file" (default: "input_file")`
 
                       The type of the input item. Always `input_file`.
 
@@ -16856,6 +17256,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the file to be sent to the model.
 
+                      `format: uri`
+
                     - `filename: optional string`
 
                       The name of the file to be sent to the model.
@@ -16864,7 +17266,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -16949,6 +17351,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -17019,6 +17423,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -17076,11 +17482,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
-        - `max_completion_tokens: optional number`
+        - `max_completion_tokens: optional integer`
 
           The maximum number of tokens in the generated output.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -17151,7 +17557,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 The schema for the response format, described as a JSON Schema object.
                 Learn how to build JSON schemas [here](https://json-schema.org/).
 
-              - `strict: optional boolean or null`
+              - `strict: optional boolean or null (default: false)`
 
                 Whether to enable strict schema adherence when generating the output.
                 If set to true, the model will always follow the exact schema defined
@@ -17178,11 +17584,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"json_object"`
 
-        - `seed: optional number`
+        - `seed: optional integer (default: 42)`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number (default: 1)`
 
           A higher temperature increases randomness in the outputs.
 
@@ -17206,7 +17612,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Omitting `parameters` defines a function with an empty parameter list.
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
@@ -17216,7 +17622,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `"function"`
 
-        - `top_p: optional number`
+        - `top_p: optional number (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -17238,7 +17644,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -17250,7 +17656,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
@@ -17266,13 +17672,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `"responses"`
 
-          - `created_after: optional number or null`
+          - `created_after: optional integer or null`
 
             Only include items created after this timestamp (inclusive). This is a query parameter used to select responses.
 
-          - `created_before: optional number or null`
+            `minimum: 0`
+
+          - `created_before: optional integer or null`
 
             Only include items created before this timestamp (inclusive). This is a query parameter used to select responses.
+
+            `minimum: 0`
 
           - `instructions_search: optional string or null`
 
@@ -17286,7 +17696,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The name of the model to find responses for. This is a query parameter used to select responses.
 
-          - `reasoning_effort: optional ReasoningEffort or null`
+          - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
             Constrains effort on reasoning for reasoning models. Currently supported
             values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -17312,7 +17722,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             List of user identifiers. This is a query parameter used to select responses.
 
-      - `type: "responses"`
+      - `type: "responses" (default: "responses")`
 
         The type of run data source. Always `responses`.
 
@@ -17380,6 +17790,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -17442,11 +17854,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
-        - `max_completion_tokens: optional number`
+        - `max_completion_tokens: optional integer`
 
           The maximum number of tokens in the generated output.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -17456,11 +17868,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
-        - `seed: optional number`
+        - `seed: optional integer (default: 42)`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number (default: 1)`
 
           A higher temperature increases randomness in the outputs.
 
@@ -17518,7 +17930,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 A description of what the response format is for, used by the model to
                 determine how to respond in the format.
 
-              - `strict: optional boolean or null`
+              - `strict: optional boolean or null (default: false)`
 
                 Whether to enable strict schema adherence when generating the output.
                 If set to true, the model will always follow the exact schema defined
@@ -17564,7 +17976,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -17596,7 +18008,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -17618,7 +18030,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -17687,7 +18099,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -17723,7 +18135,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -17733,11 +18145,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -17755,7 +18167,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -17766,7 +18178,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -17774,7 +18186,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -17782,14 +18194,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -17821,7 +18233,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -17845,6 +18257,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -17924,7 +18338,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -17981,10 +18395,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -18004,7 +18422,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -18013,6 +18431,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -18032,7 +18452,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -18044,7 +18464,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -18054,17 +18476,25 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -18076,13 +18506,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -18108,7 +18540,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -18189,7 +18621,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -18197,11 +18629,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -18212,11 +18646,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -18235,7 +18671,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -18257,7 +18693,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -18267,7 +18703,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -18277,6 +18713,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -18285,7 +18723,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -18294,6 +18732,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -18319,13 +18759,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -18353,19 +18797,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -18373,7 +18819,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -18382,6 +18828,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -18401,7 +18849,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -18415,7 +18863,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -18424,6 +18872,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -18449,7 +18899,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -18471,7 +18921,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -18489,21 +18939,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -18537,7 +18995,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -18546,6 +19004,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -18567,7 +19027,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -18577,7 +19037,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -18603,7 +19063,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -18631,7 +19091,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -18657,7 +19117,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -18667,11 +19127,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `top_p: optional number`
+        - `top_p: optional number (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -18708,7 +19170,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     The name of the evaluation run.
 
-  - `object: "eval.run"`
+  - `object: "eval.run" (default: "eval.run")`
 
     The type of the object. Always "eval.run".
 
@@ -18718,15 +19180,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Usage statistics for each model during the evaluation run.
 
-    - `cached_tokens: number`
+    - `cached_tokens: integer`
 
       The number of tokens retrieved from cache.
 
-    - `completion_tokens: number`
+    - `completion_tokens: integer`
 
       The number of completion tokens generated.
 
-    - `invocation_count: number`
+    - `invocation_count: integer`
 
       The number of invocations.
 
@@ -18734,11 +19196,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       The name of the model.
 
-    - `prompt_tokens: number`
+    - `prompt_tokens: integer`
 
       The number of prompt tokens used.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -18746,11 +19208,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Results per testing criteria applied during the evaluation run.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of tests failed for this criteria.
 
-    - `passed: number`
+    - `passed: integer`
 
       Number of tests passed for this criteria.
 
@@ -18762,23 +19224,25 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     The URL to the rendered evaluation run report on the UI dashboard.
 
+    `format: uri`
+
   - `result_counts: object { errored, failed, passed, total }`
 
     Counters summarizing the outcomes of the evaluation run.
 
-    - `errored: number`
+    - `errored: integer`
 
       Number of output items that resulted in an error.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of output items that failed to pass the evaluation.
 
-    - `passed: number`
+    - `passed: integer`
 
       Number of output items that passed the evaluation.
 
-    - `total: number`
+    - `total: integer`
 
       Total number of executed output items.
 
@@ -18796,9 +19260,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Unique identifier for the evaluation run.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the evaluation run was created.
+
+    `format: unixtime`
 
   - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or ResponsesRunDataSource { source, type, input_messages, 2 more }`
 
@@ -18822,7 +19288,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -18834,13 +19300,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
             - `"file_id"`
 
-      - `type: "jsonl"`
+      - `type: "jsonl" (default: "jsonl")`
 
         The type of data source. Always `jsonl`.
 
@@ -18864,7 +19330,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -18876,7 +19342,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
@@ -18886,21 +19352,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           A StoredCompletionsRunDataSource configuration describing a set of filters
 
-          - `type: "stored_completions"`
+          - `type: "stored_completions" (default: "stored_completions")`
 
             The type of source. Always `stored_completions`.
 
             - `"stored_completions"`
 
-          - `created_after: optional number or null`
+          - `created_after: optional integer or null`
 
             An optional Unix timestamp to filter items created after this time.
 
-          - `created_before: optional number or null`
+          - `created_before: optional integer or null`
 
             An optional Unix timestamp to filter items created before this time.
 
-          - `limit: optional number or null`
+          - `limit: optional integer or null`
 
             An optional maximum number of items to return.
 
@@ -18917,7 +19383,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             An optional model to filter by (e.g., 'gpt-6-astra').
 
-      - `type: "completions"`
+      - `type: "completions" (default: "completions")`
 
         The type of run data source. Always `completions`.
 
@@ -18963,7 +19429,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The text input to the model.
 
-                    - `type: "input_text"`
+                    - `type: "input_text" (default: "input_text")`
 
                       The type of the input item. Always `input_text`.
 
@@ -18973,7 +19439,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -19003,7 +19469,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       - `"original"`
 
-                    - `type: "input_image"`
+                    - `type: "input_image" (default: "input_image")`
 
                       The type of the input item. Always `input_image`.
 
@@ -19017,11 +19483,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                      `format: uri`
+
                     - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -19039,7 +19507,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     A file input to the model.
 
-                    - `type: "input_file"`
+                    - `type: "input_file" (default: "input_file")`
 
                       The type of the input item. Always `input_file`.
 
@@ -19067,6 +19535,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the file to be sent to the model.
 
+                      `format: uri`
+
                     - `filename: optional string`
 
                       The name of the file to be sent to the model.
@@ -19075,7 +19545,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -19160,6 +19630,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -19230,6 +19702,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -19287,11 +19761,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
-        - `max_completion_tokens: optional number`
+        - `max_completion_tokens: optional integer`
 
           The maximum number of tokens in the generated output.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -19362,7 +19836,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 The schema for the response format, described as a JSON Schema object.
                 Learn how to build JSON schemas [here](https://json-schema.org/).
 
-              - `strict: optional boolean or null`
+              - `strict: optional boolean or null (default: false)`
 
                 Whether to enable strict schema adherence when generating the output.
                 If set to true, the model will always follow the exact schema defined
@@ -19389,11 +19863,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"json_object"`
 
-        - `seed: optional number`
+        - `seed: optional integer (default: 42)`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number (default: 1)`
 
           A higher temperature increases randomness in the outputs.
 
@@ -19417,7 +19891,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Omitting `parameters` defines a function with an empty parameter list.
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
@@ -19427,7 +19901,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `"function"`
 
-        - `top_p: optional number`
+        - `top_p: optional number (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -19449,7 +19923,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -19461,7 +19935,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
@@ -19477,13 +19951,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `"responses"`
 
-          - `created_after: optional number or null`
+          - `created_after: optional integer or null`
 
             Only include items created after this timestamp (inclusive). This is a query parameter used to select responses.
 
-          - `created_before: optional number or null`
+            `minimum: 0`
+
+          - `created_before: optional integer or null`
 
             Only include items created before this timestamp (inclusive). This is a query parameter used to select responses.
+
+            `minimum: 0`
 
           - `instructions_search: optional string or null`
 
@@ -19497,7 +19975,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The name of the model to find responses for. This is a query parameter used to select responses.
 
-          - `reasoning_effort: optional ReasoningEffort or null`
+          - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
             Constrains effort on reasoning for reasoning models. Currently supported
             values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -19523,7 +20001,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             List of user identifiers. This is a query parameter used to select responses.
 
-      - `type: "responses"`
+      - `type: "responses" (default: "responses")`
 
         The type of run data source. Always `responses`.
 
@@ -19591,6 +20069,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -19653,11 +20133,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
-        - `max_completion_tokens: optional number`
+        - `max_completion_tokens: optional integer`
 
           The maximum number of tokens in the generated output.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -19667,11 +20147,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
-        - `seed: optional number`
+        - `seed: optional integer (default: 42)`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number (default: 1)`
 
           A higher temperature increases randomness in the outputs.
 
@@ -19729,7 +20209,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 A description of what the response format is for, used by the model to
                 determine how to respond in the format.
 
-              - `strict: optional boolean or null`
+              - `strict: optional boolean or null (default: false)`
 
                 Whether to enable strict schema adherence when generating the output.
                 If set to true, the model will always follow the exact schema defined
@@ -19775,7 +20255,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -19807,7 +20287,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -19829,7 +20309,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -19898,7 +20378,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -19934,7 +20414,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -19944,11 +20424,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -19966,7 +20446,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -19977,7 +20457,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -19985,7 +20465,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -19993,14 +20473,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -20032,7 +20512,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -20056,6 +20536,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -20135,7 +20617,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -20192,10 +20674,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -20215,7 +20701,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -20224,6 +20710,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -20243,7 +20731,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -20255,7 +20743,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -20265,17 +20755,25 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -20287,13 +20785,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -20319,7 +20819,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -20400,7 +20900,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -20408,11 +20908,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -20423,11 +20925,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -20446,7 +20950,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -20468,7 +20972,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -20478,7 +20982,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -20488,6 +20992,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -20496,7 +21002,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -20505,6 +21011,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -20530,13 +21038,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -20564,19 +21076,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -20584,7 +21098,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -20593,6 +21107,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -20612,7 +21128,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -20626,7 +21142,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -20635,6 +21151,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -20660,7 +21178,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -20682,7 +21200,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -20700,21 +21218,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -20748,7 +21274,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -20757,6 +21283,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -20778,7 +21306,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -20788,7 +21316,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -20814,7 +21342,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -20842,7 +21370,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -20868,7 +21396,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -20878,11 +21406,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `top_p: optional number`
+        - `top_p: optional number (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -20919,7 +21449,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     The name of the evaluation run.
 
-  - `object: "eval.run"`
+  - `object: "eval.run" (default: "eval.run")`
 
     The type of the object. Always "eval.run".
 
@@ -20929,15 +21459,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Usage statistics for each model during the evaluation run.
 
-    - `cached_tokens: number`
+    - `cached_tokens: integer`
 
       The number of tokens retrieved from cache.
 
-    - `completion_tokens: number`
+    - `completion_tokens: integer`
 
       The number of completion tokens generated.
 
-    - `invocation_count: number`
+    - `invocation_count: integer`
 
       The number of invocations.
 
@@ -20945,11 +21475,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       The name of the model.
 
-    - `prompt_tokens: number`
+    - `prompt_tokens: integer`
 
       The number of prompt tokens used.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -20957,11 +21487,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Results per testing criteria applied during the evaluation run.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of tests failed for this criteria.
 
-    - `passed: number`
+    - `passed: integer`
 
       Number of tests passed for this criteria.
 
@@ -20973,23 +21503,25 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     The URL to the rendered evaluation run report on the UI dashboard.
 
+    `format: uri`
+
   - `result_counts: object { errored, failed, passed, total }`
 
     Counters summarizing the outcomes of the evaluation run.
 
-    - `errored: number`
+    - `errored: integer`
 
       Number of output items that resulted in an error.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of output items that failed to pass the evaluation.
 
-    - `passed: number`
+    - `passed: integer`
 
       Number of output items that passed the evaluation.
 
-    - `total: number`
+    - `total: integer`
 
       Total number of executed output items.
 
@@ -21017,9 +21549,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Unique identifier for the evaluation run.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the evaluation run was created.
+
+    `format: unixtime`
 
   - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or ResponsesRunDataSource { source, type, input_messages, 2 more }`
 
@@ -21043,7 +21577,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -21055,13 +21589,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
             - `"file_id"`
 
-      - `type: "jsonl"`
+      - `type: "jsonl" (default: "jsonl")`
 
         The type of data source. Always `jsonl`.
 
@@ -21085,7 +21619,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -21097,7 +21631,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
@@ -21107,21 +21641,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           A StoredCompletionsRunDataSource configuration describing a set of filters
 
-          - `type: "stored_completions"`
+          - `type: "stored_completions" (default: "stored_completions")`
 
             The type of source. Always `stored_completions`.
 
             - `"stored_completions"`
 
-          - `created_after: optional number or null`
+          - `created_after: optional integer or null`
 
             An optional Unix timestamp to filter items created after this time.
 
-          - `created_before: optional number or null`
+          - `created_before: optional integer or null`
 
             An optional Unix timestamp to filter items created before this time.
 
-          - `limit: optional number or null`
+          - `limit: optional integer or null`
 
             An optional maximum number of items to return.
 
@@ -21138,7 +21672,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             An optional model to filter by (e.g., 'gpt-6-astra').
 
-      - `type: "completions"`
+      - `type: "completions" (default: "completions")`
 
         The type of run data source. Always `completions`.
 
@@ -21184,7 +21718,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The text input to the model.
 
-                    - `type: "input_text"`
+                    - `type: "input_text" (default: "input_text")`
 
                       The type of the input item. Always `input_text`.
 
@@ -21194,7 +21728,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -21224,7 +21758,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       - `"original"`
 
-                    - `type: "input_image"`
+                    - `type: "input_image" (default: "input_image")`
 
                       The type of the input item. Always `input_image`.
 
@@ -21238,11 +21772,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                      `format: uri`
+
                     - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -21260,7 +21796,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     A file input to the model.
 
-                    - `type: "input_file"`
+                    - `type: "input_file" (default: "input_file")`
 
                       The type of the input item. Always `input_file`.
 
@@ -21288,6 +21824,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the file to be sent to the model.
 
+                      `format: uri`
+
                     - `filename: optional string`
 
                       The name of the file to be sent to the model.
@@ -21296,7 +21834,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -21381,6 +21919,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -21451,6 +21991,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -21508,11 +22050,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
-        - `max_completion_tokens: optional number`
+        - `max_completion_tokens: optional integer`
 
           The maximum number of tokens in the generated output.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -21583,7 +22125,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 The schema for the response format, described as a JSON Schema object.
                 Learn how to build JSON schemas [here](https://json-schema.org/).
 
-              - `strict: optional boolean or null`
+              - `strict: optional boolean or null (default: false)`
 
                 Whether to enable strict schema adherence when generating the output.
                 If set to true, the model will always follow the exact schema defined
@@ -21610,11 +22152,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"json_object"`
 
-        - `seed: optional number`
+        - `seed: optional integer (default: 42)`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number (default: 1)`
 
           A higher temperature increases randomness in the outputs.
 
@@ -21638,7 +22180,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Omitting `parameters` defines a function with an empty parameter list.
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
@@ -21648,7 +22190,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `"function"`
 
-        - `top_p: optional number`
+        - `top_p: optional number (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -21670,7 +22212,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -21682,7 +22224,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
@@ -21698,13 +22240,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `"responses"`
 
-          - `created_after: optional number or null`
+          - `created_after: optional integer or null`
 
             Only include items created after this timestamp (inclusive). This is a query parameter used to select responses.
 
-          - `created_before: optional number or null`
+            `minimum: 0`
+
+          - `created_before: optional integer or null`
 
             Only include items created before this timestamp (inclusive). This is a query parameter used to select responses.
+
+            `minimum: 0`
 
           - `instructions_search: optional string or null`
 
@@ -21718,7 +22264,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The name of the model to find responses for. This is a query parameter used to select responses.
 
-          - `reasoning_effort: optional ReasoningEffort or null`
+          - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
             Constrains effort on reasoning for reasoning models. Currently supported
             values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -21744,7 +22290,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             List of user identifiers. This is a query parameter used to select responses.
 
-      - `type: "responses"`
+      - `type: "responses" (default: "responses")`
 
         The type of run data source. Always `responses`.
 
@@ -21812,6 +22358,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -21874,11 +22422,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
-        - `max_completion_tokens: optional number`
+        - `max_completion_tokens: optional integer`
 
           The maximum number of tokens in the generated output.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -21888,11 +22436,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
-        - `seed: optional number`
+        - `seed: optional integer (default: 42)`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number (default: 1)`
 
           A higher temperature increases randomness in the outputs.
 
@@ -21950,7 +22498,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 A description of what the response format is for, used by the model to
                 determine how to respond in the format.
 
-              - `strict: optional boolean or null`
+              - `strict: optional boolean or null (default: false)`
 
                 Whether to enable strict schema adherence when generating the output.
                 If set to true, the model will always follow the exact schema defined
@@ -21996,7 +22544,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -22028,7 +22576,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -22050,7 +22598,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -22119,7 +22667,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -22155,7 +22703,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -22165,11 +22713,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -22187,7 +22735,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -22198,7 +22746,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -22206,7 +22754,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -22214,14 +22762,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -22253,7 +22801,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -22277,6 +22825,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -22356,7 +22906,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -22413,10 +22963,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -22436,7 +22990,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -22445,6 +22999,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -22464,7 +23020,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -22476,7 +23032,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -22486,17 +23044,25 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -22508,13 +23074,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -22540,7 +23108,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -22621,7 +23189,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -22629,11 +23197,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -22644,11 +23214,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -22667,7 +23239,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -22689,7 +23261,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -22699,7 +23271,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -22709,6 +23281,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -22717,7 +23291,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -22726,6 +23300,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -22751,13 +23327,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -22785,19 +23365,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -22805,7 +23387,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -22814,6 +23396,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -22833,7 +23417,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -22847,7 +23431,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -22856,6 +23440,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -22881,7 +23467,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -22903,7 +23489,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -22921,21 +23507,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -22969,7 +23563,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -22978,6 +23572,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -22999,7 +23595,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -23009,7 +23605,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -23035,7 +23631,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -23063,7 +23659,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -23089,7 +23685,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -23099,11 +23695,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `top_p: optional number`
+        - `top_p: optional number (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -23140,7 +23738,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     The name of the evaluation run.
 
-  - `object: "eval.run"`
+  - `object: "eval.run" (default: "eval.run")`
 
     The type of the object. Always "eval.run".
 
@@ -23150,15 +23748,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Usage statistics for each model during the evaluation run.
 
-    - `cached_tokens: number`
+    - `cached_tokens: integer`
 
       The number of tokens retrieved from cache.
 
-    - `completion_tokens: number`
+    - `completion_tokens: integer`
 
       The number of completion tokens generated.
 
-    - `invocation_count: number`
+    - `invocation_count: integer`
 
       The number of invocations.
 
@@ -23166,11 +23764,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       The name of the model.
 
-    - `prompt_tokens: number`
+    - `prompt_tokens: integer`
 
       The number of prompt tokens used.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -23178,11 +23776,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Results per testing criteria applied during the evaluation run.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of tests failed for this criteria.
 
-    - `passed: number`
+    - `passed: integer`
 
       Number of tests passed for this criteria.
 
@@ -23194,23 +23792,25 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     The URL to the rendered evaluation run report on the UI dashboard.
 
+    `format: uri`
+
   - `result_counts: object { errored, failed, passed, total }`
 
     Counters summarizing the outcomes of the evaluation run.
 
-    - `errored: number`
+    - `errored: integer`
 
       Number of output items that resulted in an error.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of output items that failed to pass the evaluation.
 
-    - `passed: number`
+    - `passed: integer`
 
       Number of output items that passed the evaluation.
 
-    - `total: number`
+    - `total: integer`
 
       Total number of executed output items.
 
@@ -23228,9 +23828,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Unique identifier for the evaluation run.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the evaluation run was created.
+
+    `format: unixtime`
 
   - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or ResponsesRunDataSource { source, type, input_messages, 2 more }`
 
@@ -23254,7 +23856,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -23266,13 +23868,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
             - `"file_id"`
 
-      - `type: "jsonl"`
+      - `type: "jsonl" (default: "jsonl")`
 
         The type of data source. Always `jsonl`.
 
@@ -23296,7 +23898,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -23308,7 +23910,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
@@ -23318,21 +23920,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
           A StoredCompletionsRunDataSource configuration describing a set of filters
 
-          - `type: "stored_completions"`
+          - `type: "stored_completions" (default: "stored_completions")`
 
             The type of source. Always `stored_completions`.
 
             - `"stored_completions"`
 
-          - `created_after: optional number or null`
+          - `created_after: optional integer or null`
 
             An optional Unix timestamp to filter items created after this time.
 
-          - `created_before: optional number or null`
+          - `created_before: optional integer or null`
 
             An optional Unix timestamp to filter items created before this time.
 
-          - `limit: optional number or null`
+          - `limit: optional integer or null`
 
             An optional maximum number of items to return.
 
@@ -23349,7 +23951,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             An optional model to filter by (e.g., 'gpt-6-astra').
 
-      - `type: "completions"`
+      - `type: "completions" (default: "completions")`
 
         The type of run data source. Always `completions`.
 
@@ -23395,7 +23997,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The text input to the model.
 
-                    - `type: "input_text"`
+                    - `type: "input_text" (default: "input_text")`
 
                       The type of the input item. Always `input_text`.
 
@@ -23405,7 +24007,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -23435,7 +24037,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       - `"original"`
 
-                    - `type: "input_image"`
+                    - `type: "input_image" (default: "input_image")`
 
                       The type of the input item. Always `input_image`.
 
@@ -23449,11 +24051,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                      `format: uri`
+
                     - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -23471,7 +24075,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     A file input to the model.
 
-                    - `type: "input_file"`
+                    - `type: "input_file" (default: "input_file")`
 
                       The type of the input item. Always `input_file`.
 
@@ -23499,6 +24103,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the file to be sent to the model.
 
+                      `format: uri`
+
                     - `filename: optional string`
 
                       The name of the file to be sent to the model.
@@ -23507,7 +24113,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                      - `mode: "explicit"`
+                      - `mode: "explicit" (default: "explicit")`
 
                         The breakpoint mode. Always `explicit`.
 
@@ -23592,6 +24198,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -23662,6 +24270,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -23719,11 +24329,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
-        - `max_completion_tokens: optional number`
+        - `max_completion_tokens: optional integer`
 
           The maximum number of tokens in the generated output.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -23794,7 +24404,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 The schema for the response format, described as a JSON Schema object.
                 Learn how to build JSON schemas [here](https://json-schema.org/).
 
-              - `strict: optional boolean or null`
+              - `strict: optional boolean or null (default: false)`
 
                 Whether to enable strict schema adherence when generating the output.
                 If set to true, the model will always follow the exact schema defined
@@ -23821,11 +24431,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"json_object"`
 
-        - `seed: optional number`
+        - `seed: optional integer (default: 42)`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number (default: 1)`
 
           A higher temperature increases randomness in the outputs.
 
@@ -23849,7 +24459,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Omitting `parameters` defines a function with an empty parameter list.
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
@@ -23859,7 +24469,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `"function"`
 
-        - `top_p: optional number`
+        - `top_p: optional number (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -23881,7 +24491,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `sample: optional map[unknown]`
 
-          - `type: "file_content"`
+          - `type: "file_content" (default: "file_content")`
 
             The type of jsonl source. Always `file_content`.
 
@@ -23893,7 +24503,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The identifier of the file.
 
-          - `type: "file_id"`
+          - `type: "file_id" (default: "file_id")`
 
             The type of jsonl source. Always `file_id`.
 
@@ -23909,13 +24519,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             - `"responses"`
 
-          - `created_after: optional number or null`
+          - `created_after: optional integer or null`
 
             Only include items created after this timestamp (inclusive). This is a query parameter used to select responses.
 
-          - `created_before: optional number or null`
+            `minimum: 0`
+
+          - `created_before: optional integer or null`
 
             Only include items created before this timestamp (inclusive). This is a query parameter used to select responses.
+
+            `minimum: 0`
 
           - `instructions_search: optional string or null`
 
@@ -23929,7 +24543,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             The name of the model to find responses for. This is a query parameter used to select responses.
 
-          - `reasoning_effort: optional ReasoningEffort or null`
+          - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
             Constrains effort on reasoning for reasoning models. Currently supported
             values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -23955,7 +24569,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             List of user identifiers. This is a query parameter used to select responses.
 
-      - `type: "responses"`
+      - `type: "responses" (default: "responses")`
 
         The type of run data source. Always `responses`.
 
@@ -24023,6 +24637,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -24085,11 +24701,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
-        - `max_completion_tokens: optional number`
+        - `max_completion_tokens: optional integer`
 
           The maximum number of tokens in the generated output.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -24099,11 +24715,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
           [reasoning guide](/api/docs/guides/reasoning)
           for model-specific support.
 
-        - `seed: optional number`
+        - `seed: optional integer (default: 42)`
 
           A seed value to initialize the randomness, during sampling.
 
-        - `temperature: optional number`
+        - `temperature: optional number (default: 1)`
 
           A higher temperature increases randomness in the outputs.
 
@@ -24161,7 +24777,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 A description of what the response format is for, used by the model to
                 determine how to respond in the format.
 
-              - `strict: optional boolean or null`
+              - `strict: optional boolean or null (default: false)`
 
                 Whether to enable strict schema adherence when generating the output.
                 If set to true, the model will always follow the exact schema defined
@@ -24207,7 +24823,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -24239,7 +24855,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -24261,7 +24877,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -24330,7 +24946,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -24366,7 +24982,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -24376,11 +24992,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -24398,7 +25014,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -24409,7 +25025,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -24417,7 +25033,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -24425,14 +25041,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -24464,7 +25080,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -24488,6 +25104,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -24567,7 +25185,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -24624,10 +25242,14 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -24647,7 +25269,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -24656,6 +25278,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -24675,7 +25299,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -24687,7 +25311,9 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -24697,17 +25323,25 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -24719,13 +25353,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -24751,7 +25387,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -24832,7 +25468,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -24840,11 +25476,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -24855,11 +25493,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -24878,7 +25518,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -24900,7 +25540,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -24910,7 +25550,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -24920,6 +25560,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -24928,7 +25570,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -24937,6 +25579,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -24962,13 +25606,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -24996,19 +25644,21 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -25016,7 +25666,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -25025,6 +25675,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -25044,7 +25696,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -25058,7 +25710,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -25067,6 +25719,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -25092,7 +25746,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -25114,7 +25768,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -25132,21 +25786,29 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -25180,7 +25842,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -25189,6 +25851,8 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -25210,7 +25874,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -25220,7 +25884,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -25246,7 +25910,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -25274,7 +25938,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -25300,7 +25964,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -25310,11 +25974,13 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `top_p: optional number`
+        - `top_p: optional number (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -25351,7 +26017,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     The name of the evaluation run.
 
-  - `object: "eval.run"`
+  - `object: "eval.run" (default: "eval.run")`
 
     The type of the object. Always "eval.run".
 
@@ -25361,15 +26027,15 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Usage statistics for each model during the evaluation run.
 
-    - `cached_tokens: number`
+    - `cached_tokens: integer`
 
       The number of tokens retrieved from cache.
 
-    - `completion_tokens: number`
+    - `completion_tokens: integer`
 
       The number of completion tokens generated.
 
-    - `invocation_count: number`
+    - `invocation_count: integer`
 
       The number of invocations.
 
@@ -25377,11 +26043,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       The name of the model.
 
-    - `prompt_tokens: number`
+    - `prompt_tokens: integer`
 
       The number of prompt tokens used.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -25389,11 +26055,11 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Results per testing criteria applied during the evaluation run.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of tests failed for this criteria.
 
-    - `passed: number`
+    - `passed: integer`
 
       Number of tests passed for this criteria.
 
@@ -25405,23 +26071,25 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     The URL to the rendered evaluation run report on the UI dashboard.
 
+    `format: uri`
+
   - `result_counts: object { errored, failed, passed, total }`
 
     Counters summarizing the outcomes of the evaluation run.
 
-    - `errored: number`
+    - `errored: integer`
 
       Number of output items that resulted in an error.
 
-    - `failed: number`
+    - `failed: integer`
 
       Number of output items that failed to pass the evaluation.
 
-    - `passed: number`
+    - `passed: integer`
 
       Number of output items that passed the evaluation.
 
-    - `total: number`
+    - `total: integer`
 
       Total number of executed output items.
 
@@ -25449,11 +26117,11 @@ Get a list of output items for an evaluation run.
 
   Identifier for the last output item from the previous pagination request.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   Number of output items to retrieve.
 
-- `order: optional "asc" or "desc"`
+- `order: optional "asc" or "desc" (default: "asc")`
 
   Sort order for output items by timestamp. Use `asc` for ascending order or `desc` for descending order. Defaults to `asc`.
 
@@ -25480,15 +26148,17 @@ Get a list of output items for an evaluation run.
 
     Unique identifier for the evaluation run output item.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the evaluation run was created.
+
+    `format: unixtime`
 
   - `datasource_item: map[unknown]`
 
     Details of the input data source item.
 
-  - `datasource_item_id: number`
+  - `datasource_item_id: integer`
 
     The identifier for the data source item.
 
@@ -25496,7 +26166,7 @@ Get a list of output items for an evaluation run.
 
     The identifier of the evaluation group.
 
-  - `object: "eval.run.output_item"`
+  - `object: "eval.run.output_item" (default: "eval.run.output_item")`
 
     The type of the object. Always "eval.run.output_item".
 
@@ -25562,7 +26232,7 @@ Get a list of output items for an evaluation run.
 
         The role of the message sender (e.g., system, user, developer).
 
-    - `max_completion_tokens: number`
+    - `max_completion_tokens: integer`
 
       The maximum number of tokens allowed for completion.
 
@@ -25582,7 +26252,7 @@ Get a list of output items for an evaluation run.
 
         The role of the message (e.g. "system", "assistant", "user").
 
-    - `seed: number`
+    - `seed: integer`
 
       The seed used for generating the sample.
 
@@ -25598,19 +26268,19 @@ Get a list of output items for an evaluation run.
 
       Token usage details for the sample.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens retrieved from cache.
 
-      - `completion_tokens: number`
+      - `completion_tokens: integer`
 
         The number of completion tokens generated.
 
-      - `prompt_tokens: number`
+      - `prompt_tokens: integer`
 
         The number of prompt tokens used.
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
         The total number of tokens used.
 
@@ -25630,7 +26300,7 @@ Get a list of output items for an evaluation run.
 
   The identifier of the last eval run output item in the data array.
 
-- `object: "list"`
+- `object: "list" (default: "list")`
 
   The type of this object. It is always set to "list".
 
@@ -25643,7 +26313,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID/runs/$RUN_ID/output_items \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -25717,7 +26387,7 @@ curl https://api.openai.com/v1/evals/egroup_67abd54d9b0081909a86353f6fb9317a/run
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -25811,15 +26481,17 @@ Get an evaluation run output item by ID.
 
   Unique identifier for the evaluation run output item.
 
-- `created_at: number`
+- `created_at: integer`
 
   Unix timestamp (in seconds) when the evaluation run was created.
+
+  `format: unixtime`
 
 - `datasource_item: map[unknown]`
 
   Details of the input data source item.
 
-- `datasource_item_id: number`
+- `datasource_item_id: integer`
 
   The identifier for the data source item.
 
@@ -25827,7 +26499,7 @@ Get an evaluation run output item by ID.
 
   The identifier of the evaluation group.
 
-- `object: "eval.run.output_item"`
+- `object: "eval.run.output_item" (default: "eval.run.output_item")`
 
   The type of the object. Always "eval.run.output_item".
 
@@ -25893,7 +26565,7 @@ Get an evaluation run output item by ID.
 
       The role of the message sender (e.g., system, user, developer).
 
-  - `max_completion_tokens: number`
+  - `max_completion_tokens: integer`
 
     The maximum number of tokens allowed for completion.
 
@@ -25913,7 +26585,7 @@ Get an evaluation run output item by ID.
 
       The role of the message (e.g. "system", "assistant", "user").
 
-  - `seed: number`
+  - `seed: integer`
 
     The seed used for generating the sample.
 
@@ -25929,19 +26601,19 @@ Get an evaluation run output item by ID.
 
     Token usage details for the sample.
 
-    - `cached_tokens: number`
+    - `cached_tokens: integer`
 
       The number of tokens retrieved from cache.
 
-    - `completion_tokens: number`
+    - `completion_tokens: integer`
 
       The number of completion tokens generated.
 
-    - `prompt_tokens: number`
+    - `prompt_tokens: integer`
 
       The number of prompt tokens used.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -25956,7 +26628,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID/runs/$RUN_ID/output_items/$OUTPUT_
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -26022,7 +26694,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -26100,15 +26772,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Unique identifier for the evaluation run output item.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the evaluation run was created.
+
+    `format: unixtime`
 
   - `datasource_item: map[unknown]`
 
     Details of the input data source item.
 
-  - `datasource_item_id: number`
+  - `datasource_item_id: integer`
 
     The identifier for the data source item.
 
@@ -26116,7 +26790,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     The identifier of the evaluation group.
 
-  - `object: "eval.run.output_item"`
+  - `object: "eval.run.output_item" (default: "eval.run.output_item")`
 
     The type of the object. Always "eval.run.output_item".
 
@@ -26182,7 +26856,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         The role of the message sender (e.g., system, user, developer).
 
-    - `max_completion_tokens: number`
+    - `max_completion_tokens: integer`
 
       The maximum number of tokens allowed for completion.
 
@@ -26202,7 +26876,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         The role of the message (e.g. "system", "assistant", "user").
 
-    - `seed: number`
+    - `seed: integer`
 
       The seed used for generating the sample.
 
@@ -26218,19 +26892,19 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       Token usage details for the sample.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens retrieved from cache.
 
-      - `completion_tokens: number`
+      - `completion_tokens: integer`
 
         The number of completion tokens generated.
 
-      - `prompt_tokens: number`
+      - `prompt_tokens: integer`
 
         The number of prompt tokens used.
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
         The total number of tokens used.
 
@@ -26248,15 +26922,17 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     Unique identifier for the evaluation run output item.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the evaluation run was created.
+
+    `format: unixtime`
 
   - `datasource_item: map[unknown]`
 
     Details of the input data source item.
 
-  - `datasource_item_id: number`
+  - `datasource_item_id: integer`
 
     The identifier for the data source item.
 
@@ -26264,7 +26940,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
     The identifier of the evaluation group.
 
-  - `object: "eval.run.output_item"`
+  - `object: "eval.run.output_item" (default: "eval.run.output_item")`
 
     The type of the object. Always "eval.run.output_item".
 
@@ -26330,7 +27006,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         The role of the message sender (e.g., system, user, developer).
 
-    - `max_completion_tokens: number`
+    - `max_completion_tokens: integer`
 
       The maximum number of tokens allowed for completion.
 
@@ -26350,7 +27026,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
         The role of the message (e.g. "system", "assistant", "user").
 
-    - `seed: number`
+    - `seed: integer`
 
       The seed used for generating the sample.
 
@@ -26366,19 +27042,19 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
 
       Token usage details for the sample.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens retrieved from cache.
 
-      - `completion_tokens: number`
+      - `completion_tokens: integer`
 
         The number of completion tokens generated.
 
-      - `prompt_tokens: number`
+      - `prompt_tokens: integer`
 
         The number of prompt tokens used.
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
         The total number of tokens used.
 

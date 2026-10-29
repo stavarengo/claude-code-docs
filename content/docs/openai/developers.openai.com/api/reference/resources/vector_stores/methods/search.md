@@ -32,7 +32,7 @@ Search a vector store for relevant chunks based on a query and file attributes f
 
       The key to compare against the value.
 
-    - `type: "eq" or "ne" or "gt" or 5 more`
+    - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
       Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -101,15 +101,17 @@ Search a vector store for relevant chunks based on a query and file attributes f
 
       - `"or"`
 
-- `max_num_results: optional number`
+- `max_num_results: optional integer (default: 10)`
 
   The maximum number of results to return. This number should be between 1 and 50 inclusive.
+
+  `minimum: 1`, `maximum: 50`
 
 - `ranking_options: optional object { ranker, score_threshold }`
 
   Ranking options for search.
 
-  - `ranker: optional "none" or "auto" or "default-2024-11-15"`
+  - `ranker: optional "none" or "auto" or "default-2024-11-15" (default: "auto")`
 
     Enable re-ranking; set to `none` to disable, which can help reduce latency.
 
@@ -119,9 +121,11 @@ Search a vector store for relevant chunks based on a query and file attributes f
 
     - `"default-2024-11-15"`
 
-  - `score_threshold: optional number`
+  - `score_threshold: optional number (default: 0)`
 
-- `rewrite_query: optional boolean`
+    `minimum: 0`, `maximum: 1`
+
+- `rewrite_query: optional boolean (default: false)`
 
   Whether to rewrite the natural language query for vector search.
 
@@ -140,6 +144,8 @@ Search a vector store for relevant chunks based on a query and file attributes f
     length of 512 characters, booleans, or numbers.
 
     - `string`
+
+      `maxLength: 512`
 
     - `number`
 
@@ -171,6 +177,8 @@ Search a vector store for relevant chunks based on a query and file attributes f
 
     The similarity score for the result.
 
+    `minimum: 0`, `maximum: 1`
+
 - `has_more: boolean`
 
   Indicates if there are more results to fetch.
@@ -199,7 +207,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/search \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -238,7 +246,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 -d '{"query": "What is the return policy?", "filters": {...}}'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

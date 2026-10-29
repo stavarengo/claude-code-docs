@@ -12,11 +12,11 @@ List evaluations for a project.
 
   Identifier for the last eval from the previous pagination request.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   Number of evals to retrieve.
 
-- `order: optional "asc" or "desc"`
+- `order: optional "asc" or "desc" (default: "asc")`
 
   Sort order for evals by timestamp. Use `asc` for ascending order or `desc` for descending order.
 
@@ -24,7 +24,7 @@ List evaluations for a project.
 
   - `"desc"`
 
-- `order_by: optional "created_at" or "updated_at"`
+- `order_by: optional "created_at" or "updated_at" (default: "created_at")`
 
   Evals can be ordered by creation time or last updated time. Use
   `created_at` for creation time or `updated_at` for last updated time.
@@ -43,9 +43,11 @@ List evaluations for a project.
 
     Unique identifier for the evaluation.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the eval was created.
+
+    `format: unixtime`
 
   - `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
@@ -64,7 +66,7 @@ List evaluations for a project.
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of data source. Always `custom`.
 
@@ -82,7 +84,7 @@ List evaluations for a project.
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "logs"`
+      - `type: "logs" (default: "logs")`
 
         The type of data source. Always `logs`.
 
@@ -106,7 +108,7 @@ List evaluations for a project.
         The json schema for the run data source items.
         Learn how to build JSON schemas [here](https://json-schema.org/).
 
-      - `type: "stored_completions"`
+      - `type: "stored_completions" (default: "stored_completions")`
 
         The type of data source. Always `stored_completions`.
 
@@ -134,7 +136,7 @@ List evaluations for a project.
 
     The name of the evaluation.
 
-  - `object: "eval"`
+  - `object: "eval" (default: "eval")`
 
     The object type.
 
@@ -167,7 +169,7 @@ List evaluations for a project.
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -177,7 +179,7 @@ List evaluations for a project.
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -212,6 +214,8 @@ List evaluations for a project.
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -282,6 +286,8 @@ List evaluations for a project.
               - `image_url: string`
 
                 The URL of the image input.
+
+                `format: uri`
 
               - `type: "input_image"`
 
@@ -408,7 +414,7 @@ List evaluations for a project.
 
   The identifier of the last eval in the data array.
 
-- `object: "list"`
+- `object: "list" (default: "list")`
 
   The type of this object. It is always set to "list".
 
@@ -421,7 +427,7 @@ curl https://api.openai.com/v1/evals \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -493,7 +499,7 @@ curl https://api.openai.com/v1/evals?limit=1 \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

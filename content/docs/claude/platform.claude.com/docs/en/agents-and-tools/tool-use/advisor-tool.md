@@ -2,7 +2,38 @@
 title: Advisor tool
 url: https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool
 description: Pair a faster executor model with a higher-intelligence advisor model that provides strategic guidance mid-generation.
+featureMetadata:
+  status: beta
+  betaHeader: advisor-tool-2026-03-01
+  zdr:
+    eligibility: eligible
+    note: Excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#model-specific-data-retention-requirements). Advisor model output is returned in the API response; nothing is stored server-side after the response.
+  supportedModels:
+    - claude-fable-5-1
+    - claude-mythos-5-1
+    - claude-fable-5
+    - claude-mythos-5
+    - claude-mythos-preview
+    - claude-opus-5-5
+    - claude-opus-5
+    - claude-sonnet-5-5
+    - claude-sonnet-5
+    - claude-haiku-5-5
+    - claude-haiku-4-5-20251001
+    - claude-opus-4-8
+    - claude-opus-4-7
+    - claude-opus-4-6
+    - claude-sonnet-4-6
+  supportedPlatforms:
+    Claude API: beta
+    Claude Platform on AWS: beta
+    Claude Models on Google Cloud (Anthropic managed): beta
 ---
+
+**API support**: Usage differs by product.
+
+* **Messages API**: Add an advisor tool (type `advisor_20260301`) to the request’s `tools`.
+* **Managed Agents**: Set `advisor` in the agent’s `multiagent` block; there are no `max_uses` or `max_tokens` options.
 
 The advisor tool lets a faster, lower-cost **executor model** consult a higher-intelligence **advisor model** mid-generation for strategic guidance. The advisor reads the full conversation and produces a plan or course correction, and the executor continues with the task.
 
@@ -24,10 +55,6 @@ sequenceDiagram
   note over E: Executor continues,<br/>informed by the advice
   E-->>U: Response
 ```
-
-<Note>
-  To learn how zero data retention (ZDR) applies to this feature, see [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli).
-</Note>
 
 ## When to use it
 
@@ -140,7 +167,7 @@ The `advisor_tool_result.content` field is a discriminated union. For successful
 | `advisor_redacted_result` | `encrypted_content`, `stop_reason` | The advisor model returns encrypted output.                         |
 
 <Note>
-  Claude Sonnet 5.5, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Opus 5, Claude Fable 5, Claude Mythos 5, and Claude Haiku 5.5 advisors return the encrypted `advisor_redacted_result`. Every other advisor model in the [compatibility table](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool?sdk_languages=cli#model-compatibility) returns the plaintext `advisor_result`. To read the advice text in your own responses, use an advisor that returns plaintext, such as `claude-opus-4-8`, where your executor’s row in the [compatibility table](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool?sdk_languages=cli#model-compatibility) lists one. Claude Sonnet 5.5, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Opus 5, Claude Fable 5, and Claude Mythos 5 executors pair only with advisors that return the encrypted form, so on those executors the advice text isn’t readable in the response.
+  Claude Sonnet 5.5, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Opus 5, Claude Fable 5, Claude Mythos 5, and Claude Haiku 5.5 advisors return the encrypted `advisor_redacted_result`. Every other advisor model in [Model compatibility](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool?sdk_languages=cli#model-compatibility) returns the plaintext `advisor_result`. To read the advice text in your own responses, use an advisor that returns plaintext, such as `claude-opus-4-8`, where [Model compatibility](https://platform.claude.com/docs/en/agents-and-tools/tool-use/advisor-tool?sdk_languages=cli#model-compatibility) lists one for your executor. Claude Sonnet 5.5, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Opus 5, Claude Fable 5, and Claude Mythos 5 executors pair only with advisors that return the encrypted form, so on those executors the advice text isn’t readable in the response.
 </Note>
 
 Here is the same request sent twice, identical except for the advisor `model` in the tool definition, showing both variants.
@@ -1604,22 +1631,170 @@ For coding tasks, pairing a Sonnet executor at medium [effort](https://platform.
 
 The executor model (the top-level `model` field) and the advisor model (the `model` field inside the tool definition) must form a valid pair. The advisor must be Claude Sonnet 4.6 or a more capable model, and it must be at least as capable as the executor. Models of equal capability (for example, Claude Opus 4.7 and Claude Opus 4.8) can advise each other.
 
-| Executor models                       | Advisor models                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Claude Haiku 4.5 (claude-haiku-4-5)   | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)<br />Claude Opus 4.8 (claude-opus-4-8)<br />Claude Opus 4.7 (claude-opus-4-7)<br />Claude Opus 4.6 (claude-opus-4-6)<br />Claude Sonnet 5.5 (claude-sonnet-5-5)<br />Claude Sonnet 5 (claude-sonnet-5)<br />Claude Sonnet 4.6 (claude-sonnet-4-6)<br />Claude Haiku 5.5 (claude-haiku-5-5) |
-| Claude Haiku 5.5 (claude-haiku-5-5)   | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)<br />Claude Opus 4.8 (claude-opus-4-8)<br />Claude Opus 4.7 (claude-opus-4-7)<br />Claude Sonnet 5.5 (claude-sonnet-5-5)<br />Claude Sonnet 5 (claude-sonnet-5)<br />Claude Haiku 5.5 (claude-haiku-5-5)                                                                                   |
-| Claude Sonnet 4.6 (claude-sonnet-4-6) | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)<br />Claude Opus 4.8 (claude-opus-4-8)<br />Claude Opus 4.7 (claude-opus-4-7)<br />Claude Opus 4.6 (claude-opus-4-6)<br />Claude Sonnet 5.5 (claude-sonnet-5-5)<br />Claude Sonnet 5 (claude-sonnet-5)<br />Claude Sonnet 4.6 (claude-sonnet-4-6)<br />Claude Haiku 5.5 (claude-haiku-5-5) |
-| Claude Sonnet 5 (claude-sonnet-5)     | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)<br />Claude Opus 4.8 (claude-opus-4-8)<br />Claude Opus 4.7 (claude-opus-4-7)<br />Claude Sonnet 5.5 (claude-sonnet-5-5)<br />Claude Sonnet 5 (claude-sonnet-5)<br />Claude Haiku 5.5 (claude-haiku-5-5)                                                                                   |
-| Claude Sonnet 5.5 (claude-sonnet-5-5) | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)<br />Claude Sonnet 5.5 (claude-sonnet-5-5)                                                                                                                                                                                                                                                 |
-| Claude Opus 4.6 (claude-opus-4-6)     | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)<br />Claude Opus 4.8 (claude-opus-4-8)<br />Claude Opus 4.7 (claude-opus-4-7)<br />Claude Opus 4.6 (claude-opus-4-6)<br />Claude Sonnet 5.5 (claude-sonnet-5-5)<br />Claude Sonnet 5 (claude-sonnet-5)<br />Claude Haiku 5.5 (claude-haiku-5-5)                                            |
-| Claude Opus 4.7 (claude-opus-4-7)     | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)<br />Claude Opus 4.8 (claude-opus-4-8)<br />Claude Opus 4.7 (claude-opus-4-7)<br />Claude Sonnet 5.5 (claude-sonnet-5-5)                                                                                                                                                                   |
-| Claude Opus 4.8 (claude-opus-4-8)     | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)<br />Claude Opus 4.8 (claude-opus-4-8)<br />Claude Opus 4.7 (claude-opus-4-7)<br />Claude Sonnet 5.5 (claude-sonnet-5-5)                                                                                                                                                                   |
-| Claude Opus 5 (claude-opus-5)         | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)                                                                                                                                                                                                                                                                                            |
-| Claude Opus 5.5 (claude-opus-5-5)     | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)                                                                                                                                                                                                                                                                                            |
-| Claude Fable 5 (claude-fable-5)       | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)                                                                                                                                                                                                                                                                                            |
-| Claude Mythos 5 (claude-mythos-5)     | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)<br />Claude Mythos 5 (claude-mythos-5)<br />Claude Fable 5 (claude-fable-5)<br />Claude Opus 5.5 (claude-opus-5-5)<br />Claude Opus 5 (claude-opus-5)                                                                                                                                                                                                                                                                                            |
-| Claude Fable 5.1 (claude-fable-5-1)   | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| Claude Mythos 5.1 (claude-mythos-5-1) | Claude Mythos 5.1 (claude-mythos-5-1)<br />Claude Fable 5.1 (claude-fable-5-1)                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+**[Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) & [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli)** — *For demanding reasoning and long-horizon agentic work*
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+
+**[Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli)** — *For long-running agentic coding and knowledge work*
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+* [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli) (claude-mythos-5)
+* [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) (claude-fable-5)
+* [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) (claude-opus-5-5)
+* [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) (claude-opus-5)
+
+**[Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli)** — *The best combination of speed and intelligence*
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+* [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli) (claude-mythos-5)
+* [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) (claude-fable-5)
+* [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) (claude-opus-5-5)
+* [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) (claude-opus-5)
+* [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli) (claude-sonnet-5-5)
+
+**[Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli)** — *For high-volume, latency-sensitive tasks such as classification, extraction, and routing*
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+* [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli) (claude-mythos-5)
+* [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) (claude-fable-5)
+* [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) (claude-opus-5-5)
+* [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) (claude-opus-5)
+* [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli) (claude-opus-4-8)
+* [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli) (claude-opus-4-7)
+* [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli) (claude-sonnet-5-5)
+* [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli) (claude-sonnet-5)
+* [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli) (claude-haiku-5-5)
+
+**[Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) & [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli)**
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+* [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli) (claude-mythos-5)
+* [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) (claude-fable-5)
+* [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) (claude-opus-5-5)
+* [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) (claude-opus-5)
+
+**[Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli)**
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+* [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli) (claude-mythos-5)
+* [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) (claude-fable-5)
+* [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) (claude-opus-5-5)
+* [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) (claude-opus-5)
+
+**[Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli)**
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+* [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli) (claude-mythos-5)
+* [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) (claude-fable-5)
+* [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) (claude-opus-5-5)
+* [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) (claude-opus-5)
+* [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli) (claude-opus-4-8)
+* [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli) (claude-opus-4-7)
+* [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli) (claude-sonnet-5-5)
+
+**[Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli)**
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+* [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli) (claude-mythos-5)
+* [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) (claude-fable-5)
+* [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) (claude-opus-5-5)
+* [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) (claude-opus-5)
+* [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli) (claude-opus-4-8)
+* [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli) (claude-opus-4-7)
+* [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli) (claude-sonnet-5-5)
+
+**[Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=cli)**
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+* [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli) (claude-mythos-5)
+* [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) (claude-fable-5)
+* [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) (claude-opus-5-5)
+* [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) (claude-opus-5)
+* [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli) (claude-opus-4-8)
+* [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli) (claude-opus-4-7)
+* [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=cli) (claude-opus-4-6)
+* [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli) (claude-sonnet-5-5)
+* [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli) (claude-sonnet-5)
+* [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli) (claude-haiku-5-5)
+
+**[Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli)**
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+* [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli) (claude-mythos-5)
+* [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) (claude-fable-5)
+* [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) (claude-opus-5-5)
+* [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) (claude-opus-5)
+* [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli) (claude-opus-4-8)
+* [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli) (claude-opus-4-7)
+* [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli) (claude-sonnet-5-5)
+* [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli) (claude-sonnet-5)
+* [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli) (claude-haiku-5-5)
+
+**[Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=cli)**
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+* [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli) (claude-mythos-5)
+* [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) (claude-fable-5)
+* [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) (claude-opus-5-5)
+* [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) (claude-opus-5)
+* [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli) (claude-opus-4-8)
+* [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli) (claude-opus-4-7)
+* [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=cli) (claude-opus-4-6)
+* [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli) (claude-sonnet-5-5)
+* [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli) (claude-sonnet-5)
+* [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=cli) (claude-sonnet-4-6)
+* [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli) (claude-haiku-5-5)
+
+**[Claude Haiku 4.5](https://platform.claude.com/docs/en/models/haiku-4-5/overview?sdk_languages=cli)**
+
+**Supported advisor models**
+
+* [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) (claude-mythos-5-1)
+* [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli) (claude-fable-5-1)
+* [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli) (claude-mythos-5)
+* [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli) (claude-fable-5)
+* [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) (claude-opus-5-5)
+* [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) (claude-opus-5)
+* [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli) (claude-opus-4-8)
+* [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli) (claude-opus-4-7)
+* [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=cli) (claude-opus-4-6)
+* [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli) (claude-sonnet-5-5)
+* [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli) (claude-sonnet-5)
+* [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=cli) (claude-sonnet-4-6)
+* [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli) (claude-haiku-5-5)
 
 If you request an invalid pair, the API returns a `400 invalid_request_error` naming the unsupported combination.
 
@@ -1650,3 +1825,50 @@ The advisor tool is available in beta on the Claude API, on [Claude Platform on 
     Control how many tokens Claude uses when responding with the `effort` parameter, trading off between response thoroughness and token efficiency.
   </Card>
 </CardGroup>
+
+## Availability
+
+Advisor tool is in beta on select models and eligible for zero data retention.
+
+### API support
+
+#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli)
+
+* Availability: Available
+* Usage: Add an advisor tool (type `advisor_20260301`) with the advisor model to the request’s `tools`. It takes `max_uses`, `max_tokens` and caching options.
+
+| Status | Cloud platforms                                                                                                                                                                                                                                                                                                    | Models                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Beta   | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli) | [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli), [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli), [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli), [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli), Claude Mythos Preview, [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli), [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli), [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli), [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli), [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli), [Claude Haiku 4.5](https://platform.claude.com/docs/en/models/haiku-4-5/overview?sdk_languages=cli), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli), [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=cli), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=cli) |
+
+#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli)
+
+* Availability: Available
+* Usage: Set `advisor` to `{"type": "enabled", "model": …}` in the agent’s `multiagent` block. There are no `max_uses`, `max_tokens` or caching options, and advice arrives as thread events on the session’s event stream.
+
+| Status | Cloud platforms                                                                                                                      | Models                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Beta   | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli) | [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli), [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli), [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli), [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli), Claude Mythos Preview, [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli), [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli), [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli), [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli), [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli), [Claude Haiku 4.5](https://platform.claude.com/docs/en/models/haiku-4-5/overview?sdk_languages=cli), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli), [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=cli), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=cli) |
+
+### Required beta headers
+
+[Beta headers overview](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=cli)
+
+Beta headers allow you to access experimental features and new model capabilities before they become part of the standard API.
+
+| Header                    | APIs                                                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `advisor-tool-2026-03-01` | [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli) |
+
+### Data handling
+
+[Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
+
+| Item    | Zero data retention                                                                                                                                                         | HIPAA        |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| Status  | Eligible (excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#model-specific-data-retention-requirements)) | Not eligible |
+| Details | Advisor model output is returned in the API response; nothing is stored server-side after the response.                                                                     | —            |
+
+Applicable endpoints:
+
+* `/v1/messages` with `advisor` tool

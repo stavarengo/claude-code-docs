@@ -124,9 +124,11 @@ Schema name: `RealtimeTranslationServerEventSessionCreated`
 
         Target language for translated output audio and transcript deltas.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Expiration timestamp for the session, in seconds since epoch.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -231,9 +233,11 @@ Schema name: `RealtimeTranslationServerEventSessionUpdated`
 
         Target language for translated output audio and transcript deltas.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Expiration timestamp for the session, in seconds since epoch.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -338,7 +342,7 @@ Schema name: `RealtimeTranslationServerEventSessionInputTranscriptDelta`
 
   - `"session.input_transcript.delta"`
 
-- `elapsed_ms: optional number or null`
+- `elapsed_ms: optional integer or null`
 
   Timing metadata for stream alignment, derived from the translation frame
   when available. It advances in 200 ms increments, but multiple transcript
@@ -383,7 +387,7 @@ Schema name: `RealtimeTranslationServerEventSessionOutputTranscriptDelta`
 
   - `"session.output_transcript.delta"`
 
-- `elapsed_ms: optional number or null`
+- `elapsed_ms: optional integer or null`
 
   Timing metadata for stream alignment, derived from the translation frame
   when available. It advances in 200 ms increments, but multiple transcript
@@ -427,11 +431,11 @@ Schema name: `RealtimeTranslationServerEventSessionOutputAudioDelta`
 
   - `"session.output_audio.delta"`
 
-- `channels: optional number`
+- `channels: optional integer (default: 1)`
 
   Number of audio channels.
 
-- `elapsed_ms: optional number or null`
+- `elapsed_ms: optional integer or null`
 
   Timing metadata for stream alignment, derived from the translation frame
   when available. Treat `elapsed_ms` as alignment metadata, not a unique
@@ -443,7 +447,7 @@ Schema name: `RealtimeTranslationServerEventSessionOutputAudioDelta`
 
   - `"pcm16"`
 
-- `sample_rate: optional number`
+- `sample_rate: optional integer (default: 24000)`
 
   Sample rate of the audio delta.
 

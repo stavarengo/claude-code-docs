@@ -29,9 +29,11 @@ Schema name: `ImageEditPartialImageEvent`
 
   - `"auto"`
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp when the event was created.
+
+  `format: unixtime`
 
 - `output_format: "png" or "webp" or "jpeg"`
 
@@ -43,7 +45,7 @@ Schema name: `ImageEditPartialImageEvent`
 
   - `"jpeg"`
 
-- `partial_image_index: number`
+- `partial_image_index: integer`
 
   0-based index for the partial image (streaming).
 
@@ -126,9 +128,11 @@ Schema name: `ImageEditCompletedEvent`
 
   - `"auto"`
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp when the event was created.
+
+  `format: unixtime`
 
 - `output_format: "png" or "webp" or "jpeg"`
 
@@ -184,7 +188,7 @@ Schema name: `ImageEditCompletedEvent`
 
   For the GPT image models only, the token usage information for the image generation.
 
-  - `input_tokens: number`
+  - `input_tokens: integer`
 
     The number of tokens (images and text) in the input prompt.
 
@@ -192,19 +196,19 @@ Schema name: `ImageEditCompletedEvent`
 
     The input tokens detailed information for the image generation.
 
-    - `image_tokens: number`
+    - `image_tokens: integer`
 
       The number of image tokens in the input prompt.
 
-    - `text_tokens: number`
+    - `text_tokens: integer`
 
       The number of text tokens in the input prompt.
 
-  - `output_tokens: number`
+  - `output_tokens: integer`
 
     The number of image tokens in the output image.
 
-  - `total_tokens: number`
+  - `total_tokens: integer`
 
     The total number of tokens (images and text) used for the image generation.
 

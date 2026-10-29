@@ -6,18 +6,20 @@ Generates audio from the input text.
 
 Returns the audio file content, or a stream of audio events.
 
-The `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts`, and
+The `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts`, `gpt-4o-mini-tts-2025-03-20`, and
 `gpt-4o-mini-tts-2025-12-15` models are deprecated and scheduled to shut down
 on January 6, 2027. These examples use the existing Speech API; for new
 integrations, migrate to `gpt-realtime-2.1-mini` through the
-[Realtime API](/api/docs/guides/realtime). See the
-[deprecation schedule](/api/docs/deprecations) for migration details.
+[Realtime API](https://developers.openai.com/api/docs/guides/realtime). See the
+[deprecation schedule](https://developers.openai.com/api/docs/deprecations) for migration details.
 
 ### Body Parameters
 
 - `input: string`
 
   The text to generate audio for. The maximum length is 4096 characters.
+
+  `maxLength: 4096`
 
 - `model: string or SpeechModel`
 
@@ -83,7 +85,9 @@ integrations, migrate to `gpt-realtime-2.1-mini` through the
 
   Control the voice of your generated audio with additional instructions. Does not work with `tts-1` or `tts-1-hd`.
 
-- `response_format: optional "mp3" or "opus" or "aac" or 3 more`
+  `maxLength: 4096`
+
+- `response_format: optional "mp3" or "opus" or "aac" or 3 more (default: "mp3")`
 
   The format to audio in. Supported formats are `mp3`, `opus`, `aac`, `flac`, `wav`, and `pcm`.
 
@@ -99,11 +103,13 @@ integrations, migrate to `gpt-realtime-2.1-mini` through the
 
   - `"pcm"`
 
-- `speed: optional number`
+- `speed: optional number (default: 1)`
 
   The speed of the generated audio. Select a value from `0.25` to `4.0`. `1.0` is the default.
 
-- `stream_format: optional "sse" or "audio"`
+  `minimum: 0.25`, `maximum: 4`
+
+- `stream_format: optional "sse" or "audio" (default: "audio")`
 
   The format to stream the audio in. Supported formats are `sse` and `audio`. `sse` is not supported for `tts-1` or `tts-1-hd`.
 

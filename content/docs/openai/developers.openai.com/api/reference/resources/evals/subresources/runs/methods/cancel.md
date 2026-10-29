@@ -18,9 +18,11 @@ Cancel an ongoing evaluation run.
 
   Unique identifier for the evaluation run.
 
-- `created_at: number`
+- `created_at: integer`
 
   Unix timestamp (in seconds) when the evaluation run was created.
+
+  `format: unixtime`
 
 - `data_source: CreateEvalJSONLRunDataSource or CreateEvalCompletionsRunDataSource or ResponsesRunDataSource { source, type, input_messages, 2 more }`
 
@@ -44,7 +46,7 @@ Cancel an ongoing evaluation run.
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -56,13 +58,13 @@ Cancel an ongoing evaluation run.
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
           - `"file_id"`
 
-    - `type: "jsonl"`
+    - `type: "jsonl" (default: "jsonl")`
 
       The type of data source. Always `jsonl`.
 
@@ -86,7 +88,7 @@ Cancel an ongoing evaluation run.
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -98,7 +100,7 @@ Cancel an ongoing evaluation run.
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
@@ -108,21 +110,21 @@ Cancel an ongoing evaluation run.
 
         A StoredCompletionsRunDataSource configuration describing a set of filters
 
-        - `type: "stored_completions"`
+        - `type: "stored_completions" (default: "stored_completions")`
 
           The type of source. Always `stored_completions`.
 
           - `"stored_completions"`
 
-        - `created_after: optional number or null`
+        - `created_after: optional integer or null`
 
           An optional Unix timestamp to filter items created after this time.
 
-        - `created_before: optional number or null`
+        - `created_before: optional integer or null`
 
           An optional Unix timestamp to filter items created before this time.
 
-        - `limit: optional number or null`
+        - `limit: optional integer or null`
 
           An optional maximum number of items to return.
 
@@ -139,7 +141,7 @@ Cancel an ongoing evaluation run.
 
           An optional model to filter by (e.g., 'gpt-6-astra').
 
-    - `type: "completions"`
+    - `type: "completions" (default: "completions")`
 
       The type of run data source. Always `completions`.
 
@@ -185,7 +187,7 @@ Cancel an ongoing evaluation run.
 
                     The text input to the model.
 
-                  - `type: "input_text"`
+                  - `type: "input_text" (default: "input_text")`
 
                     The type of the input item. Always `input_text`.
 
@@ -195,7 +197,7 @@ Cancel an ongoing evaluation run.
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -225,7 +227,7 @@ Cancel an ongoing evaluation run.
 
                     - `"original"`
 
-                  - `type: "input_image"`
+                  - `type: "input_image" (default: "input_image")`
 
                     The type of the input item. Always `input_image`.
 
@@ -239,11 +241,13 @@ Cancel an ongoing evaluation run.
 
                     The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                    `format: uri`
+
                   - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -261,7 +265,7 @@ Cancel an ongoing evaluation run.
 
                   A file input to the model.
 
-                  - `type: "input_file"`
+                  - `type: "input_file" (default: "input_file")`
 
                     The type of the input item. Always `input_file`.
 
@@ -289,6 +293,8 @@ Cancel an ongoing evaluation run.
 
                     The URL of the file to be sent to the model.
 
+                    `format: uri`
+
                   - `filename: optional string`
 
                     The name of the file to be sent to the model.
@@ -297,7 +303,7 @@ Cancel an ongoing evaluation run.
 
                     Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                    - `mode: "explicit"`
+                    - `mode: "explicit" (default: "explicit")`
 
                       The breakpoint mode. Always `explicit`.
 
@@ -382,6 +388,8 @@ Cancel an ongoing evaluation run.
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -452,6 +460,8 @@ Cancel an ongoing evaluation run.
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -509,11 +519,11 @@ Cancel an ongoing evaluation run.
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, response_format, 4 more }`
 
-      - `max_completion_tokens: optional number`
+      - `max_completion_tokens: optional integer`
 
         The maximum number of tokens in the generated output.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -584,7 +594,7 @@ Cancel an ongoing evaluation run.
               The schema for the response format, described as a JSON Schema object.
               Learn how to build JSON schemas [here](https://json-schema.org/).
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -611,11 +621,11 @@ Cancel an ongoing evaluation run.
 
             - `"json_object"`
 
-      - `seed: optional number`
+      - `seed: optional integer (default: 42)`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number (default: 1)`
 
         A higher temperature increases randomness in the outputs.
 
@@ -639,7 +649,7 @@ Cancel an ongoing evaluation run.
 
             Omitting `parameters` defines a function with an empty parameter list.
 
-          - `strict: optional boolean or null`
+          - `strict: optional boolean or null (default: false)`
 
             Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/api/docs/guides/function-calling).
 
@@ -649,7 +659,7 @@ Cancel an ongoing evaluation run.
 
           - `"function"`
 
-      - `top_p: optional number`
+      - `top_p: optional number (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -671,7 +681,7 @@ Cancel an ongoing evaluation run.
 
           - `sample: optional map[unknown]`
 
-        - `type: "file_content"`
+        - `type: "file_content" (default: "file_content")`
 
           The type of jsonl source. Always `file_content`.
 
@@ -683,7 +693,7 @@ Cancel an ongoing evaluation run.
 
           The identifier of the file.
 
-        - `type: "file_id"`
+        - `type: "file_id" (default: "file_id")`
 
           The type of jsonl source. Always `file_id`.
 
@@ -699,13 +709,17 @@ Cancel an ongoing evaluation run.
 
           - `"responses"`
 
-        - `created_after: optional number or null`
+        - `created_after: optional integer or null`
 
           Only include items created after this timestamp (inclusive). This is a query parameter used to select responses.
 
-        - `created_before: optional number or null`
+          `minimum: 0`
+
+        - `created_before: optional integer or null`
 
           Only include items created before this timestamp (inclusive). This is a query parameter used to select responses.
+
+          `minimum: 0`
 
         - `instructions_search: optional string or null`
 
@@ -719,7 +733,7 @@ Cancel an ongoing evaluation run.
 
           The name of the model to find responses for. This is a query parameter used to select responses.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -745,7 +759,7 @@ Cancel an ongoing evaluation run.
 
           List of user identifiers. This is a query parameter used to select responses.
 
-    - `type: "responses"`
+    - `type: "responses" (default: "responses")`
 
       The type of run data source. Always `responses`.
 
@@ -813,6 +827,8 @@ Cancel an ongoing evaluation run.
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -875,11 +891,11 @@ Cancel an ongoing evaluation run.
 
     - `sampling_params: optional object { max_completion_tokens, reasoning_effort, seed, 4 more }`
 
-      - `max_completion_tokens: optional number`
+      - `max_completion_tokens: optional integer`
 
         The maximum number of tokens in the generated output.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -889,11 +905,11 @@ Cancel an ongoing evaluation run.
         [reasoning guide](/api/docs/guides/reasoning)
         for model-specific support.
 
-      - `seed: optional number`
+      - `seed: optional integer (default: 42)`
 
         A seed value to initialize the randomness, during sampling.
 
-      - `temperature: optional number`
+      - `temperature: optional number (default: 1)`
 
         A higher temperature increases randomness in the outputs.
 
@@ -951,7 +967,7 @@ Cancel an ongoing evaluation run.
               A description of what the response format is for, used by the model to
               determine how to respond in the format.
 
-            - `strict: optional boolean or null`
+            - `strict: optional boolean or null (default: false)`
 
               Whether to enable strict schema adherence when generating the output.
               If set to true, the model will always follow the exact schema defined
@@ -997,7 +1013,7 @@ Cancel an ongoing evaluation run.
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -1029,7 +1045,7 @@ Cancel an ongoing evaluation run.
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -1051,7 +1067,7 @@ Cancel an ongoing evaluation run.
 
                 The key to compare against the value.
 
-              - `type: "eq" or "ne" or "gt" or 5 more`
+              - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                 Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -1120,7 +1136,7 @@ Cancel an ongoing evaluation run.
 
                 - `"or"`
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -1156,7 +1172,7 @@ Cancel an ongoing evaluation run.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -1166,11 +1182,11 @@ Cancel an ongoing evaluation run.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -1188,7 +1204,7 @@ Cancel an ongoing evaluation run.
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -1199,7 +1215,7 @@ Cancel an ongoing evaluation run.
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -1207,7 +1223,7 @@ Cancel an ongoing evaluation run.
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -1215,14 +1231,14 @@ Cancel an ongoing evaluation run.
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -1254,7 +1270,7 @@ Cancel an ongoing evaluation run.
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -1278,6 +1294,8 @@ Cancel an ongoing evaluation run.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -1357,7 +1375,7 @@ Cancel an ongoing evaluation run.
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -1414,10 +1432,14 @@ Cancel an ongoing evaluation run.
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -1437,7 +1459,7 @@ Cancel an ongoing evaluation run.
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -1446,6 +1468,8 @@ Cancel an ongoing evaluation run.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -1465,7 +1489,7 @@ Cancel an ongoing evaluation run.
 
                 - `ContainerNetworkPolicyDisabled object { type }`
 
-                  - `type: "disabled"`
+                  - `type: "disabled" (default: "disabled")`
 
                     Disable outbound network access. Always `disabled`.
 
@@ -1477,7 +1501,9 @@ Cancel an ongoing evaluation run.
 
                     A list of allowed domains when type is `allowlist`.
 
-                  - `type: "allowlist"`
+                    `minItems: 1`
+
+                  - `type: "allowlist" (default: "allowlist")`
 
                     Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -1487,17 +1513,25 @@ Cancel an ongoing evaluation run.
 
                     Optional domain-scoped secrets for allowlisted domains.
 
+                    `minItems: 1`
+
                     - `domain: string`
 
                       The domain associated with the secret.
+
+                      `minLength: 1`
 
                     - `name: string`
 
                       The name of the secret to inject for the domain.
 
+                      `minLength: 1`
+
                     - `value: string`
 
                       The secret value to inject for the domain.
+
+                      `minLength: 1`, `maxLength: 10485760`
 
           - `type: "code_interpreter"`
 
@@ -1509,13 +1543,15 @@ Cancel an ongoing evaluation run.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -1541,7 +1577,7 @@ Cancel an ongoing evaluation run.
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -1622,7 +1658,7 @@ Cancel an ongoing evaluation run.
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -1630,11 +1666,13 @@ Cancel an ongoing evaluation run.
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -1645,11 +1683,13 @@ Cancel an ongoing evaluation run.
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -1668,7 +1708,7 @@ Cancel an ongoing evaluation run.
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -1690,7 +1730,7 @@ Cancel an ongoing evaluation run.
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -1700,7 +1740,7 @@ Cancel an ongoing evaluation run.
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -1710,6 +1750,8 @@ Cancel an ongoing evaluation run.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -1718,7 +1760,7 @@ Cancel an ongoing evaluation run.
 
             - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-              - `type: "container_auto"`
+              - `type: "container_auto" (default: "container_auto")`
 
                 Automatically creates a container for this request
 
@@ -1727,6 +1769,8 @@ Cancel an ongoing evaluation run.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -1752,13 +1796,17 @@ Cancel an ongoing evaluation run.
 
                 An optional list of skills referenced by id or inline data.
 
+                `maxItems: 200`
+
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
                     The ID of the referenced skill.
 
-                  - `type: "skill_reference"`
+                    `minLength: 1`, `maxLength: 64`
+
+                  - `type: "skill_reference" (default: "skill_reference")`
 
                     References a skill created with the /v1/skills endpoint.
 
@@ -1786,19 +1834,21 @@ Cancel an ongoing evaluation run.
 
                       Base64-encoded skill zip bundle.
 
-                    - `media_type: "application/zip"`
+                      `minLength: 1`, `maxLength: 70254592`
+
+                    - `media_type: "application/zip" (default: "application/zip")`
 
                       The media type of the inline skill payload. Must be `application/zip`.
 
                       - `"application/zip"`
 
-                    - `type: "base64"`
+                    - `type: "base64" (default: "base64")`
 
                       The type of the inline skill source. Must be `base64`.
 
                       - `"base64"`
 
-                  - `type: "inline"`
+                  - `type: "inline" (default: "inline")`
 
                     Defines an inline skill for this request.
 
@@ -1806,7 +1856,7 @@ Cancel an ongoing evaluation run.
 
             - `LocalEnvironment object { type, skills }`
 
-              - `type: "local"`
+              - `type: "local" (default: "local")`
 
                 Use a local computer environment.
 
@@ -1815,6 +1865,8 @@ Cancel an ongoing evaluation run.
               - `skills: optional array of LocalSkill`
 
                 An optional list of skills.
+
+                `maxItems: 200`
 
                 - `description: string`
 
@@ -1834,7 +1886,7 @@ Cancel an ongoing evaluation run.
 
                 The ID of the referenced container.
 
-              - `type: "container_reference"`
+              - `type: "container_reference" (default: "container_reference")`
 
                 References a container created with the /v1/containers endpoint
 
@@ -1848,7 +1900,7 @@ Cancel an ongoing evaluation run.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -1857,6 +1909,8 @@ Cancel an ongoing evaluation run.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -1882,7 +1936,7 @@ Cancel an ongoing evaluation run.
 
               Unconstrained free-form text.
 
-              - `type: "text"`
+              - `type: "text" (default: "text")`
 
                 Unconstrained text format. Always `text`.
 
@@ -1904,7 +1958,7 @@ Cancel an ongoing evaluation run.
 
                 - `"regex"`
 
-              - `type: "grammar"`
+              - `type: "grammar" (default: "grammar")`
 
                 Grammar format. Always `grammar`.
 
@@ -1922,21 +1976,29 @@ Cancel an ongoing evaluation run.
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -1970,7 +2032,7 @@ Cancel an ongoing evaluation run.
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -1979,6 +2041,8 @@ Cancel an ongoing evaluation run.
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -2000,7 +2064,7 @@ Cancel an ongoing evaluation run.
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -2010,7 +2074,7 @@ Cancel an ongoing evaluation run.
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -2036,7 +2100,7 @@ Cancel an ongoing evaluation run.
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -2064,7 +2128,7 @@ Cancel an ongoing evaluation run.
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -2090,7 +2154,7 @@ Cancel an ongoing evaluation run.
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -2100,11 +2164,13 @@ Cancel an ongoing evaluation run.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `top_p: optional number`
+      - `top_p: optional number (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -2141,7 +2207,7 @@ Cancel an ongoing evaluation run.
 
   The name of the evaluation run.
 
-- `object: "eval.run"`
+- `object: "eval.run" (default: "eval.run")`
 
   The type of the object. Always "eval.run".
 
@@ -2151,15 +2217,15 @@ Cancel an ongoing evaluation run.
 
   Usage statistics for each model during the evaluation run.
 
-  - `cached_tokens: number`
+  - `cached_tokens: integer`
 
     The number of tokens retrieved from cache.
 
-  - `completion_tokens: number`
+  - `completion_tokens: integer`
 
     The number of completion tokens generated.
 
-  - `invocation_count: number`
+  - `invocation_count: integer`
 
     The number of invocations.
 
@@ -2167,11 +2233,11 @@ Cancel an ongoing evaluation run.
 
     The name of the model.
 
-  - `prompt_tokens: number`
+  - `prompt_tokens: integer`
 
     The number of prompt tokens used.
 
-  - `total_tokens: number`
+  - `total_tokens: integer`
 
     The total number of tokens used.
 
@@ -2179,11 +2245,11 @@ Cancel an ongoing evaluation run.
 
   Results per testing criteria applied during the evaluation run.
 
-  - `failed: number`
+  - `failed: integer`
 
     Number of tests failed for this criteria.
 
-  - `passed: number`
+  - `passed: integer`
 
     Number of tests passed for this criteria.
 
@@ -2195,23 +2261,25 @@ Cancel an ongoing evaluation run.
 
   The URL to the rendered evaluation run report on the UI dashboard.
 
+  `format: uri`
+
 - `result_counts: object { errored, failed, passed, total }`
 
   Counters summarizing the outcomes of the evaluation run.
 
-  - `errored: number`
+  - `errored: integer`
 
     Number of output items that resulted in an error.
 
-  - `failed: number`
+  - `failed: integer`
 
     Number of output items that failed to pass the evaluation.
 
-  - `passed: number`
+  - `passed: integer`
 
     Number of output items that passed the evaluation.
 
-  - `total: number`
+  - `total: integer`
 
     Total number of executed output items.
 
@@ -2227,7 +2295,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID/runs/$RUN_ID/cancel \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2297,7 +2365,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a/runs/
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

@@ -94,7 +94,7 @@ Run a grader.
 
       The text being graded against.
 
-    - `type: "text_similarity"`
+    - `type: "text_similarity" (default: "text_similarity")`
 
       The type of grader.
 
@@ -146,7 +146,7 @@ Run a grader.
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -156,7 +156,7 @@ Run a grader.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -191,6 +191,8 @@ Run a grader.
           - `image_url: string`
 
             The URL of the image input.
+
+            `format: uri`
 
           - `type: "input_image"`
 
@@ -262,6 +264,8 @@ Run a grader.
 
               The URL of the image input.
 
+              `format: uri`
+
             - `type: "input_image"`
 
               The type of the image input. Always `input_image`.
@@ -317,11 +321,13 @@ Run a grader.
 
       The sampling parameters for the model.
 
-      - `max_completions_tokens: optional number or null`
+      - `max_completions_tokens: optional integer or null`
 
         The maximum number of tokens the grader model may generate in its response.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+        `minimum: 1`
+
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -345,7 +351,7 @@ Run a grader.
 
         - `"max"`
 
-      - `seed: optional number or null`
+      - `seed: optional integer or null`
 
         A seed value to initialize the randomness, during sampling.
 
@@ -353,7 +359,7 @@ Run a grader.
 
         A higher temperature increases randomness in the outputs.
 
-      - `top_p: optional number or null`
+      - `top_p: optional number or null (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -424,6 +430,8 @@ Run a grader.
 
                 The URL of the image input.
 
+                `format: uri`
+
               - `type: "input_image"`
 
                 The type of the image input. Always `input_image`.
@@ -488,7 +496,7 @@ Run a grader.
 
       The name of the grader.
 
-    - `type: "multi"`
+    - `type: "multi" (default: "multi")`
 
       The object type, which is always `multi`.
 
@@ -550,13 +558,13 @@ Run a grader.
 
   - `token_usage: object { prompt_tokens, total_tokens, cached_tokens, completion_tokens }  or null`
 
-    - `prompt_tokens: number`
+    - `prompt_tokens: integer`
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
-    - `cached_tokens: optional number or null`
+    - `cached_tokens: optional integer or null`
 
-    - `completion_tokens: optional number or null`
+    - `completion_tokens: optional integer or null`
 
   - `type: string`
 
@@ -584,7 +592,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/run \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -746,7 +754,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -882,7 +890,7 @@ Validate a grader.
 
       The text being graded against.
 
-    - `type: "text_similarity"`
+    - `type: "text_similarity" (default: "text_similarity")`
 
       The type of grader.
 
@@ -934,7 +942,7 @@ Validate a grader.
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -944,7 +952,7 @@ Validate a grader.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -979,6 +987,8 @@ Validate a grader.
           - `image_url: string`
 
             The URL of the image input.
+
+            `format: uri`
 
           - `type: "input_image"`
 
@@ -1050,6 +1060,8 @@ Validate a grader.
 
               The URL of the image input.
 
+              `format: uri`
+
             - `type: "input_image"`
 
               The type of the image input. Always `input_image`.
@@ -1105,11 +1117,13 @@ Validate a grader.
 
       The sampling parameters for the model.
 
-      - `max_completions_tokens: optional number or null`
+      - `max_completions_tokens: optional integer or null`
 
         The maximum number of tokens the grader model may generate in its response.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+        `minimum: 1`
+
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -1133,7 +1147,7 @@ Validate a grader.
 
         - `"max"`
 
-      - `seed: optional number or null`
+      - `seed: optional integer or null`
 
         A seed value to initialize the randomness, during sampling.
 
@@ -1141,7 +1155,7 @@ Validate a grader.
 
         A higher temperature increases randomness in the outputs.
 
-      - `top_p: optional number or null`
+      - `top_p: optional number or null (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -1212,6 +1226,8 @@ Validate a grader.
 
                 The URL of the image input.
 
+                `format: uri`
+
               - `type: "input_image"`
 
                 The type of the image input. Always `input_image`.
@@ -1276,7 +1292,7 @@ Validate a grader.
 
       The name of the grader.
 
-    - `type: "multi"`
+    - `type: "multi" (default: "multi")`
 
       The object type, which is always `multi`.
 
@@ -1366,7 +1382,7 @@ Validate a grader.
 
       The text being graded against.
 
-    - `type: "text_similarity"`
+    - `type: "text_similarity" (default: "text_similarity")`
 
       The type of grader.
 
@@ -1418,7 +1434,7 @@ Validate a grader.
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -1428,7 +1444,7 @@ Validate a grader.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -1463,6 +1479,8 @@ Validate a grader.
           - `image_url: string`
 
             The URL of the image input.
+
+            `format: uri`
 
           - `type: "input_image"`
 
@@ -1534,6 +1552,8 @@ Validate a grader.
 
               The URL of the image input.
 
+              `format: uri`
+
             - `type: "input_image"`
 
               The type of the image input. Always `input_image`.
@@ -1589,11 +1609,13 @@ Validate a grader.
 
       The sampling parameters for the model.
 
-      - `max_completions_tokens: optional number or null`
+      - `max_completions_tokens: optional integer or null`
 
         The maximum number of tokens the grader model may generate in its response.
 
-      - `reasoning_effort: optional ReasoningEffort or null`
+        `minimum: 1`
+
+      - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
         Constrains effort on reasoning for reasoning models. Currently supported
         values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -1617,7 +1639,7 @@ Validate a grader.
 
         - `"max"`
 
-      - `seed: optional number or null`
+      - `seed: optional integer or null`
 
         A seed value to initialize the randomness, during sampling.
 
@@ -1625,7 +1647,7 @@ Validate a grader.
 
         A higher temperature increases randomness in the outputs.
 
-      - `top_p: optional number or null`
+      - `top_p: optional number or null (default: 1)`
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -1696,6 +1718,8 @@ Validate a grader.
 
                 The URL of the image input.
 
+                `format: uri`
+
               - `type: "input_image"`
 
                 The type of the image input. Always `input_image`.
@@ -1760,7 +1784,7 @@ Validate a grader.
 
       The name of the grader.
 
-    - `type: "multi"`
+    - `type: "multi" (default: "multi")`
 
       The object type, which is always `multi`.
 
@@ -1783,7 +1807,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1814,7 +1838,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1876,13 +1900,13 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
     - `token_usage: object { prompt_tokens, total_tokens, cached_tokens, completion_tokens }  or null`
 
-      - `prompt_tokens: number`
+      - `prompt_tokens: integer`
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
-      - `cached_tokens: optional number or null`
+      - `cached_tokens: optional integer or null`
 
-      - `completion_tokens: optional number or null`
+      - `completion_tokens: optional integer or null`
 
     - `type: string`
 
@@ -1978,7 +2002,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
         The text being graded against.
 
-      - `type: "text_similarity"`
+      - `type: "text_similarity" (default: "text_similarity")`
 
         The type of grader.
 
@@ -2030,7 +2054,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -2040,7 +2064,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -2075,6 +2099,8 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -2146,6 +2172,8 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
                 The URL of the image input.
 
+                `format: uri`
+
               - `type: "input_image"`
 
                 The type of the image input. Always `input_image`.
@@ -2201,11 +2229,13 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
         The sampling parameters for the model.
 
-        - `max_completions_tokens: optional number or null`
+        - `max_completions_tokens: optional integer or null`
 
           The maximum number of tokens the grader model may generate in its response.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+          `minimum: 1`
+
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -2229,7 +2259,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
           - `"max"`
 
-        - `seed: optional number or null`
+        - `seed: optional integer or null`
 
           A seed value to initialize the randomness, during sampling.
 
@@ -2237,7 +2267,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
           A higher temperature increases randomness in the outputs.
 
-        - `top_p: optional number or null`
+        - `top_p: optional number or null (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -2308,6 +2338,8 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -2372,7 +2404,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
         The name of the grader.
 
-      - `type: "multi"`
+      - `type: "multi" (default: "multi")`
 
         The object type, which is always `multi`.
 
@@ -2408,9 +2440,11 @@ This enables organization owners to share fine-tuned models with other projects 
 
     The permission identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the permission was created.
+
+    `format: unixtime`
 
   - `object: "checkpoint.permission"`
 
@@ -2445,7 +2479,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/$FINE_TUNED_MODEL_CHECKPO
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2472,7 +2506,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
   -d '{"project_ids": ["proj_abGMw1llN8IrBb6SvvY5A1iH"]}'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2529,7 +2563,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/$FINE_TUNED_MODEL_CHECKPO
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2546,7 +2580,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2574,11 +2608,11 @@ Organization owners can use this endpoint to view all permissions for a fine-tun
 
   Identifier for the last permission ID from the previous pagination request.
 
-- `limit: optional number`
+- `limit: optional integer (default: 10)`
 
   Number of permissions to retrieve.
 
-- `order: optional "ascending" or "descending"`
+- `order: optional "ascending" or "descending" (default: "descending")`
 
   The order in which to retrieve permissions.
 
@@ -2598,9 +2632,11 @@ Organization owners can use this endpoint to view all permissions for a fine-tun
 
     The permission identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the permission was created.
+
+    `format: unixtime`
 
   - `object: "checkpoint.permission"`
 
@@ -2629,7 +2665,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/$FINE_TUNED_MODEL_CHECKPO
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2655,7 +2691,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2698,11 +2734,11 @@ Organization owners can use this endpoint to view all permissions for a fine-tun
 
   Identifier for the last permission ID from the previous pagination request.
 
-- `limit: optional number`
+- `limit: optional integer (default: 10)`
 
   Number of permissions to retrieve.
 
-- `order: optional "ascending" or "descending"`
+- `order: optional "ascending" or "descending" (default: "descending")`
 
   The order in which to retrieve permissions.
 
@@ -2722,9 +2758,11 @@ Organization owners can use this endpoint to view all permissions for a fine-tun
 
     The permission identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the permission was created.
+
+    `format: unixtime`
 
   - `object: "checkpoint.permission"`
 
@@ -2753,7 +2791,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/$FINE_TUNED_MODEL_CHECKPO
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -2779,7 +2817,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -2816,9 +2854,11 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
     The permission identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the permission was created.
+
+    `format: unixtime`
 
   - `object: "checkpoint.permission"`
 
@@ -2858,9 +2898,11 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
     The permission identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the permission was created.
+
+    `format: unixtime`
 
   - `object: "checkpoint.permission"`
 
@@ -2882,9 +2924,11 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
       The permission identifier, which can be referenced in the API endpoints.
 
-    - `created_at: number`
+    - `created_at: integer`
 
       The Unix timestamp (in seconds) for when the permission was created.
+
+      `format: unixtime`
 
     - `object: "checkpoint.permission"`
 
@@ -2928,9 +2972,11 @@ Immediately cancel a fine-tune job.
 
     The object identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
+
+    `format: unixtime`
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -2958,9 +3004,11 @@ Immediately cancel a fine-tune job.
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number or null`
+  - `finished_at: integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -2980,7 +3028,7 @@ Immediately cancel a fine-tune job.
 
     The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `seed: number or null`
+  - `seed: integer or null`
 
     The seed used for the fine-tuning job.
 
@@ -3004,7 +3052,7 @@ Immediately cancel a fine-tune job.
 
     - `"paused"`
 
-  - `trained_tokens: number or null`
+  - `trained_tokens: integer or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -3016,15 +3064,17 @@ Immediately cancel a fine-tune job.
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `estimated_finish: optional number or null`
+  - `estimated_finish: optional integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
+
+    `format: unixtime`
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number or null`
+    - `batch_size: optional "auto" or number or null (default: "auto")`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -3035,7 +3085,9 @@ Immediately cancel a fine-tune job.
 
       - `number`
 
-    - `learning_rate_multiplier: optional "auto" or number`
+        `minimum: 1`, `maximum: 256`
+
+    - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
       Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
       overfitting.
@@ -3046,7 +3098,9 @@ Immediately cancel a fine-tune job.
 
       - `number`
 
-    - `n_epochs: optional "auto" or number`
+        `exclusiveMinimum: 0`
+
+    - `n_epochs: optional "auto" or number (default: "auto")`
 
       The number of epochs to train the model for. An epoch refers to one full cycle
       through the training dataset.
@@ -3057,9 +3111,13 @@ Immediately cancel a fine-tune job.
 
       - `number`
 
+        `minimum: 1`, `maximum: 50`
+
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
+
+    `maxItems: 5`
 
     - `type: "wandb"`
 
@@ -3122,7 +3180,7 @@ Immediately cancel a fine-tune job.
 
         The hyperparameters used for the DPO fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -3132,7 +3190,9 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
-        - `beta: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `beta: optional "auto" or number (default: "auto")`
 
           The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
 
@@ -3142,7 +3202,9 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `exclusiveMinimum: 0`, `maximum: 2`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -3152,7 +3214,9 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -3161,6 +3225,8 @@ Immediately cancel a fine-tune job.
             - `"auto"`
 
           - `number`
+
+            `minimum: 1`, `maximum: 50`
 
     - `reinforcement: optional ReinforcementMethod`
 
@@ -3248,7 +3314,7 @@ Immediately cancel a fine-tune job.
 
             The text being graded against.
 
-          - `type: "text_similarity"`
+          - `type: "text_similarity" (default: "text_similarity")`
 
             The type of grader.
 
@@ -3300,7 +3366,7 @@ Immediately cancel a fine-tune job.
 
                   The text input to the model.
 
-                - `type: "input_text"`
+                - `type: "input_text" (default: "input_text")`
 
                   The type of the input item. Always `input_text`.
 
@@ -3310,7 +3376,7 @@ Immediately cancel a fine-tune job.
 
                   Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                  - `mode: "explicit"`
+                  - `mode: "explicit" (default: "explicit")`
 
                     The breakpoint mode. Always `explicit`.
 
@@ -3345,6 +3411,8 @@ Immediately cancel a fine-tune job.
                 - `image_url: string`
 
                   The URL of the image input.
+
+                  `format: uri`
 
                 - `type: "input_image"`
 
@@ -3416,6 +3484,8 @@ Immediately cancel a fine-tune job.
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -3471,11 +3541,13 @@ Immediately cancel a fine-tune job.
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number or null`
+            - `max_completions_tokens: optional integer or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort or null`
+              `minimum: 1`
+
+            - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -3499,7 +3571,7 @@ Immediately cancel a fine-tune job.
 
               - `"max"`
 
-            - `seed: optional number or null`
+            - `seed: optional integer or null`
 
               A seed value to initialize the randomness, during sampling.
 
@@ -3507,7 +3579,7 @@ Immediately cancel a fine-tune job.
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number or null`
+            - `top_p: optional number or null (default: 1)`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -3578,6 +3650,8 @@ Immediately cancel a fine-tune job.
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -3642,7 +3716,7 @@ Immediately cancel a fine-tune job.
 
             The name of the grader.
 
-          - `type: "multi"`
+          - `type: "multi" (default: "multi")`
 
             The object type, which is always `multi`.
 
@@ -3652,7 +3726,7 @@ Immediately cancel a fine-tune job.
 
         The hyperparameters used for the reinforcement fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -3662,7 +3736,9 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
-        - `compute_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `compute_multiplier: optional "auto" or number (default: "auto")`
 
           Multiplier on amount of compute used for exploring search space during training.
 
@@ -3672,7 +3748,9 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
-        - `eval_interval: optional "auto" or number`
+            `exclusiveMinimum: 0.00001`, `maximum: 10`
+
+        - `eval_interval: optional "auto" or number (default: "auto")`
 
           The number of training steps between evaluation runs.
 
@@ -3682,7 +3760,9 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
-        - `eval_samples: optional "auto" or number`
+            `minimum: 1`
+
+        - `eval_samples: optional "auto" or number (default: "auto")`
 
           Number of evaluation samples to generate per training step.
 
@@ -3692,7 +3772,9 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -3702,7 +3784,9 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -3712,7 +3796,9 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
-        - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
+            `minimum: 1`, `maximum: 50`
+
+        - `reasoning_effort: optional "default" or "low" or "medium" or "high" (default: "default")`
 
           Level of reasoning effort.
 
@@ -3732,7 +3818,7 @@ Immediately cancel a fine-tune job.
 
         The hyperparameters used for the fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -3742,7 +3828,9 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -3752,7 +3840,9 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -3762,6 +3852,8 @@ Immediately cancel a fine-tune job.
 
           - `number`
 
+            `minimum: 1`, `maximum: 50`
+
 ### Example
 
 ```http
@@ -3770,7 +3862,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/$FINE_TUNING_JOB_ID/cancel \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -3862,7 +3954,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -3933,7 +4025,7 @@ Response includes details of the enqueued job including job status and the name 
   The hyperparameters used for the fine-tuning job.
   This value is now deprecated in favor of `method`, and should be passed in under the `method` parameter.
 
-  - `batch_size: optional "auto" or number`
+  - `batch_size: optional "auto" or number (default: "auto")`
 
     Number of examples in each batch. A larger batch size means that model parameters
     are updated less frequently, but with lower variance.
@@ -3944,7 +4036,9 @@ Response includes details of the enqueued job including job status and the name 
 
     - `number`
 
-  - `learning_rate_multiplier: optional "auto" or number`
+      `minimum: 1`, `maximum: 256`
+
+  - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
     Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
     overfitting.
@@ -3955,7 +4049,9 @@ Response includes details of the enqueued job including job status and the name 
 
     - `number`
 
-  - `n_epochs: optional "auto" or number`
+      `exclusiveMinimum: 0`
+
+  - `n_epochs: optional "auto" or number (default: "auto")`
 
     The number of epochs to train the model for. An epoch refers to one full cycle
     through the training dataset.
@@ -3965,6 +4061,8 @@ Response includes details of the enqueued job including job status and the name 
       - `"auto"`
 
     - `number`
+
+      `minimum: 1`, `maximum: 50`
 
 - `integrations: optional array of object { type, wandb }  or null`
 
@@ -4031,7 +4129,7 @@ Response includes details of the enqueued job including job status and the name 
 
       The hyperparameters used for the DPO fine-tuning job.
 
-      - `batch_size: optional "auto" or number`
+      - `batch_size: optional "auto" or number (default: "auto")`
 
         Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -4041,7 +4139,9 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-      - `beta: optional "auto" or number`
+          `minimum: 1`, `maximum: 256`
+
+      - `beta: optional "auto" or number (default: "auto")`
 
         The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
 
@@ -4051,7 +4151,9 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-      - `learning_rate_multiplier: optional "auto" or number`
+          `exclusiveMinimum: 0`, `maximum: 2`
+
+      - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
         Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -4061,7 +4163,9 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-      - `n_epochs: optional "auto" or number`
+          `exclusiveMinimum: 0`
+
+      - `n_epochs: optional "auto" or number (default: "auto")`
 
         The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -4070,6 +4174,8 @@ Response includes details of the enqueued job including job status and the name 
           - `"auto"`
 
         - `number`
+
+          `minimum: 1`, `maximum: 50`
 
   - `reinforcement: optional ReinforcementMethod`
 
@@ -4157,7 +4263,7 @@ Response includes details of the enqueued job including job status and the name 
 
           The text being graded against.
 
-        - `type: "text_similarity"`
+        - `type: "text_similarity" (default: "text_similarity")`
 
           The type of grader.
 
@@ -4209,7 +4315,7 @@ Response includes details of the enqueued job including job status and the name 
 
                 The text input to the model.
 
-              - `type: "input_text"`
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -4219,7 +4325,7 @@ Response includes details of the enqueued job including job status and the name 
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -4254,6 +4360,8 @@ Response includes details of the enqueued job including job status and the name 
               - `image_url: string`
 
                 The URL of the image input.
+
+                `format: uri`
 
               - `type: "input_image"`
 
@@ -4325,6 +4433,8 @@ Response includes details of the enqueued job including job status and the name 
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -4380,11 +4490,13 @@ Response includes details of the enqueued job including job status and the name 
 
           The sampling parameters for the model.
 
-          - `max_completions_tokens: optional number or null`
+          - `max_completions_tokens: optional integer or null`
 
             The maximum number of tokens the grader model may generate in its response.
 
-          - `reasoning_effort: optional ReasoningEffort or null`
+            `minimum: 1`
+
+          - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
             Constrains effort on reasoning for reasoning models. Currently supported
             values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -4408,7 +4520,7 @@ Response includes details of the enqueued job including job status and the name 
 
             - `"max"`
 
-          - `seed: optional number or null`
+          - `seed: optional integer or null`
 
             A seed value to initialize the randomness, during sampling.
 
@@ -4416,7 +4528,7 @@ Response includes details of the enqueued job including job status and the name 
 
             A higher temperature increases randomness in the outputs.
 
-          - `top_p: optional number or null`
+          - `top_p: optional number or null (default: 1)`
 
             An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -4487,6 +4599,8 @@ Response includes details of the enqueued job including job status and the name 
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -4551,7 +4665,7 @@ Response includes details of the enqueued job including job status and the name 
 
           The name of the grader.
 
-        - `type: "multi"`
+        - `type: "multi" (default: "multi")`
 
           The object type, which is always `multi`.
 
@@ -4561,7 +4675,7 @@ Response includes details of the enqueued job including job status and the name 
 
       The hyperparameters used for the reinforcement fine-tuning job.
 
-      - `batch_size: optional "auto" or number`
+      - `batch_size: optional "auto" or number (default: "auto")`
 
         Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -4571,7 +4685,9 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-      - `compute_multiplier: optional "auto" or number`
+          `minimum: 1`, `maximum: 256`
+
+      - `compute_multiplier: optional "auto" or number (default: "auto")`
 
         Multiplier on amount of compute used for exploring search space during training.
 
@@ -4581,7 +4697,9 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-      - `eval_interval: optional "auto" or number`
+          `exclusiveMinimum: 0.00001`, `maximum: 10`
+
+      - `eval_interval: optional "auto" or number (default: "auto")`
 
         The number of training steps between evaluation runs.
 
@@ -4591,7 +4709,9 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-      - `eval_samples: optional "auto" or number`
+          `minimum: 1`
+
+      - `eval_samples: optional "auto" or number (default: "auto")`
 
         Number of evaluation samples to generate per training step.
 
@@ -4601,7 +4721,9 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-      - `learning_rate_multiplier: optional "auto" or number`
+          `minimum: 1`
+
+      - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
         Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -4611,7 +4733,9 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-      - `n_epochs: optional "auto" or number`
+          `exclusiveMinimum: 0`
+
+      - `n_epochs: optional "auto" or number (default: "auto")`
 
         The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -4621,7 +4745,9 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-      - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
+          `minimum: 1`, `maximum: 50`
+
+      - `reasoning_effort: optional "default" or "low" or "medium" or "high" (default: "default")`
 
         Level of reasoning effort.
 
@@ -4641,7 +4767,7 @@ Response includes details of the enqueued job including job status and the name 
 
       The hyperparameters used for the fine-tuning job.
 
-      - `batch_size: optional "auto" or number`
+      - `batch_size: optional "auto" or number (default: "auto")`
 
         Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -4651,7 +4777,9 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-      - `learning_rate_multiplier: optional "auto" or number`
+          `minimum: 1`, `maximum: 256`
+
+      - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
         Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -4661,7 +4789,9 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-      - `n_epochs: optional "auto" or number`
+          `exclusiveMinimum: 0`
+
+      - `n_epochs: optional "auto" or number (default: "auto")`
 
         The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -4671,16 +4801,22 @@ Response includes details of the enqueued job including job status and the name 
 
         - `number`
 
-- `seed: optional number or null`
+          `minimum: 1`, `maximum: 50`
+
+- `seed: optional integer or null`
 
   The seed controls the reproducibility of the job. Passing in the same seed and job parameters should produce the same results, but may differ in rare cases.
   If a seed is not specified, one will be generated for you.
 
-- `suffix: optional string or null`
+  `minimum: 0`, `maximum: 2147483647`
+
+- `suffix: optional string or null (default: null)`
 
   A string of up to 64 characters that will be added to your fine-tuned model name.
 
   For example, a `suffix` of "custom-model-name" would produce a model name like `ft:gpt-4o-mini:openai:custom-model-name:7p4lURel`.
+
+  `minLength: 1`, `maxLength: 64`
 
 - `validation_file: optional string or null`
 
@@ -4705,9 +4841,11 @@ Response includes details of the enqueued job including job status and the name 
 
     The object identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
+
+    `format: unixtime`
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -4735,9 +4873,11 @@ Response includes details of the enqueued job including job status and the name 
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number or null`
+  - `finished_at: integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -4757,7 +4897,7 @@ Response includes details of the enqueued job including job status and the name 
 
     The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `seed: number or null`
+  - `seed: integer or null`
 
     The seed used for the fine-tuning job.
 
@@ -4781,7 +4921,7 @@ Response includes details of the enqueued job including job status and the name 
 
     - `"paused"`
 
-  - `trained_tokens: number or null`
+  - `trained_tokens: integer or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -4793,15 +4933,17 @@ Response includes details of the enqueued job including job status and the name 
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `estimated_finish: optional number or null`
+  - `estimated_finish: optional integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
+
+    `format: unixtime`
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number or null`
+    - `batch_size: optional "auto" or number or null (default: "auto")`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -4812,7 +4954,9 @@ Response includes details of the enqueued job including job status and the name 
 
       - `number`
 
-    - `learning_rate_multiplier: optional "auto" or number`
+        `minimum: 1`, `maximum: 256`
+
+    - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
       Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
       overfitting.
@@ -4823,7 +4967,9 @@ Response includes details of the enqueued job including job status and the name 
 
       - `number`
 
-    - `n_epochs: optional "auto" or number`
+        `exclusiveMinimum: 0`
+
+    - `n_epochs: optional "auto" or number (default: "auto")`
 
       The number of epochs to train the model for. An epoch refers to one full cycle
       through the training dataset.
@@ -4834,9 +4980,13 @@ Response includes details of the enqueued job including job status and the name 
 
       - `number`
 
+        `minimum: 1`, `maximum: 50`
+
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
+
+    `maxItems: 5`
 
     - `type: "wandb"`
 
@@ -4899,7 +5049,7 @@ Response includes details of the enqueued job including job status and the name 
 
         The hyperparameters used for the DPO fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -4909,7 +5059,9 @@ Response includes details of the enqueued job including job status and the name 
 
           - `number`
 
-        - `beta: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `beta: optional "auto" or number (default: "auto")`
 
           The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
 
@@ -4919,7 +5071,9 @@ Response includes details of the enqueued job including job status and the name 
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `exclusiveMinimum: 0`, `maximum: 2`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -4929,7 +5083,9 @@ Response includes details of the enqueued job including job status and the name 
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -4938,6 +5094,8 @@ Response includes details of the enqueued job including job status and the name 
             - `"auto"`
 
           - `number`
+
+            `minimum: 1`, `maximum: 50`
 
     - `reinforcement: optional ReinforcementMethod`
 
@@ -5025,7 +5183,7 @@ Response includes details of the enqueued job including job status and the name 
 
             The text being graded against.
 
-          - `type: "text_similarity"`
+          - `type: "text_similarity" (default: "text_similarity")`
 
             The type of grader.
 
@@ -5077,7 +5235,7 @@ Response includes details of the enqueued job including job status and the name 
 
                   The text input to the model.
 
-                - `type: "input_text"`
+                - `type: "input_text" (default: "input_text")`
 
                   The type of the input item. Always `input_text`.
 
@@ -5087,7 +5245,7 @@ Response includes details of the enqueued job including job status and the name 
 
                   Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                  - `mode: "explicit"`
+                  - `mode: "explicit" (default: "explicit")`
 
                     The breakpoint mode. Always `explicit`.
 
@@ -5122,6 +5280,8 @@ Response includes details of the enqueued job including job status and the name 
                 - `image_url: string`
 
                   The URL of the image input.
+
+                  `format: uri`
 
                 - `type: "input_image"`
 
@@ -5193,6 +5353,8 @@ Response includes details of the enqueued job including job status and the name 
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -5248,11 +5410,13 @@ Response includes details of the enqueued job including job status and the name 
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number or null`
+            - `max_completions_tokens: optional integer or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort or null`
+              `minimum: 1`
+
+            - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -5276,7 +5440,7 @@ Response includes details of the enqueued job including job status and the name 
 
               - `"max"`
 
-            - `seed: optional number or null`
+            - `seed: optional integer or null`
 
               A seed value to initialize the randomness, during sampling.
 
@@ -5284,7 +5448,7 @@ Response includes details of the enqueued job including job status and the name 
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number or null`
+            - `top_p: optional number or null (default: 1)`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -5355,6 +5519,8 @@ Response includes details of the enqueued job including job status and the name 
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -5419,7 +5585,7 @@ Response includes details of the enqueued job including job status and the name 
 
             The name of the grader.
 
-          - `type: "multi"`
+          - `type: "multi" (default: "multi")`
 
             The object type, which is always `multi`.
 
@@ -5429,7 +5595,7 @@ Response includes details of the enqueued job including job status and the name 
 
         The hyperparameters used for the reinforcement fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -5439,7 +5605,9 @@ Response includes details of the enqueued job including job status and the name 
 
           - `number`
 
-        - `compute_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `compute_multiplier: optional "auto" or number (default: "auto")`
 
           Multiplier on amount of compute used for exploring search space during training.
 
@@ -5449,7 +5617,9 @@ Response includes details of the enqueued job including job status and the name 
 
           - `number`
 
-        - `eval_interval: optional "auto" or number`
+            `exclusiveMinimum: 0.00001`, `maximum: 10`
+
+        - `eval_interval: optional "auto" or number (default: "auto")`
 
           The number of training steps between evaluation runs.
 
@@ -5459,7 +5629,9 @@ Response includes details of the enqueued job including job status and the name 
 
           - `number`
 
-        - `eval_samples: optional "auto" or number`
+            `minimum: 1`
+
+        - `eval_samples: optional "auto" or number (default: "auto")`
 
           Number of evaluation samples to generate per training step.
 
@@ -5469,7 +5641,9 @@ Response includes details of the enqueued job including job status and the name 
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -5479,7 +5653,9 @@ Response includes details of the enqueued job including job status and the name 
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -5489,7 +5665,9 @@ Response includes details of the enqueued job including job status and the name 
 
           - `number`
 
-        - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
+            `minimum: 1`, `maximum: 50`
+
+        - `reasoning_effort: optional "default" or "low" or "medium" or "high" (default: "default")`
 
           Level of reasoning effort.
 
@@ -5509,7 +5687,7 @@ Response includes details of the enqueued job including job status and the name 
 
         The hyperparameters used for the fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -5519,7 +5697,9 @@ Response includes details of the enqueued job including job status and the name 
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -5529,7 +5709,9 @@ Response includes details of the enqueued job including job status and the name 
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -5538,6 +5720,8 @@ Response includes details of the enqueued job including job status and the name 
             - `"auto"`
 
           - `number`
+
+            `minimum: 1`, `maximum: 50`
 
 ### Example
 
@@ -5553,7 +5737,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -5659,7 +5843,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -5709,7 +5893,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -5766,7 +5950,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -5836,7 +6020,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -5899,7 +6083,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -5961,7 +6145,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -6020,7 +6204,7 @@ List your organization's fine-tuning jobs
 
   Identifier for the last job from the previous pagination request.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   Number of fine-tuning jobs to retrieve.
 
@@ -6037,9 +6221,11 @@ List your organization's fine-tuning jobs
 
     The object identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
+
+    `format: unixtime`
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -6067,9 +6253,11 @@ List your organization's fine-tuning jobs
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number or null`
+  - `finished_at: integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -6089,7 +6277,7 @@ List your organization's fine-tuning jobs
 
     The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `seed: number or null`
+  - `seed: integer or null`
 
     The seed used for the fine-tuning job.
 
@@ -6113,7 +6301,7 @@ List your organization's fine-tuning jobs
 
     - `"paused"`
 
-  - `trained_tokens: number or null`
+  - `trained_tokens: integer or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -6125,15 +6313,17 @@ List your organization's fine-tuning jobs
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `estimated_finish: optional number or null`
+  - `estimated_finish: optional integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
+
+    `format: unixtime`
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number or null`
+    - `batch_size: optional "auto" or number or null (default: "auto")`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -6144,7 +6334,9 @@ List your organization's fine-tuning jobs
 
       - `number`
 
-    - `learning_rate_multiplier: optional "auto" or number`
+        `minimum: 1`, `maximum: 256`
+
+    - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
       Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
       overfitting.
@@ -6155,7 +6347,9 @@ List your organization's fine-tuning jobs
 
       - `number`
 
-    - `n_epochs: optional "auto" or number`
+        `exclusiveMinimum: 0`
+
+    - `n_epochs: optional "auto" or number (default: "auto")`
 
       The number of epochs to train the model for. An epoch refers to one full cycle
       through the training dataset.
@@ -6166,9 +6360,13 @@ List your organization's fine-tuning jobs
 
       - `number`
 
+        `minimum: 1`, `maximum: 50`
+
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
+
+    `maxItems: 5`
 
     - `type: "wandb"`
 
@@ -6231,7 +6429,7 @@ List your organization's fine-tuning jobs
 
         The hyperparameters used for the DPO fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -6241,7 +6439,9 @@ List your organization's fine-tuning jobs
 
           - `number`
 
-        - `beta: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `beta: optional "auto" or number (default: "auto")`
 
           The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
 
@@ -6251,7 +6451,9 @@ List your organization's fine-tuning jobs
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `exclusiveMinimum: 0`, `maximum: 2`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -6261,7 +6463,9 @@ List your organization's fine-tuning jobs
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -6270,6 +6474,8 @@ List your organization's fine-tuning jobs
             - `"auto"`
 
           - `number`
+
+            `minimum: 1`, `maximum: 50`
 
     - `reinforcement: optional ReinforcementMethod`
 
@@ -6357,7 +6563,7 @@ List your organization's fine-tuning jobs
 
             The text being graded against.
 
-          - `type: "text_similarity"`
+          - `type: "text_similarity" (default: "text_similarity")`
 
             The type of grader.
 
@@ -6409,7 +6615,7 @@ List your organization's fine-tuning jobs
 
                   The text input to the model.
 
-                - `type: "input_text"`
+                - `type: "input_text" (default: "input_text")`
 
                   The type of the input item. Always `input_text`.
 
@@ -6419,7 +6625,7 @@ List your organization's fine-tuning jobs
 
                   Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                  - `mode: "explicit"`
+                  - `mode: "explicit" (default: "explicit")`
 
                     The breakpoint mode. Always `explicit`.
 
@@ -6454,6 +6660,8 @@ List your organization's fine-tuning jobs
                 - `image_url: string`
 
                   The URL of the image input.
+
+                  `format: uri`
 
                 - `type: "input_image"`
 
@@ -6525,6 +6733,8 @@ List your organization's fine-tuning jobs
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -6580,11 +6790,13 @@ List your organization's fine-tuning jobs
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number or null`
+            - `max_completions_tokens: optional integer or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort or null`
+              `minimum: 1`
+
+            - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -6608,7 +6820,7 @@ List your organization's fine-tuning jobs
 
               - `"max"`
 
-            - `seed: optional number or null`
+            - `seed: optional integer or null`
 
               A seed value to initialize the randomness, during sampling.
 
@@ -6616,7 +6828,7 @@ List your organization's fine-tuning jobs
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number or null`
+            - `top_p: optional number or null (default: 1)`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -6687,6 +6899,8 @@ List your organization's fine-tuning jobs
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -6751,7 +6965,7 @@ List your organization's fine-tuning jobs
 
             The name of the grader.
 
-          - `type: "multi"`
+          - `type: "multi" (default: "multi")`
 
             The object type, which is always `multi`.
 
@@ -6761,7 +6975,7 @@ List your organization's fine-tuning jobs
 
         The hyperparameters used for the reinforcement fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -6771,7 +6985,9 @@ List your organization's fine-tuning jobs
 
           - `number`
 
-        - `compute_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `compute_multiplier: optional "auto" or number (default: "auto")`
 
           Multiplier on amount of compute used for exploring search space during training.
 
@@ -6781,7 +6997,9 @@ List your organization's fine-tuning jobs
 
           - `number`
 
-        - `eval_interval: optional "auto" or number`
+            `exclusiveMinimum: 0.00001`, `maximum: 10`
+
+        - `eval_interval: optional "auto" or number (default: "auto")`
 
           The number of training steps between evaluation runs.
 
@@ -6791,7 +7009,9 @@ List your organization's fine-tuning jobs
 
           - `number`
 
-        - `eval_samples: optional "auto" or number`
+            `minimum: 1`
+
+        - `eval_samples: optional "auto" or number (default: "auto")`
 
           Number of evaluation samples to generate per training step.
 
@@ -6801,7 +7021,9 @@ List your organization's fine-tuning jobs
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -6811,7 +7033,9 @@ List your organization's fine-tuning jobs
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -6821,7 +7045,9 @@ List your organization's fine-tuning jobs
 
           - `number`
 
-        - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
+            `minimum: 1`, `maximum: 50`
+
+        - `reasoning_effort: optional "default" or "low" or "medium" or "high" (default: "default")`
 
           Level of reasoning effort.
 
@@ -6841,7 +7067,7 @@ List your organization's fine-tuning jobs
 
         The hyperparameters used for the fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -6851,7 +7077,9 @@ List your organization's fine-tuning jobs
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -6861,7 +7089,9 @@ List your organization's fine-tuning jobs
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -6870,6 +7100,8 @@ List your organization's fine-tuning jobs
             - `"auto"`
 
           - `number`
+
+            `minimum: 1`, `maximum: 50`
 
 - `has_more: boolean`
 
@@ -6884,7 +7116,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -6982,7 +7214,7 @@ curl "https://api.openai.com/v1/fine_tuning/jobs?limit=2&metadata[key]=value" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -7043,7 +7275,7 @@ Get status updates for a fine-tuning job.
 
   Identifier for the last event from the previous pagination request.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   Number of events to retrieve.
 
@@ -7055,9 +7287,11 @@ Get status updates for a fine-tuning job.
 
     The object identifier.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
+
+    `format: unixtime`
 
   - `level: "info" or "warn" or "error"`
 
@@ -7104,7 +7338,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/$FINE_TUNING_JOB_ID/events \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -7131,7 +7365,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -7180,9 +7414,11 @@ Pause a fine-tune job.
 
     The object identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
+
+    `format: unixtime`
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -7210,9 +7446,11 @@ Pause a fine-tune job.
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number or null`
+  - `finished_at: integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -7232,7 +7470,7 @@ Pause a fine-tune job.
 
     The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `seed: number or null`
+  - `seed: integer or null`
 
     The seed used for the fine-tuning job.
 
@@ -7256,7 +7494,7 @@ Pause a fine-tune job.
 
     - `"paused"`
 
-  - `trained_tokens: number or null`
+  - `trained_tokens: integer or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -7268,15 +7506,17 @@ Pause a fine-tune job.
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `estimated_finish: optional number or null`
+  - `estimated_finish: optional integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
+
+    `format: unixtime`
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number or null`
+    - `batch_size: optional "auto" or number or null (default: "auto")`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -7287,7 +7527,9 @@ Pause a fine-tune job.
 
       - `number`
 
-    - `learning_rate_multiplier: optional "auto" or number`
+        `minimum: 1`, `maximum: 256`
+
+    - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
       Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
       overfitting.
@@ -7298,7 +7540,9 @@ Pause a fine-tune job.
 
       - `number`
 
-    - `n_epochs: optional "auto" or number`
+        `exclusiveMinimum: 0`
+
+    - `n_epochs: optional "auto" or number (default: "auto")`
 
       The number of epochs to train the model for. An epoch refers to one full cycle
       through the training dataset.
@@ -7309,9 +7553,13 @@ Pause a fine-tune job.
 
       - `number`
 
+        `minimum: 1`, `maximum: 50`
+
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
+
+    `maxItems: 5`
 
     - `type: "wandb"`
 
@@ -7374,7 +7622,7 @@ Pause a fine-tune job.
 
         The hyperparameters used for the DPO fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -7384,7 +7632,9 @@ Pause a fine-tune job.
 
           - `number`
 
-        - `beta: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `beta: optional "auto" or number (default: "auto")`
 
           The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
 
@@ -7394,7 +7644,9 @@ Pause a fine-tune job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `exclusiveMinimum: 0`, `maximum: 2`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -7404,7 +7656,9 @@ Pause a fine-tune job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -7413,6 +7667,8 @@ Pause a fine-tune job.
             - `"auto"`
 
           - `number`
+
+            `minimum: 1`, `maximum: 50`
 
     - `reinforcement: optional ReinforcementMethod`
 
@@ -7500,7 +7756,7 @@ Pause a fine-tune job.
 
             The text being graded against.
 
-          - `type: "text_similarity"`
+          - `type: "text_similarity" (default: "text_similarity")`
 
             The type of grader.
 
@@ -7552,7 +7808,7 @@ Pause a fine-tune job.
 
                   The text input to the model.
 
-                - `type: "input_text"`
+                - `type: "input_text" (default: "input_text")`
 
                   The type of the input item. Always `input_text`.
 
@@ -7562,7 +7818,7 @@ Pause a fine-tune job.
 
                   Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                  - `mode: "explicit"`
+                  - `mode: "explicit" (default: "explicit")`
 
                     The breakpoint mode. Always `explicit`.
 
@@ -7597,6 +7853,8 @@ Pause a fine-tune job.
                 - `image_url: string`
 
                   The URL of the image input.
+
+                  `format: uri`
 
                 - `type: "input_image"`
 
@@ -7668,6 +7926,8 @@ Pause a fine-tune job.
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -7723,11 +7983,13 @@ Pause a fine-tune job.
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number or null`
+            - `max_completions_tokens: optional integer or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort or null`
+              `minimum: 1`
+
+            - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -7751,7 +8013,7 @@ Pause a fine-tune job.
 
               - `"max"`
 
-            - `seed: optional number or null`
+            - `seed: optional integer or null`
 
               A seed value to initialize the randomness, during sampling.
 
@@ -7759,7 +8021,7 @@ Pause a fine-tune job.
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number or null`
+            - `top_p: optional number or null (default: 1)`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -7830,6 +8092,8 @@ Pause a fine-tune job.
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -7894,7 +8158,7 @@ Pause a fine-tune job.
 
             The name of the grader.
 
-          - `type: "multi"`
+          - `type: "multi" (default: "multi")`
 
             The object type, which is always `multi`.
 
@@ -7904,7 +8168,7 @@ Pause a fine-tune job.
 
         The hyperparameters used for the reinforcement fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -7914,7 +8178,9 @@ Pause a fine-tune job.
 
           - `number`
 
-        - `compute_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `compute_multiplier: optional "auto" or number (default: "auto")`
 
           Multiplier on amount of compute used for exploring search space during training.
 
@@ -7924,7 +8190,9 @@ Pause a fine-tune job.
 
           - `number`
 
-        - `eval_interval: optional "auto" or number`
+            `exclusiveMinimum: 0.00001`, `maximum: 10`
+
+        - `eval_interval: optional "auto" or number (default: "auto")`
 
           The number of training steps between evaluation runs.
 
@@ -7934,7 +8202,9 @@ Pause a fine-tune job.
 
           - `number`
 
-        - `eval_samples: optional "auto" or number`
+            `minimum: 1`
+
+        - `eval_samples: optional "auto" or number (default: "auto")`
 
           Number of evaluation samples to generate per training step.
 
@@ -7944,7 +8214,9 @@ Pause a fine-tune job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -7954,7 +8226,9 @@ Pause a fine-tune job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -7964,7 +8238,9 @@ Pause a fine-tune job.
 
           - `number`
 
-        - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
+            `minimum: 1`, `maximum: 50`
+
+        - `reasoning_effort: optional "default" or "low" or "medium" or "high" (default: "default")`
 
           Level of reasoning effort.
 
@@ -7984,7 +8260,7 @@ Pause a fine-tune job.
 
         The hyperparameters used for the fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -7994,7 +8270,9 @@ Pause a fine-tune job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -8004,7 +8282,9 @@ Pause a fine-tune job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -8014,6 +8294,8 @@ Pause a fine-tune job.
 
           - `number`
 
+            `minimum: 1`, `maximum: 50`
+
 ### Example
 
 ```http
@@ -8022,7 +8304,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/$FINE_TUNING_JOB_ID/pause \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -8114,7 +8396,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -8170,9 +8452,11 @@ Resume a fine-tune job.
 
     The object identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
+
+    `format: unixtime`
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -8200,9 +8484,11 @@ Resume a fine-tune job.
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number or null`
+  - `finished_at: integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -8222,7 +8508,7 @@ Resume a fine-tune job.
 
     The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `seed: number or null`
+  - `seed: integer or null`
 
     The seed used for the fine-tuning job.
 
@@ -8246,7 +8532,7 @@ Resume a fine-tune job.
 
     - `"paused"`
 
-  - `trained_tokens: number or null`
+  - `trained_tokens: integer or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -8258,15 +8544,17 @@ Resume a fine-tune job.
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `estimated_finish: optional number or null`
+  - `estimated_finish: optional integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
+
+    `format: unixtime`
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number or null`
+    - `batch_size: optional "auto" or number or null (default: "auto")`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -8277,7 +8565,9 @@ Resume a fine-tune job.
 
       - `number`
 
-    - `learning_rate_multiplier: optional "auto" or number`
+        `minimum: 1`, `maximum: 256`
+
+    - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
       Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
       overfitting.
@@ -8288,7 +8578,9 @@ Resume a fine-tune job.
 
       - `number`
 
-    - `n_epochs: optional "auto" or number`
+        `exclusiveMinimum: 0`
+
+    - `n_epochs: optional "auto" or number (default: "auto")`
 
       The number of epochs to train the model for. An epoch refers to one full cycle
       through the training dataset.
@@ -8299,9 +8591,13 @@ Resume a fine-tune job.
 
       - `number`
 
+        `minimum: 1`, `maximum: 50`
+
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
+
+    `maxItems: 5`
 
     - `type: "wandb"`
 
@@ -8364,7 +8660,7 @@ Resume a fine-tune job.
 
         The hyperparameters used for the DPO fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -8374,7 +8670,9 @@ Resume a fine-tune job.
 
           - `number`
 
-        - `beta: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `beta: optional "auto" or number (default: "auto")`
 
           The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
 
@@ -8384,7 +8682,9 @@ Resume a fine-tune job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `exclusiveMinimum: 0`, `maximum: 2`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -8394,7 +8694,9 @@ Resume a fine-tune job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -8403,6 +8705,8 @@ Resume a fine-tune job.
             - `"auto"`
 
           - `number`
+
+            `minimum: 1`, `maximum: 50`
 
     - `reinforcement: optional ReinforcementMethod`
 
@@ -8490,7 +8794,7 @@ Resume a fine-tune job.
 
             The text being graded against.
 
-          - `type: "text_similarity"`
+          - `type: "text_similarity" (default: "text_similarity")`
 
             The type of grader.
 
@@ -8542,7 +8846,7 @@ Resume a fine-tune job.
 
                   The text input to the model.
 
-                - `type: "input_text"`
+                - `type: "input_text" (default: "input_text")`
 
                   The type of the input item. Always `input_text`.
 
@@ -8552,7 +8856,7 @@ Resume a fine-tune job.
 
                   Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                  - `mode: "explicit"`
+                  - `mode: "explicit" (default: "explicit")`
 
                     The breakpoint mode. Always `explicit`.
 
@@ -8587,6 +8891,8 @@ Resume a fine-tune job.
                 - `image_url: string`
 
                   The URL of the image input.
+
+                  `format: uri`
 
                 - `type: "input_image"`
 
@@ -8658,6 +8964,8 @@ Resume a fine-tune job.
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -8713,11 +9021,13 @@ Resume a fine-tune job.
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number or null`
+            - `max_completions_tokens: optional integer or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort or null`
+              `minimum: 1`
+
+            - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -8741,7 +9051,7 @@ Resume a fine-tune job.
 
               - `"max"`
 
-            - `seed: optional number or null`
+            - `seed: optional integer or null`
 
               A seed value to initialize the randomness, during sampling.
 
@@ -8749,7 +9059,7 @@ Resume a fine-tune job.
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number or null`
+            - `top_p: optional number or null (default: 1)`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -8820,6 +9130,8 @@ Resume a fine-tune job.
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -8884,7 +9196,7 @@ Resume a fine-tune job.
 
             The name of the grader.
 
-          - `type: "multi"`
+          - `type: "multi" (default: "multi")`
 
             The object type, which is always `multi`.
 
@@ -8894,7 +9206,7 @@ Resume a fine-tune job.
 
         The hyperparameters used for the reinforcement fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -8904,7 +9216,9 @@ Resume a fine-tune job.
 
           - `number`
 
-        - `compute_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `compute_multiplier: optional "auto" or number (default: "auto")`
 
           Multiplier on amount of compute used for exploring search space during training.
 
@@ -8914,7 +9228,9 @@ Resume a fine-tune job.
 
           - `number`
 
-        - `eval_interval: optional "auto" or number`
+            `exclusiveMinimum: 0.00001`, `maximum: 10`
+
+        - `eval_interval: optional "auto" or number (default: "auto")`
 
           The number of training steps between evaluation runs.
 
@@ -8924,7 +9240,9 @@ Resume a fine-tune job.
 
           - `number`
 
-        - `eval_samples: optional "auto" or number`
+            `minimum: 1`
+
+        - `eval_samples: optional "auto" or number (default: "auto")`
 
           Number of evaluation samples to generate per training step.
 
@@ -8934,7 +9252,9 @@ Resume a fine-tune job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -8944,7 +9264,9 @@ Resume a fine-tune job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -8954,7 +9276,9 @@ Resume a fine-tune job.
 
           - `number`
 
-        - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
+            `minimum: 1`, `maximum: 50`
+
+        - `reasoning_effort: optional "default" or "low" or "medium" or "high" (default: "default")`
 
           Level of reasoning effort.
 
@@ -8974,7 +9298,7 @@ Resume a fine-tune job.
 
         The hyperparameters used for the fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -8984,7 +9308,9 @@ Resume a fine-tune job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -8994,7 +9320,9 @@ Resume a fine-tune job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -9004,6 +9332,8 @@ Resume a fine-tune job.
 
           - `number`
 
+            `minimum: 1`, `maximum: 50`
+
 ### Example
 
 ```http
@@ -9012,7 +9342,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/$FINE_TUNING_JOB_ID/resume \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -9104,7 +9434,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -9162,9 +9492,11 @@ Get info about a fine-tuning job.
 
     The object identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
+
+    `format: unixtime`
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -9192,9 +9524,11 @@ Get info about a fine-tuning job.
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number or null`
+  - `finished_at: integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -9214,7 +9548,7 @@ Get info about a fine-tuning job.
 
     The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `seed: number or null`
+  - `seed: integer or null`
 
     The seed used for the fine-tuning job.
 
@@ -9238,7 +9572,7 @@ Get info about a fine-tuning job.
 
     - `"paused"`
 
-  - `trained_tokens: number or null`
+  - `trained_tokens: integer or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -9250,15 +9584,17 @@ Get info about a fine-tuning job.
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `estimated_finish: optional number or null`
+  - `estimated_finish: optional integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
+
+    `format: unixtime`
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number or null`
+    - `batch_size: optional "auto" or number or null (default: "auto")`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -9269,7 +9605,9 @@ Get info about a fine-tuning job.
 
       - `number`
 
-    - `learning_rate_multiplier: optional "auto" or number`
+        `minimum: 1`, `maximum: 256`
+
+    - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
       Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
       overfitting.
@@ -9280,7 +9618,9 @@ Get info about a fine-tuning job.
 
       - `number`
 
-    - `n_epochs: optional "auto" or number`
+        `exclusiveMinimum: 0`
+
+    - `n_epochs: optional "auto" or number (default: "auto")`
 
       The number of epochs to train the model for. An epoch refers to one full cycle
       through the training dataset.
@@ -9291,9 +9631,13 @@ Get info about a fine-tuning job.
 
       - `number`
 
+        `minimum: 1`, `maximum: 50`
+
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
+
+    `maxItems: 5`
 
     - `type: "wandb"`
 
@@ -9356,7 +9700,7 @@ Get info about a fine-tuning job.
 
         The hyperparameters used for the DPO fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -9366,7 +9710,9 @@ Get info about a fine-tuning job.
 
           - `number`
 
-        - `beta: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `beta: optional "auto" or number (default: "auto")`
 
           The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
 
@@ -9376,7 +9722,9 @@ Get info about a fine-tuning job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `exclusiveMinimum: 0`, `maximum: 2`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -9386,7 +9734,9 @@ Get info about a fine-tuning job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -9395,6 +9745,8 @@ Get info about a fine-tuning job.
             - `"auto"`
 
           - `number`
+
+            `minimum: 1`, `maximum: 50`
 
     - `reinforcement: optional ReinforcementMethod`
 
@@ -9482,7 +9834,7 @@ Get info about a fine-tuning job.
 
             The text being graded against.
 
-          - `type: "text_similarity"`
+          - `type: "text_similarity" (default: "text_similarity")`
 
             The type of grader.
 
@@ -9534,7 +9886,7 @@ Get info about a fine-tuning job.
 
                   The text input to the model.
 
-                - `type: "input_text"`
+                - `type: "input_text" (default: "input_text")`
 
                   The type of the input item. Always `input_text`.
 
@@ -9544,7 +9896,7 @@ Get info about a fine-tuning job.
 
                   Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                  - `mode: "explicit"`
+                  - `mode: "explicit" (default: "explicit")`
 
                     The breakpoint mode. Always `explicit`.
 
@@ -9579,6 +9931,8 @@ Get info about a fine-tuning job.
                 - `image_url: string`
 
                   The URL of the image input.
+
+                  `format: uri`
 
                 - `type: "input_image"`
 
@@ -9650,6 +10004,8 @@ Get info about a fine-tuning job.
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -9705,11 +10061,13 @@ Get info about a fine-tuning job.
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number or null`
+            - `max_completions_tokens: optional integer or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort or null`
+              `minimum: 1`
+
+            - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -9733,7 +10091,7 @@ Get info about a fine-tuning job.
 
               - `"max"`
 
-            - `seed: optional number or null`
+            - `seed: optional integer or null`
 
               A seed value to initialize the randomness, during sampling.
 
@@ -9741,7 +10099,7 @@ Get info about a fine-tuning job.
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number or null`
+            - `top_p: optional number or null (default: 1)`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -9812,6 +10170,8 @@ Get info about a fine-tuning job.
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -9876,7 +10236,7 @@ Get info about a fine-tuning job.
 
             The name of the grader.
 
-          - `type: "multi"`
+          - `type: "multi" (default: "multi")`
 
             The object type, which is always `multi`.
 
@@ -9886,7 +10246,7 @@ Get info about a fine-tuning job.
 
         The hyperparameters used for the reinforcement fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -9896,7 +10256,9 @@ Get info about a fine-tuning job.
 
           - `number`
 
-        - `compute_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `compute_multiplier: optional "auto" or number (default: "auto")`
 
           Multiplier on amount of compute used for exploring search space during training.
 
@@ -9906,7 +10268,9 @@ Get info about a fine-tuning job.
 
           - `number`
 
-        - `eval_interval: optional "auto" or number`
+            `exclusiveMinimum: 0.00001`, `maximum: 10`
+
+        - `eval_interval: optional "auto" or number (default: "auto")`
 
           The number of training steps between evaluation runs.
 
@@ -9916,7 +10280,9 @@ Get info about a fine-tuning job.
 
           - `number`
 
-        - `eval_samples: optional "auto" or number`
+            `minimum: 1`
+
+        - `eval_samples: optional "auto" or number (default: "auto")`
 
           Number of evaluation samples to generate per training step.
 
@@ -9926,7 +10292,9 @@ Get info about a fine-tuning job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -9936,7 +10304,9 @@ Get info about a fine-tuning job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -9946,7 +10316,9 @@ Get info about a fine-tuning job.
 
           - `number`
 
-        - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
+            `minimum: 1`, `maximum: 50`
+
+        - `reasoning_effort: optional "default" or "low" or "medium" or "high" (default: "default")`
 
           Level of reasoning effort.
 
@@ -9966,7 +10338,7 @@ Get info about a fine-tuning job.
 
         The hyperparameters used for the fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -9976,7 +10348,9 @@ Get info about a fine-tuning job.
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -9986,7 +10360,9 @@ Get info about a fine-tuning job.
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -9996,6 +10372,8 @@ Get info about a fine-tuning job.
 
           - `number`
 
+            `minimum: 1`, `maximum: 50`
+
 ### Example
 
 ```http
@@ -10003,7 +10381,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/$FINE_TUNING_JOB_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -10095,7 +10473,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -10147,9 +10525,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     The object identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
+
+    `format: unixtime`
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -10177,9 +10557,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
 
-  - `finished_at: number or null`
+  - `finished_at: integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
+
+    `format: unixtime`
 
   - `model: string`
 
@@ -10199,7 +10581,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `seed: number or null`
+  - `seed: integer or null`
 
     The seed used for the fine-tuning job.
 
@@ -10223,7 +10605,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     - `"paused"`
 
-  - `trained_tokens: number or null`
+  - `trained_tokens: integer or null`
 
     The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
 
@@ -10235,15 +10617,17 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     The file ID used for validation. You can retrieve the validation results with the [Files API](/api/reference/resources/files/methods/content).
 
-  - `estimated_finish: optional number or null`
+  - `estimated_finish: optional integer or null`
 
     The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
+
+    `format: unixtime`
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
-    - `batch_size: optional "auto" or number or null`
+    - `batch_size: optional "auto" or number or null (default: "auto")`
 
       Number of examples in each batch. A larger batch size means that model parameters
       are updated less frequently, but with lower variance.
@@ -10254,7 +10638,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
       - `number`
 
-    - `learning_rate_multiplier: optional "auto" or number`
+        `minimum: 1`, `maximum: 256`
+
+    - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
       Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
       overfitting.
@@ -10265,7 +10651,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
       - `number`
 
-    - `n_epochs: optional "auto" or number`
+        `exclusiveMinimum: 0`
+
+    - `n_epochs: optional "auto" or number (default: "auto")`
 
       The number of epochs to train the model for. An epoch refers to one full cycle
       through the training dataset.
@@ -10276,9 +10664,13 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
       - `number`
 
+        `minimum: 1`, `maximum: 50`
+
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
     A list of integrations to enable for this fine-tuning job.
+
+    `maxItems: 5`
 
     - `type: "wandb"`
 
@@ -10341,7 +10733,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         The hyperparameters used for the DPO fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -10351,7 +10743,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `number`
 
-        - `beta: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `beta: optional "auto" or number (default: "auto")`
 
           The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
 
@@ -10361,7 +10755,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `exclusiveMinimum: 0`, `maximum: 2`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -10371,7 +10767,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -10380,6 +10778,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
             - `"auto"`
 
           - `number`
+
+            `minimum: 1`, `maximum: 50`
 
     - `reinforcement: optional ReinforcementMethod`
 
@@ -10467,7 +10867,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
             The text being graded against.
 
-          - `type: "text_similarity"`
+          - `type: "text_similarity" (default: "text_similarity")`
 
             The type of grader.
 
@@ -10519,7 +10919,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
                   The text input to the model.
 
-                - `type: "input_text"`
+                - `type: "input_text" (default: "input_text")`
 
                   The type of the input item. Always `input_text`.
 
@@ -10529,7 +10929,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
                   Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                  - `mode: "explicit"`
+                  - `mode: "explicit" (default: "explicit")`
 
                     The breakpoint mode. Always `explicit`.
 
@@ -10564,6 +10964,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
                 - `image_url: string`
 
                   The URL of the image input.
+
+                  `format: uri`
 
                 - `type: "input_image"`
 
@@ -10635,6 +11037,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
                     The URL of the image input.
 
+                    `format: uri`
+
                   - `type: "input_image"`
 
                     The type of the image input. Always `input_image`.
@@ -10690,11 +11094,13 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
             The sampling parameters for the model.
 
-            - `max_completions_tokens: optional number or null`
+            - `max_completions_tokens: optional integer or null`
 
               The maximum number of tokens the grader model may generate in its response.
 
-            - `reasoning_effort: optional ReasoningEffort or null`
+              `minimum: 1`
+
+            - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
               Constrains effort on reasoning for reasoning models. Currently supported
               values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -10718,7 +11124,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
               - `"max"`
 
-            - `seed: optional number or null`
+            - `seed: optional integer or null`
 
               A seed value to initialize the randomness, during sampling.
 
@@ -10726,7 +11132,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
               A higher temperature increases randomness in the outputs.
 
-            - `top_p: optional number or null`
+            - `top_p: optional number or null (default: 1)`
 
               An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -10797,6 +11203,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
                       The URL of the image input.
 
+                      `format: uri`
+
                     - `type: "input_image"`
 
                       The type of the image input. Always `input_image`.
@@ -10861,7 +11269,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
             The name of the grader.
 
-          - `type: "multi"`
+          - `type: "multi" (default: "multi")`
 
             The object type, which is always `multi`.
 
@@ -10871,7 +11279,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         The hyperparameters used for the reinforcement fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -10881,7 +11289,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `number`
 
-        - `compute_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `compute_multiplier: optional "auto" or number (default: "auto")`
 
           Multiplier on amount of compute used for exploring search space during training.
 
@@ -10891,7 +11301,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `number`
 
-        - `eval_interval: optional "auto" or number`
+            `exclusiveMinimum: 0.00001`, `maximum: 10`
+
+        - `eval_interval: optional "auto" or number (default: "auto")`
 
           The number of training steps between evaluation runs.
 
@@ -10901,7 +11313,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `number`
 
-        - `eval_samples: optional "auto" or number`
+            `minimum: 1`
+
+        - `eval_samples: optional "auto" or number (default: "auto")`
 
           Number of evaluation samples to generate per training step.
 
@@ -10911,7 +11325,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -10921,7 +11337,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -10931,7 +11349,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `number`
 
-        - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
+            `minimum: 1`, `maximum: 50`
+
+        - `reasoning_effort: optional "default" or "low" or "medium" or "high" (default: "default")`
 
           Level of reasoning effort.
 
@@ -10951,7 +11371,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         The hyperparameters used for the fine-tuning job.
 
-        - `batch_size: optional "auto" or number`
+        - `batch_size: optional "auto" or number (default: "auto")`
 
           Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -10961,7 +11381,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `number`
 
-        - `learning_rate_multiplier: optional "auto" or number`
+            `minimum: 1`, `maximum: 256`
+
+        - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
           Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -10971,7 +11393,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `number`
 
-        - `n_epochs: optional "auto" or number`
+            `exclusiveMinimum: 0`
+
+        - `n_epochs: optional "auto" or number (default: "auto")`
 
           The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -10980,6 +11404,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
             - `"auto"`
 
           - `number`
+
+            `minimum: 1`, `maximum: 50`
 
 ### Fine Tuning Job Event
 
@@ -10991,9 +11417,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     The object identifier.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
+
+    `format: unixtime`
 
   - `level: "info" or "warn" or "error"`
 
@@ -11105,7 +11533,7 @@ List checkpoints for a fine-tuning job.
 
   Identifier for the last checkpoint ID from the previous pagination request.
 
-- `limit: optional number`
+- `limit: optional integer (default: 10)`
 
   Number of checkpoints to retrieve.
 
@@ -11117,9 +11545,11 @@ List checkpoints for a fine-tuning job.
 
     The checkpoint identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the checkpoint was created.
+
+    `format: unixtime`
 
   - `fine_tuned_model_checkpoint: string`
 
@@ -11153,7 +11583,7 @@ List checkpoints for a fine-tuning job.
 
     - `"fine_tuning.job.checkpoint"`
 
-  - `step_number: number`
+  - `step_number: integer`
 
     The step number that the checkpoint was created at.
 
@@ -11174,7 +11604,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/$FINE_TUNING_JOB_ID/checkpoints 
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -11211,7 +11641,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -11260,9 +11690,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     The checkpoint identifier, which can be referenced in the API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the checkpoint was created.
+
+    `format: unixtime`
 
   - `fine_tuned_model_checkpoint: string`
 
@@ -11296,7 +11728,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `"fine_tuning.job.checkpoint"`
 
-  - `step_number: number`
+  - `step_number: integer`
 
     The step number that the checkpoint was created at.
 
@@ -11310,7 +11742,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   The hyperparameters used for the DPO fine-tuning job.
 
-  - `batch_size: optional "auto" or number`
+  - `batch_size: optional "auto" or number (default: "auto")`
 
     Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -11320,7 +11752,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-  - `beta: optional "auto" or number`
+      `minimum: 1`, `maximum: 256`
+
+  - `beta: optional "auto" or number (default: "auto")`
 
     The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
 
@@ -11330,7 +11764,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-  - `learning_rate_multiplier: optional "auto" or number`
+      `exclusiveMinimum: 0`, `maximum: 2`
+
+  - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
     Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -11340,7 +11776,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-  - `n_epochs: optional "auto" or number`
+      `exclusiveMinimum: 0`
+
+  - `n_epochs: optional "auto" or number (default: "auto")`
 
     The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -11349,6 +11787,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
       - `"auto"`
 
     - `number`
+
+      `minimum: 1`, `maximum: 50`
 
 ### Dpo Method
 
@@ -11360,7 +11800,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     The hyperparameters used for the DPO fine-tuning job.
 
-    - `batch_size: optional "auto" or number`
+    - `batch_size: optional "auto" or number (default: "auto")`
 
       Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -11370,7 +11810,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-    - `beta: optional "auto" or number`
+        `minimum: 1`, `maximum: 256`
+
+    - `beta: optional "auto" or number (default: "auto")`
 
       The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
 
@@ -11380,7 +11822,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-    - `learning_rate_multiplier: optional "auto" or number`
+        `exclusiveMinimum: 0`, `maximum: 2`
+
+    - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
       Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -11390,7 +11834,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-    - `n_epochs: optional "auto" or number`
+        `exclusiveMinimum: 0`
+
+    - `n_epochs: optional "auto" or number (default: "auto")`
 
       The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -11400,13 +11846,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
+        `minimum: 1`, `maximum: 50`
+
 ### Reinforcement Hyperparameters
 
 - `ReinforcementHyperparameters object { batch_size, compute_multiplier, eval_interval, 4 more }`
 
   The hyperparameters used for the reinforcement fine-tuning job.
 
-  - `batch_size: optional "auto" or number`
+  - `batch_size: optional "auto" or number (default: "auto")`
 
     Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -11416,7 +11864,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-  - `compute_multiplier: optional "auto" or number`
+      `minimum: 1`, `maximum: 256`
+
+  - `compute_multiplier: optional "auto" or number (default: "auto")`
 
     Multiplier on amount of compute used for exploring search space during training.
 
@@ -11426,7 +11876,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-  - `eval_interval: optional "auto" or number`
+      `exclusiveMinimum: 0.00001`, `maximum: 10`
+
+  - `eval_interval: optional "auto" or number (default: "auto")`
 
     The number of training steps between evaluation runs.
 
@@ -11436,7 +11888,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-  - `eval_samples: optional "auto" or number`
+      `minimum: 1`
+
+  - `eval_samples: optional "auto" or number (default: "auto")`
 
     Number of evaluation samples to generate per training step.
 
@@ -11446,7 +11900,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-  - `learning_rate_multiplier: optional "auto" or number`
+      `minimum: 1`
+
+  - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
     Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -11456,7 +11912,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-  - `n_epochs: optional "auto" or number`
+      `exclusiveMinimum: 0`
+
+  - `n_epochs: optional "auto" or number (default: "auto")`
 
     The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -11466,7 +11924,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-  - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
+      `minimum: 1`, `maximum: 50`
+
+  - `reasoning_effort: optional "default" or "low" or "medium" or "high" (default: "default")`
 
     Level of reasoning effort.
 
@@ -11566,7 +12026,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
         The text being graded against.
 
-      - `type: "text_similarity"`
+      - `type: "text_similarity" (default: "text_similarity")`
 
         The type of grader.
 
@@ -11618,7 +12078,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
               The text input to the model.
 
-            - `type: "input_text"`
+            - `type: "input_text" (default: "input_text")`
 
               The type of the input item. Always `input_text`.
 
@@ -11628,7 +12088,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
               Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-              - `mode: "explicit"`
+              - `mode: "explicit" (default: "explicit")`
 
                 The breakpoint mode. Always `explicit`.
 
@@ -11663,6 +12123,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
             - `image_url: string`
 
               The URL of the image input.
+
+              `format: uri`
 
             - `type: "input_image"`
 
@@ -11734,6 +12196,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
                 The URL of the image input.
 
+                `format: uri`
+
               - `type: "input_image"`
 
                 The type of the image input. Always `input_image`.
@@ -11789,11 +12253,13 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
         The sampling parameters for the model.
 
-        - `max_completions_tokens: optional number or null`
+        - `max_completions_tokens: optional integer or null`
 
           The maximum number of tokens the grader model may generate in its response.
 
-        - `reasoning_effort: optional ReasoningEffort or null`
+          `minimum: 1`
+
+        - `reasoning_effort: optional ReasoningEffort or null (default: "medium")`
 
           Constrains effort on reasoning for reasoning models. Currently supported
           values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -11817,7 +12283,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
           - `"max"`
 
-        - `seed: optional number or null`
+        - `seed: optional integer or null`
 
           A seed value to initialize the randomness, during sampling.
 
@@ -11825,7 +12291,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
           A higher temperature increases randomness in the outputs.
 
-        - `top_p: optional number or null`
+        - `top_p: optional number or null (default: 1)`
 
           An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
@@ -11896,6 +12362,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
                   The URL of the image input.
 
+                  `format: uri`
+
                 - `type: "input_image"`
 
                   The type of the image input. Always `input_image`.
@@ -11960,7 +12428,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
         The name of the grader.
 
-      - `type: "multi"`
+      - `type: "multi" (default: "multi")`
 
         The object type, which is always `multi`.
 
@@ -11970,7 +12438,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     The hyperparameters used for the reinforcement fine-tuning job.
 
-    - `batch_size: optional "auto" or number`
+    - `batch_size: optional "auto" or number (default: "auto")`
 
       Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -11980,7 +12448,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-    - `compute_multiplier: optional "auto" or number`
+        `minimum: 1`, `maximum: 256`
+
+    - `compute_multiplier: optional "auto" or number (default: "auto")`
 
       Multiplier on amount of compute used for exploring search space during training.
 
@@ -11990,7 +12460,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-    - `eval_interval: optional "auto" or number`
+        `exclusiveMinimum: 0.00001`, `maximum: 10`
+
+    - `eval_interval: optional "auto" or number (default: "auto")`
 
       The number of training steps between evaluation runs.
 
@@ -12000,7 +12472,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-    - `eval_samples: optional "auto" or number`
+        `minimum: 1`
+
+    - `eval_samples: optional "auto" or number (default: "auto")`
 
       Number of evaluation samples to generate per training step.
 
@@ -12010,7 +12484,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-    - `learning_rate_multiplier: optional "auto" or number`
+        `minimum: 1`
+
+    - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
       Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -12020,7 +12496,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-    - `n_epochs: optional "auto" or number`
+        `exclusiveMinimum: 0`
+
+    - `n_epochs: optional "auto" or number (default: "auto")`
 
       The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -12030,7 +12508,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-    - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
+        `minimum: 1`, `maximum: 50`
+
+    - `reasoning_effort: optional "default" or "low" or "medium" or "high" (default: "default")`
 
       Level of reasoning effort.
 
@@ -12048,7 +12528,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   The hyperparameters used for the fine-tuning job.
 
-  - `batch_size: optional "auto" or number`
+  - `batch_size: optional "auto" or number (default: "auto")`
 
     Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -12058,7 +12538,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-  - `learning_rate_multiplier: optional "auto" or number`
+      `minimum: 1`, `maximum: 256`
+
+  - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
     Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -12068,7 +12550,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-  - `n_epochs: optional "auto" or number`
+      `exclusiveMinimum: 0`
+
+  - `n_epochs: optional "auto" or number (default: "auto")`
 
     The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -12077,6 +12561,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
       - `"auto"`
 
     - `number`
+
+      `minimum: 1`, `maximum: 50`
 
 ### Supervised Method
 
@@ -12088,7 +12574,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     The hyperparameters used for the fine-tuning job.
 
-    - `batch_size: optional "auto" or number`
+    - `batch_size: optional "auto" or number (default: "auto")`
 
       Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
 
@@ -12098,7 +12584,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-    - `learning_rate_multiplier: optional "auto" or number`
+        `minimum: 1`, `maximum: 256`
+
+    - `learning_rate_multiplier: optional "auto" or number (default: "auto")`
 
       Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
 
@@ -12108,7 +12596,9 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-    - `n_epochs: optional "auto" or number`
+        `exclusiveMinimum: 0`
+
+    - `n_epochs: optional "auto" or number (default: "auto")`
 
       The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
 
@@ -12117,3 +12607,5 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
         - `"auto"`
 
       - `number`
+
+        `minimum: 1`, `maximum: 50`

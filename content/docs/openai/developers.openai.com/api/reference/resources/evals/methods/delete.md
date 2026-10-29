@@ -26,7 +26,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -44,7 +44,7 @@ curl https://api.openai.com/v1/evals/eval_abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

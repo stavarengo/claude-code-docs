@@ -36,6 +36,8 @@ the `background` parameter set to `true` can be cancelled.
 
     Unix timestamp (in seconds) of when this Response was created.
 
+    `format: unixtime`
+
   - `error: ResponseError or null`
 
     An error object returned when the model fails to generate a Response.
@@ -117,6 +119,8 @@ the `background` parameter set to `true` can be cancelled.
       - `review_target: optional string or null`
 
         An opaque target for explicitly continuing this review, or null when unavailable.
+
+        `pattern: ^[A-Za-z0-9._~:-]+$`, `minLength: 1`, `maxLength: 96`
 
       - `steer: optional object { message }`
 
@@ -201,7 +205,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 The text input to the model.
 
-              - `type: "input_text"`
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -211,7 +215,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -241,7 +245,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 - `"original"`
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -255,11 +259,13 @@ the `background` parameter set to `true` can be cancelled.
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -277,7 +283,7 @@ the `background` parameter set to `true` can be cancelled.
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -305,6 +311,8 @@ the `background` parameter set to `true` can be cancelled.
 
                 The URL of the file to be sent to the model.
 
+                `format: uri`
+
               - `filename: optional string`
 
                 The name of the file to be sent to the model.
@@ -313,7 +321,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -426,11 +434,11 @@ the `background` parameter set to `true` can be cancelled.
 
                   The filename of the file cited.
 
-                - `index: number`
+                - `index: integer`
 
                   The index in the output text at which to insert the file citation.
 
-                - `type: "file_citation"`
+                - `type: "file_citation" (default: "file_citation")`
 
                   The type of the file citation. Always `file_citation`.
 
@@ -440,11 +448,11 @@ the `background` parameter set to `true` can be cancelled.
 
                 A citation for a web resource used to generate a model response.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the URL citation in the message.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the URL citation in the message.
 
@@ -452,7 +460,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   The title of the web resource.
 
-                - `type: "url_citation"`
+                - `type: "url_citation" (default: "url_citation")`
 
                   The type of the URL citation. Always `url_citation`.
 
@@ -462,6 +470,8 @@ the `background` parameter set to `true` can be cancelled.
 
                   The URL of the web resource.
 
+                  `format: uri`
+
               - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
                 A citation for a container file used to generate a model response.
@@ -470,7 +480,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   The ID of the container file.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the container file citation in the message.
 
@@ -482,11 +492,11 @@ the `background` parameter set to `true` can be cancelled.
 
                   The filename of the container file cited.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the container file citation in the message.
 
-                - `type: "container_file_citation"`
+                - `type: "container_file_citation" (default: "container_file_citation")`
 
                   The type of the container file citation. Always `container_file_citation`.
 
@@ -500,7 +510,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   The ID of the file.
 
-                - `index: number`
+                - `index: integer`
 
                   The index of the file in the list of files.
 
@@ -530,7 +540,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The text output from the model.
 
-            - `type: "output_text"`
+            - `type: "output_text" (default: "output_text")`
 
               The type of the output text. Always `output_text`.
 
@@ -544,7 +554,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The refusal explanation from the model.
 
-            - `type: "refusal"`
+            - `type: "refusal" (default: "refusal")`
 
               The type of the refusal. Always `refusal`.
 
@@ -631,6 +641,8 @@ the `background` parameter set to `true` can be cancelled.
 
             - `string`
 
+              `maxLength: 512`
+
             - `number`
 
             - `boolean`
@@ -646,6 +658,8 @@ the `background` parameter set to `true` can be cancelled.
           - `score: optional number`
 
             The relevance score of the file - a value between 0 and 1.
+
+            `format: float`
 
           - `text: optional string`
 
@@ -691,7 +705,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `"incomplete"`
 
-        - `type: "computer_call"`
+        - `type: "computer_call" (default: "computer_call")`
 
           The type of the computer call. Always `computer_call`.
 
@@ -719,17 +733,17 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"forward"`
 
-            - `type: "click"`
+            - `type: "click" (default: "click")`
 
               Specifies the event type. For a click action, this property is always `click`.
 
               - `"click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the click occurred.
 
@@ -745,17 +759,17 @@ the `background` parameter set to `true` can be cancelled.
 
               The keys being held while double-clicking.
 
-            - `type: "double_click"`
+            - `type: "double_click" (default: "double_click")`
 
               Specifies the event type. For a double click action, this property is always set to `double_click`.
 
               - `"double_click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the double click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the double click occurred.
 
@@ -774,15 +788,15 @@ the `background` parameter set to `true` can be cancelled.
               ]
               ```
 
-              - `x: number`
+              - `x: integer`
 
                 The x-coordinate.
 
-              - `y: number`
+              - `y: integer`
 
                 The y-coordinate.
 
-            - `type: "drag"`
+            - `type: "drag" (default: "drag")`
 
               Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -800,7 +814,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-            - `type: "keypress"`
+            - `type: "keypress" (default: "keypress")`
 
               Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -810,17 +824,17 @@ the `background` parameter set to `true` can be cancelled.
 
             A mouse move action.
 
-            - `type: "move"`
+            - `type: "move" (default: "move")`
 
               Specifies the event type. For a move action, this property is always set to `move`.
 
               - `"move"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate to move to.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate to move to.
 
@@ -832,7 +846,7 @@ the `background` parameter set to `true` can be cancelled.
 
             A screenshot action.
 
-            - `type: "screenshot"`
+            - `type: "screenshot" (default: "screenshot")`
 
               Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -842,25 +856,25 @@ the `background` parameter set to `true` can be cancelled.
 
             A scroll action.
 
-            - `scroll_x: number`
+            - `scroll_x: integer`
 
               The horizontal scroll distance.
 
-            - `scroll_y: number`
+            - `scroll_y: integer`
 
               The vertical scroll distance.
 
-            - `type: "scroll"`
+            - `type: "scroll" (default: "scroll")`
 
               Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
               - `"scroll"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the scroll occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the scroll occurred.
 
@@ -876,7 +890,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The text to type.
 
-            - `type: "type"`
+            - `type: "type" (default: "type")`
 
               Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -886,7 +900,7 @@ the `background` parameter set to `true` can be cancelled.
 
             A wait action.
 
-            - `type: "wait"`
+            - `type: "wait" (default: "wait")`
 
               Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -941,11 +955,13 @@ the `background` parameter set to `true` can be cancelled.
 
           The ID of the computer tool call that produced the output.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: ResponseComputerToolCallOutputScreenshot`
 
           A computer screenshot image used with the computer use tool.
 
-          - `type: "computer_screenshot"`
+          - `type: "computer_screenshot" (default: "computer_screenshot")`
 
             Specifies the event type. For a computer screenshot, this property is
             always set to `computer_screenshot`.
@@ -960,7 +976,9 @@ the `background` parameter set to `true` can be cancelled.
 
             The URL of the screenshot image.
 
-        - `type: "computer_call_output"`
+            `format: uri`
+
+        - `type: "computer_call_output" (default: "computer_call_output")`
 
           The type of the computer tool call output. Always `computer_call_output`.
 
@@ -1062,6 +1080,8 @@ the `background` parameter set to `true` can be cancelled.
 
                 The URL of the source.
 
+                `format: uri`
+
           - `OpenPage object { type, url }`
 
             Action type "open_page" - Opens a specific URL from search results.
@@ -1075,6 +1095,8 @@ the `background` parameter set to `true` can be cancelled.
             - `url: optional string or null`
 
               The URL opened by the model.
+
+              `format: uri`
 
           - `FindInPage object { pattern, type, url }`
 
@@ -1093,6 +1115,8 @@ the `background` parameter set to `true` can be cancelled.
             - `url: optional string or null`
 
               The URL of the page searched for the pattern, when available.
+
+              `format: uri`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -1131,7 +1155,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -1141,7 +1165,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -1172,6 +1196,8 @@ the `background` parameter set to `true` can be cancelled.
 
             A JSON string of the output of the function tool call.
 
+            `maxLength: 10485760`
+
           - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
             An array of content outputs (text, image, file) for the function tool call.
@@ -1184,7 +1210,9 @@ the `background` parameter set to `true` can be cancelled.
 
                 The text input to the model.
 
-              - `type: "input_text"`
+                `maxLength: 10485760`
+
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -1194,7 +1222,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -1212,7 +1240,7 @@ the `background` parameter set to `true` can be cancelled.
 
               An image input to the model. Learn about [image inputs](/api/docs/guides/images-vision)
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -1230,11 +1258,13 @@ the `background` parameter set to `true` can be cancelled.
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `maxLength: 20971520`, `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -1252,7 +1282,7 @@ the `background` parameter set to `true` can be cancelled.
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -1272,6 +1302,8 @@ the `background` parameter set to `true` can be cancelled.
 
                 The base64-encoded data of the file to be sent to the model.
 
+                `maxLength: 73400320`
+
               - `file_id: optional string or null`
 
                 The ID of the file to be sent to the model.
@@ -1279,6 +1311,8 @@ the `background` parameter set to `true` can be cancelled.
               - `file_url: optional string or null`
 
                 The URL of the file to be sent to the model.
+
+                `format: uri`
 
               - `filename: optional string or null`
 
@@ -1288,7 +1322,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -1302,7 +1336,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   - `"12h"`
 
-        - `type: "function_call_output"`
+        - `type: "function_call_output" (default: "function_call_output")`
 
           The type of the function tool call output. Always `function_call_output`.
 
@@ -1316,13 +1350,15 @@ the `background` parameter set to `true` can be cancelled.
 
           The unique ID of the function tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -1334,7 +1370,9 @@ the `background` parameter set to `true` can be cancelled.
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -1344,9 +1382,13 @@ the `background` parameter set to `true` can be cancelled.
 
           The name of the tool that produced the output.
 
+          `minLength: 1`, `maxLength: 128`
+
         - `namespace: optional string or null`
 
           The namespace of the tool that produced the output.
+
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -1364,7 +1406,7 @@ the `background` parameter set to `true` can be cancelled.
 
           The arguments supplied to the tool search call.
 
-        - `type: "tool_search_call"`
+        - `type: "tool_search_call" (default: "tool_search_call")`
 
           The item type. Always `tool_search_call`.
 
@@ -1377,6 +1419,8 @@ the `background` parameter set to `true` can be cancelled.
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -1418,7 +1462,7 @@ the `background` parameter set to `true` can be cancelled.
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -1450,7 +1494,7 @@ the `background` parameter set to `true` can be cancelled.
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -1472,7 +1516,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -1541,7 +1585,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -1577,7 +1621,7 @@ the `background` parameter set to `true` can be cancelled.
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -1587,11 +1631,11 @@ the `background` parameter set to `true` can be cancelled.
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -1609,7 +1653,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -1620,7 +1664,7 @@ the `background` parameter set to `true` can be cancelled.
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -1628,7 +1672,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -1636,14 +1680,14 @@ the `background` parameter set to `true` can be cancelled.
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -1675,7 +1719,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -1699,6 +1743,8 @@ the `background` parameter set to `true` can be cancelled.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -1778,7 +1824,7 @@ the `background` parameter set to `true` can be cancelled.
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -1835,10 +1881,14 @@ the `background` parameter set to `true` can be cancelled.
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -1858,7 +1908,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -1867,6 +1917,8 @@ the `background` parameter set to `true` can be cancelled.
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -1886,7 +1938,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -1898,7 +1950,9 @@ the `background` parameter set to `true` can be cancelled.
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -1908,17 +1962,25 @@ the `background` parameter set to `true` can be cancelled.
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -1930,13 +1992,15 @@ the `background` parameter set to `true` can be cancelled.
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -1962,7 +2026,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -2043,7 +2107,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -2051,11 +2115,13 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -2066,11 +2132,13 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -2089,7 +2157,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -2111,7 +2179,7 @@ the `background` parameter set to `true` can be cancelled.
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -2121,7 +2189,7 @@ the `background` parameter set to `true` can be cancelled.
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -2131,6 +2199,8 @@ the `background` parameter set to `true` can be cancelled.
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -2139,7 +2209,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -2148,6 +2218,8 @@ the `background` parameter set to `true` can be cancelled.
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -2173,13 +2245,17 @@ the `background` parameter set to `true` can be cancelled.
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -2207,19 +2283,21 @@ the `background` parameter set to `true` can be cancelled.
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -2227,7 +2305,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -2236,6 +2314,8 @@ the `background` parameter set to `true` can be cancelled.
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -2255,7 +2335,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -2269,7 +2349,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -2278,6 +2358,8 @@ the `background` parameter set to `true` can be cancelled.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -2303,7 +2385,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -2325,7 +2407,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -2343,9 +2425,13 @@ the `background` parameter set to `true` can be cancelled.
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools loaded inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
@@ -2353,13 +2439,17 @@ the `background` parameter set to `true` can be cancelled.
 
                   The name of the loaded function tool.
 
-                - `type: "function"`
+                  `pattern: ^(?![\s\S]*[\r\n])[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -2393,7 +2483,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -2402,6 +2492,8 @@ the `background` parameter set to `true` can be cancelled.
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -2423,7 +2515,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -2433,7 +2525,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -2459,7 +2551,7 @@ the `background` parameter set to `true` can be cancelled.
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -2487,7 +2579,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -2513,7 +2605,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -2523,11 +2615,13 @@ the `background` parameter set to `true` can be cancelled.
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "tool_search_output"`
+        - `type: "tool_search_output" (default: "tool_search_output")`
 
           The item type. Always `tool_search_output`.
 
@@ -2540,6 +2634,8 @@ the `background` parameter set to `true` can be cancelled.
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -2561,7 +2657,7 @@ the `background` parameter set to `true` can be cancelled.
 
       - `AdditionalTools object { role, tools, type, id }`
 
-        - `role: "developer"`
+        - `role: "developer" (default: "developer")`
 
           The role that provided the additional tools. Only `developer` is supported.
 
@@ -2587,7 +2683,7 @@ the `background` parameter set to `true` can be cancelled.
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -2619,7 +2715,7 @@ the `background` parameter set to `true` can be cancelled.
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -2641,7 +2737,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 Combine multiple filters using `and` or `or`.
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -2677,7 +2773,7 @@ the `background` parameter set to `true` can be cancelled.
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -2687,11 +2783,11 @@ the `background` parameter set to `true` can be cancelled.
 
             A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -2709,7 +2805,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -2720,7 +2816,7 @@ the `background` parameter set to `true` can be cancelled.
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -2728,7 +2824,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -2736,14 +2832,14 @@ the `background` parameter set to `true` can be cancelled.
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -2775,7 +2871,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -2799,6 +2895,8 @@ the `background` parameter set to `true` can be cancelled.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -2878,7 +2976,7 @@ the `background` parameter set to `true` can be cancelled.
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -2935,10 +3033,14 @@ the `background` parameter set to `true` can be cancelled.
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -2958,7 +3060,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -2967,6 +3069,8 @@ the `background` parameter set to `true` can be cancelled.
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -2998,13 +3102,15 @@ the `background` parameter set to `true` can be cancelled.
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -3030,7 +3136,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -3111,7 +3217,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -3119,11 +3225,13 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -3134,11 +3242,13 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -3157,7 +3267,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -3179,7 +3289,7 @@ the `background` parameter set to `true` can be cancelled.
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -3189,7 +3299,7 @@ the `background` parameter set to `true` can be cancelled.
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -3198,6 +3308,8 @@ the `background` parameter set to `true` can be cancelled.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -3219,7 +3331,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -3228,6 +3340,8 @@ the `background` parameter set to `true` can be cancelled.
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -3261,21 +3375,29 @@ the `background` parameter set to `true` can be cancelled.
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -3309,7 +3431,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -3318,6 +3440,8 @@ the `background` parameter set to `true` can be cancelled.
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -3339,7 +3463,7 @@ the `background` parameter set to `true` can be cancelled.
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -3349,7 +3473,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -3375,7 +3499,7 @@ the `background` parameter set to `true` can be cancelled.
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -3403,7 +3527,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -3429,7 +3553,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -3439,11 +3563,13 @@ the `background` parameter set to `true` can be cancelled.
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "additional_tools"`
+        - `type: "additional_tools" (default: "additional_tools")`
 
           The item type. Always `additional_tools`.
 
@@ -3459,7 +3585,7 @@ the `background` parameter set to `true` can be cancelled.
         remains in effect for subsequent responses until it is replaced by another
         configuration update.
 
-        - `type: "configuration_update"`
+        - `type: "configuration_update" (default: "configuration_update")`
 
           The item type. Always `configuration_update`.
 
@@ -3473,7 +3599,7 @@ the `background` parameter set to `true` can be cancelled.
 
           Updates to reasoning configuration. Only effort is supported.
 
-          - `effort: optional ReasoningEffort or null`
+          - `effort: optional ReasoningEffort or null (default: "medium")`
 
             The reasoning effort to use for subsequent responses until another
             configuration update replaces it.
@@ -3511,7 +3637,7 @@ the `background` parameter set to `true` can be cancelled.
 
             A summary of the reasoning output from the model so far.
 
-          - `type: "summary_text"`
+          - `type: "summary_text" (default: "summary_text")`
 
             The type of the object. Always `summary_text`.
 
@@ -3531,7 +3657,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The reasoning text from the model.
 
-          - `type: "reasoning_text"`
+          - `type: "reasoning_text" (default: "reasoning_text")`
 
             The type of the reasoning text. Always `reasoning_text`.
 
@@ -3568,7 +3694,9 @@ the `background` parameter set to `true` can be cancelled.
 
           The encrypted content of the compaction summary.
 
-        - `type: "compaction"`
+          `maxLength: 104857600`
+
+        - `type: "compaction" (default: "compaction")`
 
           The type of the item. Always `compaction`.
 
@@ -3741,7 +3869,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The logs output from the code interpreter.
 
-            - `type: "logs"`
+            - `type: "logs" (default: "logs")`
 
               The type of the output. Always `logs`.
 
@@ -3751,7 +3879,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The image output from the code interpreter.
 
-            - `type: "image"`
+            - `type: "image" (default: "image")`
 
               The type of the output. Always `image`.
 
@@ -3760,6 +3888,8 @@ the `background` parameter set to `true` can be cancelled.
             - `url: string`
 
               The URL of the image output from the code interpreter.
+
+              `format: uri`
 
         - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -3775,7 +3905,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `"failed"`
 
-        - `type: "code_interpreter_call"`
+        - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
           The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -3801,13 +3931,13 @@ the `background` parameter set to `true` can be cancelled.
 
             Environment variables to set for the command.
 
-          - `type: "exec"`
+          - `type: "exec" (default: "exec")`
 
             The type of the local shell action. Always `exec`.
 
             - `"exec"`
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Optional timeout in milliseconds for the command.
 
@@ -3879,11 +4009,11 @@ the `background` parameter set to `true` can be cancelled.
 
             Ordered shell commands for the execution environment to run.
 
-          - `max_output_length: optional number or null`
+          - `max_output_length: optional integer or null`
 
             Maximum number of UTF-8 characters to capture from combined stdout and stderr output.
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
@@ -3891,7 +4021,9 @@ the `background` parameter set to `true` can be cancelled.
 
           The unique ID of the shell tool call generated by the model.
 
-        - `type: "shell_call"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "shell_call" (default: "shell_call")`
 
           The type of the item. Always `shell_call`.
 
@@ -3907,7 +4039,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -3919,7 +4051,9 @@ the `background` parameter set to `true` can be cancelled.
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -3951,6 +4085,8 @@ the `background` parameter set to `true` can be cancelled.
 
           The unique ID of the shell tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: array of ResponseFunctionShellCallOutputContent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
@@ -3963,7 +4099,7 @@ the `background` parameter set to `true` can be cancelled.
 
               Indicates that the shell call exceeded its configured time limit.
 
-              - `type: "timeout"`
+              - `type: "timeout" (default: "timeout")`
 
                 The outcome type. Always `timeout`.
 
@@ -3973,11 +4109,11 @@ the `background` parameter set to `true` can be cancelled.
 
               Indicates that the shell commands finished and returned an exit code.
 
-              - `exit_code: number`
+              - `exit_code: integer`
 
                 The exit code returned by the shell process.
 
-              - `type: "exit"`
+              - `type: "exit" (default: "exit")`
 
                 The outcome type. Always `exit`.
 
@@ -3987,11 +4123,15 @@ the `background` parameter set to `true` can be cancelled.
 
             Captured stderr output for the shell call.
 
+            `maxLength: 10485760`
+
           - `stdout: string`
 
             Captured stdout output for the shell call.
 
-        - `type: "shell_call_output"`
+            `maxLength: 10485760`
+
+        - `type: "shell_call_output" (default: "shell_call_output")`
 
           The type of the item. Always `shell_call_output`.
 
@@ -4007,7 +4147,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -4019,13 +4159,15 @@ the `background` parameter set to `true` can be cancelled.
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
               - `"program"`
 
-        - `max_output_length: optional number or null`
+        - `max_output_length: optional integer or null`
 
           The maximum number of UTF-8 characters captured for this shell call's combined output.
 
@@ -4047,6 +4189,8 @@ the `background` parameter set to `true` can be cancelled.
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
@@ -4059,11 +4203,15 @@ the `background` parameter set to `true` can be cancelled.
 
               Unified diff content to apply when creating the file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to create relative to the workspace root.
 
-            - `type: "create_file"`
+              `minLength: 1`
+
+            - `type: "create_file" (default: "create_file")`
 
               The operation type. Always `create_file`.
 
@@ -4077,7 +4225,9 @@ the `background` parameter set to `true` can be cancelled.
 
               Path of the file to delete relative to the workspace root.
 
-            - `type: "delete_file"`
+              `minLength: 1`
+
+            - `type: "delete_file" (default: "delete_file")`
 
               The operation type. Always `delete_file`.
 
@@ -4091,11 +4241,15 @@ the `background` parameter set to `true` can be cancelled.
 
               Unified diff content to apply to the existing file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to update relative to the workspace root.
 
-            - `type: "update_file"`
+              `minLength: 1`
+
+            - `type: "update_file" (default: "update_file")`
 
               The operation type. Always `update_file`.
 
@@ -4109,7 +4263,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `"completed"`
 
-        - `type: "apply_patch_call"`
+        - `type: "apply_patch_call" (default: "apply_patch_call")`
 
           The type of the item. Always `apply_patch_call`.
 
@@ -4125,7 +4279,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -4137,7 +4291,9 @@ the `background` parameter set to `true` can be cancelled.
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -4151,6 +4307,8 @@ the `background` parameter set to `true` can be cancelled.
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `status: "completed" or "failed"`
 
           The status of the apply patch tool call output. One of `completed` or `failed`.
@@ -4159,7 +4317,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `"failed"`
 
-        - `type: "apply_patch_call_output"`
+        - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
           The type of the item. Always `apply_patch_call_output`.
 
@@ -4175,7 +4333,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -4187,7 +4345,9 @@ the `background` parameter set to `true` can be cancelled.
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -4196,6 +4356,8 @@ the `background` parameter set to `true` can be cancelled.
         - `output: optional string or null`
 
           Optional human-readable log text from the apply patch tool (e.g., patch results or errors).
+
+          `maxLength: 10485760`
 
       - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -4328,11 +4490,11 @@ the `background` parameter set to `true` can be cancelled.
 
           - `McpProtocolError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "mcp_protocol_error"`
+            - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
               - `"mcp_protocol_error"`
 
@@ -4340,17 +4502,17 @@ the `background` parameter set to `true` can be cancelled.
 
             - `content: unknown`
 
-            - `type: "mcp_tool_execution_error"`
+            - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
               - `"mcp_tool_execution_error"`
 
           - `HTTPError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "http_error"`
+            - `type: "http_error" (default: "http_error")`
 
               - `"http_error"`
 
@@ -4421,7 +4583,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -4433,7 +4595,9 @@ the `background` parameter set to `true` can be cancelled.
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -4475,7 +4639,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -4485,7 +4649,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -4497,7 +4661,7 @@ the `background` parameter set to `true` can be cancelled.
 
         Compacts the current context. Must be the final input item.
 
-        - `type: "compaction_trigger"`
+        - `type: "compaction_trigger" (default: "compaction_trigger")`
 
           The type of the item. Always `compaction_trigger`.
 
@@ -4515,7 +4679,7 @@ the `background` parameter set to `true` can be cancelled.
 
           The ID of the item to reference.
 
-        - `type: optional "item_reference" or null`
+        - `type: optional "item_reference" or null (default: "item_reference")`
 
           The type of item to reference. Always `item_reference`.
 
@@ -4531,15 +4695,21 @@ the `background` parameter set to `true` can be cancelled.
 
           The stable call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `code: string`
 
           The JavaScript source executed by programmatic tool calling.
+
+          `maxLength: 10485760`
 
         - `fingerprint: string`
 
           Opaque program replay fingerprint that must be round-tripped.
 
-        - `type: "program"`
+          `maxLength: 10485760`
+
+        - `type: "program" (default: "program")`
 
           The item type. Always `program`.
 
@@ -4555,9 +4725,13 @@ the `background` parameter set to `true` can be cancelled.
 
           The call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `result: string`
 
           The result produced by the program item.
+
+          `maxLength: 10485760`
 
         - `status: "completed" or "incomplete"`
 
@@ -4567,7 +4741,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `"incomplete"`
 
-        - `type: "program_output"`
+        - `type: "program_output" (default: "program_output")`
 
           The item type. Always `program_output`.
 
@@ -4884,6 +5058,8 @@ the `background` parameter set to `true` can be cancelled.
 
           - `string`
 
+            `maxLength: 512`
+
           - `number`
 
           - `boolean`
@@ -4899,6 +5075,8 @@ the `background` parameter set to `true` can be cancelled.
         - `score: optional number`
 
           The relevance score of the file - a value between 0 and 1.
+
+          `format: float`
 
         - `text: optional string`
 
@@ -4941,7 +5119,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -4951,7 +5129,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -5028,7 +5206,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -5040,7 +5218,9 @@ the `background` parameter set to `true` can be cancelled.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -5124,6 +5304,8 @@ the `background` parameter set to `true` can be cancelled.
 
               The URL of the source.
 
+              `format: uri`
+
         - `OpenPage object { type, url }`
 
           Action type "open_page" - Opens a specific URL from search results.
@@ -5137,6 +5319,8 @@ the `background` parameter set to `true` can be cancelled.
           - `url: optional string or null`
 
             The URL opened by the model.
+
+            `format: uri`
 
         - `FindInPage object { pattern, type, url }`
 
@@ -5155,6 +5339,8 @@ the `background` parameter set to `true` can be cancelled.
           - `url: optional string or null`
 
             The URL of the page searched for the pattern, when available.
+
+            `format: uri`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -5196,7 +5382,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"incomplete"`
 
-      - `type: "computer_call"`
+      - `type: "computer_call" (default: "computer_call")`
 
         The type of the computer call. Always `computer_call`.
 
@@ -5238,7 +5424,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"in_progress"`
 
-      - `type: "computer_call_output"`
+      - `type: "computer_call_output" (default: "computer_call_output")`
 
         The type of the computer tool call output. Always `computer_call_output`.
 
@@ -5284,7 +5470,7 @@ the `background` parameter set to `true` can be cancelled.
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -5302,7 +5488,7 @@ the `background` parameter set to `true` can be cancelled.
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -5349,7 +5535,7 @@ the `background` parameter set to `true` can be cancelled.
 
         Opaque program replay fingerprint that must be round-tripped.
 
-      - `type: "program"`
+      - `type: "program" (default: "program")`
 
         The type of the item. Always `program`.
 
@@ -5377,7 +5563,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"incomplete"`
 
-      - `type: "program_output"`
+      - `type: "program_output" (default: "program_output")`
 
         The type of the item. Always `program_output`.
 
@@ -5415,7 +5601,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"incomplete"`
 
-      - `type: "tool_search_call"`
+      - `type: "tool_search_call" (default: "tool_search_call")`
 
         The type of the item. Always `tool_search_call`.
 
@@ -5473,7 +5659,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -5505,7 +5691,7 @@ the `background` parameter set to `true` can be cancelled.
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -5527,7 +5713,7 @@ the `background` parameter set to `true` can be cancelled.
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -5563,7 +5749,7 @@ the `background` parameter set to `true` can be cancelled.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -5573,11 +5759,11 @@ the `background` parameter set to `true` can be cancelled.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -5595,7 +5781,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -5606,7 +5792,7 @@ the `background` parameter set to `true` can be cancelled.
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -5614,7 +5800,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -5622,14 +5808,14 @@ the `background` parameter set to `true` can be cancelled.
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -5661,7 +5847,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -5685,6 +5871,8 @@ the `background` parameter set to `true` can be cancelled.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -5764,7 +5952,7 @@ the `background` parameter set to `true` can be cancelled.
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -5821,10 +6009,14 @@ the `background` parameter set to `true` can be cancelled.
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -5844,7 +6036,7 @@ the `background` parameter set to `true` can be cancelled.
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -5853,6 +6045,8 @@ the `background` parameter set to `true` can be cancelled.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -5884,13 +6078,15 @@ the `background` parameter set to `true` can be cancelled.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -5916,7 +6112,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -5997,7 +6193,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -6005,11 +6201,13 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -6020,11 +6218,13 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -6043,7 +6243,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -6065,7 +6265,7 @@ the `background` parameter set to `true` can be cancelled.
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -6075,7 +6275,7 @@ the `background` parameter set to `true` can be cancelled.
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -6084,6 +6284,8 @@ the `background` parameter set to `true` can be cancelled.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -6105,7 +6307,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -6114,6 +6316,8 @@ the `background` parameter set to `true` can be cancelled.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -6147,21 +6351,29 @@ the `background` parameter set to `true` can be cancelled.
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -6195,7 +6407,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -6204,6 +6416,8 @@ the `background` parameter set to `true` can be cancelled.
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -6225,7 +6439,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -6235,7 +6449,7 @@ the `background` parameter set to `true` can be cancelled.
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -6261,7 +6475,7 @@ the `background` parameter set to `true` can be cancelled.
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -6289,7 +6503,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -6315,7 +6529,7 @@ the `background` parameter set to `true` can be cancelled.
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -6325,11 +6539,13 @@ the `background` parameter set to `true` can be cancelled.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "tool_search_output"`
+      - `type: "tool_search_output" (default: "tool_search_output")`
 
         The type of the item. Always `tool_search_output`.
 
@@ -6385,7 +6601,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -6417,7 +6633,7 @@ the `background` parameter set to `true` can be cancelled.
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -6439,7 +6655,7 @@ the `background` parameter set to `true` can be cancelled.
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -6475,7 +6691,7 @@ the `background` parameter set to `true` can be cancelled.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -6485,11 +6701,11 @@ the `background` parameter set to `true` can be cancelled.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -6507,7 +6723,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -6518,7 +6734,7 @@ the `background` parameter set to `true` can be cancelled.
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -6526,7 +6742,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -6534,14 +6750,14 @@ the `background` parameter set to `true` can be cancelled.
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -6573,7 +6789,7 @@ the `background` parameter set to `true` can be cancelled.
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -6597,6 +6813,8 @@ the `background` parameter set to `true` can be cancelled.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -6676,7 +6894,7 @@ the `background` parameter set to `true` can be cancelled.
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -6733,10 +6951,14 @@ the `background` parameter set to `true` can be cancelled.
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -6756,7 +6978,7 @@ the `background` parameter set to `true` can be cancelled.
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -6765,6 +6987,8 @@ the `background` parameter set to `true` can be cancelled.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -6796,13 +7020,15 @@ the `background` parameter set to `true` can be cancelled.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -6828,7 +7054,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -6909,7 +7135,7 @@ the `background` parameter set to `true` can be cancelled.
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -6917,11 +7143,13 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -6932,11 +7160,13 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -6955,7 +7185,7 @@ the `background` parameter set to `true` can be cancelled.
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -6977,7 +7207,7 @@ the `background` parameter set to `true` can be cancelled.
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -6987,7 +7217,7 @@ the `background` parameter set to `true` can be cancelled.
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -6996,6 +7226,8 @@ the `background` parameter set to `true` can be cancelled.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -7017,7 +7249,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -7026,6 +7258,8 @@ the `background` parameter set to `true` can be cancelled.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -7059,21 +7293,29 @@ the `background` parameter set to `true` can be cancelled.
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -7107,7 +7349,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -7116,6 +7358,8 @@ the `background` parameter set to `true` can be cancelled.
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -7137,7 +7381,7 @@ the `background` parameter set to `true` can be cancelled.
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -7147,7 +7391,7 @@ the `background` parameter set to `true` can be cancelled.
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -7173,7 +7417,7 @@ the `background` parameter set to `true` can be cancelled.
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -7201,7 +7445,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -7227,7 +7471,7 @@ the `background` parameter set to `true` can be cancelled.
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -7237,11 +7481,13 @@ the `background` parameter set to `true` can be cancelled.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "additional_tools"`
+      - `type: "additional_tools" (default: "additional_tools")`
 
         The type of the item. Always `additional_tools`.
 
@@ -7259,7 +7505,7 @@ the `background` parameter set to `true` can be cancelled.
 
         The encrypted content that was produced by compaction.
 
-      - `type: "compaction"`
+      - `type: "compaction" (default: "compaction")`
 
         The type of the item. Always `compaction`.
 
@@ -7432,7 +7678,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The logs output from the code interpreter.
 
-          - `type: "logs"`
+          - `type: "logs" (default: "logs")`
 
             The type of the output. Always `logs`.
 
@@ -7442,7 +7688,7 @@ the `background` parameter set to `true` can be cancelled.
 
           The image output from the code interpreter.
 
-          - `type: "image"`
+          - `type: "image" (default: "image")`
 
             The type of the output. Always `image`.
 
@@ -7451,6 +7697,8 @@ the `background` parameter set to `true` can be cancelled.
           - `url: string`
 
             The URL of the image output from the code interpreter.
+
+            `format: uri`
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -7466,7 +7714,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"failed"`
 
-      - `type: "code_interpreter_call"`
+      - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
         The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -7492,13 +7740,13 @@ the `background` parameter set to `true` can be cancelled.
 
           Environment variables to set for the command.
 
-        - `type: "exec"`
+        - `type: "exec" (default: "exec")`
 
           The type of the local shell action. Always `exec`.
 
           - `"exec"`
 
-        - `timeout_ms: optional number or null`
+        - `timeout_ms: optional integer or null`
 
           Optional timeout in milliseconds for the command.
 
@@ -7572,11 +7820,11 @@ the `background` parameter set to `true` can be cancelled.
 
         - `commands: array of string`
 
-        - `max_output_length: number or null`
+        - `max_output_length: integer or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number or null`
+        - `timeout_ms: integer or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -7592,7 +7840,7 @@ the `background` parameter set to `true` can be cancelled.
 
           Represents the use of a local environment to perform shell actions.
 
-          - `type: "local"`
+          - `type: "local" (default: "local")`
 
             The environment type. Always `local`.
 
@@ -7604,7 +7852,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `container_id: string`
 
-          - `type: "container_reference"`
+          - `type: "container_reference" (default: "container_reference")`
 
             The environment type. Always `container_reference`.
 
@@ -7620,7 +7868,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"incomplete"`
 
-      - `type: "shell_call"`
+      - `type: "shell_call" (default: "shell_call")`
 
         The type of the item. Always `shell_call`.
 
@@ -7632,7 +7880,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -7642,7 +7890,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -7662,7 +7910,7 @@ the `background` parameter set to `true` can be cancelled.
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -7678,7 +7926,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Indicates that the shell call exceeded its configured time limit.
 
-            - `type: "timeout"`
+            - `type: "timeout" (default: "timeout")`
 
               The outcome type. Always `timeout`.
 
@@ -7688,11 +7936,11 @@ the `background` parameter set to `true` can be cancelled.
 
             Indicates that the shell commands finished and returned an exit code.
 
-            - `exit_code: number`
+            - `exit_code: integer`
 
               Exit code from the shell process.
 
-            - `type: "exit"`
+            - `type: "exit" (default: "exit")`
 
               The outcome type. Always `exit`.
 
@@ -7720,7 +7968,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"incomplete"`
 
-      - `type: "shell_call_output"`
+      - `type: "shell_call_output" (default: "shell_call_output")`
 
         The type of the shell call output. Always `shell_call_output`.
 
@@ -7732,7 +7980,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -7742,7 +7990,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -7778,7 +8026,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Path of the file to create.
 
-          - `type: "create_file"`
+          - `type: "create_file" (default: "create_file")`
 
             Create a new file with the provided diff.
 
@@ -7792,7 +8040,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Path of the file to delete.
 
-          - `type: "delete_file"`
+          - `type: "delete_file" (default: "delete_file")`
 
             Delete the specified file.
 
@@ -7810,7 +8058,7 @@ the `background` parameter set to `true` can be cancelled.
 
             Path of the file to update.
 
-          - `type: "update_file"`
+          - `type: "update_file" (default: "update_file")`
 
             Update an existing file with the provided diff.
 
@@ -7824,7 +8072,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"completed"`
 
-      - `type: "apply_patch_call"`
+      - `type: "apply_patch_call" (default: "apply_patch_call")`
 
         The type of the item. Always `apply_patch_call`.
 
@@ -7836,7 +8084,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -7846,7 +8094,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -7874,7 +8122,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"failed"`
 
-      - `type: "apply_patch_call_output"`
+      - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
         The type of the item. Always `apply_patch_call_output`.
 
@@ -7886,7 +8134,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -7896,7 +8144,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -8091,7 +8339,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -8101,7 +8349,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -8167,7 +8415,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -8179,7 +8427,9 @@ the `background` parameter set to `true` can be cancelled.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -8189,14 +8439,16 @@ the `background` parameter set to `true` can be cancelled.
 
         The identifier of the actor that created the item.
 
-  - `parallel_tool_calls: boolean`
+  - `parallel_tool_calls: boolean (default: true)`
 
     Whether to allow the model to run tool calls in parallel.
 
-  - `temperature: number or null`
+  - `temperature: number or null (default: 1)`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
     We generally recommend altering this or `top_p` but not both.
+
+    `minimum: 0`, `maximum: 2`
 
   - `tool_choice: ToolChoiceOptions or ToolChoiceAllowed or ToolChoiceTypes or 6 more`
 
@@ -8342,7 +8594,7 @@ the `background` parameter set to `true` can be cancelled.
 
     - `SpecificProgrammaticToolCallingParam object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The tool to call. Always `programmatic_tool_calling`.
 
@@ -8352,7 +8604,7 @@ the `background` parameter set to `true` can be cancelled.
 
       Forces the model to call the apply_patch tool when executing a tool call.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The tool to call. Always `apply_patch`.
 
@@ -8362,7 +8614,7 @@ the `background` parameter set to `true` can be cancelled.
 
       Forces the model to call the shell tool when a tool call is required.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The tool to call. Always `shell`.
 
@@ -8404,7 +8656,7 @@ the `background` parameter set to `true` can be cancelled.
 
         Whether strict parameter validation is enforced for this function tool.
 
-      - `type: "function"`
+      - `type: "function" (default: "function")`
 
         The type of the function tool. Always `function`.
 
@@ -8436,7 +8688,7 @@ the `background` parameter set to `true` can be cancelled.
 
       A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-      - `type: "file_search"`
+      - `type: "file_search" (default: "file_search")`
 
         The type of the file search tool. Always `file_search`.
 
@@ -8458,7 +8710,7 @@ the `background` parameter set to `true` can be cancelled.
 
           Combine multiple filters using `and` or `or`.
 
-      - `max_num_results: optional number`
+      - `max_num_results: optional integer`
 
         The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -8494,7 +8746,7 @@ the `background` parameter set to `true` can be cancelled.
 
       A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-      - `type: "computer"`
+      - `type: "computer" (default: "computer")`
 
         The type of the computer tool. Always `computer`.
 
@@ -8504,11 +8756,11 @@ the `background` parameter set to `true` can be cancelled.
 
       A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-      - `display_height: number`
+      - `display_height: integer`
 
         The height of the computer display.
 
-      - `display_width: number`
+      - `display_width: integer`
 
         The width of the computer display.
 
@@ -8526,7 +8778,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"browser"`
 
-      - `type: "computer_use_preview"`
+      - `type: "computer_use_preview" (default: "computer_use_preview")`
 
         The type of the computer use tool. Always `computer_use_preview`.
 
@@ -8537,7 +8789,7 @@ the `background` parameter set to `true` can be cancelled.
       Search the Internet for sources related to the prompt. Learn more about the
       [web search tool](/api/docs/guides/tools-web-search).
 
-      - `type: "web_search" or "web_search_2025_08_26"`
+      - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
         The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -8545,7 +8797,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"web_search_2025_08_26"`
 
-      - `external_web_access: optional boolean`
+      - `external_web_access: optional boolean (default: true)`
 
         Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -8553,14 +8805,14 @@ the `background` parameter set to `true` can be cancelled.
 
         Filters for the search.
 
-        - `allowed_domains: optional array of string or null`
+        - `allowed_domains: optional array of string or null (default: [])`
 
           Allowed domains for the search. If not provided, all domains are allowed.
           Subdomains of the provided domains are allowed as well.
 
           Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-      - `search_context_size: optional "low" or "medium" or "high"`
+      - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
         High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -8592,7 +8844,7 @@ the `background` parameter set to `true` can be cancelled.
 
           The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-        - `type: optional "approximate"`
+        - `type: optional "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -8616,6 +8868,8 @@ the `background` parameter set to `true` can be cancelled.
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -8695,7 +8949,7 @@ the `background` parameter set to `true` can be cancelled.
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
         Specify which of the MCP server's tools require approval.
 
@@ -8752,10 +9006,14 @@ the `background` parameter set to `true` can be cancelled.
         The URL for the MCP server. One of `server_url`, `connector_id`, or
         `tunnel_id` must be provided.
 
+        `format: uri`
+
       - `tunnel_id: optional string`
 
         The Secure MCP Tunnel ID to use instead of a direct server URL. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+        `pattern: ^tunnel_[a-z0-9]{32}$`
 
     - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -8775,7 +9033,7 @@ the `background` parameter set to `true` can be cancelled.
 
           Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-          - `type: "auto"`
+          - `type: "auto" (default: "auto")`
 
             Always `auto`.
 
@@ -8784,6 +9042,8 @@ the `background` parameter set to `true` can be cancelled.
           - `file_ids: optional array of string`
 
             An optional list of uploaded files to make available to your code.
+
+            `maxItems: 50`
 
           - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -8815,13 +9075,15 @@ the `background` parameter set to `true` can be cancelled.
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
     - `ProgrammaticToolCalling object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The type of the tool. Always `programmatic_tool_calling`.
 
@@ -8847,7 +9109,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"auto"`
 
-      - `background: optional "transparent" or "opaque" or "auto"`
+      - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
         Set the background of the generated image. One of `transparent`, `opaque`,
         or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -8928,7 +9190,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `"gpt-image-2.5-flare-2026-09-08"`
 
-      - `moderation: optional "auto" or "low"`
+      - `moderation: optional "auto" or "low" (default: "auto")`
 
         Moderation level for the generated image. Default: `auto`.
 
@@ -8936,11 +9198,13 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"low"`
 
-      - `output_compression: optional number`
+      - `output_compression: optional integer (default: 100)`
 
         Compression level for the output image. Default: 100.
 
-      - `output_format: optional "png" or "webp" or "jpeg"`
+        `minimum: 0`, `maximum: 100`
+
+      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
         The output format of the generated image. One of `png`, `webp`, or
         `jpeg`. Default: `png`.
@@ -8951,11 +9215,13 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"jpeg"`
 
-      - `partial_images: optional number`
+      - `partial_images: optional integer (default: 0)`
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or 3 more`
+        `minimum: 0`, `maximum: 3`
+
+      - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
         The quality of the generated image. The GPT image models support `low`,
         `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -8974,7 +9240,7 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"auto"`
 
-      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
         The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -8996,7 +9262,7 @@ the `background` parameter set to `true` can be cancelled.
 
       A tool that allows the model to execute shell commands in a local environment.
 
-      - `type: "local_shell"`
+      - `type: "local_shell" (default: "local_shell")`
 
         The type of the local shell tool. Always `local_shell`.
 
@@ -9006,7 +9272,7 @@ the `background` parameter set to `true` can be cancelled.
 
       A tool that allows the model to execute shell commands.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The type of the shell tool. Always `shell`.
 
@@ -9015,6 +9281,8 @@ the `background` parameter set to `true` can be cancelled.
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -9036,7 +9304,7 @@ the `background` parameter set to `true` can be cancelled.
 
         The name of the custom tool, used to identify it in tool calls.
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of the custom tool. Always `custom`.
 
@@ -9045,6 +9313,8 @@ the `background` parameter set to `true` can be cancelled.
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -9078,21 +9348,29 @@ the `background` parameter set to `true` can be cancelled.
 
         The namespace name used in tool calls (for example, `crm`).
 
+        `minLength: 1`
+
       - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
+
+        `minItems: 1`
 
         - `Function object { name, type, allowed_callers, 6 more }`
 
           - `name: string`
 
-          - `type: "function"`
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+          - `type: "function" (default: "function")`
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -9126,7 +9404,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -9135,6 +9413,8 @@ the `background` parameter set to `true` can be cancelled.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -9156,7 +9436,7 @@ the `background` parameter set to `true` can be cancelled.
 
             The input format for the custom tool. Default is unconstrained text.
 
-      - `type: "namespace"`
+      - `type: "namespace" (default: "namespace")`
 
         The type of the tool. Always `namespace`.
 
@@ -9166,7 +9446,7 @@ the `background` parameter set to `true` can be cancelled.
 
       Hosted or BYOT tool search configuration for deferred tools.
 
-      - `type: "tool_search"`
+      - `type: "tool_search" (default: "tool_search")`
 
         The type of the tool. Always `tool_search`.
 
@@ -9192,7 +9472,7 @@ the `background` parameter set to `true` can be cancelled.
 
       This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-      - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+      - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
         The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -9220,7 +9500,7 @@ the `background` parameter set to `true` can be cancelled.
 
         The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-        - `type: "approximate"`
+        - `type: "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -9246,7 +9526,7 @@ the `background` parameter set to `true` can be cancelled.
 
       Allows the assistant to create, delete, or update files using unified diffs.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The type of the tool. Always `apply_patch`.
 
@@ -9256,11 +9536,13 @@ the `background` parameter set to `true` can be cancelled.
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
-  - `top_p: number or null`
+  - `top_p: number or null (default: 1)`
 
     An alternative to sampling with temperature, called nucleus sampling,
     where the model considers the results of the tokens with top_p probability
@@ -9269,7 +9551,9 @@ the `background` parameter set to `true` can be cancelled.
 
     We generally recommend altering this or `temperature` but not both.
 
-  - `background: optional boolean or null`
+    `minimum: 0`, `maximum: 1`
+
+  - `background: optional boolean or null (default: false)`
 
     Whether to run the model response in the background.
     [Learn more](/api/docs/guides/background).
@@ -9279,6 +9563,8 @@ the `background` parameter set to `true` can be cancelled.
     Unix timestamp (in seconds) of when this Response was completed.
     Only present when the status is `completed`.
 
+    `format: unixtime`
+
   - `conversation: optional object { id }  or null`
 
     The conversation that this response belonged to. Input items and output items from this response were automatically added to this conversation.
@@ -9287,11 +9573,11 @@ the `background` parameter set to `true` can be cancelled.
 
       The unique ID of the conversation that this response was associated with.
 
-  - `max_output_tokens: optional number or null`
+  - `max_output_tokens: optional integer or null`
 
     An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](/api/docs/guides/reasoning).
 
-  - `max_tool_calls: optional number or null`
+  - `max_tool_calls: optional integer or null`
 
     The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored.
 
@@ -9331,7 +9617,7 @@ the `background` parameter set to `true` can be cancelled.
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -9349,7 +9635,7 @@ the `background` parameter set to `true` can be cancelled.
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -9387,7 +9673,7 @@ the `background` parameter set to `true` can be cancelled.
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -9405,7 +9691,7 @@ the `background` parameter set to `true` can be cancelled.
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -9462,7 +9748,7 @@ the `background` parameter set to `true` can be cancelled.
 
     - `CacheMiss object { cache_missed_tokens, reason, type, comparison_reusable_tokens }`
 
-      - `cache_missed_tokens: number`
+      - `cache_missed_tokens: integer`
 
         The estimated number of input tokens affected after the first detected divergence.
 
@@ -9488,29 +9774,29 @@ the `background` parameter set to `true` can be cancelled.
 
         - `"service_tier_changed"`
 
-      - `type: "cache_miss"`
+      - `type: "cache_miss" (default: "cache_miss")`
 
         - `"cache_miss"`
 
-      - `comparison_reusable_tokens: optional number`
+      - `comparison_reusable_tokens: optional integer`
 
         The raw token count of the reusable prefix in the compared response.
 
     - `CacheHit object { type }`
 
-      - `type: "cache_hit"`
+      - `type: "cache_hit" (default: "cache_hit")`
 
         - `"cache_hit"`
 
     - `ComparisonResponseNotFound object { type }`
 
-      - `type: "comparison_response_not_found"`
+      - `type: "comparison_response_not_found" (default: "comparison_response_not_found")`
 
         - `"comparison_response_not_found"`
 
     - `Unavailable object { type }`
 
-      - `type: "unavailable"`
+      - `type: "unavailable" (default: "unavailable")`
 
         - `"unavailable"`
 
@@ -9580,7 +9866,7 @@ the `background` parameter set to `true` can be cancelled.
 
       - `"all_turns"`
 
-    - `effort: optional ReasoningEffort or null`
+    - `effort: optional ReasoningEffort or null (default: "medium")`
 
       Constrains effort on reasoning for reasoning models. Currently supported
       values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -9641,7 +9927,9 @@ the `background` parameter set to `true` can be cancelled.
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
     The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-  - `service_tier: optional ServiceTier or null`
+    `maxLength: 128`
+
+  - `service_tier: optional ServiceTier or null (default: "auto")`
 
     Specifies the processing type used for serving the request.
 
@@ -9745,7 +10033,7 @@ the `background` parameter set to `true` can be cancelled.
           A description of what the response format is for, used by the model to
           determine how to respond in the format.
 
-        - `strict: optional boolean or null`
+        - `strict: optional boolean or null (default: false)`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -9766,7 +10054,7 @@ the `background` parameter set to `true` can be cancelled.
 
           - `"json_object"`
 
-    - `verbosity: optional "low" or "medium" or "high" or null`
+    - `verbosity: optional "low" or "medium" or "high" or null (default: "medium")`
 
       Constrains the verbosity of the model's response. Lower values will result in
       more concise responses, while higher values will result in more verbose responses.
@@ -9798,7 +10086,7 @@ the `background` parameter set to `true` can be cancelled.
 
       Aggregated usage statistics for image generation tool calls.
 
-      - `input_tokens: number`
+      - `input_tokens: integer`
 
         The number of tokens (images and text) in the input prompt.
 
@@ -9806,39 +10094,39 @@ the `background` parameter set to `true` can be cancelled.
 
         The input tokens detailed information for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image tokens in the input prompt.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text tokens in the input prompt.
 
-      - `output_tokens: number`
+      - `output_tokens: integer`
 
         The number of output tokens generated by the model.
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
         The total number of tokens (images and text) used for the image generation.
 
-      - `cached_tokens: optional number`
+      - `cached_tokens: optional integer`
 
       - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
 
-        - `cached_image_tokens: number`
+        - `cached_image_tokens: integer`
 
-        - `cached_text_tokens: number`
+        - `cached_text_tokens: integer`
 
       - `output_tokens_details: optional object { image_tokens, text_tokens }`
 
         The output token details for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image output tokens generated by the model.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text output tokens generated by the model.
 
@@ -9846,18 +10134,20 @@ the `background` parameter set to `true` can be cancelled.
 
       Aggregated billable usage statistics for web search tool calls.
 
-      - `num_requests: number`
+      - `num_requests: integer`
 
         The number of billable web search requests issued.
 
-  - `top_logprobs: optional number or null`
+  - `top_logprobs: optional integer or null`
 
     An integer between 0 and 20 specifying the maximum number of most likely
     tokens to return at each token position, each with an associated log
     probability. In some cases, the number of returned tokens may be fewer than
     requested.
 
-  - `truncation: optional "auto" or "disabled" or null`
+    `minimum: 0`, `maximum: 20`
+
+  - `truncation: optional "auto" or "disabled" or null (default: "disabled")`
 
     The truncation strategy to use for the model response.
 
@@ -9876,7 +10166,7 @@ the `background` parameter set to `true` can be cancelled.
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -9884,16 +10174,16 @@ the `background` parameter set to `true` can be cancelled.
 
       A detailed breakdown of the input tokens.
 
-      - `cache_write_tokens: number`
+      - `cache_write_tokens: integer`
 
         The number of input tokens that were written to the cache.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache.
         [More on prompt caching](/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -9901,11 +10191,11 @@ the `background` parameter set to `true` can be cancelled.
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -9923,7 +10213,7 @@ curl https://api.openai.com/v1/responses/$RESPONSE_ID/cancel \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -10065,7 +10355,7 @@ curl -X POST https://api.openai.com/v1/responses/resp_123/cancel \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

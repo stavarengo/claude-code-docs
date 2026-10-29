@@ -46,9 +46,11 @@ Create an invite for a user to the organization. The invite must be accepted by 
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the invite was sent.
+
+    `format: unixtime`
 
   - `email: string`
 
@@ -94,13 +96,17 @@ Create an invite for a user to the organization. The invite must be accepted by 
 
     - `"pending"`
 
-  - `accepted_at: optional number or null`
+  - `accepted_at: optional integer or null`
 
     The Unix timestamp (in seconds) of when the invite was accepted.
 
-  - `expires_at: optional number or null`
+    `format: unixtime`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) of when the invite expires.
+
+    `format: unixtime`
 
 ### Example
 
@@ -114,7 +120,7 @@ curl https://api.openai.com/v1/organization/invites \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -157,7 +163,7 @@ curl -X POST https://api.openai.com/v1/organization/invites \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -212,7 +218,7 @@ curl https://api.openai.com/v1/organization/invites/$INVITE_ID \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -230,7 +236,7 @@ curl -X DELETE https://api.openai.com/v1/organization/invites/invite-abc \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -252,7 +258,7 @@ Returns a list of invites in the organization.
 
   A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
 
@@ -264,9 +270,11 @@ Returns a list of invites in the organization.
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the invite was sent.
+
+    `format: unixtime`
 
   - `email: string`
 
@@ -312,13 +320,17 @@ Returns a list of invites in the organization.
 
     - `"pending"`
 
-  - `accepted_at: optional number or null`
+  - `accepted_at: optional integer or null`
 
     The Unix timestamp (in seconds) of when the invite was accepted.
 
-  - `expires_at: optional number or null`
+    `format: unixtime`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) of when the invite expires.
+
+    `format: unixtime`
 
 - `has_more: boolean`
 
@@ -345,7 +357,7 @@ curl https://api.openai.com/v1/organization/invites \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -382,7 +394,7 @@ curl https://api.openai.com/v1/organization/invites?after=invite-abc&limit=20 \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -426,9 +438,11 @@ Retrieves an invite.
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the invite was sent.
+
+    `format: unixtime`
 
   - `email: string`
 
@@ -474,13 +488,17 @@ Retrieves an invite.
 
     - `"pending"`
 
-  - `accepted_at: optional number or null`
+  - `accepted_at: optional integer or null`
 
     The Unix timestamp (in seconds) of when the invite was accepted.
 
-  - `expires_at: optional number or null`
+    `format: unixtime`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) of when the invite expires.
+
+    `format: unixtime`
 
 ### Example
 
@@ -489,7 +507,7 @@ curl https://api.openai.com/v1/organization/invites/$INVITE_ID \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -518,7 +536,7 @@ curl https://api.openai.com/v1/organization/invites/invite-abc \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -546,9 +564,11 @@ curl https://api.openai.com/v1/organization/invites/invite-abc \
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the invite was sent.
+
+    `format: unixtime`
 
   - `email: string`
 
@@ -594,13 +614,17 @@ curl https://api.openai.com/v1/organization/invites/invite-abc \
 
     - `"pending"`
 
-  - `accepted_at: optional number or null`
+  - `accepted_at: optional integer or null`
 
     The Unix timestamp (in seconds) of when the invite was accepted.
 
-  - `expires_at: optional number or null`
+    `format: unixtime`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) of when the invite expires.
+
+    `format: unixtime`
 
 ### Invite Delete Response
 

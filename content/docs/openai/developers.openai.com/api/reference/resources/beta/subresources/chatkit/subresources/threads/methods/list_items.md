@@ -20,9 +20,11 @@ List items that belong to a ChatKit thread.
 
   List items created before this thread item ID. Defaults to null for the newest results.
 
-- `limit: optional number`
+- `limit: optional integer`
 
   Maximum number of thread items to return. Defaults to 20.
+
+  `minimum: 0`, `maximum: 100`
 
 - `order: optional "asc" or "desc"`
 
@@ -70,6 +72,8 @@ List items that belong to a ChatKit thread.
 
           Preview URL for rendering the attachment inline.
 
+          `format: uri`
+
         - `type: "image" or "file"`
 
           Attachment discriminator.
@@ -90,7 +94,7 @@ List items that belong to a ChatKit thread.
 
             Plain-text content supplied by the user.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             Type discriminator that is always `input_text`.
 
@@ -104,15 +108,17 @@ List items that belong to a ChatKit thread.
 
             Quoted text content.
 
-          - `type: "quoted_text"`
+          - `type: "quoted_text" (default: "quoted_text")`
 
             Type discriminator that is always `quoted_text`.
 
             - `"quoted_text"`
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
+
+        `format: unixtime`
 
       - `inference_options: object { model, tool_choice }  or null`
 
@@ -130,7 +136,7 @@ List items that belong to a ChatKit thread.
 
             Identifier of the requested tool.
 
-      - `object: "chatkit.thread_item"`
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -140,7 +146,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.user_message"`
+      - `type: "chatkit.user_message" (default: "chatkit.user_message")`
 
         - `"chatkit.user_message"`
 
@@ -172,13 +178,13 @@ List items that belong to a ChatKit thread.
 
                 Filename referenced by the annotation.
 
-              - `type: "file"`
+              - `type: "file" (default: "file")`
 
                 Type discriminator that is always `file`.
 
                 - `"file"`
 
-            - `type: "file"`
+            - `type: "file" (default: "file")`
 
               Type discriminator that is always `file` for this annotation.
 
@@ -192,7 +198,7 @@ List items that belong to a ChatKit thread.
 
               URL referenced by the annotation.
 
-              - `type: "url"`
+              - `type: "url" (default: "url")`
 
                 Type discriminator that is always `url`.
 
@@ -202,7 +208,9 @@ List items that belong to a ChatKit thread.
 
                 URL referenced by the annotation.
 
-            - `type: "url"`
+                `format: uri`
+
+            - `type: "url" (default: "url")`
 
               Type discriminator that is always `url` for this annotation.
 
@@ -212,17 +220,19 @@ List items that belong to a ChatKit thread.
 
           Assistant generated text.
 
-        - `type: "output_text"`
+        - `type: "output_text" (default: "output_text")`
 
           Type discriminator that is always `output_text`.
 
           - `"output_text"`
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `object: "chatkit.thread_item"`
+        `format: unixtime`
+
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -232,7 +242,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.assistant_message"`
+      - `type: "chatkit.assistant_message" (default: "chatkit.assistant_message")`
 
         Type discriminator that is always `chatkit.assistant_message`.
 
@@ -246,11 +256,13 @@ List items that belong to a ChatKit thread.
 
         Identifier of the thread item.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `object: "chatkit.thread_item"`
+        `format: unixtime`
+
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -260,7 +272,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.widget"`
+      - `type: "chatkit.widget" (default: "chatkit.widget")`
 
         Type discriminator that is always `chatkit.widget`.
 
@@ -286,15 +298,17 @@ List items that belong to a ChatKit thread.
 
         Identifier for the client tool call.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
+
+        `format: unixtime`
 
       - `name: string`
 
         Tool name that was invoked.
 
-      - `object: "chatkit.thread_item"`
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -316,7 +330,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.client_tool_call"`
+      - `type: "chatkit.client_tool_call" (default: "chatkit.client_tool_call")`
 
         Type discriminator that is always `chatkit.client_tool_call`.
 
@@ -330,15 +344,17 @@ List items that belong to a ChatKit thread.
 
         Identifier of the thread item.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
+
+        `format: unixtime`
 
       - `heading: string or null`
 
         Optional heading for the task. Defaults to null when not provided.
 
-      - `object: "chatkit.thread_item"`
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -360,7 +376,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.task"`
+      - `type: "chatkit.task" (default: "chatkit.task")`
 
         Type discriminator that is always `chatkit.task`.
 
@@ -374,11 +390,13 @@ List items that belong to a ChatKit thread.
 
         Identifier of the thread item.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `object: "chatkit.thread_item"`
+        `format: unixtime`
+
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -408,7 +426,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.task_group"`
+      - `type: "chatkit.task_group" (default: "chatkit.task_group")`
 
         Type discriminator that is always `chatkit.task_group`.
 
@@ -426,7 +444,7 @@ List items that belong to a ChatKit thread.
 
     The ID of the last item in the list.
 
-  - `object: "list"`
+  - `object: "list" (default: "list")`
 
     The type of object returned, must be `list`.
 
@@ -440,7 +458,7 @@ curl https://api.openai.com/v1/chatkit/threads/$THREAD_ID/items \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -489,7 +507,7 @@ curl "https://api.openai.com/v1/chatkit/threads/cthr_abc123/items?limit=3" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

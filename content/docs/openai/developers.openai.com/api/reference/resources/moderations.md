@@ -40,6 +40,8 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
           Either a URL of the image or the base64 encoded image data.
 
+          `format: uri`
+
       - `type: "image_url"`
 
         Always `image_url`.
@@ -60,7 +62,7 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
         - `"text"`
 
-- `model: optional string or ModerationModel`
+- `model: optional string or ModerationModel (default: "omni-moderation-latest")`
 
   The content moderation model you would like to use. Learn more in
   [the moderation guide](/api/docs/guides/moderation), and learn about
@@ -314,7 +316,7 @@ curl https://api.openai.com/v1/moderations \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -420,7 +422,7 @@ curl https://api.openai.com/v1/moderations \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

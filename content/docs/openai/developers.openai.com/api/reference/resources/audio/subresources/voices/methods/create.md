@@ -16,9 +16,13 @@ Returns the saved voice's metadata. Voices created from text prompts are support
 
   The name of the new voice.
 
+  `minLength: 1`, `maxLength: 256`
+
 - `prompt: string`
 
   A description of the desired voice. Must not contain only whitespace.
+
+  `minLength: 1`, `maxLength: 2000`
 
 - `type: "prompt"`
 
@@ -26,7 +30,7 @@ Returns the saved voice's metadata. Voices created from text prompts are support
 
   - `"prompt"`
 
-- `model: optional string or "auto" or "2026-10-08"`
+- `model: optional string or "auto" or "2026-10-08" (default: "auto")`
 
   The voice creation model to use. Defaults to `auto`.
 
@@ -44,6 +48,8 @@ Returns the saved voice's metadata. Voices created from text prompts are support
 
   Optional text for the voice to speak during creation. If omitted, a script is generated from the prompt. Must not be blank after trimming whitespace; scripts that are too short are rejected.
 
+  `minLength: 1`, `maxLength: 2000`
+
 ### Returns
 
 - `Voice object { id, created_at, name, 3 more }`
@@ -54,9 +60,11 @@ Returns the saved voice's metadata. Voices created from text prompts are support
 
     The voice identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the voice was created.
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -93,7 +101,7 @@ curl https://api.openai.com/v1/audio/voices \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {

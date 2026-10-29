@@ -415,8 +415,23 @@ print(response.output_text)
 ```go
 // The surrounding program prepares an isolated sandbox with the skill files.
 client := openai.NewClient()
-tool := responses.ToolUnionParam{OfShell: &responses.FunctionShellToolParam{Environment: responses.FunctionShellToolEnvironmentUnionParam{OfLocal: &responses.LocalEnvironmentParam{Skills: []responses.LocalSkillParam{{Name: "csv-insights", Description: "Summarize CSV files and produce a markdown report.", Path: "/workspace/skills/csv-insights"}}}}}}
-params := responses.ResponseNewParams{Model: "gpt-6-astra", Tools: []responses.ToolUnionParam{tool}, Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Use the csv-insights skill and run locally to summarize /workspace/reports.csv. Read the skill instructions, write /workspace/report.md, and include the total in your final answer.")}}
+tool := responses.ToolUnionParam{OfShell: &responses.FunctionShellToolParam{
+	Environment: responses.FunctionShellToolEnvironmentUnionParam{
+		OfLocal: &responses.LocalEnvironmentParam{
+			Skills: []responses.LocalSkillParam{{
+				Name:        "csv-insights",
+				Description: "Summarize CSV files and produce a markdown report.",
+				Path:        "/workspace/skills/csv-insights",
+			}},
+		},
+	},
+}}
+params := responses.ResponseNewParams{
+	Model: "gpt-6-astra",
+	Tools: []responses.ToolUnionParam{tool},
+	Input: responses.ResponseNewParamsInputUnion{OfString: openai.String(
+		"Use the csv-insights skill and run locally to summarize /workspace/reports.csv. Read the skill instructions, write /workspace/report.md, and include the total in your final answer.")},
+}
 for turn := 0; turn <= 8; turn++ {
 	response, err := client.Responses.New(ctx, params)
 	if err != nil {
@@ -498,29 +513,57 @@ client.responses().create(params).output().stream()
 
 ```ruby
 require "openai"
+require "open3"
+require "securerandom"
 
-client = OpenAI::Client.new
-response = client.responses.create(
-  model: "gpt-6-astra",
-  input: "Use the csv-insights skill to summarize today's CSV reports.",
-  tools: [
-    {
-      type: :shell,
-      environment: {
-        type: :local,
-        skills: [
-          {
-            name: "csv-insights",
-            description: "Summarize CSV files and produce a Markdown report.",
-            path: "<path-to-skill-folder>"
+# LocalSkillSandbox is the application-owned Docker executor defined in this
+# complete example. It prepares the skill files, bounds execution, and cleans up.
+def run_local_skill(name)
+  sandbox = LocalSkillSandbox.new(name)
+  begin
+    # Reserve teardown before creation, even if Docker creation is interrupted.
+    sandbox.prepare
+    client = OpenAI::Client.new(max_retries: 0)
+    params = {
+      model: "gpt-6-astra",
+      input: "Use the csv-insights skill and run locally to summarize /workspace/reports.csv. Read the skill instructions, write /workspace/report.md, and include the total in your final answer.",
+      tools: [
+        {
+          type: :shell,
+          environment: {
+            type: :local,
+            skills: [
+              {
+                name: "csv-insights",
+                description: "Summarize CSV files and produce a Markdown report.",
+                path: "/workspace/skills/csv-insights"
+              }
+            ]
           }
-        ]
-      }
+        }
+      ]
     }
-  ]
-)
+    9.times do |turn|
+      response = client.responses.create(**params, request_options: { timeout: sandbox.remaining })
+      raise "Response did not complete" unless response.status == OpenAI::Responses::ResponseStatus::COMPLETED
 
-puts(response.output_text)
+      calls = response.output.grep(OpenAI::Models::Responses::ResponseFunctionShellToolCall)
+      if calls.empty?
+        puts(response.output_text)
+        puts("Report:\n#{sandbox.report}")
+        return response
+      end
+      raise "Shell workflow exceeded eight tool turns" if turn == 8
+
+      params[:input] = calls.map { |call| sandbox.execute(call) }
+      params[:previous_response_id] = response.id
+    end
+  ensure
+    sandbox.close
+  end
+end
+
+run_local_skill("ruby-skill-#{SecureRandom.hex(8)}")
 ```
 
 

@@ -140,6 +140,8 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
             Possible languages of the input audio, in [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) format. Supported by `gpt-transcribe` and `gpt-live-transcribe`.
 
+            `minItems: 1`
+
           - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
             The model to use for transcription. Current options are `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`, and `gpt-realtime-whisper`. Use `gpt-4o-transcribe-diarize` when you need diarization with speaker labels.
@@ -189,19 +191,19 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
             Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-            - `type: "server_vad"`
+            - `type: "server_vad" (default: "server_vad")`
 
               Type of turn detection, `server_vad` to turn on simple Server VAD.
 
               - `"server_vad"`
 
-            - `create_response: optional boolean`
+            - `create_response: optional boolean (default: true)`
 
               Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
               If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-            - `idle_timeout_ms: optional number or null`
+            - `idle_timeout_ms: optional integer or null`
 
               Optional timeout after which a model response will be triggered automatically. This is
               useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -215,19 +217,21 @@ Schema name: `RealtimeClientEventSessionUpdate`
               associated with the Response) will be emitted when the timeout is reached.
               Idle timeout is currently only supported for `server_vad` mode.
 
-            - `interrupt_response: optional boolean`
+              `minimum: 5000`, `maximum: 30000`
+
+            - `interrupt_response: optional boolean (default: true)`
 
               Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
               conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
               If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-            - `prefix_padding_ms: optional number`
+            - `prefix_padding_ms: optional integer`
 
               Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
               milliseconds). Defaults to 300ms.
 
-            - `silence_duration_ms: optional number`
+            - `silence_duration_ms: optional integer`
 
               Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
               to 500ms. With shorter values the model will respond more quickly,
@@ -249,11 +253,11 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
               - `"semantic_vad"`
 
-            - `create_response: optional boolean`
+            - `create_response: optional boolean (default: true)`
 
               Whether or not to automatically generate a response when a VAD stop event occurs.
 
-            - `eagerness: optional "low" or "medium" or "high" or "auto"`
+            - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
               Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -265,7 +269,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
               - `"auto"`
 
-            - `interrupt_response: optional boolean`
+            - `interrupt_response: optional boolean (default: true)`
 
               Whether or not to automatically interrupt any ongoing response with output to the default
               conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -276,7 +280,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
           The format of the output audio.
 
-        - `speed: optional number`
+        - `speed: optional number (default: 1)`
 
           The speed of the model's spoken response as a multiple of the original speed.
           1.0 is the default speed. 0.25 is the minimum speed. 1.5 is the maximum speed. This value can only be changed in between model turns, not while a response is in progress.
@@ -284,7 +288,9 @@ Schema name: `RealtimeClientEventSessionUpdate`
           This parameter is a post-processing adjustment to the audio after it is generated, it's
           also possible to prompt the model to speak faster or slower.
 
-        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+          `minimum: 0.25`, `maximum: 1.5`
+
+        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
           The voice the model uses to respond. Supported built-in voices are
           `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -401,7 +407,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
         - `"gpt-audio-mini-2025-12-15"`
 
-    - `output_modalities: optional array of "text" or "audio"`
+    - `output_modalities: optional array of "text" or "audio" (default: ["audio"])`
 
       The set of modalities the model can respond with. It defaults to `["audio"]`, indicating
       that the model will respond with audio plus a transcript. `["text"]` can be used to make
@@ -441,7 +447,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -451,7 +457,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -481,7 +487,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -495,11 +501,13 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -517,7 +525,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -545,6 +553,8 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -553,7 +563,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -575,7 +585,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
       Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-      - `effort: optional RealtimeReasoningEffort`
+      - `effort: optional RealtimeReasoningEffort (default: "low")`
 
         Constrains effort on reasoning for reasoning-capable Realtime models such as
         `gpt-realtime-2`.
@@ -590,7 +600,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
         - `"xhigh"`
 
-    - `tool_choice: optional RealtimeToolChoiceConfig`
+    - `tool_choice: optional RealtimeToolChoiceConfig (default: "auto")`
 
       How the model chooses tools. Provide one of the string modes or force a specific
       function/MCP tool.
@@ -689,6 +699,8 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
@@ -767,7 +779,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -824,10 +836,14 @@ Schema name: `RealtimeClientEventSessionUpdate`
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
     - `tracing: optional RealtimeTracingConfig or null`
 
@@ -888,6 +904,8 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
           Fraction of post-instruction conversation tokens to retain (`0.0` - `1.0`) when the conversation exceeds the input token limit. Setting this to `0.8` means that messages will be dropped until 80% of the maximum allowed tokens are used. This helps reduce the frequency of truncations and improve cache rates.
 
+          `minimum: 0`, `maximum: 1`
+
         - `type: "retention_ratio"`
 
           Use retention ratio truncation.
@@ -898,9 +916,11 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
           Optional custom token limits for this truncation strategy. If not provided, the model's default token limits will be used.
 
-          - `post_instructions: optional number`
+          - `post_instructions: optional integer`
 
             Maximum tokens allowed in the conversation after instructions (which including tool definitions). For example, setting this to 5,000 would mean that truncation would occur when the conversation exceeds 5,000 tokens after instructions. This cannot be higher than the model's context window size minus the maximum output tokens.
+
+            `minimum: 0`
 
   - `RealtimeTranscriptionSessionCreateRequest object { type, audio, include }`
 
@@ -951,19 +971,19 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
             Server-side voice activity detection (VAD) which flips on when user speech is detected and off after a period of silence.
 
-            - `type: "server_vad"`
+            - `type: "server_vad" (default: "server_vad")`
 
               Type of turn detection, `server_vad` to turn on simple Server VAD.
 
               - `"server_vad"`
 
-            - `create_response: optional boolean`
+            - `create_response: optional boolean (default: true)`
 
               Whether or not to automatically generate a response when a VAD stop event occurs. If `interrupt_response` is set to `false` this may fail to create a response if the model is already responding.
 
               If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-            - `idle_timeout_ms: optional number or null`
+            - `idle_timeout_ms: optional integer or null`
 
               Optional timeout after which a model response will be triggered automatically. This is
               useful for situations in which a long pause from the user is unexpected, such as a phone
@@ -977,19 +997,21 @@ Schema name: `RealtimeClientEventSessionUpdate`
               associated with the Response) will be emitted when the timeout is reached.
               Idle timeout is currently only supported for `server_vad` mode.
 
-            - `interrupt_response: optional boolean`
+              `minimum: 5000`, `maximum: 30000`
+
+            - `interrupt_response: optional boolean (default: true)`
 
               Whether or not to automatically interrupt (cancel) any ongoing response with output to the default
               conversation (i.e. `conversation` of `auto`) when a VAD start event occurs. If `true` then the response will be cancelled, otherwise it will continue until complete.
 
               If both `create_response` and `interrupt_response` are set to `false`, the model will never respond automatically but VAD events will still be emitted.
 
-            - `prefix_padding_ms: optional number`
+            - `prefix_padding_ms: optional integer`
 
               Used only for `server_vad` mode. Amount of audio to include before the VAD detected speech (in
               milliseconds). Defaults to 300ms.
 
-            - `silence_duration_ms: optional number`
+            - `silence_duration_ms: optional integer`
 
               Used only for `server_vad` mode. Duration of silence to detect speech stop (in milliseconds). Defaults
               to 500ms. With shorter values the model will respond more quickly,
@@ -1011,11 +1033,11 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
               - `"semantic_vad"`
 
-            - `create_response: optional boolean`
+            - `create_response: optional boolean (default: true)`
 
               Whether or not to automatically generate a response when a VAD stop event occurs.
 
-            - `eagerness: optional "low" or "medium" or "high" or "auto"`
+            - `eagerness: optional "low" or "medium" or "high" or "auto" (default: "auto")`
 
               Used only for `semantic_vad` mode. The eagerness of the model to respond. `low` will wait longer for the user to continue speaking, `high` will respond more quickly. `auto` is the default and is equivalent to `medium`. `low`, `medium`, and `high` have max timeouts of 8s, 4s, and 2s respectively.
 
@@ -1027,7 +1049,7 @@ Schema name: `RealtimeClientEventSessionUpdate`
 
               - `"auto"`
 
-            - `interrupt_response: optional boolean`
+            - `interrupt_response: optional boolean (default: true)`
 
               Whether or not to automatically interrupt any ongoing response with output to the default
               conversation (i.e. `conversation` of `auto`) when a VAD start event occurs.
@@ -1049,6 +1071,8 @@ Schema name: `RealtimeClientEventSessionUpdate`
 - `event_id: optional string`
 
   Optional client-generated ID used to identify this event. This is an arbitrary string that a client may assign. It will be passed back if there is an error with the event, but the corresponding `session.updated` event will not include it.
+
+  `maxLength: 512`
 
 ### Example
 
@@ -1128,6 +1152,8 @@ Schema name: `RealtimeClientEventInputAudioBufferAppend`
 
   Optional client-generated ID used to identify this event.
 
+  `maxLength: 512`
+
 ### Example
 
 ```json
@@ -1160,6 +1186,8 @@ Schema name: `RealtimeClientEventInputAudioBufferCommit`
 
   Optional client-generated ID used to identify this event.
 
+  `maxLength: 512`
+
 ### Example
 
 ```json
@@ -1189,6 +1217,8 @@ Schema name: `RealtimeClientEventInputAudioBufferClear`
 - `event_id: optional string`
 
   Optional client-generated ID used to identify this event.
+
+  `maxLength: 512`
 
 ### Example
 
@@ -1282,7 +1312,7 @@ Schema name: `RealtimeClientEventConversationItemCreate`
 
         Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
 
-      - `detail: optional "auto" or "low" or "high"`
+      - `detail: optional "auto" or "low" or "high" (default: "auto")`
 
         The detail level of the image (for `input_image`). `auto` will default to `high`.
 
@@ -1295,6 +1325,8 @@ Schema name: `RealtimeClientEventConversationItemCreate`
       - `image_url: optional string`
 
         Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
+
+        `format: uri`
 
       - `text: optional string`
 
@@ -1586,7 +1618,7 @@ Schema name: `RealtimeClientEventConversationItemCreate`
 
       - `RealtimeMcpProtocolError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
@@ -1604,7 +1636,7 @@ Schema name: `RealtimeClientEventConversationItemCreate`
 
       - `RealtimeMcphttpError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
@@ -1651,6 +1683,8 @@ Schema name: `RealtimeClientEventConversationItemCreate`
 - `event_id: optional string`
 
   Optional client-generated ID used to identify this event.
+
+  `maxLength: 512`
 
 - `previous_item_id: optional string`
 
@@ -1705,6 +1739,8 @@ Schema name: `RealtimeClientEventConversationItemRetrieve`
 
   Optional client-generated ID used to identify this event.
 
+  `maxLength: 512`
+
 ### Example
 
 ```json
@@ -1735,13 +1771,13 @@ event.
 
 Schema name: `RealtimeClientEventConversationItemTruncate`
 
-- `audio_end_ms: number`
+- `audio_end_ms: integer`
 
   Inclusive duration up to which audio is truncated, in milliseconds. If
   the audio_end_ms is greater than the actual audio duration, the server
   will respond with an error.
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part to truncate. Set this to `0`.
 
@@ -1759,6 +1795,8 @@ Schema name: `RealtimeClientEventConversationItemTruncate`
 - `event_id: optional string`
 
   Optional client-generated ID used to identify this event.
+
+  `maxLength: 512`
 
 ### Example
 
@@ -1798,6 +1836,8 @@ Schema name: `RealtimeClientEventConversationItemDelete`
 - `event_id: optional string`
 
   Optional client-generated ID used to identify this event.
+
+  `maxLength: 512`
 
 ### Example
 
@@ -1853,6 +1893,8 @@ Schema name: `RealtimeClientEventResponseCreate`
 
   Optional client-generated ID used to identify this event.
 
+  `maxLength: 512`
+
 - `response: optional RealtimeResponseCreateParams`
 
   Create a new Realtime response with these parameters
@@ -1903,7 +1945,7 @@ Schema name: `RealtimeClientEventResponseCreate`
 
             - `"audio/pcma"`
 
-      - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
+      - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }  (default: "alloy")`
 
         The voice the model uses to respond. Supported built-in voices are
         `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
@@ -1967,7 +2009,7 @@ Schema name: `RealtimeClientEventResponseCreate`
 
       - `"none"`
 
-  - `input: optional array of ConversationItem`
+  - `input: optional array of RealtimeResponseInputMessageSystem { content, role, type, 2 more }  or RealtimeResponseInputMessageDeveloper { content, role, type, 2 more }  or RealtimeResponseInputMessageUser { content, role, type, 2 more }  or 4 more`
 
     Input items to include in the prompt for the model. Using this field
     creates a new context for this Response instead of using the default
@@ -1975,427 +2017,261 @@ Schema name: `RealtimeClientEventResponseCreate`
     Note that this can include references to items that previously appeared in the session
     using their id.
 
-    - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
-
-      A system message in a Realtime conversation can be used to provide additional context or instructions to the model. This is similar but distinct from the instruction prompt provided at the start of a conversation, as system messages can be added at any point in the conversation. For major changes to the conversation's behavior, use instructions, but for smaller updates (e.g. "the user is now asking about a different topic"), use system messages.
+    - `RealtimeResponseInputMessageSystem object { content, role, type, 2 more }`
 
       - `content: array of object { text, type }`
 
-        The content of the message.
+        `minItems: 1`, `maxItems: 1`
 
-        - `text: optional string`
+        - `text: string`
 
-          The text content.
+          `maxLength: 256000`
 
-        - `type: optional "input_text"`
-
-          The content type. Always `input_text` for system messages.
+        - `type: "input_text"`
 
           - `"input_text"`
 
       - `role: "system"`
 
-        The role of the message sender. Always `system`.
-
         - `"system"`
 
       - `type: "message"`
 
-        The type of the item. Always `message`.
-
         - `"message"`
 
-      - `id: optional string`
+      - `id: optional string or null`
 
-        The unique ID of the item. This may be provided by the client or generated by the server.
+        An optional client ID. The value `root` is reserved.
 
-      - `object: optional "realtime.item"`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-        - `"realtime.item"`
-
-      - `status: optional "completed" or "incomplete" or "in_progress"`
-
-        The status of the item. Has no effect on the conversation.
+        Optional input status. Omission or null defaults to completed.
 
         - `"completed"`
 
         - `"incomplete"`
 
-        - `"in_progress"`
+    - `RealtimeResponseInputMessageDeveloper object { content, role, type, 2 more }`
 
-    - `RealtimeConversationItemUserMessage object { content, role, type, 3 more }`
+      - `content: array of object { text, type }`
 
-      A user message item in a Realtime conversation.
+        `minItems: 1`, `maxItems: 1`
 
-      - `content: array of object { audio, detail, image_url, 3 more }`
+        - `text: string`
 
-        The content of the message.
+          `maxLength: 256000`
 
-        - `audio: optional string`
-
-          Base64-encoded audio bytes (for `input_audio`), these will be parsed as the format specified in the session input audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
-
-        - `detail: optional "auto" or "low" or "high"`
-
-          The detail level of the image (for `input_image`). `auto` will default to `high`.
-
-          - `"auto"`
-
-          - `"low"`
-
-          - `"high"`
-
-        - `image_url: optional string`
-
-          Base64-encoded image bytes (for `input_image`) as a data URI. For example `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`. Supported formats are PNG and JPEG.
-
-        - `text: optional string`
-
-          The text content (for `input_text`).
-
-        - `transcript: optional string`
-
-          Transcript of the audio (for `input_audio`). This is not sent to the model, but will be attached to the message item for reference.
-
-        - `type: optional "input_text" or "input_audio" or "input_image"`
-
-          The content type (`input_text`, `input_audio`, or `input_image`).
+        - `type: "input_text"`
 
           - `"input_text"`
 
-          - `"input_audio"`
+      - `role: "developer"`
 
-          - `"input_image"`
+        - `"developer"`
+
+      - `type: "message"`
+
+        - `"message"`
+
+      - `id: optional string or null`
+
+        An optional client ID. The value `root` is reserved.
+
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
+
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
+
+        Optional input status. Omission or null defaults to completed.
+
+        - `"completed"`
+
+        - `"incomplete"`
+
+    - `RealtimeResponseInputMessageUser object { content, role, type, 2 more }`
+
+      - `content: array of InputText { text, type }  or InputAudio { audio, type, transcript }  or InputImage { image_url, type, detail }`
+
+        `minItems: 1`
+
+        - `InputText object { text, type }`
+
+          - `text: string`
+
+            `maxLength: 256000`
+
+          - `type: "input_text"`
+
+            - `"input_text"`
+
+        - `InputAudio object { audio, type, transcript }`
+
+          - `audio: string`
+
+            Base64 audio bytes in the session input audio format.
+
+            `minLength: 1`
+
+          - `type: "input_audio"`
+
+            - `"input_audio"`
+
+          - `transcript: optional string or null`
+
+            Optional text to associate with the input audio.
+
+        - `InputImage object { image_url, type, detail }`
+
+          - `image_url: string`
+
+            A base64 data URL with an image MIME type; use PNG or JPEG.
+
+            `pattern: ^data:image/[^;,]+;base64,.+`, `format: uri`
+
+          - `type: "input_image"`
+
+            - `"input_image"`
+
+          - `detail: optional "low" or "high" or "auto" or null (default: "auto")`
+
+            - `"low"`
+
+            - `"high"`
+
+            - `"auto"`
 
       - `role: "user"`
-
-        The role of the message sender. Always `user`.
 
         - `"user"`
 
       - `type: "message"`
 
-        The type of the item. Always `message`.
-
         - `"message"`
 
-      - `id: optional string`
+      - `id: optional string or null`
 
-        The unique ID of the item. This may be provided by the client or generated by the server.
+        An optional client ID. The value `root` is reserved.
 
-      - `object: optional "realtime.item"`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-        - `"realtime.item"`
-
-      - `status: optional "completed" or "incomplete" or "in_progress"`
-
-        The status of the item. Has no effect on the conversation.
+        Optional input status. Omission or null defaults to completed.
 
         - `"completed"`
 
         - `"incomplete"`
 
-        - `"in_progress"`
+    - `RealtimeResponseInputMessageAssistant object { content, role, type, 2 more }`
 
-    - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
+      - `content: array of object { text, type }`
 
-      An assistant message item in a Realtime conversation.
+        `minItems: 1`
 
-      - `content: array of object { audio, text, transcript, type }`
+        - `text: string`
 
-        The content of the message.
+          `maxLength: 256000`
 
-        - `audio: optional string`
-
-          Base64-encoded audio bytes, these will be parsed as the format specified in the session output audio type configuration. This defaults to PCM 16-bit 24kHz mono if not specified.
-
-        - `text: optional string`
-
-          The text content.
-
-        - `transcript: optional string`
-
-          The transcript of the audio content, this will always be present if the output type is `audio`.
-
-        - `type: optional "output_text" or "output_audio"`
-
-          The content type, `output_text` or `output_audio` depending on the session `output_modalities` configuration.
+        - `type: "output_text"`
 
           - `"output_text"`
 
-          - `"output_audio"`
-
       - `role: "assistant"`
-
-        The role of the message sender. Always `assistant`.
 
         - `"assistant"`
 
       - `type: "message"`
 
-        The type of the item. Always `message`.
-
         - `"message"`
 
-      - `id: optional string`
+      - `id: optional string or null`
 
-        The unique ID of the item. This may be provided by the client or generated by the server.
+        An optional client ID. The value `root` is reserved.
 
-      - `object: optional "realtime.item"`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-        - `"realtime.item"`
-
-      - `status: optional "completed" or "incomplete" or "in_progress"`
-
-        The status of the item. Has no effect on the conversation.
+        Optional input status. Omission or null defaults to completed.
 
         - `"completed"`
 
         - `"incomplete"`
 
-        - `"in_progress"`
+    - `FunctionCall object { arguments, call_id, name, 3 more }`
 
-    - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
-
-      A function call item in a Realtime conversation.
+      A function call supplied as input to a Realtime response.
 
       - `arguments: string`
 
-        The arguments of the function call. This is a JSON-encoded string representing the arguments passed to the function, for example `{"arg1": "value1", "arg2": 42}`.
-
-      - `name: string`
-
-        The name of the function being called.
-
-      - `type: "function_call"`
-
-        The type of the item. Always `function_call`.
-
-        - `"function_call"`
-
-      - `id: optional string`
-
-        The unique ID of the item. This may be provided by the client or generated by the server.
-
-      - `call_id: optional string`
-
-        The ID of the function call.
-
-      - `object: optional "realtime.item"`
-
-        Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
-
-        - `"realtime.item"`
-
-      - `status: optional "completed" or "incomplete" or "in_progress"`
-
-        The status of the item. Has no effect on the conversation.
-
-        - `"completed"`
-
-        - `"incomplete"`
-
-        - `"in_progress"`
-
-    - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
-
-      A function call output item in a Realtime conversation.
+        `maxLength: 1048576`
 
       - `call_id: string`
 
-        The ID of the function call this output is for.
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-      - `output: string`
+      - `name: string`
 
-        The output of the function call, this is free text and can contain any information or simply be empty.
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
-      - `type: "function_call_output"`
+      - `type: "function_call"`
 
-        The type of the item. Always `function_call_output`.
+        - `"function_call"`
 
-        - `"function_call_output"`
+      - `id: optional string or null`
 
-      - `id: optional string`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        The unique ID of the item. This may be provided by the client or generated by the server.
-
-      - `object: optional "realtime.item"`
-
-        Identifier for the API object being returned - always `realtime.item`. Optional when creating a new item.
-
-        - `"realtime.item"`
-
-      - `status: optional "completed" or "incomplete" or "in_progress"`
-
-        The status of the item. Has no effect on the conversation.
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
         - `"completed"`
 
         - `"incomplete"`
 
-        - `"in_progress"`
+    - `FunctionCallOutput object { call_id, output, type, 2 more }`
 
-    - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
+      The result of a function call supplied as input to a Realtime response.
 
-      A Realtime item responding to an MCP approval request.
+      - `call_id: string`
 
-      - `id: string`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        The unique ID of the approval response.
+      - `output: string`
 
-      - `approval_request_id: string`
+        `maxLength: 1048576`
 
-        The ID of the approval request being answered.
+      - `type: "function_call_output"`
 
-      - `approve: boolean`
+        - `"function_call_output"`
 
-        Whether the request was approved.
+      - `id: optional string or null`
 
-      - `type: "mcp_approval_response"`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        The type of the item. Always `mcp_approval_response`.
+      - `status: optional "completed" or "incomplete" or null (default: "completed")`
 
-        - `"mcp_approval_response"`
+        - `"completed"`
 
-      - `reason: optional string or null`
+        - `"incomplete"`
 
-        Optional reason for the decision.
+    - `ResponseItemReference object { id, type }`
 
-    - `RealtimeMcpListTools object { server_label, tools, type, id }`
-
-      A Realtime item listing tools available on an MCP server.
-
-      - `server_label: string`
-
-        The label of the MCP server.
-
-      - `tools: array of object { input_schema, name, annotations, description }`
-
-        The tools available on the server.
-
-        - `input_schema: unknown`
-
-          The JSON schema describing the tool's input.
-
-        - `name: string`
-
-          The name of the tool.
-
-        - `annotations: optional unknown or null`
-
-          Additional annotations about the tool.
-
-        - `description: optional string or null`
-
-          The description of the tool.
-
-      - `type: "mcp_list_tools"`
-
-        The type of the item. Always `mcp_list_tools`.
-
-        - `"mcp_list_tools"`
-
-      - `id: optional string`
-
-        The unique ID of the list.
-
-    - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
-
-      A Realtime item representing an invocation of a tool on an MCP server.
+      Reference an existing item in this Realtime session as response.create input.
+      Item references are only accepted in the response input array, not as new
+      conversation items.
 
       - `id: string`
 
-        The unique ID of the tool call.
+        The ID of an existing item in the same Realtime session.
 
-      - `arguments: string`
+        `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 32`
 
-        A JSON string of the arguments passed to the tool.
+      - `type: "item_reference"`
 
-      - `name: string`
+        The type of this item. Always `item_reference`.
 
-        The name of the tool that was run.
-
-      - `server_label: string`
-
-        The label of the MCP server running the tool.
-
-      - `type: "mcp_call"`
-
-        The type of the item. Always `mcp_call`.
-
-        - `"mcp_call"`
-
-      - `approval_request_id: optional string or null`
-
-        The ID of an associated approval request, if any.
-
-      - `error: optional RealtimeMcpProtocolError or RealtimeMcpToolExecutionError or RealtimeMcphttpError or null`
-
-        The error from the tool call, if any.
-
-        - `RealtimeMcpProtocolError object { code, message, type }`
-
-          - `code: number`
-
-          - `message: string`
-
-          - `type: "protocol_error"`
-
-            - `"protocol_error"`
-
-        - `RealtimeMcpToolExecutionError object { message, type }`
-
-          - `message: string`
-
-          - `type: "tool_execution_error"`
-
-            - `"tool_execution_error"`
-
-        - `RealtimeMcphttpError object { code, message, type }`
-
-          - `code: number`
-
-          - `message: string`
-
-          - `type: "http_error"`
-
-            - `"http_error"`
-
-      - `output: optional string or null`
-
-        The output from the tool call.
-
-    - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
-
-      A Realtime item requesting human approval of a tool invocation.
-
-      - `id: string`
-
-        The unique ID of the approval request.
-
-      - `arguments: string`
-
-        A JSON string of arguments for the tool.
-
-      - `name: string`
-
-        The name of the tool to run.
-
-      - `server_label: string`
-
-        The label of the MCP server making the request.
-
-      - `type: "mcp_approval_request"`
-
-        The type of the item. Always `mcp_approval_request`.
-
-        - `"mcp_approval_request"`
+        - `"item_reference"`
 
   - `instructions: optional string`
 
@@ -2464,7 +2340,7 @@ Schema name: `RealtimeClientEventResponseCreate`
 
           The text input to the model.
 
-        - `type: "input_text"`
+        - `type: "input_text" (default: "input_text")`
 
           The type of the input item. Always `input_text`.
 
@@ -2474,7 +2350,7 @@ Schema name: `RealtimeClientEventResponseCreate`
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -2504,7 +2380,7 @@ Schema name: `RealtimeClientEventResponseCreate`
 
           - `"original"`
 
-        - `type: "input_image"`
+        - `type: "input_image" (default: "input_image")`
 
           The type of the input item. Always `input_image`.
 
@@ -2518,11 +2394,13 @@ Schema name: `RealtimeClientEventResponseCreate`
 
           The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+          `format: uri`
+
         - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -2540,7 +2418,7 @@ Schema name: `RealtimeClientEventResponseCreate`
 
         A file input to the model.
 
-        - `type: "input_file"`
+        - `type: "input_file" (default: "input_file")`
 
           The type of the input item. Always `input_file`.
 
@@ -2568,6 +2446,8 @@ Schema name: `RealtimeClientEventResponseCreate`
 
           The URL of the file to be sent to the model.
 
+          `format: uri`
+
         - `filename: optional string`
 
           The name of the file to be sent to the model.
@@ -2576,7 +2456,7 @@ Schema name: `RealtimeClientEventResponseCreate`
 
           Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-          - `mode: "explicit"`
+          - `mode: "explicit" (default: "explicit")`
 
             The breakpoint mode. Always `explicit`.
 
@@ -2598,7 +2478,7 @@ Schema name: `RealtimeClientEventResponseCreate`
 
     Configuration for reasoning-capable Realtime models such as `gpt-realtime-2`.
 
-    - `effort: optional RealtimeReasoningEffort`
+    - `effort: optional RealtimeReasoningEffort (default: "low")`
 
       Constrains effort on reasoning for reasoning-capable Realtime models such as
       `gpt-realtime-2`.
@@ -2613,7 +2493,7 @@ Schema name: `RealtimeClientEventResponseCreate`
 
       - `"xhigh"`
 
-  - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
+  - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp (default: "auto")`
 
     How the model chooses tools. Provide one of the string modes or force a specific
     function/MCP tool.
@@ -2712,6 +2592,8 @@ Schema name: `RealtimeClientEventResponseCreate`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
@@ -2790,7 +2672,7 @@ Schema name: `RealtimeClientEventResponseCreate`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
         Specify which of the MCP server's tools require approval.
 
@@ -2847,10 +2729,14 @@ Schema name: `RealtimeClientEventResponseCreate`
         The URL for the MCP server. One of `server_url`, `connector_id`, or
         `tunnel_id` must be provided.
 
+        `format: uri`
+
       - `tunnel_id: optional string`
 
         The Secure MCP Tunnel ID to use instead of a direct server URL. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+        `pattern: ^tunnel_[a-z0-9]{32}$`
 
 ### Example
 
@@ -2914,6 +2800,8 @@ Schema name: `RealtimeClientEventResponseCancel`
 - `event_id: optional string`
 
   Optional client-generated ID used to identify this event.
+
+  `maxLength: 512`
 
 - `response_id: optional string`
 

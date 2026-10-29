@@ -64,14 +64,16 @@ storage limits.
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number or null`
+  - `bytes: integer or null`
 
     The size of the file, in bytes. In a completed file upload response, this can
     be null when the file size is not yet available.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the file was created.
+
+    `format: unixtime`
 
   - `filename: string`
 
@@ -113,10 +115,12 @@ storage limits.
 
     - `"error"`
 
-  - `expires_at: optional number`
+  - `expires_at: optional integer`
 
     The Unix timestamp (in seconds) for when the file will expire. In a
     completed file upload response, this can be null when no expiry is set.
+
+    `format: unixtime`
 
   - `status_details: optional string`
 
@@ -132,7 +136,7 @@ curl https://api.openai.com/v1/files \
     -F purpose=assistants
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -159,7 +163,7 @@ curl https://api.openai.com/v1/files \
   -F 'expires_after[seconds]=2592000'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -204,7 +208,7 @@ curl https://api.openai.com/v1/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -222,7 +226,7 @@ curl https://api.openai.com/v1/files/file-abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -244,11 +248,11 @@ Returns a list of files.
 
   A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
 
-- `limit: optional number`
+- `limit: optional integer (default: 10000)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 10,000, and the default is 10,000.
 
-- `order: optional "asc" or "desc"`
+- `order: optional "asc" or "desc" (default: "desc")`
 
   Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
 
@@ -268,14 +272,16 @@ Returns a list of files.
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number or null`
+  - `bytes: integer or null`
 
     The size of the file, in bytes. In a completed file upload response, this can
     be null when the file size is not yet available.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the file was created.
+
+    `format: unixtime`
 
   - `filename: string`
 
@@ -317,10 +323,12 @@ Returns a list of files.
 
     - `"error"`
 
-  - `expires_at: optional number`
+  - `expires_at: optional integer`
 
     The Unix timestamp (in seconds) for when the file will expire. In a
     completed file upload response, this can be null when no expiry is set.
+
+    `format: unixtime`
 
   - `status_details: optional string`
 
@@ -341,7 +349,7 @@ curl https://api.openai.com/v1/files \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -372,7 +380,7 @@ curl https://api.openai.com/v1/files \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -425,14 +433,16 @@ Returns information about a specific file.
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number or null`
+  - `bytes: integer or null`
 
     The size of the file, in bytes. In a completed file upload response, this can
     be null when the file size is not yet available.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the file was created.
+
+    `format: unixtime`
 
   - `filename: string`
 
@@ -474,10 +484,12 @@ Returns information about a specific file.
 
     - `"error"`
 
-  - `expires_at: optional number`
+  - `expires_at: optional integer`
 
     The Unix timestamp (in seconds) for when the file will expire. In a
     completed file upload response, this can be null when no expiry is set.
+
+    `format: unixtime`
 
   - `status_details: optional string`
 
@@ -490,7 +502,7 @@ curl https://api.openai.com/v1/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -513,7 +525,7 @@ curl https://api.openai.com/v1/files/file-abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -556,14 +568,16 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number or null`
+  - `bytes: integer or null`
 
     The size of the file, in bytes. In a completed file upload response, this can
     be null when the file size is not yet available.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the file was created.
+
+    `format: unixtime`
 
   - `filename: string`
 
@@ -605,10 +619,12 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
     - `"error"`
 
-  - `expires_at: optional number`
+  - `expires_at: optional integer`
 
     The Unix timestamp (in seconds) for when the file will expire. In a
     completed file upload response, this can be null when no expiry is set.
+
+    `format: unixtime`
 
   - `status_details: optional string`
 

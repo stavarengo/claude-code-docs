@@ -252,19 +252,18 @@ grader = {
     }
   ],
   "pass_threshold" => 0.5,
-  "model" => "o4-mini-2025-04-16",
+  "model" => "gpt-4.1-2025-04-14",
   "range" => [0, 1],
   "sampling_params" => {
     "max_completions_tokens" => 32768,
-    "top_p" => 1,
-    "reasoning_effort" => "medium"
+    "top_p" => 1
   }
 }
 item = { reference_answer: 1.0 }
 model_sample = "0.9"
 
-pp(client.fine_tuning.alpha.graders.validate(grader: grader))
-pp(client.fine_tuning.alpha.graders.run(grader: grader, item: item, model_sample: model_sample))
+puts(client.fine_tuning.alpha.graders.validate(grader: grader).to_json)
+puts(client.fine_tuning.alpha.graders.run(grader: grader, item: item, model_sample: model_sample).to_json)
 ```
 
 
@@ -436,8 +435,8 @@ grader = {
 item = { reference_answer: "fuzzy wuzzy had no hair" }
 model_sample = "fuzzy wuzzy was a bear"
 
-pp(client.fine_tuning.alpha.graders.validate(grader: grader))
-pp(client.fine_tuning.alpha.graders.run(grader: grader, item: item, model_sample: model_sample))
+puts(client.fine_tuning.alpha.graders.validate(grader: grader).to_json)
+puts(client.fine_tuning.alpha.graders.run(grader: grader, item: item, model_sample: model_sample).to_json)
 ```
 
 

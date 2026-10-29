@@ -80,11 +80,11 @@ Cancelling prevents new requests from using the issued client secret.
 
         Indicates if uploads are enabled for the session.
 
-      - `max_file_size: number or null`
+      - `max_file_size: integer or null`
 
         Maximum upload size in megabytes.
 
-      - `max_files: number or null`
+      - `max_files: integer or null`
 
         Maximum number of uploads allowed during the session.
 
@@ -96,7 +96,7 @@ Cancelling prevents new requests from using the issued client secret.
 
         Indicates if chat history is persisted for the session.
 
-      - `recent_threads: number or null`
+      - `recent_threads: integer or null`
 
         Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -104,15 +104,17 @@ Cancelling prevents new requests from using the issued client secret.
 
     Ephemeral client secret that authenticates session requests.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Unix timestamp (in seconds) for when the session expires.
 
-  - `max_requests_per_1_minute: number`
+    `format: unixtime`
+
+  - `max_requests_per_1_minute: integer`
 
     Convenience copy of the per-minute request limit.
 
-  - `object: "chatkit.session"`
+  - `object: "chatkit.session" (default: "chatkit.session")`
 
     Type discriminator that is always `chatkit.session`.
 
@@ -122,7 +124,7 @@ Cancelling prevents new requests from using the issued client secret.
 
     Resolved rate limit values.
 
-    - `max_requests_per_1_minute: number`
+    - `max_requests_per_1_minute: integer`
 
       Maximum allowed requests per one-minute window.
 
@@ -179,7 +181,7 @@ curl https://api.openai.com/v1/chatkit/sessions/$SESSION_ID/cancel \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -229,7 +231,7 @@ curl -X POST \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -280,6 +282,8 @@ Create a ChatKit session.
 
   A free-form string that identifies your end user; ensures this Session can access other objects that have the same `user` scope.
 
+  `minLength: 1`
+
 - `workflow: ChatSessionWorkflowParam`
 
   Workflow that powers the session.
@@ -293,6 +297,8 @@ Create a ChatKit session.
     State variables forwarded to the workflow. Keys may be up to 64 characters, values must be primitive types, and the map defaults to an empty object.
 
     - `string`
+
+      `maxLength: 10485760`
 
     - `boolean`
 
@@ -330,13 +336,17 @@ Create a ChatKit session.
 
       Enable uploads for this session. Defaults to false.
 
-    - `max_file_size: optional number`
+    - `max_file_size: optional integer`
 
       Maximum size in megabytes for each uploaded file. Defaults to 512 MB, which is the maximum allowable size.
 
-    - `max_files: optional number`
+      `minimum: 1`, `maximum: 512`
+
+    - `max_files: optional integer`
 
       Maximum number of files that can be uploaded to the session. Defaults to 10.
+
+      `minimum: 1`
 
   - `history: optional object { enabled, recent_threads }`
 
@@ -346,31 +356,37 @@ Create a ChatKit session.
 
       Enables chat users to access previous ChatKit threads. Defaults to true.
 
-    - `recent_threads: optional number`
+    - `recent_threads: optional integer`
 
       Number of recent ChatKit threads users have access to. Defaults to unlimited when unset.
+
+      `minimum: 1`
 
 - `expires_after: optional ChatSessionExpiresAfterParam`
 
   Optional override for session expiration timing in seconds from creation. Defaults to 10 minutes.
 
-  - `anchor: "created_at"`
+  - `anchor: "created_at" (default: "created_at")`
 
     Base timestamp used to calculate expiration. Currently fixed to `created_at`.
 
     - `"created_at"`
 
-  - `seconds: number`
+  - `seconds: integer`
 
     Number of seconds after the anchor when the session expires.
+
+    `format: int64`, `minimum: 1`, `maximum: 600`
 
 - `rate_limits: optional ChatSessionRateLimitsParam`
 
   Optional override for per-minute request limits. When omitted, defaults to 10.
 
-  - `max_requests_per_1_minute: optional number`
+  - `max_requests_per_1_minute: optional integer`
 
     Maximum number of requests allowed per minute for the session. Defaults to 10.
+
+    `minimum: 1`
 
 ### Returns
 
@@ -402,11 +418,11 @@ Create a ChatKit session.
 
         Indicates if uploads are enabled for the session.
 
-      - `max_file_size: number or null`
+      - `max_file_size: integer or null`
 
         Maximum upload size in megabytes.
 
-      - `max_files: number or null`
+      - `max_files: integer or null`
 
         Maximum number of uploads allowed during the session.
 
@@ -418,7 +434,7 @@ Create a ChatKit session.
 
         Indicates if chat history is persisted for the session.
 
-      - `recent_threads: number or null`
+      - `recent_threads: integer or null`
 
         Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -426,15 +442,17 @@ Create a ChatKit session.
 
     Ephemeral client secret that authenticates session requests.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Unix timestamp (in seconds) for when the session expires.
 
-  - `max_requests_per_1_minute: number`
+    `format: unixtime`
+
+  - `max_requests_per_1_minute: integer`
 
     Convenience copy of the per-minute request limit.
 
-  - `object: "chatkit.session"`
+  - `object: "chatkit.session" (default: "chatkit.session")`
 
     Type discriminator that is always `chatkit.session`.
 
@@ -444,7 +462,7 @@ Create a ChatKit session.
 
     Resolved rate limit values.
 
-    - `max_requests_per_1_minute: number`
+    - `max_requests_per_1_minute: integer`
 
       Maximum allowed requests per one-minute window.
 
@@ -507,7 +525,7 @@ curl https://api.openai.com/v1/chatkit/sessions \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -561,7 +579,7 @@ curl https://api.openai.com/v1/chatkit/sessions \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -622,7 +640,7 @@ Delete a ChatKit thread along with its items and stored attachments.
 
   Indicates that the thread has been deleted.
 
-- `object: "chatkit.thread.deleted"`
+- `object: "chatkit.thread.deleted" (default: "chatkit.thread.deleted")`
 
   Type discriminator that is always `chatkit.thread.deleted`.
 
@@ -637,7 +655,7 @@ curl https://api.openai.com/v1/chatkit/threads/$THREAD_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -663,9 +681,11 @@ List ChatKit threads with optional pagination and user filters.
 
   List items created before this thread item ID. Defaults to null for the newest results.
 
-- `limit: optional number`
+- `limit: optional integer`
 
   Maximum number of thread items to return. Defaults to 20.
+
+  `minimum: 0`, `maximum: 100`
 
 - `order: optional "asc" or "desc"`
 
@@ -679,6 +699,8 @@ List ChatKit threads with optional pagination and user filters.
 
   Filter threads that belong to this user identifier. Defaults to null to return all users.
 
+  `minLength: 1`, `maxLength: 512`
+
 ### Returns
 
 - `data: array of ChatKitThread`
@@ -689,11 +711,13 @@ List ChatKit threads with optional pagination and user filters.
 
     Identifier of the thread.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) for when the thread was created.
 
-  - `object: "chatkit.thread"`
+    `format: unixtime`
+
+  - `object: "chatkit.thread" (default: "chatkit.thread")`
 
     Type discriminator that is always `chatkit.thread`.
 
@@ -707,7 +731,7 @@ List ChatKit threads with optional pagination and user filters.
 
       Indicates that a thread is active.
 
-      - `type: "active"`
+      - `type: "active" (default: "active")`
 
         Status discriminator that is always `active`.
 
@@ -721,7 +745,7 @@ List ChatKit threads with optional pagination and user filters.
 
         Reason that the thread was locked. Defaults to null when no reason is recorded.
 
-      - `type: "locked"`
+      - `type: "locked" (default: "locked")`
 
         Status discriminator that is always `locked`.
 
@@ -735,7 +759,7 @@ List ChatKit threads with optional pagination and user filters.
 
         Reason that the thread was closed. Defaults to null when no reason is recorded.
 
-      - `type: "closed"`
+      - `type: "closed" (default: "closed")`
 
         Status discriminator that is always `closed`.
 
@@ -761,7 +785,7 @@ List ChatKit threads with optional pagination and user filters.
 
   The ID of the last item in the list.
 
-- `object: "list"`
+- `object: "list" (default: "list")`
 
   The type of object returned, must be `list`.
 
@@ -775,7 +799,7 @@ curl https://api.openai.com/v1/chatkit/threads \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -806,7 +830,7 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -859,9 +883,11 @@ List items that belong to a ChatKit thread.
 
   List items created before this thread item ID. Defaults to null for the newest results.
 
-- `limit: optional number`
+- `limit: optional integer`
 
   Maximum number of thread items to return. Defaults to 20.
+
+  `minimum: 0`, `maximum: 100`
 
 - `order: optional "asc" or "desc"`
 
@@ -909,6 +935,8 @@ List items that belong to a ChatKit thread.
 
           Preview URL for rendering the attachment inline.
 
+          `format: uri`
+
         - `type: "image" or "file"`
 
           Attachment discriminator.
@@ -929,7 +957,7 @@ List items that belong to a ChatKit thread.
 
             Plain-text content supplied by the user.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             Type discriminator that is always `input_text`.
 
@@ -943,15 +971,17 @@ List items that belong to a ChatKit thread.
 
             Quoted text content.
 
-          - `type: "quoted_text"`
+          - `type: "quoted_text" (default: "quoted_text")`
 
             Type discriminator that is always `quoted_text`.
 
             - `"quoted_text"`
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
+
+        `format: unixtime`
 
       - `inference_options: object { model, tool_choice }  or null`
 
@@ -969,7 +999,7 @@ List items that belong to a ChatKit thread.
 
             Identifier of the requested tool.
 
-      - `object: "chatkit.thread_item"`
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -979,7 +1009,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.user_message"`
+      - `type: "chatkit.user_message" (default: "chatkit.user_message")`
 
         - `"chatkit.user_message"`
 
@@ -1011,13 +1041,13 @@ List items that belong to a ChatKit thread.
 
                 Filename referenced by the annotation.
 
-              - `type: "file"`
+              - `type: "file" (default: "file")`
 
                 Type discriminator that is always `file`.
 
                 - `"file"`
 
-            - `type: "file"`
+            - `type: "file" (default: "file")`
 
               Type discriminator that is always `file` for this annotation.
 
@@ -1031,7 +1061,7 @@ List items that belong to a ChatKit thread.
 
               URL referenced by the annotation.
 
-              - `type: "url"`
+              - `type: "url" (default: "url")`
 
                 Type discriminator that is always `url`.
 
@@ -1041,7 +1071,9 @@ List items that belong to a ChatKit thread.
 
                 URL referenced by the annotation.
 
-            - `type: "url"`
+                `format: uri`
+
+            - `type: "url" (default: "url")`
 
               Type discriminator that is always `url` for this annotation.
 
@@ -1051,17 +1083,19 @@ List items that belong to a ChatKit thread.
 
           Assistant generated text.
 
-        - `type: "output_text"`
+        - `type: "output_text" (default: "output_text")`
 
           Type discriminator that is always `output_text`.
 
           - `"output_text"`
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `object: "chatkit.thread_item"`
+        `format: unixtime`
+
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -1071,7 +1105,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.assistant_message"`
+      - `type: "chatkit.assistant_message" (default: "chatkit.assistant_message")`
 
         Type discriminator that is always `chatkit.assistant_message`.
 
@@ -1085,11 +1119,13 @@ List items that belong to a ChatKit thread.
 
         Identifier of the thread item.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `object: "chatkit.thread_item"`
+        `format: unixtime`
+
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -1099,7 +1135,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.widget"`
+      - `type: "chatkit.widget" (default: "chatkit.widget")`
 
         Type discriminator that is always `chatkit.widget`.
 
@@ -1125,15 +1161,17 @@ List items that belong to a ChatKit thread.
 
         Identifier for the client tool call.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
+
+        `format: unixtime`
 
       - `name: string`
 
         Tool name that was invoked.
 
-      - `object: "chatkit.thread_item"`
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -1155,7 +1193,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.client_tool_call"`
+      - `type: "chatkit.client_tool_call" (default: "chatkit.client_tool_call")`
 
         Type discriminator that is always `chatkit.client_tool_call`.
 
@@ -1169,15 +1207,17 @@ List items that belong to a ChatKit thread.
 
         Identifier of the thread item.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
+
+        `format: unixtime`
 
       - `heading: string or null`
 
         Optional heading for the task. Defaults to null when not provided.
 
-      - `object: "chatkit.thread_item"`
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -1199,7 +1239,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.task"`
+      - `type: "chatkit.task" (default: "chatkit.task")`
 
         Type discriminator that is always `chatkit.task`.
 
@@ -1213,11 +1253,13 @@ List items that belong to a ChatKit thread.
 
         Identifier of the thread item.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `object: "chatkit.thread_item"`
+        `format: unixtime`
+
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -1247,7 +1289,7 @@ List items that belong to a ChatKit thread.
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.task_group"`
+      - `type: "chatkit.task_group" (default: "chatkit.task_group")`
 
         Type discriminator that is always `chatkit.task_group`.
 
@@ -1265,7 +1307,7 @@ List items that belong to a ChatKit thread.
 
     The ID of the last item in the list.
 
-  - `object: "list"`
+  - `object: "list" (default: "list")`
 
     The type of object returned, must be `list`.
 
@@ -1279,7 +1321,7 @@ curl https://api.openai.com/v1/chatkit/threads/$THREAD_ID/items \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1328,7 +1370,7 @@ curl "https://api.openai.com/v1/chatkit/threads/cthr_abc123/items?limit=3" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1390,11 +1432,13 @@ Retrieve a ChatKit thread by its identifier.
 
     Identifier of the thread.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) for when the thread was created.
 
-  - `object: "chatkit.thread"`
+    `format: unixtime`
+
+  - `object: "chatkit.thread" (default: "chatkit.thread")`
 
     Type discriminator that is always `chatkit.thread`.
 
@@ -1408,7 +1452,7 @@ Retrieve a ChatKit thread by its identifier.
 
       Indicates that a thread is active.
 
-      - `type: "active"`
+      - `type: "active" (default: "active")`
 
         Status discriminator that is always `active`.
 
@@ -1422,7 +1466,7 @@ Retrieve a ChatKit thread by its identifier.
 
         Reason that the thread was locked. Defaults to null when no reason is recorded.
 
-      - `type: "locked"`
+      - `type: "locked" (default: "locked")`
 
         Status discriminator that is always `locked`.
 
@@ -1436,7 +1480,7 @@ Retrieve a ChatKit thread by its identifier.
 
         Reason that the thread was closed. Defaults to null when no reason is recorded.
 
-      - `type: "closed"`
+      - `type: "closed" (default: "closed")`
 
         Status discriminator that is always `closed`.
 
@@ -1458,7 +1502,7 @@ curl https://api.openai.com/v1/chatkit/threads/$THREAD_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1481,7 +1525,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1528,11 +1572,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Indicates if uploads are enabled for the session.
 
-      - `max_file_size: number or null`
+      - `max_file_size: integer or null`
 
         Maximum upload size in megabytes.
 
-      - `max_files: number or null`
+      - `max_files: integer or null`
 
         Maximum number of uploads allowed during the session.
 
@@ -1544,7 +1588,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Indicates if chat history is persisted for the session.
 
-      - `recent_threads: number or null`
+      - `recent_threads: integer or null`
 
         Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -1552,15 +1596,17 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Ephemeral client secret that authenticates session requests.
 
-  - `expires_at: number`
+  - `expires_at: integer`
 
     Unix timestamp (in seconds) for when the session expires.
 
-  - `max_requests_per_1_minute: number`
+    `format: unixtime`
+
+  - `max_requests_per_1_minute: integer`
 
     Convenience copy of the per-minute request limit.
 
-  - `object: "chatkit.session"`
+  - `object: "chatkit.session" (default: "chatkit.session")`
 
     Type discriminator that is always `chatkit.session`.
 
@@ -1570,7 +1616,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Resolved rate limit values.
 
-    - `max_requests_per_1_minute: number`
+    - `max_requests_per_1_minute: integer`
 
       Maximum allowed requests per one-minute window.
 
@@ -1650,11 +1696,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Indicates if uploads are enabled for the session.
 
-    - `max_file_size: number or null`
+    - `max_file_size: integer or null`
 
       Maximum upload size in megabytes.
 
-    - `max_files: number or null`
+    - `max_files: integer or null`
 
       Maximum number of uploads allowed during the session.
 
@@ -1666,7 +1712,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Indicates if chat history is persisted for the session.
 
-    - `recent_threads: number or null`
+    - `recent_threads: integer or null`
 
       Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -1692,13 +1738,17 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Enable uploads for this session. Defaults to false.
 
-    - `max_file_size: optional number`
+    - `max_file_size: optional integer`
 
       Maximum size in megabytes for each uploaded file. Defaults to 512 MB, which is the maximum allowable size.
 
-    - `max_files: optional number`
+      `minimum: 1`, `maximum: 512`
+
+    - `max_files: optional integer`
 
       Maximum number of files that can be uploaded to the session. Defaults to 10.
+
+      `minimum: 1`
 
   - `history: optional object { enabled, recent_threads }`
 
@@ -1708,9 +1758,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Enables chat users to access previous ChatKit threads. Defaults to true.
 
-    - `recent_threads: optional number`
+    - `recent_threads: optional integer`
 
       Number of recent ChatKit threads users have access to. Defaults to unlimited when unset.
+
+      `minimum: 1`
 
 ### Chat Session Expires After Param
 
@@ -1718,15 +1770,17 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   Controls when the session expires relative to an anchor timestamp.
 
-  - `anchor: "created_at"`
+  - `anchor: "created_at" (default: "created_at")`
 
     Base timestamp used to calculate expiration. Currently fixed to `created_at`.
 
     - `"created_at"`
 
-  - `seconds: number`
+  - `seconds: integer`
 
     Number of seconds after the anchor when the session expires.
+
+    `format: int64`, `minimum: 1`, `maximum: 600`
 
 ### Chat Session File Upload
 
@@ -1738,11 +1792,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Indicates if uploads are enabled for the session.
 
-  - `max_file_size: number or null`
+  - `max_file_size: integer or null`
 
     Maximum upload size in megabytes.
 
-  - `max_files: number or null`
+  - `max_files: integer or null`
 
     Maximum number of uploads allowed during the session.
 
@@ -1756,7 +1810,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Indicates if chat history is persisted for the session.
 
-  - `recent_threads: number or null`
+  - `recent_threads: integer or null`
 
     Number of prior threads surfaced in history views. Defaults to null when all history is retained.
 
@@ -1766,7 +1820,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   Active per-minute request limit for the session.
 
-  - `max_requests_per_1_minute: number`
+  - `max_requests_per_1_minute: integer`
 
     Maximum allowed requests per one-minute window.
 
@@ -1776,9 +1830,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   Controls request rate limits for the session.
 
-  - `max_requests_per_1_minute: optional number`
+  - `max_requests_per_1_minute: optional integer`
 
     Maximum number of requests allowed per minute for the session. Defaults to 10.
+
+    `minimum: 1`
 
 ### Chat Session Status
 
@@ -1805,6 +1861,8 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
     State variables forwarded to the workflow. Keys may be up to 64 characters, values must be primitive types, and the map defaults to an empty object.
 
     - `string`
+
+      `maxLength: 10485760`
 
     - `boolean`
 
@@ -1844,6 +1902,8 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Preview URL for rendering the attachment inline.
 
+    `format: uri`
+
   - `type: "image" or "file"`
 
     Attachment discriminator.
@@ -1874,13 +1934,13 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
           Filename referenced by the annotation.
 
-        - `type: "file"`
+        - `type: "file" (default: "file")`
 
           Type discriminator that is always `file`.
 
           - `"file"`
 
-      - `type: "file"`
+      - `type: "file" (default: "file")`
 
         Type discriminator that is always `file` for this annotation.
 
@@ -1894,7 +1954,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         URL referenced by the annotation.
 
-        - `type: "url"`
+        - `type: "url" (default: "url")`
 
           Type discriminator that is always `url`.
 
@@ -1904,7 +1964,9 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
           URL referenced by the annotation.
 
-      - `type: "url"`
+          `format: uri`
+
+      - `type: "url" (default: "url")`
 
         Type discriminator that is always `url` for this annotation.
 
@@ -1914,7 +1976,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Assistant generated text.
 
-  - `type: "output_text"`
+  - `type: "output_text" (default: "output_text")`
 
     Type discriminator that is always `output_text`.
 
@@ -1930,11 +1992,13 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Identifier of the thread.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) for when the thread was created.
 
-  - `object: "chatkit.thread"`
+    `format: unixtime`
+
+  - `object: "chatkit.thread" (default: "chatkit.thread")`
 
     Type discriminator that is always `chatkit.thread`.
 
@@ -1948,7 +2012,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Indicates that a thread is active.
 
-      - `type: "active"`
+      - `type: "active" (default: "active")`
 
         Status discriminator that is always `active`.
 
@@ -1962,7 +2026,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Reason that the thread was locked. Defaults to null when no reason is recorded.
 
-      - `type: "locked"`
+      - `type: "locked" (default: "locked")`
 
         Status discriminator that is always `locked`.
 
@@ -1976,7 +2040,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Reason that the thread was closed. Defaults to null when no reason is recorded.
 
-      - `type: "closed"`
+      - `type: "closed" (default: "closed")`
 
         Status discriminator that is always `closed`.
 
@@ -2020,13 +2084,13 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
             Filename referenced by the annotation.
 
-          - `type: "file"`
+          - `type: "file" (default: "file")`
 
             Type discriminator that is always `file`.
 
             - `"file"`
 
-        - `type: "file"`
+        - `type: "file" (default: "file")`
 
           Type discriminator that is always `file` for this annotation.
 
@@ -2040,7 +2104,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
           URL referenced by the annotation.
 
-          - `type: "url"`
+          - `type: "url" (default: "url")`
 
             Type discriminator that is always `url`.
 
@@ -2050,7 +2114,9 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
             URL referenced by the annotation.
 
-        - `type: "url"`
+            `format: uri`
+
+        - `type: "url" (default: "url")`
 
           Type discriminator that is always `url` for this annotation.
 
@@ -2060,17 +2126,19 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Assistant generated text.
 
-    - `type: "output_text"`
+    - `type: "output_text" (default: "output_text")`
 
       Type discriminator that is always `output_text`.
 
       - `"output_text"`
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) for when the item was created.
 
-  - `object: "chatkit.thread_item"`
+    `format: unixtime`
+
+  - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
     Type discriminator that is always `chatkit.thread_item`.
 
@@ -2080,7 +2148,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Identifier of the parent thread.
 
-  - `type: "chatkit.assistant_message"`
+  - `type: "chatkit.assistant_message" (default: "chatkit.assistant_message")`
 
     Type discriminator that is always `chatkit.assistant_message`.
 
@@ -2124,6 +2192,8 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
           Preview URL for rendering the attachment inline.
 
+          `format: uri`
+
         - `type: "image" or "file"`
 
           Attachment discriminator.
@@ -2144,7 +2214,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
             Plain-text content supplied by the user.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             Type discriminator that is always `input_text`.
 
@@ -2158,15 +2228,17 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
             Quoted text content.
 
-          - `type: "quoted_text"`
+          - `type: "quoted_text" (default: "quoted_text")`
 
             Type discriminator that is always `quoted_text`.
 
             - `"quoted_text"`
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
+
+        `format: unixtime`
 
       - `inference_options: object { model, tool_choice }  or null`
 
@@ -2184,7 +2256,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
             Identifier of the requested tool.
 
-      - `object: "chatkit.thread_item"`
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -2194,7 +2266,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.user_message"`
+      - `type: "chatkit.user_message" (default: "chatkit.user_message")`
 
         - `"chatkit.user_message"`
 
@@ -2226,13 +2298,13 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
                 Filename referenced by the annotation.
 
-              - `type: "file"`
+              - `type: "file" (default: "file")`
 
                 Type discriminator that is always `file`.
 
                 - `"file"`
 
-            - `type: "file"`
+            - `type: "file" (default: "file")`
 
               Type discriminator that is always `file` for this annotation.
 
@@ -2246,7 +2318,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
               URL referenced by the annotation.
 
-              - `type: "url"`
+              - `type: "url" (default: "url")`
 
                 Type discriminator that is always `url`.
 
@@ -2256,7 +2328,9 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
                 URL referenced by the annotation.
 
-            - `type: "url"`
+                `format: uri`
+
+            - `type: "url" (default: "url")`
 
               Type discriminator that is always `url` for this annotation.
 
@@ -2266,17 +2340,19 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
           Assistant generated text.
 
-        - `type: "output_text"`
+        - `type: "output_text" (default: "output_text")`
 
           Type discriminator that is always `output_text`.
 
           - `"output_text"`
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `object: "chatkit.thread_item"`
+        `format: unixtime`
+
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -2286,7 +2362,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.assistant_message"`
+      - `type: "chatkit.assistant_message" (default: "chatkit.assistant_message")`
 
         Type discriminator that is always `chatkit.assistant_message`.
 
@@ -2300,11 +2376,13 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Identifier of the thread item.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `object: "chatkit.thread_item"`
+        `format: unixtime`
+
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -2314,7 +2392,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.widget"`
+      - `type: "chatkit.widget" (default: "chatkit.widget")`
 
         Type discriminator that is always `chatkit.widget`.
 
@@ -2340,15 +2418,17 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Identifier for the client tool call.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
+
+        `format: unixtime`
 
       - `name: string`
 
         Tool name that was invoked.
 
-      - `object: "chatkit.thread_item"`
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -2370,7 +2450,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.client_tool_call"`
+      - `type: "chatkit.client_tool_call" (default: "chatkit.client_tool_call")`
 
         Type discriminator that is always `chatkit.client_tool_call`.
 
@@ -2384,15 +2464,17 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Identifier of the thread item.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
+
+        `format: unixtime`
 
       - `heading: string or null`
 
         Optional heading for the task. Defaults to null when not provided.
 
-      - `object: "chatkit.thread_item"`
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -2414,7 +2496,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.task"`
+      - `type: "chatkit.task" (default: "chatkit.task")`
 
         Type discriminator that is always `chatkit.task`.
 
@@ -2428,11 +2510,13 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Identifier of the thread item.
 
-      - `created_at: number`
+      - `created_at: integer`
 
         Unix timestamp (in seconds) for when the item was created.
 
-      - `object: "chatkit.thread_item"`
+        `format: unixtime`
+
+      - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
         Type discriminator that is always `chatkit.thread_item`.
 
@@ -2462,7 +2546,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Identifier of the parent thread.
 
-      - `type: "chatkit.task_group"`
+      - `type: "chatkit.task_group" (default: "chatkit.task_group")`
 
         Type discriminator that is always `chatkit.task_group`.
 
@@ -2480,7 +2564,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     The ID of the last item in the list.
 
-  - `object: "list"`
+  - `object: "list" (default: "list")`
 
     The type of object returned, must be `list`.
 
@@ -2516,6 +2600,8 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       Preview URL for rendering the attachment inline.
 
+      `format: uri`
+
     - `type: "image" or "file"`
 
       Attachment discriminator.
@@ -2536,7 +2622,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Plain-text content supplied by the user.
 
-      - `type: "input_text"`
+      - `type: "input_text" (default: "input_text")`
 
         Type discriminator that is always `input_text`.
 
@@ -2550,15 +2636,17 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Quoted text content.
 
-      - `type: "quoted_text"`
+      - `type: "quoted_text" (default: "quoted_text")`
 
         Type discriminator that is always `quoted_text`.
 
         - `"quoted_text"`
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) for when the item was created.
+
+    `format: unixtime`
 
   - `inference_options: object { model, tool_choice }  or null`
 
@@ -2576,7 +2664,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Identifier of the requested tool.
 
-  - `object: "chatkit.thread_item"`
+  - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
     Type discriminator that is always `chatkit.thread_item`.
 
@@ -2586,7 +2674,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Identifier of the parent thread.
 
-  - `type: "chatkit.user_message"`
+  - `type: "chatkit.user_message" (default: "chatkit.user_message")`
 
     - `"chatkit.user_message"`
 
@@ -2600,11 +2688,13 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Identifier of the thread item.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) for when the item was created.
 
-  - `object: "chatkit.thread_item"`
+    `format: unixtime`
+
+  - `object: "chatkit.thread_item" (default: "chatkit.thread_item")`
 
     Type discriminator that is always `chatkit.thread_item`.
 
@@ -2614,7 +2704,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Identifier of the parent thread.
 
-  - `type: "chatkit.widget"`
+  - `type: "chatkit.widget" (default: "chatkit.widget")`
 
     Type discriminator that is always `chatkit.widget`.
 
@@ -2638,7 +2728,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Indicates that the thread has been deleted.
 
-  - `object: "chatkit.thread.deleted"`
+  - `object: "chatkit.thread.deleted" (default: "chatkit.thread.deleted")`
 
     Type discriminator that is always `chatkit.thread.deleted`.
 

@@ -51,6 +51,8 @@ Schema name: `ResponseCreatedEvent`
 
     Unix timestamp (in seconds) of when this Response was created.
 
+    `format: unixtime`
+
   - `error: ResponseError or null`
 
     An error object returned when the model fails to generate a Response.
@@ -132,6 +134,8 @@ Schema name: `ResponseCreatedEvent`
       - `review_target: optional string or null`
 
         An opaque target for explicitly continuing this review, or null when unavailable.
+
+        `pattern: ^[A-Za-z0-9._~:-]+$`, `minLength: 1`, `maxLength: 96`
 
       - `steer: optional object { message }`
 
@@ -216,7 +220,7 @@ Schema name: `ResponseCreatedEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -226,7 +230,7 @@ Schema name: `ResponseCreatedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -256,7 +260,7 @@ Schema name: `ResponseCreatedEvent`
 
                 - `"original"`
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -270,11 +274,13 @@ Schema name: `ResponseCreatedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -292,7 +298,7 @@ Schema name: `ResponseCreatedEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -320,6 +326,8 @@ Schema name: `ResponseCreatedEvent`
 
                 The URL of the file to be sent to the model.
 
+                `format: uri`
+
               - `filename: optional string`
 
                 The name of the file to be sent to the model.
@@ -328,7 +336,7 @@ Schema name: `ResponseCreatedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -441,11 +449,11 @@ Schema name: `ResponseCreatedEvent`
 
                   The filename of the file cited.
 
-                - `index: number`
+                - `index: integer`
 
                   The index in the output text at which to insert the file citation.
 
-                - `type: "file_citation"`
+                - `type: "file_citation" (default: "file_citation")`
 
                   The type of the file citation. Always `file_citation`.
 
@@ -455,11 +463,11 @@ Schema name: `ResponseCreatedEvent`
 
                 A citation for a web resource used to generate a model response.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the URL citation in the message.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the URL citation in the message.
 
@@ -467,7 +475,7 @@ Schema name: `ResponseCreatedEvent`
 
                   The title of the web resource.
 
-                - `type: "url_citation"`
+                - `type: "url_citation" (default: "url_citation")`
 
                   The type of the URL citation. Always `url_citation`.
 
@@ -477,6 +485,8 @@ Schema name: `ResponseCreatedEvent`
 
                   The URL of the web resource.
 
+                  `format: uri`
+
               - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
                 A citation for a container file used to generate a model response.
@@ -485,7 +495,7 @@ Schema name: `ResponseCreatedEvent`
 
                   The ID of the container file.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the container file citation in the message.
 
@@ -497,11 +507,11 @@ Schema name: `ResponseCreatedEvent`
 
                   The filename of the container file cited.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the container file citation in the message.
 
-                - `type: "container_file_citation"`
+                - `type: "container_file_citation" (default: "container_file_citation")`
 
                   The type of the container file citation. Always `container_file_citation`.
 
@@ -515,7 +525,7 @@ Schema name: `ResponseCreatedEvent`
 
                   The ID of the file.
 
-                - `index: number`
+                - `index: integer`
 
                   The index of the file in the list of files.
 
@@ -545,7 +555,7 @@ Schema name: `ResponseCreatedEvent`
 
               The text output from the model.
 
-            - `type: "output_text"`
+            - `type: "output_text" (default: "output_text")`
 
               The type of the output text. Always `output_text`.
 
@@ -559,7 +569,7 @@ Schema name: `ResponseCreatedEvent`
 
               The refusal explanation from the model.
 
-            - `type: "refusal"`
+            - `type: "refusal" (default: "refusal")`
 
               The type of the refusal. Always `refusal`.
 
@@ -646,6 +656,8 @@ Schema name: `ResponseCreatedEvent`
 
             - `string`
 
+              `maxLength: 512`
+
             - `number`
 
             - `boolean`
@@ -661,6 +673,8 @@ Schema name: `ResponseCreatedEvent`
           - `score: optional number`
 
             The relevance score of the file - a value between 0 and 1.
+
+            `format: float`
 
           - `text: optional string`
 
@@ -706,7 +720,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `"incomplete"`
 
-        - `type: "computer_call"`
+        - `type: "computer_call" (default: "computer_call")`
 
           The type of the computer call. Always `computer_call`.
 
@@ -734,17 +748,17 @@ Schema name: `ResponseCreatedEvent`
 
               - `"forward"`
 
-            - `type: "click"`
+            - `type: "click" (default: "click")`
 
               Specifies the event type. For a click action, this property is always `click`.
 
               - `"click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the click occurred.
 
@@ -760,17 +774,17 @@ Schema name: `ResponseCreatedEvent`
 
               The keys being held while double-clicking.
 
-            - `type: "double_click"`
+            - `type: "double_click" (default: "double_click")`
 
               Specifies the event type. For a double click action, this property is always set to `double_click`.
 
               - `"double_click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the double click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the double click occurred.
 
@@ -789,15 +803,15 @@ Schema name: `ResponseCreatedEvent`
               ]
               ```
 
-              - `x: number`
+              - `x: integer`
 
                 The x-coordinate.
 
-              - `y: number`
+              - `y: integer`
 
                 The y-coordinate.
 
-            - `type: "drag"`
+            - `type: "drag" (default: "drag")`
 
               Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -815,7 +829,7 @@ Schema name: `ResponseCreatedEvent`
 
               The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-            - `type: "keypress"`
+            - `type: "keypress" (default: "keypress")`
 
               Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -825,17 +839,17 @@ Schema name: `ResponseCreatedEvent`
 
             A mouse move action.
 
-            - `type: "move"`
+            - `type: "move" (default: "move")`
 
               Specifies the event type. For a move action, this property is always set to `move`.
 
               - `"move"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate to move to.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate to move to.
 
@@ -847,7 +861,7 @@ Schema name: `ResponseCreatedEvent`
 
             A screenshot action.
 
-            - `type: "screenshot"`
+            - `type: "screenshot" (default: "screenshot")`
 
               Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -857,25 +871,25 @@ Schema name: `ResponseCreatedEvent`
 
             A scroll action.
 
-            - `scroll_x: number`
+            - `scroll_x: integer`
 
               The horizontal scroll distance.
 
-            - `scroll_y: number`
+            - `scroll_y: integer`
 
               The vertical scroll distance.
 
-            - `type: "scroll"`
+            - `type: "scroll" (default: "scroll")`
 
               Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
               - `"scroll"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the scroll occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the scroll occurred.
 
@@ -891,7 +905,7 @@ Schema name: `ResponseCreatedEvent`
 
               The text to type.
 
-            - `type: "type"`
+            - `type: "type" (default: "type")`
 
               Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -901,7 +915,7 @@ Schema name: `ResponseCreatedEvent`
 
             A wait action.
 
-            - `type: "wait"`
+            - `type: "wait" (default: "wait")`
 
               Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -956,11 +970,13 @@ Schema name: `ResponseCreatedEvent`
 
           The ID of the computer tool call that produced the output.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: ResponseComputerToolCallOutputScreenshot`
 
           A computer screenshot image used with the computer use tool.
 
-          - `type: "computer_screenshot"`
+          - `type: "computer_screenshot" (default: "computer_screenshot")`
 
             Specifies the event type. For a computer screenshot, this property is
             always set to `computer_screenshot`.
@@ -975,7 +991,9 @@ Schema name: `ResponseCreatedEvent`
 
             The URL of the screenshot image.
 
-        - `type: "computer_call_output"`
+            `format: uri`
+
+        - `type: "computer_call_output" (default: "computer_call_output")`
 
           The type of the computer tool call output. Always `computer_call_output`.
 
@@ -1077,6 +1095,8 @@ Schema name: `ResponseCreatedEvent`
 
                 The URL of the source.
 
+                `format: uri`
+
           - `OpenPage object { type, url }`
 
             Action type "open_page" - Opens a specific URL from search results.
@@ -1090,6 +1110,8 @@ Schema name: `ResponseCreatedEvent`
             - `url: optional string or null`
 
               The URL opened by the model.
+
+              `format: uri`
 
           - `FindInPage object { pattern, type, url }`
 
@@ -1108,6 +1130,8 @@ Schema name: `ResponseCreatedEvent`
             - `url: optional string or null`
 
               The URL of the page searched for the pattern, when available.
+
+              `format: uri`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -1146,7 +1170,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -1156,7 +1180,7 @@ Schema name: `ResponseCreatedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -1187,6 +1211,8 @@ Schema name: `ResponseCreatedEvent`
 
             A JSON string of the output of the function tool call.
 
+            `maxLength: 10485760`
+
           - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
             An array of content outputs (text, image, file) for the function tool call.
@@ -1199,7 +1225,9 @@ Schema name: `ResponseCreatedEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+                `maxLength: 10485760`
+
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -1209,7 +1237,7 @@ Schema name: `ResponseCreatedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -1227,7 +1255,7 @@ Schema name: `ResponseCreatedEvent`
 
               An image input to the model. Learn about [image inputs](https://developers.openai.com/api/docs/guides/images-vision)
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -1245,11 +1273,13 @@ Schema name: `ResponseCreatedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `maxLength: 20971520`, `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -1267,7 +1297,7 @@ Schema name: `ResponseCreatedEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -1287,6 +1317,8 @@ Schema name: `ResponseCreatedEvent`
 
                 The base64-encoded data of the file to be sent to the model.
 
+                `maxLength: 73400320`
+
               - `file_id: optional string or null`
 
                 The ID of the file to be sent to the model.
@@ -1294,6 +1326,8 @@ Schema name: `ResponseCreatedEvent`
               - `file_url: optional string or null`
 
                 The URL of the file to be sent to the model.
+
+                `format: uri`
 
               - `filename: optional string or null`
 
@@ -1303,7 +1337,7 @@ Schema name: `ResponseCreatedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -1317,7 +1351,7 @@ Schema name: `ResponseCreatedEvent`
 
                   - `"12h"`
 
-        - `type: "function_call_output"`
+        - `type: "function_call_output" (default: "function_call_output")`
 
           The type of the function tool call output. Always `function_call_output`.
 
@@ -1331,13 +1365,15 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the function tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -1349,7 +1385,9 @@ Schema name: `ResponseCreatedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -1359,9 +1397,13 @@ Schema name: `ResponseCreatedEvent`
 
           The name of the tool that produced the output.
 
+          `minLength: 1`, `maxLength: 128`
+
         - `namespace: optional string or null`
 
           The namespace of the tool that produced the output.
+
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -1379,7 +1421,7 @@ Schema name: `ResponseCreatedEvent`
 
           The arguments supplied to the tool search call.
 
-        - `type: "tool_search_call"`
+        - `type: "tool_search_call" (default: "tool_search_call")`
 
           The item type. Always `tool_search_call`.
 
@@ -1392,6 +1434,8 @@ Schema name: `ResponseCreatedEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -1433,7 +1477,7 @@ Schema name: `ResponseCreatedEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -1465,7 +1509,7 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -1487,7 +1531,7 @@ Schema name: `ResponseCreatedEvent`
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -1556,7 +1600,7 @@ Schema name: `ResponseCreatedEvent`
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -1592,7 +1636,7 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -1602,11 +1646,11 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -1624,7 +1668,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -1635,7 +1679,7 @@ Schema name: `ResponseCreatedEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -1643,7 +1687,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -1651,14 +1695,14 @@ Schema name: `ResponseCreatedEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -1690,7 +1734,7 @@ Schema name: `ResponseCreatedEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -1714,6 +1758,8 @@ Schema name: `ResponseCreatedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -1793,7 +1839,7 @@ Schema name: `ResponseCreatedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -1850,10 +1896,14 @@ Schema name: `ResponseCreatedEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -1873,7 +1923,7 @@ Schema name: `ResponseCreatedEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -1882,6 +1932,8 @@ Schema name: `ResponseCreatedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -1901,7 +1953,7 @@ Schema name: `ResponseCreatedEvent`
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -1913,7 +1965,9 @@ Schema name: `ResponseCreatedEvent`
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -1923,17 +1977,25 @@ Schema name: `ResponseCreatedEvent`
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -1945,13 +2007,15 @@ Schema name: `ResponseCreatedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -1977,7 +2041,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -2058,7 +2122,7 @@ Schema name: `ResponseCreatedEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -2066,11 +2130,13 @@ Schema name: `ResponseCreatedEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -2081,11 +2147,13 @@ Schema name: `ResponseCreatedEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -2104,7 +2172,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -2126,7 +2194,7 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -2136,7 +2204,7 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -2146,6 +2214,8 @@ Schema name: `ResponseCreatedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -2154,7 +2224,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -2163,6 +2233,8 @@ Schema name: `ResponseCreatedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -2188,13 +2260,17 @@ Schema name: `ResponseCreatedEvent`
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -2222,19 +2298,21 @@ Schema name: `ResponseCreatedEvent`
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -2242,7 +2320,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -2251,6 +2329,8 @@ Schema name: `ResponseCreatedEvent`
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -2270,7 +2350,7 @@ Schema name: `ResponseCreatedEvent`
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -2284,7 +2364,7 @@ Schema name: `ResponseCreatedEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -2293,6 +2373,8 @@ Schema name: `ResponseCreatedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -2318,7 +2400,7 @@ Schema name: `ResponseCreatedEvent`
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -2340,7 +2422,7 @@ Schema name: `ResponseCreatedEvent`
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -2358,9 +2440,13 @@ Schema name: `ResponseCreatedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools loaded inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
@@ -2368,13 +2454,17 @@ Schema name: `ResponseCreatedEvent`
 
                   The name of the loaded function tool.
 
-                - `type: "function"`
+                  `pattern: ^(?![\s\S]*[\r\n])[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -2408,7 +2498,7 @@ Schema name: `ResponseCreatedEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -2417,6 +2507,8 @@ Schema name: `ResponseCreatedEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -2438,7 +2530,7 @@ Schema name: `ResponseCreatedEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -2448,7 +2540,7 @@ Schema name: `ResponseCreatedEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -2474,7 +2566,7 @@ Schema name: `ResponseCreatedEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -2502,7 +2594,7 @@ Schema name: `ResponseCreatedEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -2528,7 +2620,7 @@ Schema name: `ResponseCreatedEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -2538,11 +2630,13 @@ Schema name: `ResponseCreatedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "tool_search_output"`
+        - `type: "tool_search_output" (default: "tool_search_output")`
 
           The item type. Always `tool_search_output`.
 
@@ -2555,6 +2649,8 @@ Schema name: `ResponseCreatedEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -2576,7 +2672,7 @@ Schema name: `ResponseCreatedEvent`
 
       - `AdditionalTools object { role, tools, type, id }`
 
-        - `role: "developer"`
+        - `role: "developer" (default: "developer")`
 
           The role that provided the additional tools. Only `developer` is supported.
 
@@ -2602,7 +2698,7 @@ Schema name: `ResponseCreatedEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -2634,7 +2730,7 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -2656,7 +2752,7 @@ Schema name: `ResponseCreatedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -2692,7 +2788,7 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -2702,11 +2798,11 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -2724,7 +2820,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -2735,7 +2831,7 @@ Schema name: `ResponseCreatedEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -2743,7 +2839,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -2751,14 +2847,14 @@ Schema name: `ResponseCreatedEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -2790,7 +2886,7 @@ Schema name: `ResponseCreatedEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -2814,6 +2910,8 @@ Schema name: `ResponseCreatedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -2893,7 +2991,7 @@ Schema name: `ResponseCreatedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -2950,10 +3048,14 @@ Schema name: `ResponseCreatedEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -2973,7 +3075,7 @@ Schema name: `ResponseCreatedEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -2982,6 +3084,8 @@ Schema name: `ResponseCreatedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -3013,13 +3117,15 @@ Schema name: `ResponseCreatedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -3045,7 +3151,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -3126,7 +3232,7 @@ Schema name: `ResponseCreatedEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -3134,11 +3240,13 @@ Schema name: `ResponseCreatedEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -3149,11 +3257,13 @@ Schema name: `ResponseCreatedEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -3172,7 +3282,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -3194,7 +3304,7 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -3204,7 +3314,7 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -3213,6 +3323,8 @@ Schema name: `ResponseCreatedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -3234,7 +3346,7 @@ Schema name: `ResponseCreatedEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -3243,6 +3355,8 @@ Schema name: `ResponseCreatedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -3276,21 +3390,29 @@ Schema name: `ResponseCreatedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -3324,7 +3446,7 @@ Schema name: `ResponseCreatedEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -3333,6 +3455,8 @@ Schema name: `ResponseCreatedEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -3354,7 +3478,7 @@ Schema name: `ResponseCreatedEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -3364,7 +3488,7 @@ Schema name: `ResponseCreatedEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -3390,7 +3514,7 @@ Schema name: `ResponseCreatedEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -3418,7 +3542,7 @@ Schema name: `ResponseCreatedEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -3444,7 +3568,7 @@ Schema name: `ResponseCreatedEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -3454,11 +3578,13 @@ Schema name: `ResponseCreatedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "additional_tools"`
+        - `type: "additional_tools" (default: "additional_tools")`
 
           The item type. Always `additional_tools`.
 
@@ -3474,7 +3600,7 @@ Schema name: `ResponseCreatedEvent`
         remains in effect for subsequent responses until it is replaced by another
         configuration update.
 
-        - `type: "configuration_update"`
+        - `type: "configuration_update" (default: "configuration_update")`
 
           The item type. Always `configuration_update`.
 
@@ -3488,7 +3614,7 @@ Schema name: `ResponseCreatedEvent`
 
           Updates to reasoning configuration. Only effort is supported.
 
-          - `effort: optional ReasoningEffort or null`
+          - `effort: optional ReasoningEffort or null (default: "medium")`
 
             The reasoning effort to use for subsequent responses until another
             configuration update replaces it.
@@ -3526,7 +3652,7 @@ Schema name: `ResponseCreatedEvent`
 
             A summary of the reasoning output from the model so far.
 
-          - `type: "summary_text"`
+          - `type: "summary_text" (default: "summary_text")`
 
             The type of the object. Always `summary_text`.
 
@@ -3546,7 +3672,7 @@ Schema name: `ResponseCreatedEvent`
 
             The reasoning text from the model.
 
-          - `type: "reasoning_text"`
+          - `type: "reasoning_text" (default: "reasoning_text")`
 
             The type of the reasoning text. Always `reasoning_text`.
 
@@ -3583,7 +3709,9 @@ Schema name: `ResponseCreatedEvent`
 
           The encrypted content of the compaction summary.
 
-        - `type: "compaction"`
+          `maxLength: 104857600`
+
+        - `type: "compaction" (default: "compaction")`
 
           The type of the item. Always `compaction`.
 
@@ -3756,7 +3884,7 @@ Schema name: `ResponseCreatedEvent`
 
               The logs output from the code interpreter.
 
-            - `type: "logs"`
+            - `type: "logs" (default: "logs")`
 
               The type of the output. Always `logs`.
 
@@ -3766,7 +3894,7 @@ Schema name: `ResponseCreatedEvent`
 
             The image output from the code interpreter.
 
-            - `type: "image"`
+            - `type: "image" (default: "image")`
 
               The type of the output. Always `image`.
 
@@ -3775,6 +3903,8 @@ Schema name: `ResponseCreatedEvent`
             - `url: string`
 
               The URL of the image output from the code interpreter.
+
+              `format: uri`
 
         - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -3790,7 +3920,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `"failed"`
 
-        - `type: "code_interpreter_call"`
+        - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
           The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -3816,13 +3946,13 @@ Schema name: `ResponseCreatedEvent`
 
             Environment variables to set for the command.
 
-          - `type: "exec"`
+          - `type: "exec" (default: "exec")`
 
             The type of the local shell action. Always `exec`.
 
             - `"exec"`
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Optional timeout in milliseconds for the command.
 
@@ -3894,11 +4024,11 @@ Schema name: `ResponseCreatedEvent`
 
             Ordered shell commands for the execution environment to run.
 
-          - `max_output_length: optional number or null`
+          - `max_output_length: optional integer or null`
 
             Maximum number of UTF-8 characters to capture from combined stdout and stderr output.
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
@@ -3906,7 +4036,9 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the shell tool call generated by the model.
 
-        - `type: "shell_call"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "shell_call" (default: "shell_call")`
 
           The type of the item. Always `shell_call`.
 
@@ -3922,7 +4054,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -3934,7 +4066,9 @@ Schema name: `ResponseCreatedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -3966,6 +4100,8 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the shell tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: array of ResponseFunctionShellCallOutputContent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
@@ -3978,7 +4114,7 @@ Schema name: `ResponseCreatedEvent`
 
               Indicates that the shell call exceeded its configured time limit.
 
-              - `type: "timeout"`
+              - `type: "timeout" (default: "timeout")`
 
                 The outcome type. Always `timeout`.
 
@@ -3988,11 +4124,11 @@ Schema name: `ResponseCreatedEvent`
 
               Indicates that the shell commands finished and returned an exit code.
 
-              - `exit_code: number`
+              - `exit_code: integer`
 
                 The exit code returned by the shell process.
 
-              - `type: "exit"`
+              - `type: "exit" (default: "exit")`
 
                 The outcome type. Always `exit`.
 
@@ -4002,11 +4138,15 @@ Schema name: `ResponseCreatedEvent`
 
             Captured stderr output for the shell call.
 
+            `maxLength: 10485760`
+
           - `stdout: string`
 
             Captured stdout output for the shell call.
 
-        - `type: "shell_call_output"`
+            `maxLength: 10485760`
+
+        - `type: "shell_call_output" (default: "shell_call_output")`
 
           The type of the item. Always `shell_call_output`.
 
@@ -4022,7 +4162,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -4034,13 +4174,15 @@ Schema name: `ResponseCreatedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
               - `"program"`
 
-        - `max_output_length: optional number or null`
+        - `max_output_length: optional integer or null`
 
           The maximum number of UTF-8 characters captured for this shell call's combined output.
 
@@ -4062,6 +4204,8 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
@@ -4074,11 +4218,15 @@ Schema name: `ResponseCreatedEvent`
 
               Unified diff content to apply when creating the file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to create relative to the workspace root.
 
-            - `type: "create_file"`
+              `minLength: 1`
+
+            - `type: "create_file" (default: "create_file")`
 
               The operation type. Always `create_file`.
 
@@ -4092,7 +4240,9 @@ Schema name: `ResponseCreatedEvent`
 
               Path of the file to delete relative to the workspace root.
 
-            - `type: "delete_file"`
+              `minLength: 1`
+
+            - `type: "delete_file" (default: "delete_file")`
 
               The operation type. Always `delete_file`.
 
@@ -4106,11 +4256,15 @@ Schema name: `ResponseCreatedEvent`
 
               Unified diff content to apply to the existing file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to update relative to the workspace root.
 
-            - `type: "update_file"`
+              `minLength: 1`
+
+            - `type: "update_file" (default: "update_file")`
 
               The operation type. Always `update_file`.
 
@@ -4124,7 +4278,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `"completed"`
 
-        - `type: "apply_patch_call"`
+        - `type: "apply_patch_call" (default: "apply_patch_call")`
 
           The type of the item. Always `apply_patch_call`.
 
@@ -4140,7 +4294,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -4152,7 +4306,9 @@ Schema name: `ResponseCreatedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -4166,6 +4322,8 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `status: "completed" or "failed"`
 
           The status of the apply patch tool call output. One of `completed` or `failed`.
@@ -4174,7 +4332,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `"failed"`
 
-        - `type: "apply_patch_call_output"`
+        - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
           The type of the item. Always `apply_patch_call_output`.
 
@@ -4190,7 +4348,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -4202,7 +4360,9 @@ Schema name: `ResponseCreatedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -4211,6 +4371,8 @@ Schema name: `ResponseCreatedEvent`
         - `output: optional string or null`
 
           Optional human-readable log text from the apply patch tool (e.g., patch results or errors).
+
+          `maxLength: 10485760`
 
       - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -4343,11 +4505,11 @@ Schema name: `ResponseCreatedEvent`
 
           - `McpProtocolError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "mcp_protocol_error"`
+            - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
               - `"mcp_protocol_error"`
 
@@ -4355,17 +4517,17 @@ Schema name: `ResponseCreatedEvent`
 
             - `content: unknown`
 
-            - `type: "mcp_tool_execution_error"`
+            - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
               - `"mcp_tool_execution_error"`
 
           - `HTTPError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "http_error"`
+            - `type: "http_error" (default: "http_error")`
 
               - `"http_error"`
 
@@ -4436,7 +4598,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -4448,7 +4610,9 @@ Schema name: `ResponseCreatedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -4490,7 +4654,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -4500,7 +4664,7 @@ Schema name: `ResponseCreatedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -4512,7 +4676,7 @@ Schema name: `ResponseCreatedEvent`
 
         Compacts the current context. Must be the final input item.
 
-        - `type: "compaction_trigger"`
+        - `type: "compaction_trigger" (default: "compaction_trigger")`
 
           The type of the item. Always `compaction_trigger`.
 
@@ -4530,7 +4694,7 @@ Schema name: `ResponseCreatedEvent`
 
           The ID of the item to reference.
 
-        - `type: optional "item_reference" or null`
+        - `type: optional "item_reference" or null (default: "item_reference")`
 
           The type of item to reference. Always `item_reference`.
 
@@ -4546,15 +4710,21 @@ Schema name: `ResponseCreatedEvent`
 
           The stable call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `code: string`
 
           The JavaScript source executed by programmatic tool calling.
+
+          `maxLength: 10485760`
 
         - `fingerprint: string`
 
           Opaque program replay fingerprint that must be round-tripped.
 
-        - `type: "program"`
+          `maxLength: 10485760`
+
+        - `type: "program" (default: "program")`
 
           The item type. Always `program`.
 
@@ -4570,9 +4740,13 @@ Schema name: `ResponseCreatedEvent`
 
           The call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `result: string`
 
           The result produced by the program item.
+
+          `maxLength: 10485760`
 
         - `status: "completed" or "incomplete"`
 
@@ -4582,7 +4756,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `"incomplete"`
 
-        - `type: "program_output"`
+        - `type: "program_output" (default: "program_output")`
 
           The item type. Always `program_output`.
 
@@ -4899,6 +5073,8 @@ Schema name: `ResponseCreatedEvent`
 
           - `string`
 
+            `maxLength: 512`
+
           - `number`
 
           - `boolean`
@@ -4914,6 +5090,8 @@ Schema name: `ResponseCreatedEvent`
         - `score: optional number`
 
           The relevance score of the file - a value between 0 and 1.
+
+          `format: float`
 
         - `text: optional string`
 
@@ -4956,7 +5134,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -4966,7 +5144,7 @@ Schema name: `ResponseCreatedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -5043,7 +5221,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -5055,7 +5233,9 @@ Schema name: `ResponseCreatedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -5139,6 +5319,8 @@ Schema name: `ResponseCreatedEvent`
 
               The URL of the source.
 
+              `format: uri`
+
         - `OpenPage object { type, url }`
 
           Action type "open_page" - Opens a specific URL from search results.
@@ -5152,6 +5334,8 @@ Schema name: `ResponseCreatedEvent`
           - `url: optional string or null`
 
             The URL opened by the model.
+
+            `format: uri`
 
         - `FindInPage object { pattern, type, url }`
 
@@ -5170,6 +5354,8 @@ Schema name: `ResponseCreatedEvent`
           - `url: optional string or null`
 
             The URL of the page searched for the pattern, when available.
+
+            `format: uri`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -5211,7 +5397,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"incomplete"`
 
-      - `type: "computer_call"`
+      - `type: "computer_call" (default: "computer_call")`
 
         The type of the computer call. Always `computer_call`.
 
@@ -5253,7 +5439,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"in_progress"`
 
-      - `type: "computer_call_output"`
+      - `type: "computer_call_output" (default: "computer_call_output")`
 
         The type of the computer tool call output. Always `computer_call_output`.
 
@@ -5299,7 +5485,7 @@ Schema name: `ResponseCreatedEvent`
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -5317,7 +5503,7 @@ Schema name: `ResponseCreatedEvent`
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -5364,7 +5550,7 @@ Schema name: `ResponseCreatedEvent`
 
         Opaque program replay fingerprint that must be round-tripped.
 
-      - `type: "program"`
+      - `type: "program" (default: "program")`
 
         The type of the item. Always `program`.
 
@@ -5392,7 +5578,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"incomplete"`
 
-      - `type: "program_output"`
+      - `type: "program_output" (default: "program_output")`
 
         The type of the item. Always `program_output`.
 
@@ -5430,7 +5616,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"incomplete"`
 
-      - `type: "tool_search_call"`
+      - `type: "tool_search_call" (default: "tool_search_call")`
 
         The type of the item. Always `tool_search_call`.
 
@@ -5488,7 +5674,7 @@ Schema name: `ResponseCreatedEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -5520,7 +5706,7 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -5542,7 +5728,7 @@ Schema name: `ResponseCreatedEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -5578,7 +5764,7 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -5588,11 +5774,11 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -5610,7 +5796,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -5621,7 +5807,7 @@ Schema name: `ResponseCreatedEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -5629,7 +5815,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -5637,14 +5823,14 @@ Schema name: `ResponseCreatedEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -5676,7 +5862,7 @@ Schema name: `ResponseCreatedEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -5700,6 +5886,8 @@ Schema name: `ResponseCreatedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -5779,7 +5967,7 @@ Schema name: `ResponseCreatedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -5836,10 +6024,14 @@ Schema name: `ResponseCreatedEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -5859,7 +6051,7 @@ Schema name: `ResponseCreatedEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -5868,6 +6060,8 @@ Schema name: `ResponseCreatedEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -5899,13 +6093,15 @@ Schema name: `ResponseCreatedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -5931,7 +6127,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -6012,7 +6208,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -6020,11 +6216,13 @@ Schema name: `ResponseCreatedEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -6035,11 +6233,13 @@ Schema name: `ResponseCreatedEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -6058,7 +6258,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -6080,7 +6280,7 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -6090,7 +6290,7 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -6099,6 +6299,8 @@ Schema name: `ResponseCreatedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -6120,7 +6322,7 @@ Schema name: `ResponseCreatedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -6129,6 +6331,8 @@ Schema name: `ResponseCreatedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -6162,21 +6366,29 @@ Schema name: `ResponseCreatedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -6210,7 +6422,7 @@ Schema name: `ResponseCreatedEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -6219,6 +6431,8 @@ Schema name: `ResponseCreatedEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -6240,7 +6454,7 @@ Schema name: `ResponseCreatedEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -6250,7 +6464,7 @@ Schema name: `ResponseCreatedEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -6276,7 +6490,7 @@ Schema name: `ResponseCreatedEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -6304,7 +6518,7 @@ Schema name: `ResponseCreatedEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -6330,7 +6544,7 @@ Schema name: `ResponseCreatedEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -6340,11 +6554,13 @@ Schema name: `ResponseCreatedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "tool_search_output"`
+      - `type: "tool_search_output" (default: "tool_search_output")`
 
         The type of the item. Always `tool_search_output`.
 
@@ -6400,7 +6616,7 @@ Schema name: `ResponseCreatedEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -6432,7 +6648,7 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -6454,7 +6670,7 @@ Schema name: `ResponseCreatedEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -6490,7 +6706,7 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -6500,11 +6716,11 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -6522,7 +6738,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -6533,7 +6749,7 @@ Schema name: `ResponseCreatedEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -6541,7 +6757,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -6549,14 +6765,14 @@ Schema name: `ResponseCreatedEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -6588,7 +6804,7 @@ Schema name: `ResponseCreatedEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -6612,6 +6828,8 @@ Schema name: `ResponseCreatedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -6691,7 +6909,7 @@ Schema name: `ResponseCreatedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -6748,10 +6966,14 @@ Schema name: `ResponseCreatedEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -6771,7 +6993,7 @@ Schema name: `ResponseCreatedEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -6780,6 +7002,8 @@ Schema name: `ResponseCreatedEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -6811,13 +7035,15 @@ Schema name: `ResponseCreatedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -6843,7 +7069,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -6924,7 +7150,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -6932,11 +7158,13 @@ Schema name: `ResponseCreatedEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -6947,11 +7175,13 @@ Schema name: `ResponseCreatedEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -6970,7 +7200,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -6992,7 +7222,7 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -7002,7 +7232,7 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -7011,6 +7241,8 @@ Schema name: `ResponseCreatedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -7032,7 +7264,7 @@ Schema name: `ResponseCreatedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -7041,6 +7273,8 @@ Schema name: `ResponseCreatedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -7074,21 +7308,29 @@ Schema name: `ResponseCreatedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -7122,7 +7364,7 @@ Schema name: `ResponseCreatedEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -7131,6 +7373,8 @@ Schema name: `ResponseCreatedEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -7152,7 +7396,7 @@ Schema name: `ResponseCreatedEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -7162,7 +7406,7 @@ Schema name: `ResponseCreatedEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -7188,7 +7432,7 @@ Schema name: `ResponseCreatedEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -7216,7 +7460,7 @@ Schema name: `ResponseCreatedEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -7242,7 +7486,7 @@ Schema name: `ResponseCreatedEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -7252,11 +7496,13 @@ Schema name: `ResponseCreatedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "additional_tools"`
+      - `type: "additional_tools" (default: "additional_tools")`
 
         The type of the item. Always `additional_tools`.
 
@@ -7274,7 +7520,7 @@ Schema name: `ResponseCreatedEvent`
 
         The encrypted content that was produced by compaction.
 
-      - `type: "compaction"`
+      - `type: "compaction" (default: "compaction")`
 
         The type of the item. Always `compaction`.
 
@@ -7447,7 +7693,7 @@ Schema name: `ResponseCreatedEvent`
 
             The logs output from the code interpreter.
 
-          - `type: "logs"`
+          - `type: "logs" (default: "logs")`
 
             The type of the output. Always `logs`.
 
@@ -7457,7 +7703,7 @@ Schema name: `ResponseCreatedEvent`
 
           The image output from the code interpreter.
 
-          - `type: "image"`
+          - `type: "image" (default: "image")`
 
             The type of the output. Always `image`.
 
@@ -7466,6 +7712,8 @@ Schema name: `ResponseCreatedEvent`
           - `url: string`
 
             The URL of the image output from the code interpreter.
+
+            `format: uri`
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -7481,7 +7729,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"failed"`
 
-      - `type: "code_interpreter_call"`
+      - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
         The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -7507,13 +7755,13 @@ Schema name: `ResponseCreatedEvent`
 
           Environment variables to set for the command.
 
-        - `type: "exec"`
+        - `type: "exec" (default: "exec")`
 
           The type of the local shell action. Always `exec`.
 
           - `"exec"`
 
-        - `timeout_ms: optional number or null`
+        - `timeout_ms: optional integer or null`
 
           Optional timeout in milliseconds for the command.
 
@@ -7587,11 +7835,11 @@ Schema name: `ResponseCreatedEvent`
 
         - `commands: array of string`
 
-        - `max_output_length: number or null`
+        - `max_output_length: integer or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number or null`
+        - `timeout_ms: integer or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -7607,7 +7855,7 @@ Schema name: `ResponseCreatedEvent`
 
           Represents the use of a local environment to perform shell actions.
 
-          - `type: "local"`
+          - `type: "local" (default: "local")`
 
             The environment type. Always `local`.
 
@@ -7619,7 +7867,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `container_id: string`
 
-          - `type: "container_reference"`
+          - `type: "container_reference" (default: "container_reference")`
 
             The environment type. Always `container_reference`.
 
@@ -7635,7 +7883,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call"`
+      - `type: "shell_call" (default: "shell_call")`
 
         The type of the item. Always `shell_call`.
 
@@ -7647,7 +7895,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -7657,7 +7905,7 @@ Schema name: `ResponseCreatedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -7677,7 +7925,7 @@ Schema name: `ResponseCreatedEvent`
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -7693,7 +7941,7 @@ Schema name: `ResponseCreatedEvent`
 
             Indicates that the shell call exceeded its configured time limit.
 
-            - `type: "timeout"`
+            - `type: "timeout" (default: "timeout")`
 
               The outcome type. Always `timeout`.
 
@@ -7703,11 +7951,11 @@ Schema name: `ResponseCreatedEvent`
 
             Indicates that the shell commands finished and returned an exit code.
 
-            - `exit_code: number`
+            - `exit_code: integer`
 
               Exit code from the shell process.
 
-            - `type: "exit"`
+            - `type: "exit" (default: "exit")`
 
               The outcome type. Always `exit`.
 
@@ -7735,7 +7983,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call_output"`
+      - `type: "shell_call_output" (default: "shell_call_output")`
 
         The type of the shell call output. Always `shell_call_output`.
 
@@ -7747,7 +7995,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -7757,7 +8005,7 @@ Schema name: `ResponseCreatedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -7793,7 +8041,7 @@ Schema name: `ResponseCreatedEvent`
 
             Path of the file to create.
 
-          - `type: "create_file"`
+          - `type: "create_file" (default: "create_file")`
 
             Create a new file with the provided diff.
 
@@ -7807,7 +8055,7 @@ Schema name: `ResponseCreatedEvent`
 
             Path of the file to delete.
 
-          - `type: "delete_file"`
+          - `type: "delete_file" (default: "delete_file")`
 
             Delete the specified file.
 
@@ -7825,7 +8073,7 @@ Schema name: `ResponseCreatedEvent`
 
             Path of the file to update.
 
-          - `type: "update_file"`
+          - `type: "update_file" (default: "update_file")`
 
             Update an existing file with the provided diff.
 
@@ -7839,7 +8087,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"completed"`
 
-      - `type: "apply_patch_call"`
+      - `type: "apply_patch_call" (default: "apply_patch_call")`
 
         The type of the item. Always `apply_patch_call`.
 
@@ -7851,7 +8099,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -7861,7 +8109,7 @@ Schema name: `ResponseCreatedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -7889,7 +8137,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"failed"`
 
-      - `type: "apply_patch_call_output"`
+      - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
         The type of the item. Always `apply_patch_call_output`.
 
@@ -7901,7 +8149,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -7911,7 +8159,7 @@ Schema name: `ResponseCreatedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -8106,7 +8354,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -8116,7 +8364,7 @@ Schema name: `ResponseCreatedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -8182,7 +8430,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -8194,7 +8442,9 @@ Schema name: `ResponseCreatedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -8204,14 +8454,16 @@ Schema name: `ResponseCreatedEvent`
 
         The identifier of the actor that created the item.
 
-  - `parallel_tool_calls: boolean`
+  - `parallel_tool_calls: boolean (default: true)`
 
     Whether to allow the model to run tool calls in parallel.
 
-  - `temperature: number or null`
+  - `temperature: number or null (default: 1)`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
     We generally recommend altering this or `top_p` but not both.
+
+    `minimum: 0`, `maximum: 2`
 
   - `tool_choice: ToolChoiceOptions or ToolChoiceAllowed or ToolChoiceTypes or 6 more`
 
@@ -8357,7 +8609,7 @@ Schema name: `ResponseCreatedEvent`
 
     - `SpecificProgrammaticToolCallingParam object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The tool to call. Always `programmatic_tool_calling`.
 
@@ -8367,7 +8619,7 @@ Schema name: `ResponseCreatedEvent`
 
       Forces the model to call the apply_patch tool when executing a tool call.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The tool to call. Always `apply_patch`.
 
@@ -8377,7 +8629,7 @@ Schema name: `ResponseCreatedEvent`
 
       Forces the model to call the shell tool when a tool call is required.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The tool to call. Always `shell`.
 
@@ -8419,7 +8671,7 @@ Schema name: `ResponseCreatedEvent`
 
         Whether strict parameter validation is enforced for this function tool.
 
-      - `type: "function"`
+      - `type: "function" (default: "function")`
 
         The type of the function tool. Always `function`.
 
@@ -8451,7 +8703,7 @@ Schema name: `ResponseCreatedEvent`
 
       A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-      - `type: "file_search"`
+      - `type: "file_search" (default: "file_search")`
 
         The type of the file search tool. Always `file_search`.
 
@@ -8473,7 +8725,7 @@ Schema name: `ResponseCreatedEvent`
 
           Combine multiple filters using `and` or `or`.
 
-      - `max_num_results: optional number`
+      - `max_num_results: optional integer`
 
         The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -8509,7 +8761,7 @@ Schema name: `ResponseCreatedEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `type: "computer"`
+      - `type: "computer" (default: "computer")`
 
         The type of the computer tool. Always `computer`.
 
@@ -8519,11 +8771,11 @@ Schema name: `ResponseCreatedEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `display_height: number`
+      - `display_height: integer`
 
         The height of the computer display.
 
-      - `display_width: number`
+      - `display_width: integer`
 
         The width of the computer display.
 
@@ -8541,7 +8793,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"browser"`
 
-      - `type: "computer_use_preview"`
+      - `type: "computer_use_preview" (default: "computer_use_preview")`
 
         The type of the computer use tool. Always `computer_use_preview`.
 
@@ -8552,7 +8804,7 @@ Schema name: `ResponseCreatedEvent`
       Search the Internet for sources related to the prompt. Learn more about the
       [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search" or "web_search_2025_08_26"`
+      - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
         The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -8560,7 +8812,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"web_search_2025_08_26"`
 
-      - `external_web_access: optional boolean`
+      - `external_web_access: optional boolean (default: true)`
 
         Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -8568,14 +8820,14 @@ Schema name: `ResponseCreatedEvent`
 
         Filters for the search.
 
-        - `allowed_domains: optional array of string or null`
+        - `allowed_domains: optional array of string or null (default: [])`
 
           Allowed domains for the search. If not provided, all domains are allowed.
           Subdomains of the provided domains are allowed as well.
 
           Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-      - `search_context_size: optional "low" or "medium" or "high"`
+      - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
         High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -8607,7 +8859,7 @@ Schema name: `ResponseCreatedEvent`
 
           The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-        - `type: optional "approximate"`
+        - `type: optional "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -8631,6 +8883,8 @@ Schema name: `ResponseCreatedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -8710,7 +8964,7 @@ Schema name: `ResponseCreatedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
         Specify which of the MCP server's tools require approval.
 
@@ -8767,10 +9021,14 @@ Schema name: `ResponseCreatedEvent`
         The URL for the MCP server. One of `server_url`, `connector_id`, or
         `tunnel_id` must be provided.
 
+        `format: uri`
+
       - `tunnel_id: optional string`
 
         The Secure MCP Tunnel ID to use instead of a direct server URL. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+        `pattern: ^tunnel_[a-z0-9]{32}$`
 
     - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -8790,7 +9048,7 @@ Schema name: `ResponseCreatedEvent`
 
           Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-          - `type: "auto"`
+          - `type: "auto" (default: "auto")`
 
             Always `auto`.
 
@@ -8799,6 +9057,8 @@ Schema name: `ResponseCreatedEvent`
           - `file_ids: optional array of string`
 
             An optional list of uploaded files to make available to your code.
+
+            `maxItems: 50`
 
           - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -8830,13 +9090,15 @@ Schema name: `ResponseCreatedEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
     - `ProgrammaticToolCalling object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The type of the tool. Always `programmatic_tool_calling`.
 
@@ -8862,7 +9124,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"auto"`
 
-      - `background: optional "transparent" or "opaque" or "auto"`
+      - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
         Set the background of the generated image. One of `transparent`, `opaque`,
         or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -8943,7 +9205,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
 
-      - `moderation: optional "auto" or "low"`
+      - `moderation: optional "auto" or "low" (default: "auto")`
 
         Moderation level for the generated image. Default: `auto`.
 
@@ -8951,11 +9213,13 @@ Schema name: `ResponseCreatedEvent`
 
         - `"low"`
 
-      - `output_compression: optional number`
+      - `output_compression: optional integer (default: 100)`
 
         Compression level for the output image. Default: 100.
 
-      - `output_format: optional "png" or "webp" or "jpeg"`
+        `minimum: 0`, `maximum: 100`
+
+      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
         The output format of the generated image. One of `png`, `webp`, or
         `jpeg`. Default: `png`.
@@ -8966,11 +9230,13 @@ Schema name: `ResponseCreatedEvent`
 
         - `"jpeg"`
 
-      - `partial_images: optional number`
+      - `partial_images: optional integer (default: 0)`
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or 3 more`
+        `minimum: 0`, `maximum: 3`
+
+      - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
         The quality of the generated image. The GPT image models support `low`,
         `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -8989,7 +9255,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"auto"`
 
-      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
         The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -9011,7 +9277,7 @@ Schema name: `ResponseCreatedEvent`
 
       A tool that allows the model to execute shell commands in a local environment.
 
-      - `type: "local_shell"`
+      - `type: "local_shell" (default: "local_shell")`
 
         The type of the local shell tool. Always `local_shell`.
 
@@ -9021,7 +9287,7 @@ Schema name: `ResponseCreatedEvent`
 
       A tool that allows the model to execute shell commands.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The type of the shell tool. Always `shell`.
 
@@ -9030,6 +9296,8 @@ Schema name: `ResponseCreatedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -9051,7 +9319,7 @@ Schema name: `ResponseCreatedEvent`
 
         The name of the custom tool, used to identify it in tool calls.
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of the custom tool. Always `custom`.
 
@@ -9060,6 +9328,8 @@ Schema name: `ResponseCreatedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -9093,21 +9363,29 @@ Schema name: `ResponseCreatedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
+        `minLength: 1`
+
       - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
+
+        `minItems: 1`
 
         - `Function object { name, type, allowed_callers, 6 more }`
 
           - `name: string`
 
-          - `type: "function"`
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+          - `type: "function" (default: "function")`
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -9141,7 +9419,7 @@ Schema name: `ResponseCreatedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -9150,6 +9428,8 @@ Schema name: `ResponseCreatedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -9171,7 +9451,7 @@ Schema name: `ResponseCreatedEvent`
 
             The input format for the custom tool. Default is unconstrained text.
 
-      - `type: "namespace"`
+      - `type: "namespace" (default: "namespace")`
 
         The type of the tool. Always `namespace`.
 
@@ -9181,7 +9461,7 @@ Schema name: `ResponseCreatedEvent`
 
       Hosted or BYOT tool search configuration for deferred tools.
 
-      - `type: "tool_search"`
+      - `type: "tool_search" (default: "tool_search")`
 
         The type of the tool. Always `tool_search`.
 
@@ -9207,7 +9487,7 @@ Schema name: `ResponseCreatedEvent`
 
       This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+      - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
         The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -9235,7 +9515,7 @@ Schema name: `ResponseCreatedEvent`
 
         The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-        - `type: "approximate"`
+        - `type: "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -9261,7 +9541,7 @@ Schema name: `ResponseCreatedEvent`
 
       Allows the assistant to create, delete, or update files using unified diffs.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The type of the tool. Always `apply_patch`.
 
@@ -9271,11 +9551,13 @@ Schema name: `ResponseCreatedEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
-  - `top_p: number or null`
+  - `top_p: number or null (default: 1)`
 
     An alternative to sampling with temperature, called nucleus sampling,
     where the model considers the results of the tokens with top_p probability
@@ -9284,7 +9566,9 @@ Schema name: `ResponseCreatedEvent`
 
     We generally recommend altering this or `temperature` but not both.
 
-  - `background: optional boolean or null`
+    `minimum: 0`, `maximum: 1`
+
+  - `background: optional boolean or null (default: false)`
 
     Whether to run the model response in the background.
     [Learn more](https://developers.openai.com/api/docs/guides/background).
@@ -9294,6 +9578,8 @@ Schema name: `ResponseCreatedEvent`
     Unix timestamp (in seconds) of when this Response was completed.
     Only present when the status is `completed`.
 
+    `format: unixtime`
+
   - `conversation: optional object { id }  or null`
 
     The conversation that this response belonged to. Input items and output items from this response were automatically added to this conversation.
@@ -9302,11 +9588,11 @@ Schema name: `ResponseCreatedEvent`
 
       The unique ID of the conversation that this response was associated with.
 
-  - `max_output_tokens: optional number or null`
+  - `max_output_tokens: optional integer or null`
 
     An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](https://developers.openai.com/api/docs/guides/reasoning).
 
-  - `max_tool_calls: optional number or null`
+  - `max_tool_calls: optional integer or null`
 
     The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored.
 
@@ -9346,7 +9632,7 @@ Schema name: `ResponseCreatedEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -9364,7 +9650,7 @@ Schema name: `ResponseCreatedEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -9402,7 +9688,7 @@ Schema name: `ResponseCreatedEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -9420,7 +9706,7 @@ Schema name: `ResponseCreatedEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -9477,7 +9763,7 @@ Schema name: `ResponseCreatedEvent`
 
     - `CacheMiss object { cache_missed_tokens, reason, type, comparison_reusable_tokens }`
 
-      - `cache_missed_tokens: number`
+      - `cache_missed_tokens: integer`
 
         The estimated number of input tokens affected after the first detected divergence.
 
@@ -9503,29 +9789,29 @@ Schema name: `ResponseCreatedEvent`
 
         - `"service_tier_changed"`
 
-      - `type: "cache_miss"`
+      - `type: "cache_miss" (default: "cache_miss")`
 
         - `"cache_miss"`
 
-      - `comparison_reusable_tokens: optional number`
+      - `comparison_reusable_tokens: optional integer`
 
         The raw token count of the reusable prefix in the compared response.
 
     - `CacheHit object { type }`
 
-      - `type: "cache_hit"`
+      - `type: "cache_hit" (default: "cache_hit")`
 
         - `"cache_hit"`
 
     - `ComparisonResponseNotFound object { type }`
 
-      - `type: "comparison_response_not_found"`
+      - `type: "comparison_response_not_found" (default: "comparison_response_not_found")`
 
         - `"comparison_response_not_found"`
 
     - `Unavailable object { type }`
 
-      - `type: "unavailable"`
+      - `type: "unavailable" (default: "unavailable")`
 
         - `"unavailable"`
 
@@ -9595,7 +9881,7 @@ Schema name: `ResponseCreatedEvent`
 
       - `"all_turns"`
 
-    - `effort: optional ReasoningEffort or null`
+    - `effort: optional ReasoningEffort or null (default: "medium")`
 
       Constrains effort on reasoning for reasoning models. Currently supported
       values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -9656,7 +9942,9 @@ Schema name: `ResponseCreatedEvent`
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
     The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-  - `service_tier: optional ServiceTier or null`
+    `maxLength: 128`
+
+  - `service_tier: optional ServiceTier or null (default: "auto")`
 
     Specifies the processing type used for serving the request.
 
@@ -9760,7 +10048,7 @@ Schema name: `ResponseCreatedEvent`
           A description of what the response format is for, used by the model to
           determine how to respond in the format.
 
-        - `strict: optional boolean or null`
+        - `strict: optional boolean or null (default: false)`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -9781,7 +10069,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `"json_object"`
 
-    - `verbosity: optional "low" or "medium" or "high" or null`
+    - `verbosity: optional "low" or "medium" or "high" or null (default: "medium")`
 
       Constrains the verbosity of the model's response. Lower values will result in
       more concise responses, while higher values will result in more verbose responses.
@@ -9813,7 +10101,7 @@ Schema name: `ResponseCreatedEvent`
 
       Aggregated usage statistics for image generation tool calls.
 
-      - `input_tokens: number`
+      - `input_tokens: integer`
 
         The number of tokens (images and text) in the input prompt.
 
@@ -9821,39 +10109,39 @@ Schema name: `ResponseCreatedEvent`
 
         The input tokens detailed information for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image tokens in the input prompt.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text tokens in the input prompt.
 
-      - `output_tokens: number`
+      - `output_tokens: integer`
 
         The number of output tokens generated by the model.
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
         The total number of tokens (images and text) used for the image generation.
 
-      - `cached_tokens: optional number`
+      - `cached_tokens: optional integer`
 
       - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
 
-        - `cached_image_tokens: number`
+        - `cached_image_tokens: integer`
 
-        - `cached_text_tokens: number`
+        - `cached_text_tokens: integer`
 
       - `output_tokens_details: optional object { image_tokens, text_tokens }`
 
         The output token details for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image output tokens generated by the model.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text output tokens generated by the model.
 
@@ -9861,18 +10149,20 @@ Schema name: `ResponseCreatedEvent`
 
       Aggregated billable usage statistics for web search tool calls.
 
-      - `num_requests: number`
+      - `num_requests: integer`
 
         The number of billable web search requests issued.
 
-  - `top_logprobs: optional number or null`
+  - `top_logprobs: optional integer or null`
 
     An integer between 0 and 20 specifying the maximum number of most likely
     tokens to return at each token position, each with an associated log
     probability. In some cases, the number of returned tokens may be fewer than
     requested.
 
-  - `truncation: optional "auto" or "disabled" or null`
+    `minimum: 0`, `maximum: 20`
+
+  - `truncation: optional "auto" or "disabled" or null (default: "disabled")`
 
     The truncation strategy to use for the model response.
 
@@ -9891,7 +10181,7 @@ Schema name: `ResponseCreatedEvent`
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -9899,16 +10189,16 @@ Schema name: `ResponseCreatedEvent`
 
       A detailed breakdown of the input tokens.
 
-      - `cache_write_tokens: number`
+      - `cache_write_tokens: integer`
 
         The number of input tokens that were written to the cache.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache.
         [More on prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -9916,11 +10206,11 @@ Schema name: `ResponseCreatedEvent`
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -9930,7 +10220,7 @@ Schema name: `ResponseCreatedEvent`
     A stable identifier for your end-users.
     Used to boost cache hit rates by better bucketing similar requests and  to help OpenAI detect and prevent abuse. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number for this event.
 
@@ -10017,6 +10307,8 @@ Schema name: `ResponseInProgressEvent`
 
     Unix timestamp (in seconds) of when this Response was created.
 
+    `format: unixtime`
+
   - `error: ResponseError or null`
 
     An error object returned when the model fails to generate a Response.
@@ -10098,6 +10390,8 @@ Schema name: `ResponseInProgressEvent`
       - `review_target: optional string or null`
 
         An opaque target for explicitly continuing this review, or null when unavailable.
+
+        `pattern: ^[A-Za-z0-9._~:-]+$`, `minLength: 1`, `maxLength: 96`
 
       - `steer: optional object { message }`
 
@@ -10182,7 +10476,7 @@ Schema name: `ResponseInProgressEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -10192,7 +10486,7 @@ Schema name: `ResponseInProgressEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -10222,7 +10516,7 @@ Schema name: `ResponseInProgressEvent`
 
                 - `"original"`
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -10236,11 +10530,13 @@ Schema name: `ResponseInProgressEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -10258,7 +10554,7 @@ Schema name: `ResponseInProgressEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -10286,6 +10582,8 @@ Schema name: `ResponseInProgressEvent`
 
                 The URL of the file to be sent to the model.
 
+                `format: uri`
+
               - `filename: optional string`
 
                 The name of the file to be sent to the model.
@@ -10294,7 +10592,7 @@ Schema name: `ResponseInProgressEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -10407,11 +10705,11 @@ Schema name: `ResponseInProgressEvent`
 
                   The filename of the file cited.
 
-                - `index: number`
+                - `index: integer`
 
                   The index in the output text at which to insert the file citation.
 
-                - `type: "file_citation"`
+                - `type: "file_citation" (default: "file_citation")`
 
                   The type of the file citation. Always `file_citation`.
 
@@ -10421,11 +10719,11 @@ Schema name: `ResponseInProgressEvent`
 
                 A citation for a web resource used to generate a model response.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the URL citation in the message.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the URL citation in the message.
 
@@ -10433,7 +10731,7 @@ Schema name: `ResponseInProgressEvent`
 
                   The title of the web resource.
 
-                - `type: "url_citation"`
+                - `type: "url_citation" (default: "url_citation")`
 
                   The type of the URL citation. Always `url_citation`.
 
@@ -10443,6 +10741,8 @@ Schema name: `ResponseInProgressEvent`
 
                   The URL of the web resource.
 
+                  `format: uri`
+
               - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
                 A citation for a container file used to generate a model response.
@@ -10451,7 +10751,7 @@ Schema name: `ResponseInProgressEvent`
 
                   The ID of the container file.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the container file citation in the message.
 
@@ -10463,11 +10763,11 @@ Schema name: `ResponseInProgressEvent`
 
                   The filename of the container file cited.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the container file citation in the message.
 
-                - `type: "container_file_citation"`
+                - `type: "container_file_citation" (default: "container_file_citation")`
 
                   The type of the container file citation. Always `container_file_citation`.
 
@@ -10481,7 +10781,7 @@ Schema name: `ResponseInProgressEvent`
 
                   The ID of the file.
 
-                - `index: number`
+                - `index: integer`
 
                   The index of the file in the list of files.
 
@@ -10511,7 +10811,7 @@ Schema name: `ResponseInProgressEvent`
 
               The text output from the model.
 
-            - `type: "output_text"`
+            - `type: "output_text" (default: "output_text")`
 
               The type of the output text. Always `output_text`.
 
@@ -10525,7 +10825,7 @@ Schema name: `ResponseInProgressEvent`
 
               The refusal explanation from the model.
 
-            - `type: "refusal"`
+            - `type: "refusal" (default: "refusal")`
 
               The type of the refusal. Always `refusal`.
 
@@ -10612,6 +10912,8 @@ Schema name: `ResponseInProgressEvent`
 
             - `string`
 
+              `maxLength: 512`
+
             - `number`
 
             - `boolean`
@@ -10627,6 +10929,8 @@ Schema name: `ResponseInProgressEvent`
           - `score: optional number`
 
             The relevance score of the file - a value between 0 and 1.
+
+            `format: float`
 
           - `text: optional string`
 
@@ -10672,7 +10976,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `"incomplete"`
 
-        - `type: "computer_call"`
+        - `type: "computer_call" (default: "computer_call")`
 
           The type of the computer call. Always `computer_call`.
 
@@ -10700,17 +11004,17 @@ Schema name: `ResponseInProgressEvent`
 
               - `"forward"`
 
-            - `type: "click"`
+            - `type: "click" (default: "click")`
 
               Specifies the event type. For a click action, this property is always `click`.
 
               - `"click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the click occurred.
 
@@ -10726,17 +11030,17 @@ Schema name: `ResponseInProgressEvent`
 
               The keys being held while double-clicking.
 
-            - `type: "double_click"`
+            - `type: "double_click" (default: "double_click")`
 
               Specifies the event type. For a double click action, this property is always set to `double_click`.
 
               - `"double_click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the double click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the double click occurred.
 
@@ -10755,15 +11059,15 @@ Schema name: `ResponseInProgressEvent`
               ]
               ```
 
-              - `x: number`
+              - `x: integer`
 
                 The x-coordinate.
 
-              - `y: number`
+              - `y: integer`
 
                 The y-coordinate.
 
-            - `type: "drag"`
+            - `type: "drag" (default: "drag")`
 
               Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -10781,7 +11085,7 @@ Schema name: `ResponseInProgressEvent`
 
               The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-            - `type: "keypress"`
+            - `type: "keypress" (default: "keypress")`
 
               Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -10791,17 +11095,17 @@ Schema name: `ResponseInProgressEvent`
 
             A mouse move action.
 
-            - `type: "move"`
+            - `type: "move" (default: "move")`
 
               Specifies the event type. For a move action, this property is always set to `move`.
 
               - `"move"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate to move to.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate to move to.
 
@@ -10813,7 +11117,7 @@ Schema name: `ResponseInProgressEvent`
 
             A screenshot action.
 
-            - `type: "screenshot"`
+            - `type: "screenshot" (default: "screenshot")`
 
               Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -10823,25 +11127,25 @@ Schema name: `ResponseInProgressEvent`
 
             A scroll action.
 
-            - `scroll_x: number`
+            - `scroll_x: integer`
 
               The horizontal scroll distance.
 
-            - `scroll_y: number`
+            - `scroll_y: integer`
 
               The vertical scroll distance.
 
-            - `type: "scroll"`
+            - `type: "scroll" (default: "scroll")`
 
               Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
               - `"scroll"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the scroll occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the scroll occurred.
 
@@ -10857,7 +11161,7 @@ Schema name: `ResponseInProgressEvent`
 
               The text to type.
 
-            - `type: "type"`
+            - `type: "type" (default: "type")`
 
               Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -10867,7 +11171,7 @@ Schema name: `ResponseInProgressEvent`
 
             A wait action.
 
-            - `type: "wait"`
+            - `type: "wait" (default: "wait")`
 
               Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -10922,11 +11226,13 @@ Schema name: `ResponseInProgressEvent`
 
           The ID of the computer tool call that produced the output.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: ResponseComputerToolCallOutputScreenshot`
 
           A computer screenshot image used with the computer use tool.
 
-          - `type: "computer_screenshot"`
+          - `type: "computer_screenshot" (default: "computer_screenshot")`
 
             Specifies the event type. For a computer screenshot, this property is
             always set to `computer_screenshot`.
@@ -10941,7 +11247,9 @@ Schema name: `ResponseInProgressEvent`
 
             The URL of the screenshot image.
 
-        - `type: "computer_call_output"`
+            `format: uri`
+
+        - `type: "computer_call_output" (default: "computer_call_output")`
 
           The type of the computer tool call output. Always `computer_call_output`.
 
@@ -11043,6 +11351,8 @@ Schema name: `ResponseInProgressEvent`
 
                 The URL of the source.
 
+                `format: uri`
+
           - `OpenPage object { type, url }`
 
             Action type "open_page" - Opens a specific URL from search results.
@@ -11056,6 +11366,8 @@ Schema name: `ResponseInProgressEvent`
             - `url: optional string or null`
 
               The URL opened by the model.
+
+              `format: uri`
 
           - `FindInPage object { pattern, type, url }`
 
@@ -11074,6 +11386,8 @@ Schema name: `ResponseInProgressEvent`
             - `url: optional string or null`
 
               The URL of the page searched for the pattern, when available.
+
+              `format: uri`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -11112,7 +11426,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -11122,7 +11436,7 @@ Schema name: `ResponseInProgressEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -11153,6 +11467,8 @@ Schema name: `ResponseInProgressEvent`
 
             A JSON string of the output of the function tool call.
 
+            `maxLength: 10485760`
+
           - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
             An array of content outputs (text, image, file) for the function tool call.
@@ -11165,7 +11481,9 @@ Schema name: `ResponseInProgressEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+                `maxLength: 10485760`
+
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -11175,7 +11493,7 @@ Schema name: `ResponseInProgressEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -11193,7 +11511,7 @@ Schema name: `ResponseInProgressEvent`
 
               An image input to the model. Learn about [image inputs](https://developers.openai.com/api/docs/guides/images-vision)
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -11211,11 +11529,13 @@ Schema name: `ResponseInProgressEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `maxLength: 20971520`, `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -11233,7 +11553,7 @@ Schema name: `ResponseInProgressEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -11253,6 +11573,8 @@ Schema name: `ResponseInProgressEvent`
 
                 The base64-encoded data of the file to be sent to the model.
 
+                `maxLength: 73400320`
+
               - `file_id: optional string or null`
 
                 The ID of the file to be sent to the model.
@@ -11260,6 +11582,8 @@ Schema name: `ResponseInProgressEvent`
               - `file_url: optional string or null`
 
                 The URL of the file to be sent to the model.
+
+                `format: uri`
 
               - `filename: optional string or null`
 
@@ -11269,7 +11593,7 @@ Schema name: `ResponseInProgressEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -11283,7 +11607,7 @@ Schema name: `ResponseInProgressEvent`
 
                   - `"12h"`
 
-        - `type: "function_call_output"`
+        - `type: "function_call_output" (default: "function_call_output")`
 
           The type of the function tool call output. Always `function_call_output`.
 
@@ -11297,13 +11621,15 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the function tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -11315,7 +11641,9 @@ Schema name: `ResponseInProgressEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -11325,9 +11653,13 @@ Schema name: `ResponseInProgressEvent`
 
           The name of the tool that produced the output.
 
+          `minLength: 1`, `maxLength: 128`
+
         - `namespace: optional string or null`
 
           The namespace of the tool that produced the output.
+
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -11345,7 +11677,7 @@ Schema name: `ResponseInProgressEvent`
 
           The arguments supplied to the tool search call.
 
-        - `type: "tool_search_call"`
+        - `type: "tool_search_call" (default: "tool_search_call")`
 
           The item type. Always `tool_search_call`.
 
@@ -11358,6 +11690,8 @@ Schema name: `ResponseInProgressEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -11399,7 +11733,7 @@ Schema name: `ResponseInProgressEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -11431,7 +11765,7 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -11453,7 +11787,7 @@ Schema name: `ResponseInProgressEvent`
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -11522,7 +11856,7 @@ Schema name: `ResponseInProgressEvent`
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -11558,7 +11892,7 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -11568,11 +11902,11 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -11590,7 +11924,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -11601,7 +11935,7 @@ Schema name: `ResponseInProgressEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -11609,7 +11943,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -11617,14 +11951,14 @@ Schema name: `ResponseInProgressEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -11656,7 +11990,7 @@ Schema name: `ResponseInProgressEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -11680,6 +12014,8 @@ Schema name: `ResponseInProgressEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -11759,7 +12095,7 @@ Schema name: `ResponseInProgressEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -11816,10 +12152,14 @@ Schema name: `ResponseInProgressEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -11839,7 +12179,7 @@ Schema name: `ResponseInProgressEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -11848,6 +12188,8 @@ Schema name: `ResponseInProgressEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -11867,7 +12209,7 @@ Schema name: `ResponseInProgressEvent`
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -11879,7 +12221,9 @@ Schema name: `ResponseInProgressEvent`
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -11889,17 +12233,25 @@ Schema name: `ResponseInProgressEvent`
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -11911,13 +12263,15 @@ Schema name: `ResponseInProgressEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -11943,7 +12297,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -12024,7 +12378,7 @@ Schema name: `ResponseInProgressEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -12032,11 +12386,13 @@ Schema name: `ResponseInProgressEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -12047,11 +12403,13 @@ Schema name: `ResponseInProgressEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -12070,7 +12428,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -12092,7 +12450,7 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -12102,7 +12460,7 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -12112,6 +12470,8 @@ Schema name: `ResponseInProgressEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -12120,7 +12480,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -12129,6 +12489,8 @@ Schema name: `ResponseInProgressEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -12154,13 +12516,17 @@ Schema name: `ResponseInProgressEvent`
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -12188,19 +12554,21 @@ Schema name: `ResponseInProgressEvent`
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -12208,7 +12576,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -12217,6 +12585,8 @@ Schema name: `ResponseInProgressEvent`
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -12236,7 +12606,7 @@ Schema name: `ResponseInProgressEvent`
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -12250,7 +12620,7 @@ Schema name: `ResponseInProgressEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -12259,6 +12629,8 @@ Schema name: `ResponseInProgressEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -12284,7 +12656,7 @@ Schema name: `ResponseInProgressEvent`
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -12306,7 +12678,7 @@ Schema name: `ResponseInProgressEvent`
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -12324,9 +12696,13 @@ Schema name: `ResponseInProgressEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools loaded inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
@@ -12334,13 +12710,17 @@ Schema name: `ResponseInProgressEvent`
 
                   The name of the loaded function tool.
 
-                - `type: "function"`
+                  `pattern: ^(?![\s\S]*[\r\n])[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -12374,7 +12754,7 @@ Schema name: `ResponseInProgressEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -12383,6 +12763,8 @@ Schema name: `ResponseInProgressEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -12404,7 +12786,7 @@ Schema name: `ResponseInProgressEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -12414,7 +12796,7 @@ Schema name: `ResponseInProgressEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -12440,7 +12822,7 @@ Schema name: `ResponseInProgressEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -12468,7 +12850,7 @@ Schema name: `ResponseInProgressEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -12494,7 +12876,7 @@ Schema name: `ResponseInProgressEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -12504,11 +12886,13 @@ Schema name: `ResponseInProgressEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "tool_search_output"`
+        - `type: "tool_search_output" (default: "tool_search_output")`
 
           The item type. Always `tool_search_output`.
 
@@ -12521,6 +12905,8 @@ Schema name: `ResponseInProgressEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -12542,7 +12928,7 @@ Schema name: `ResponseInProgressEvent`
 
       - `AdditionalTools object { role, tools, type, id }`
 
-        - `role: "developer"`
+        - `role: "developer" (default: "developer")`
 
           The role that provided the additional tools. Only `developer` is supported.
 
@@ -12568,7 +12954,7 @@ Schema name: `ResponseInProgressEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -12600,7 +12986,7 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -12622,7 +13008,7 @@ Schema name: `ResponseInProgressEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -12658,7 +13044,7 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -12668,11 +13054,11 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -12690,7 +13076,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -12701,7 +13087,7 @@ Schema name: `ResponseInProgressEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -12709,7 +13095,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -12717,14 +13103,14 @@ Schema name: `ResponseInProgressEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -12756,7 +13142,7 @@ Schema name: `ResponseInProgressEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -12780,6 +13166,8 @@ Schema name: `ResponseInProgressEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -12859,7 +13247,7 @@ Schema name: `ResponseInProgressEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -12916,10 +13304,14 @@ Schema name: `ResponseInProgressEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -12939,7 +13331,7 @@ Schema name: `ResponseInProgressEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -12948,6 +13340,8 @@ Schema name: `ResponseInProgressEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -12979,13 +13373,15 @@ Schema name: `ResponseInProgressEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -13011,7 +13407,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -13092,7 +13488,7 @@ Schema name: `ResponseInProgressEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -13100,11 +13496,13 @@ Schema name: `ResponseInProgressEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -13115,11 +13513,13 @@ Schema name: `ResponseInProgressEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -13138,7 +13538,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -13160,7 +13560,7 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -13170,7 +13570,7 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -13179,6 +13579,8 @@ Schema name: `ResponseInProgressEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -13200,7 +13602,7 @@ Schema name: `ResponseInProgressEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -13209,6 +13611,8 @@ Schema name: `ResponseInProgressEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -13242,21 +13646,29 @@ Schema name: `ResponseInProgressEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -13290,7 +13702,7 @@ Schema name: `ResponseInProgressEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -13299,6 +13711,8 @@ Schema name: `ResponseInProgressEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -13320,7 +13734,7 @@ Schema name: `ResponseInProgressEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -13330,7 +13744,7 @@ Schema name: `ResponseInProgressEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -13356,7 +13770,7 @@ Schema name: `ResponseInProgressEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -13384,7 +13798,7 @@ Schema name: `ResponseInProgressEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -13410,7 +13824,7 @@ Schema name: `ResponseInProgressEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -13420,11 +13834,13 @@ Schema name: `ResponseInProgressEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "additional_tools"`
+        - `type: "additional_tools" (default: "additional_tools")`
 
           The item type. Always `additional_tools`.
 
@@ -13440,7 +13856,7 @@ Schema name: `ResponseInProgressEvent`
         remains in effect for subsequent responses until it is replaced by another
         configuration update.
 
-        - `type: "configuration_update"`
+        - `type: "configuration_update" (default: "configuration_update")`
 
           The item type. Always `configuration_update`.
 
@@ -13454,7 +13870,7 @@ Schema name: `ResponseInProgressEvent`
 
           Updates to reasoning configuration. Only effort is supported.
 
-          - `effort: optional ReasoningEffort or null`
+          - `effort: optional ReasoningEffort or null (default: "medium")`
 
             The reasoning effort to use for subsequent responses until another
             configuration update replaces it.
@@ -13492,7 +13908,7 @@ Schema name: `ResponseInProgressEvent`
 
             A summary of the reasoning output from the model so far.
 
-          - `type: "summary_text"`
+          - `type: "summary_text" (default: "summary_text")`
 
             The type of the object. Always `summary_text`.
 
@@ -13512,7 +13928,7 @@ Schema name: `ResponseInProgressEvent`
 
             The reasoning text from the model.
 
-          - `type: "reasoning_text"`
+          - `type: "reasoning_text" (default: "reasoning_text")`
 
             The type of the reasoning text. Always `reasoning_text`.
 
@@ -13549,7 +13965,9 @@ Schema name: `ResponseInProgressEvent`
 
           The encrypted content of the compaction summary.
 
-        - `type: "compaction"`
+          `maxLength: 104857600`
+
+        - `type: "compaction" (default: "compaction")`
 
           The type of the item. Always `compaction`.
 
@@ -13722,7 +14140,7 @@ Schema name: `ResponseInProgressEvent`
 
               The logs output from the code interpreter.
 
-            - `type: "logs"`
+            - `type: "logs" (default: "logs")`
 
               The type of the output. Always `logs`.
 
@@ -13732,7 +14150,7 @@ Schema name: `ResponseInProgressEvent`
 
             The image output from the code interpreter.
 
-            - `type: "image"`
+            - `type: "image" (default: "image")`
 
               The type of the output. Always `image`.
 
@@ -13741,6 +14159,8 @@ Schema name: `ResponseInProgressEvent`
             - `url: string`
 
               The URL of the image output from the code interpreter.
+
+              `format: uri`
 
         - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -13756,7 +14176,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `"failed"`
 
-        - `type: "code_interpreter_call"`
+        - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
           The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -13782,13 +14202,13 @@ Schema name: `ResponseInProgressEvent`
 
             Environment variables to set for the command.
 
-          - `type: "exec"`
+          - `type: "exec" (default: "exec")`
 
             The type of the local shell action. Always `exec`.
 
             - `"exec"`
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Optional timeout in milliseconds for the command.
 
@@ -13860,11 +14280,11 @@ Schema name: `ResponseInProgressEvent`
 
             Ordered shell commands for the execution environment to run.
 
-          - `max_output_length: optional number or null`
+          - `max_output_length: optional integer or null`
 
             Maximum number of UTF-8 characters to capture from combined stdout and stderr output.
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
@@ -13872,7 +14292,9 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the shell tool call generated by the model.
 
-        - `type: "shell_call"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "shell_call" (default: "shell_call")`
 
           The type of the item. Always `shell_call`.
 
@@ -13888,7 +14310,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -13900,7 +14322,9 @@ Schema name: `ResponseInProgressEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -13932,6 +14356,8 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the shell tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: array of ResponseFunctionShellCallOutputContent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
@@ -13944,7 +14370,7 @@ Schema name: `ResponseInProgressEvent`
 
               Indicates that the shell call exceeded its configured time limit.
 
-              - `type: "timeout"`
+              - `type: "timeout" (default: "timeout")`
 
                 The outcome type. Always `timeout`.
 
@@ -13954,11 +14380,11 @@ Schema name: `ResponseInProgressEvent`
 
               Indicates that the shell commands finished and returned an exit code.
 
-              - `exit_code: number`
+              - `exit_code: integer`
 
                 The exit code returned by the shell process.
 
-              - `type: "exit"`
+              - `type: "exit" (default: "exit")`
 
                 The outcome type. Always `exit`.
 
@@ -13968,11 +14394,15 @@ Schema name: `ResponseInProgressEvent`
 
             Captured stderr output for the shell call.
 
+            `maxLength: 10485760`
+
           - `stdout: string`
 
             Captured stdout output for the shell call.
 
-        - `type: "shell_call_output"`
+            `maxLength: 10485760`
+
+        - `type: "shell_call_output" (default: "shell_call_output")`
 
           The type of the item. Always `shell_call_output`.
 
@@ -13988,7 +14418,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -14000,13 +14430,15 @@ Schema name: `ResponseInProgressEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
               - `"program"`
 
-        - `max_output_length: optional number or null`
+        - `max_output_length: optional integer or null`
 
           The maximum number of UTF-8 characters captured for this shell call's combined output.
 
@@ -14028,6 +14460,8 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
@@ -14040,11 +14474,15 @@ Schema name: `ResponseInProgressEvent`
 
               Unified diff content to apply when creating the file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to create relative to the workspace root.
 
-            - `type: "create_file"`
+              `minLength: 1`
+
+            - `type: "create_file" (default: "create_file")`
 
               The operation type. Always `create_file`.
 
@@ -14058,7 +14496,9 @@ Schema name: `ResponseInProgressEvent`
 
               Path of the file to delete relative to the workspace root.
 
-            - `type: "delete_file"`
+              `minLength: 1`
+
+            - `type: "delete_file" (default: "delete_file")`
 
               The operation type. Always `delete_file`.
 
@@ -14072,11 +14512,15 @@ Schema name: `ResponseInProgressEvent`
 
               Unified diff content to apply to the existing file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to update relative to the workspace root.
 
-            - `type: "update_file"`
+              `minLength: 1`
+
+            - `type: "update_file" (default: "update_file")`
 
               The operation type. Always `update_file`.
 
@@ -14090,7 +14534,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `"completed"`
 
-        - `type: "apply_patch_call"`
+        - `type: "apply_patch_call" (default: "apply_patch_call")`
 
           The type of the item. Always `apply_patch_call`.
 
@@ -14106,7 +14550,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -14118,7 +14562,9 @@ Schema name: `ResponseInProgressEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -14132,6 +14578,8 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `status: "completed" or "failed"`
 
           The status of the apply patch tool call output. One of `completed` or `failed`.
@@ -14140,7 +14588,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `"failed"`
 
-        - `type: "apply_patch_call_output"`
+        - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
           The type of the item. Always `apply_patch_call_output`.
 
@@ -14156,7 +14604,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -14168,7 +14616,9 @@ Schema name: `ResponseInProgressEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -14177,6 +14627,8 @@ Schema name: `ResponseInProgressEvent`
         - `output: optional string or null`
 
           Optional human-readable log text from the apply patch tool (e.g., patch results or errors).
+
+          `maxLength: 10485760`
 
       - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -14309,11 +14761,11 @@ Schema name: `ResponseInProgressEvent`
 
           - `McpProtocolError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "mcp_protocol_error"`
+            - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
               - `"mcp_protocol_error"`
 
@@ -14321,17 +14773,17 @@ Schema name: `ResponseInProgressEvent`
 
             - `content: unknown`
 
-            - `type: "mcp_tool_execution_error"`
+            - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
               - `"mcp_tool_execution_error"`
 
           - `HTTPError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "http_error"`
+            - `type: "http_error" (default: "http_error")`
 
               - `"http_error"`
 
@@ -14402,7 +14854,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -14414,7 +14866,9 @@ Schema name: `ResponseInProgressEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -14456,7 +14910,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -14466,7 +14920,7 @@ Schema name: `ResponseInProgressEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -14478,7 +14932,7 @@ Schema name: `ResponseInProgressEvent`
 
         Compacts the current context. Must be the final input item.
 
-        - `type: "compaction_trigger"`
+        - `type: "compaction_trigger" (default: "compaction_trigger")`
 
           The type of the item. Always `compaction_trigger`.
 
@@ -14496,7 +14950,7 @@ Schema name: `ResponseInProgressEvent`
 
           The ID of the item to reference.
 
-        - `type: optional "item_reference" or null`
+        - `type: optional "item_reference" or null (default: "item_reference")`
 
           The type of item to reference. Always `item_reference`.
 
@@ -14512,15 +14966,21 @@ Schema name: `ResponseInProgressEvent`
 
           The stable call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `code: string`
 
           The JavaScript source executed by programmatic tool calling.
+
+          `maxLength: 10485760`
 
         - `fingerprint: string`
 
           Opaque program replay fingerprint that must be round-tripped.
 
-        - `type: "program"`
+          `maxLength: 10485760`
+
+        - `type: "program" (default: "program")`
 
           The item type. Always `program`.
 
@@ -14536,9 +14996,13 @@ Schema name: `ResponseInProgressEvent`
 
           The call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `result: string`
 
           The result produced by the program item.
+
+          `maxLength: 10485760`
 
         - `status: "completed" or "incomplete"`
 
@@ -14548,7 +15012,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `"incomplete"`
 
-        - `type: "program_output"`
+        - `type: "program_output" (default: "program_output")`
 
           The item type. Always `program_output`.
 
@@ -14865,6 +15329,8 @@ Schema name: `ResponseInProgressEvent`
 
           - `string`
 
+            `maxLength: 512`
+
           - `number`
 
           - `boolean`
@@ -14880,6 +15346,8 @@ Schema name: `ResponseInProgressEvent`
         - `score: optional number`
 
           The relevance score of the file - a value between 0 and 1.
+
+          `format: float`
 
         - `text: optional string`
 
@@ -14922,7 +15390,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -14932,7 +15400,7 @@ Schema name: `ResponseInProgressEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -15009,7 +15477,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -15021,7 +15489,9 @@ Schema name: `ResponseInProgressEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -15105,6 +15575,8 @@ Schema name: `ResponseInProgressEvent`
 
               The URL of the source.
 
+              `format: uri`
+
         - `OpenPage object { type, url }`
 
           Action type "open_page" - Opens a specific URL from search results.
@@ -15118,6 +15590,8 @@ Schema name: `ResponseInProgressEvent`
           - `url: optional string or null`
 
             The URL opened by the model.
+
+            `format: uri`
 
         - `FindInPage object { pattern, type, url }`
 
@@ -15136,6 +15610,8 @@ Schema name: `ResponseInProgressEvent`
           - `url: optional string or null`
 
             The URL of the page searched for the pattern, when available.
+
+            `format: uri`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -15177,7 +15653,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"incomplete"`
 
-      - `type: "computer_call"`
+      - `type: "computer_call" (default: "computer_call")`
 
         The type of the computer call. Always `computer_call`.
 
@@ -15219,7 +15695,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"in_progress"`
 
-      - `type: "computer_call_output"`
+      - `type: "computer_call_output" (default: "computer_call_output")`
 
         The type of the computer tool call output. Always `computer_call_output`.
 
@@ -15265,7 +15741,7 @@ Schema name: `ResponseInProgressEvent`
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -15283,7 +15759,7 @@ Schema name: `ResponseInProgressEvent`
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -15330,7 +15806,7 @@ Schema name: `ResponseInProgressEvent`
 
         Opaque program replay fingerprint that must be round-tripped.
 
-      - `type: "program"`
+      - `type: "program" (default: "program")`
 
         The type of the item. Always `program`.
 
@@ -15358,7 +15834,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"incomplete"`
 
-      - `type: "program_output"`
+      - `type: "program_output" (default: "program_output")`
 
         The type of the item. Always `program_output`.
 
@@ -15396,7 +15872,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"incomplete"`
 
-      - `type: "tool_search_call"`
+      - `type: "tool_search_call" (default: "tool_search_call")`
 
         The type of the item. Always `tool_search_call`.
 
@@ -15454,7 +15930,7 @@ Schema name: `ResponseInProgressEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -15486,7 +15962,7 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -15508,7 +15984,7 @@ Schema name: `ResponseInProgressEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -15544,7 +16020,7 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -15554,11 +16030,11 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -15576,7 +16052,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -15587,7 +16063,7 @@ Schema name: `ResponseInProgressEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -15595,7 +16071,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -15603,14 +16079,14 @@ Schema name: `ResponseInProgressEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -15642,7 +16118,7 @@ Schema name: `ResponseInProgressEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -15666,6 +16142,8 @@ Schema name: `ResponseInProgressEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -15745,7 +16223,7 @@ Schema name: `ResponseInProgressEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -15802,10 +16280,14 @@ Schema name: `ResponseInProgressEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -15825,7 +16307,7 @@ Schema name: `ResponseInProgressEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -15834,6 +16316,8 @@ Schema name: `ResponseInProgressEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -15865,13 +16349,15 @@ Schema name: `ResponseInProgressEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -15897,7 +16383,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -15978,7 +16464,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -15986,11 +16472,13 @@ Schema name: `ResponseInProgressEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -16001,11 +16489,13 @@ Schema name: `ResponseInProgressEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -16024,7 +16514,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -16046,7 +16536,7 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -16056,7 +16546,7 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -16065,6 +16555,8 @@ Schema name: `ResponseInProgressEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -16086,7 +16578,7 @@ Schema name: `ResponseInProgressEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -16095,6 +16587,8 @@ Schema name: `ResponseInProgressEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -16128,21 +16622,29 @@ Schema name: `ResponseInProgressEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -16176,7 +16678,7 @@ Schema name: `ResponseInProgressEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -16185,6 +16687,8 @@ Schema name: `ResponseInProgressEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -16206,7 +16710,7 @@ Schema name: `ResponseInProgressEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -16216,7 +16720,7 @@ Schema name: `ResponseInProgressEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -16242,7 +16746,7 @@ Schema name: `ResponseInProgressEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -16270,7 +16774,7 @@ Schema name: `ResponseInProgressEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -16296,7 +16800,7 @@ Schema name: `ResponseInProgressEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -16306,11 +16810,13 @@ Schema name: `ResponseInProgressEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "tool_search_output"`
+      - `type: "tool_search_output" (default: "tool_search_output")`
 
         The type of the item. Always `tool_search_output`.
 
@@ -16366,7 +16872,7 @@ Schema name: `ResponseInProgressEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -16398,7 +16904,7 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -16420,7 +16926,7 @@ Schema name: `ResponseInProgressEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -16456,7 +16962,7 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -16466,11 +16972,11 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -16488,7 +16994,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -16499,7 +17005,7 @@ Schema name: `ResponseInProgressEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -16507,7 +17013,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -16515,14 +17021,14 @@ Schema name: `ResponseInProgressEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -16554,7 +17060,7 @@ Schema name: `ResponseInProgressEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -16578,6 +17084,8 @@ Schema name: `ResponseInProgressEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -16657,7 +17165,7 @@ Schema name: `ResponseInProgressEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -16714,10 +17222,14 @@ Schema name: `ResponseInProgressEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -16737,7 +17249,7 @@ Schema name: `ResponseInProgressEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -16746,6 +17258,8 @@ Schema name: `ResponseInProgressEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -16777,13 +17291,15 @@ Schema name: `ResponseInProgressEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -16809,7 +17325,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -16890,7 +17406,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -16898,11 +17414,13 @@ Schema name: `ResponseInProgressEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -16913,11 +17431,13 @@ Schema name: `ResponseInProgressEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -16936,7 +17456,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -16958,7 +17478,7 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -16968,7 +17488,7 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -16977,6 +17497,8 @@ Schema name: `ResponseInProgressEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -16998,7 +17520,7 @@ Schema name: `ResponseInProgressEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -17007,6 +17529,8 @@ Schema name: `ResponseInProgressEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -17040,21 +17564,29 @@ Schema name: `ResponseInProgressEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -17088,7 +17620,7 @@ Schema name: `ResponseInProgressEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -17097,6 +17629,8 @@ Schema name: `ResponseInProgressEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -17118,7 +17652,7 @@ Schema name: `ResponseInProgressEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -17128,7 +17662,7 @@ Schema name: `ResponseInProgressEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -17154,7 +17688,7 @@ Schema name: `ResponseInProgressEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -17182,7 +17716,7 @@ Schema name: `ResponseInProgressEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -17208,7 +17742,7 @@ Schema name: `ResponseInProgressEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -17218,11 +17752,13 @@ Schema name: `ResponseInProgressEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "additional_tools"`
+      - `type: "additional_tools" (default: "additional_tools")`
 
         The type of the item. Always `additional_tools`.
 
@@ -17240,7 +17776,7 @@ Schema name: `ResponseInProgressEvent`
 
         The encrypted content that was produced by compaction.
 
-      - `type: "compaction"`
+      - `type: "compaction" (default: "compaction")`
 
         The type of the item. Always `compaction`.
 
@@ -17413,7 +17949,7 @@ Schema name: `ResponseInProgressEvent`
 
             The logs output from the code interpreter.
 
-          - `type: "logs"`
+          - `type: "logs" (default: "logs")`
 
             The type of the output. Always `logs`.
 
@@ -17423,7 +17959,7 @@ Schema name: `ResponseInProgressEvent`
 
           The image output from the code interpreter.
 
-          - `type: "image"`
+          - `type: "image" (default: "image")`
 
             The type of the output. Always `image`.
 
@@ -17432,6 +17968,8 @@ Schema name: `ResponseInProgressEvent`
           - `url: string`
 
             The URL of the image output from the code interpreter.
+
+            `format: uri`
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -17447,7 +17985,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"failed"`
 
-      - `type: "code_interpreter_call"`
+      - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
         The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -17473,13 +18011,13 @@ Schema name: `ResponseInProgressEvent`
 
           Environment variables to set for the command.
 
-        - `type: "exec"`
+        - `type: "exec" (default: "exec")`
 
           The type of the local shell action. Always `exec`.
 
           - `"exec"`
 
-        - `timeout_ms: optional number or null`
+        - `timeout_ms: optional integer or null`
 
           Optional timeout in milliseconds for the command.
 
@@ -17553,11 +18091,11 @@ Schema name: `ResponseInProgressEvent`
 
         - `commands: array of string`
 
-        - `max_output_length: number or null`
+        - `max_output_length: integer or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number or null`
+        - `timeout_ms: integer or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -17573,7 +18111,7 @@ Schema name: `ResponseInProgressEvent`
 
           Represents the use of a local environment to perform shell actions.
 
-          - `type: "local"`
+          - `type: "local" (default: "local")`
 
             The environment type. Always `local`.
 
@@ -17585,7 +18123,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `container_id: string`
 
-          - `type: "container_reference"`
+          - `type: "container_reference" (default: "container_reference")`
 
             The environment type. Always `container_reference`.
 
@@ -17601,7 +18139,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call"`
+      - `type: "shell_call" (default: "shell_call")`
 
         The type of the item. Always `shell_call`.
 
@@ -17613,7 +18151,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -17623,7 +18161,7 @@ Schema name: `ResponseInProgressEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -17643,7 +18181,7 @@ Schema name: `ResponseInProgressEvent`
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -17659,7 +18197,7 @@ Schema name: `ResponseInProgressEvent`
 
             Indicates that the shell call exceeded its configured time limit.
 
-            - `type: "timeout"`
+            - `type: "timeout" (default: "timeout")`
 
               The outcome type. Always `timeout`.
 
@@ -17669,11 +18207,11 @@ Schema name: `ResponseInProgressEvent`
 
             Indicates that the shell commands finished and returned an exit code.
 
-            - `exit_code: number`
+            - `exit_code: integer`
 
               Exit code from the shell process.
 
-            - `type: "exit"`
+            - `type: "exit" (default: "exit")`
 
               The outcome type. Always `exit`.
 
@@ -17701,7 +18239,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call_output"`
+      - `type: "shell_call_output" (default: "shell_call_output")`
 
         The type of the shell call output. Always `shell_call_output`.
 
@@ -17713,7 +18251,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -17723,7 +18261,7 @@ Schema name: `ResponseInProgressEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -17759,7 +18297,7 @@ Schema name: `ResponseInProgressEvent`
 
             Path of the file to create.
 
-          - `type: "create_file"`
+          - `type: "create_file" (default: "create_file")`
 
             Create a new file with the provided diff.
 
@@ -17773,7 +18311,7 @@ Schema name: `ResponseInProgressEvent`
 
             Path of the file to delete.
 
-          - `type: "delete_file"`
+          - `type: "delete_file" (default: "delete_file")`
 
             Delete the specified file.
 
@@ -17791,7 +18329,7 @@ Schema name: `ResponseInProgressEvent`
 
             Path of the file to update.
 
-          - `type: "update_file"`
+          - `type: "update_file" (default: "update_file")`
 
             Update an existing file with the provided diff.
 
@@ -17805,7 +18343,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"completed"`
 
-      - `type: "apply_patch_call"`
+      - `type: "apply_patch_call" (default: "apply_patch_call")`
 
         The type of the item. Always `apply_patch_call`.
 
@@ -17817,7 +18355,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -17827,7 +18365,7 @@ Schema name: `ResponseInProgressEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -17855,7 +18393,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"failed"`
 
-      - `type: "apply_patch_call_output"`
+      - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
         The type of the item. Always `apply_patch_call_output`.
 
@@ -17867,7 +18405,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -17877,7 +18415,7 @@ Schema name: `ResponseInProgressEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -18072,7 +18610,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -18082,7 +18620,7 @@ Schema name: `ResponseInProgressEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -18148,7 +18686,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -18160,7 +18698,9 @@ Schema name: `ResponseInProgressEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -18170,14 +18710,16 @@ Schema name: `ResponseInProgressEvent`
 
         The identifier of the actor that created the item.
 
-  - `parallel_tool_calls: boolean`
+  - `parallel_tool_calls: boolean (default: true)`
 
     Whether to allow the model to run tool calls in parallel.
 
-  - `temperature: number or null`
+  - `temperature: number or null (default: 1)`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
     We generally recommend altering this or `top_p` but not both.
+
+    `minimum: 0`, `maximum: 2`
 
   - `tool_choice: ToolChoiceOptions or ToolChoiceAllowed or ToolChoiceTypes or 6 more`
 
@@ -18323,7 +18865,7 @@ Schema name: `ResponseInProgressEvent`
 
     - `SpecificProgrammaticToolCallingParam object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The tool to call. Always `programmatic_tool_calling`.
 
@@ -18333,7 +18875,7 @@ Schema name: `ResponseInProgressEvent`
 
       Forces the model to call the apply_patch tool when executing a tool call.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The tool to call. Always `apply_patch`.
 
@@ -18343,7 +18885,7 @@ Schema name: `ResponseInProgressEvent`
 
       Forces the model to call the shell tool when a tool call is required.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The tool to call. Always `shell`.
 
@@ -18385,7 +18927,7 @@ Schema name: `ResponseInProgressEvent`
 
         Whether strict parameter validation is enforced for this function tool.
 
-      - `type: "function"`
+      - `type: "function" (default: "function")`
 
         The type of the function tool. Always `function`.
 
@@ -18417,7 +18959,7 @@ Schema name: `ResponseInProgressEvent`
 
       A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-      - `type: "file_search"`
+      - `type: "file_search" (default: "file_search")`
 
         The type of the file search tool. Always `file_search`.
 
@@ -18439,7 +18981,7 @@ Schema name: `ResponseInProgressEvent`
 
           Combine multiple filters using `and` or `or`.
 
-      - `max_num_results: optional number`
+      - `max_num_results: optional integer`
 
         The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -18475,7 +19017,7 @@ Schema name: `ResponseInProgressEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `type: "computer"`
+      - `type: "computer" (default: "computer")`
 
         The type of the computer tool. Always `computer`.
 
@@ -18485,11 +19027,11 @@ Schema name: `ResponseInProgressEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `display_height: number`
+      - `display_height: integer`
 
         The height of the computer display.
 
-      - `display_width: number`
+      - `display_width: integer`
 
         The width of the computer display.
 
@@ -18507,7 +19049,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"browser"`
 
-      - `type: "computer_use_preview"`
+      - `type: "computer_use_preview" (default: "computer_use_preview")`
 
         The type of the computer use tool. Always `computer_use_preview`.
 
@@ -18518,7 +19060,7 @@ Schema name: `ResponseInProgressEvent`
       Search the Internet for sources related to the prompt. Learn more about the
       [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search" or "web_search_2025_08_26"`
+      - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
         The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -18526,7 +19068,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"web_search_2025_08_26"`
 
-      - `external_web_access: optional boolean`
+      - `external_web_access: optional boolean (default: true)`
 
         Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -18534,14 +19076,14 @@ Schema name: `ResponseInProgressEvent`
 
         Filters for the search.
 
-        - `allowed_domains: optional array of string or null`
+        - `allowed_domains: optional array of string or null (default: [])`
 
           Allowed domains for the search. If not provided, all domains are allowed.
           Subdomains of the provided domains are allowed as well.
 
           Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-      - `search_context_size: optional "low" or "medium" or "high"`
+      - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
         High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -18573,7 +19115,7 @@ Schema name: `ResponseInProgressEvent`
 
           The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-        - `type: optional "approximate"`
+        - `type: optional "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -18597,6 +19139,8 @@ Schema name: `ResponseInProgressEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -18676,7 +19220,7 @@ Schema name: `ResponseInProgressEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
         Specify which of the MCP server's tools require approval.
 
@@ -18733,10 +19277,14 @@ Schema name: `ResponseInProgressEvent`
         The URL for the MCP server. One of `server_url`, `connector_id`, or
         `tunnel_id` must be provided.
 
+        `format: uri`
+
       - `tunnel_id: optional string`
 
         The Secure MCP Tunnel ID to use instead of a direct server URL. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+        `pattern: ^tunnel_[a-z0-9]{32}$`
 
     - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -18756,7 +19304,7 @@ Schema name: `ResponseInProgressEvent`
 
           Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-          - `type: "auto"`
+          - `type: "auto" (default: "auto")`
 
             Always `auto`.
 
@@ -18765,6 +19313,8 @@ Schema name: `ResponseInProgressEvent`
           - `file_ids: optional array of string`
 
             An optional list of uploaded files to make available to your code.
+
+            `maxItems: 50`
 
           - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -18796,13 +19346,15 @@ Schema name: `ResponseInProgressEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
     - `ProgrammaticToolCalling object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The type of the tool. Always `programmatic_tool_calling`.
 
@@ -18828,7 +19380,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"auto"`
 
-      - `background: optional "transparent" or "opaque" or "auto"`
+      - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
         Set the background of the generated image. One of `transparent`, `opaque`,
         or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -18909,7 +19461,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
 
-      - `moderation: optional "auto" or "low"`
+      - `moderation: optional "auto" or "low" (default: "auto")`
 
         Moderation level for the generated image. Default: `auto`.
 
@@ -18917,11 +19469,13 @@ Schema name: `ResponseInProgressEvent`
 
         - `"low"`
 
-      - `output_compression: optional number`
+      - `output_compression: optional integer (default: 100)`
 
         Compression level for the output image. Default: 100.
 
-      - `output_format: optional "png" or "webp" or "jpeg"`
+        `minimum: 0`, `maximum: 100`
+
+      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
         The output format of the generated image. One of `png`, `webp`, or
         `jpeg`. Default: `png`.
@@ -18932,11 +19486,13 @@ Schema name: `ResponseInProgressEvent`
 
         - `"jpeg"`
 
-      - `partial_images: optional number`
+      - `partial_images: optional integer (default: 0)`
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or 3 more`
+        `minimum: 0`, `maximum: 3`
+
+      - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
         The quality of the generated image. The GPT image models support `low`,
         `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -18955,7 +19511,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"auto"`
 
-      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
         The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -18977,7 +19533,7 @@ Schema name: `ResponseInProgressEvent`
 
       A tool that allows the model to execute shell commands in a local environment.
 
-      - `type: "local_shell"`
+      - `type: "local_shell" (default: "local_shell")`
 
         The type of the local shell tool. Always `local_shell`.
 
@@ -18987,7 +19543,7 @@ Schema name: `ResponseInProgressEvent`
 
       A tool that allows the model to execute shell commands.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The type of the shell tool. Always `shell`.
 
@@ -18996,6 +19552,8 @@ Schema name: `ResponseInProgressEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -19017,7 +19575,7 @@ Schema name: `ResponseInProgressEvent`
 
         The name of the custom tool, used to identify it in tool calls.
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of the custom tool. Always `custom`.
 
@@ -19026,6 +19584,8 @@ Schema name: `ResponseInProgressEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -19059,21 +19619,29 @@ Schema name: `ResponseInProgressEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
+        `minLength: 1`
+
       - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
+
+        `minItems: 1`
 
         - `Function object { name, type, allowed_callers, 6 more }`
 
           - `name: string`
 
-          - `type: "function"`
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+          - `type: "function" (default: "function")`
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -19107,7 +19675,7 @@ Schema name: `ResponseInProgressEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -19116,6 +19684,8 @@ Schema name: `ResponseInProgressEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -19137,7 +19707,7 @@ Schema name: `ResponseInProgressEvent`
 
             The input format for the custom tool. Default is unconstrained text.
 
-      - `type: "namespace"`
+      - `type: "namespace" (default: "namespace")`
 
         The type of the tool. Always `namespace`.
 
@@ -19147,7 +19717,7 @@ Schema name: `ResponseInProgressEvent`
 
       Hosted or BYOT tool search configuration for deferred tools.
 
-      - `type: "tool_search"`
+      - `type: "tool_search" (default: "tool_search")`
 
         The type of the tool. Always `tool_search`.
 
@@ -19173,7 +19743,7 @@ Schema name: `ResponseInProgressEvent`
 
       This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+      - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
         The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -19201,7 +19771,7 @@ Schema name: `ResponseInProgressEvent`
 
         The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-        - `type: "approximate"`
+        - `type: "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -19227,7 +19797,7 @@ Schema name: `ResponseInProgressEvent`
 
       Allows the assistant to create, delete, or update files using unified diffs.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The type of the tool. Always `apply_patch`.
 
@@ -19237,11 +19807,13 @@ Schema name: `ResponseInProgressEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
-  - `top_p: number or null`
+  - `top_p: number or null (default: 1)`
 
     An alternative to sampling with temperature, called nucleus sampling,
     where the model considers the results of the tokens with top_p probability
@@ -19250,7 +19822,9 @@ Schema name: `ResponseInProgressEvent`
 
     We generally recommend altering this or `temperature` but not both.
 
-  - `background: optional boolean or null`
+    `minimum: 0`, `maximum: 1`
+
+  - `background: optional boolean or null (default: false)`
 
     Whether to run the model response in the background.
     [Learn more](https://developers.openai.com/api/docs/guides/background).
@@ -19260,6 +19834,8 @@ Schema name: `ResponseInProgressEvent`
     Unix timestamp (in seconds) of when this Response was completed.
     Only present when the status is `completed`.
 
+    `format: unixtime`
+
   - `conversation: optional object { id }  or null`
 
     The conversation that this response belonged to. Input items and output items from this response were automatically added to this conversation.
@@ -19268,11 +19844,11 @@ Schema name: `ResponseInProgressEvent`
 
       The unique ID of the conversation that this response was associated with.
 
-  - `max_output_tokens: optional number or null`
+  - `max_output_tokens: optional integer or null`
 
     An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](https://developers.openai.com/api/docs/guides/reasoning).
 
-  - `max_tool_calls: optional number or null`
+  - `max_tool_calls: optional integer or null`
 
     The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored.
 
@@ -19312,7 +19888,7 @@ Schema name: `ResponseInProgressEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -19330,7 +19906,7 @@ Schema name: `ResponseInProgressEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -19368,7 +19944,7 @@ Schema name: `ResponseInProgressEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -19386,7 +19962,7 @@ Schema name: `ResponseInProgressEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -19443,7 +20019,7 @@ Schema name: `ResponseInProgressEvent`
 
     - `CacheMiss object { cache_missed_tokens, reason, type, comparison_reusable_tokens }`
 
-      - `cache_missed_tokens: number`
+      - `cache_missed_tokens: integer`
 
         The estimated number of input tokens affected after the first detected divergence.
 
@@ -19469,29 +20045,29 @@ Schema name: `ResponseInProgressEvent`
 
         - `"service_tier_changed"`
 
-      - `type: "cache_miss"`
+      - `type: "cache_miss" (default: "cache_miss")`
 
         - `"cache_miss"`
 
-      - `comparison_reusable_tokens: optional number`
+      - `comparison_reusable_tokens: optional integer`
 
         The raw token count of the reusable prefix in the compared response.
 
     - `CacheHit object { type }`
 
-      - `type: "cache_hit"`
+      - `type: "cache_hit" (default: "cache_hit")`
 
         - `"cache_hit"`
 
     - `ComparisonResponseNotFound object { type }`
 
-      - `type: "comparison_response_not_found"`
+      - `type: "comparison_response_not_found" (default: "comparison_response_not_found")`
 
         - `"comparison_response_not_found"`
 
     - `Unavailable object { type }`
 
-      - `type: "unavailable"`
+      - `type: "unavailable" (default: "unavailable")`
 
         - `"unavailable"`
 
@@ -19561,7 +20137,7 @@ Schema name: `ResponseInProgressEvent`
 
       - `"all_turns"`
 
-    - `effort: optional ReasoningEffort or null`
+    - `effort: optional ReasoningEffort or null (default: "medium")`
 
       Constrains effort on reasoning for reasoning models. Currently supported
       values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -19622,7 +20198,9 @@ Schema name: `ResponseInProgressEvent`
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
     The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-  - `service_tier: optional ServiceTier or null`
+    `maxLength: 128`
+
+  - `service_tier: optional ServiceTier or null (default: "auto")`
 
     Specifies the processing type used for serving the request.
 
@@ -19726,7 +20304,7 @@ Schema name: `ResponseInProgressEvent`
           A description of what the response format is for, used by the model to
           determine how to respond in the format.
 
-        - `strict: optional boolean or null`
+        - `strict: optional boolean or null (default: false)`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -19747,7 +20325,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `"json_object"`
 
-    - `verbosity: optional "low" or "medium" or "high" or null`
+    - `verbosity: optional "low" or "medium" or "high" or null (default: "medium")`
 
       Constrains the verbosity of the model's response. Lower values will result in
       more concise responses, while higher values will result in more verbose responses.
@@ -19779,7 +20357,7 @@ Schema name: `ResponseInProgressEvent`
 
       Aggregated usage statistics for image generation tool calls.
 
-      - `input_tokens: number`
+      - `input_tokens: integer`
 
         The number of tokens (images and text) in the input prompt.
 
@@ -19787,39 +20365,39 @@ Schema name: `ResponseInProgressEvent`
 
         The input tokens detailed information for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image tokens in the input prompt.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text tokens in the input prompt.
 
-      - `output_tokens: number`
+      - `output_tokens: integer`
 
         The number of output tokens generated by the model.
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
         The total number of tokens (images and text) used for the image generation.
 
-      - `cached_tokens: optional number`
+      - `cached_tokens: optional integer`
 
       - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
 
-        - `cached_image_tokens: number`
+        - `cached_image_tokens: integer`
 
-        - `cached_text_tokens: number`
+        - `cached_text_tokens: integer`
 
       - `output_tokens_details: optional object { image_tokens, text_tokens }`
 
         The output token details for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image output tokens generated by the model.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text output tokens generated by the model.
 
@@ -19827,18 +20405,20 @@ Schema name: `ResponseInProgressEvent`
 
       Aggregated billable usage statistics for web search tool calls.
 
-      - `num_requests: number`
+      - `num_requests: integer`
 
         The number of billable web search requests issued.
 
-  - `top_logprobs: optional number or null`
+  - `top_logprobs: optional integer or null`
 
     An integer between 0 and 20 specifying the maximum number of most likely
     tokens to return at each token position, each with an associated log
     probability. In some cases, the number of returned tokens may be fewer than
     requested.
 
-  - `truncation: optional "auto" or "disabled" or null`
+    `minimum: 0`, `maximum: 20`
+
+  - `truncation: optional "auto" or "disabled" or null (default: "disabled")`
 
     The truncation strategy to use for the model response.
 
@@ -19857,7 +20437,7 @@ Schema name: `ResponseInProgressEvent`
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -19865,16 +20445,16 @@ Schema name: `ResponseInProgressEvent`
 
       A detailed breakdown of the input tokens.
 
-      - `cache_write_tokens: number`
+      - `cache_write_tokens: integer`
 
         The number of input tokens that were written to the cache.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache.
         [More on prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -19882,11 +20462,11 @@ Schema name: `ResponseInProgressEvent`
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -19896,7 +20476,7 @@ Schema name: `ResponseInProgressEvent`
     A stable identifier for your end-users.
     Used to boost cache hit rates by better bucketing similar requests and  to help OpenAI detect and prevent abuse. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -19983,6 +20563,8 @@ Schema name: `ResponseCompletedEvent`
 
     Unix timestamp (in seconds) of when this Response was created.
 
+    `format: unixtime`
+
   - `error: ResponseError or null`
 
     An error object returned when the model fails to generate a Response.
@@ -20064,6 +20646,8 @@ Schema name: `ResponseCompletedEvent`
       - `review_target: optional string or null`
 
         An opaque target for explicitly continuing this review, or null when unavailable.
+
+        `pattern: ^[A-Za-z0-9._~:-]+$`, `minLength: 1`, `maxLength: 96`
 
       - `steer: optional object { message }`
 
@@ -20148,7 +20732,7 @@ Schema name: `ResponseCompletedEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -20158,7 +20742,7 @@ Schema name: `ResponseCompletedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -20188,7 +20772,7 @@ Schema name: `ResponseCompletedEvent`
 
                 - `"original"`
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -20202,11 +20786,13 @@ Schema name: `ResponseCompletedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -20224,7 +20810,7 @@ Schema name: `ResponseCompletedEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -20252,6 +20838,8 @@ Schema name: `ResponseCompletedEvent`
 
                 The URL of the file to be sent to the model.
 
+                `format: uri`
+
               - `filename: optional string`
 
                 The name of the file to be sent to the model.
@@ -20260,7 +20848,7 @@ Schema name: `ResponseCompletedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -20373,11 +20961,11 @@ Schema name: `ResponseCompletedEvent`
 
                   The filename of the file cited.
 
-                - `index: number`
+                - `index: integer`
 
                   The index in the output text at which to insert the file citation.
 
-                - `type: "file_citation"`
+                - `type: "file_citation" (default: "file_citation")`
 
                   The type of the file citation. Always `file_citation`.
 
@@ -20387,11 +20975,11 @@ Schema name: `ResponseCompletedEvent`
 
                 A citation for a web resource used to generate a model response.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the URL citation in the message.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the URL citation in the message.
 
@@ -20399,7 +20987,7 @@ Schema name: `ResponseCompletedEvent`
 
                   The title of the web resource.
 
-                - `type: "url_citation"`
+                - `type: "url_citation" (default: "url_citation")`
 
                   The type of the URL citation. Always `url_citation`.
 
@@ -20409,6 +20997,8 @@ Schema name: `ResponseCompletedEvent`
 
                   The URL of the web resource.
 
+                  `format: uri`
+
               - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
                 A citation for a container file used to generate a model response.
@@ -20417,7 +21007,7 @@ Schema name: `ResponseCompletedEvent`
 
                   The ID of the container file.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the container file citation in the message.
 
@@ -20429,11 +21019,11 @@ Schema name: `ResponseCompletedEvent`
 
                   The filename of the container file cited.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the container file citation in the message.
 
-                - `type: "container_file_citation"`
+                - `type: "container_file_citation" (default: "container_file_citation")`
 
                   The type of the container file citation. Always `container_file_citation`.
 
@@ -20447,7 +21037,7 @@ Schema name: `ResponseCompletedEvent`
 
                   The ID of the file.
 
-                - `index: number`
+                - `index: integer`
 
                   The index of the file in the list of files.
 
@@ -20477,7 +21067,7 @@ Schema name: `ResponseCompletedEvent`
 
               The text output from the model.
 
-            - `type: "output_text"`
+            - `type: "output_text" (default: "output_text")`
 
               The type of the output text. Always `output_text`.
 
@@ -20491,7 +21081,7 @@ Schema name: `ResponseCompletedEvent`
 
               The refusal explanation from the model.
 
-            - `type: "refusal"`
+            - `type: "refusal" (default: "refusal")`
 
               The type of the refusal. Always `refusal`.
 
@@ -20578,6 +21168,8 @@ Schema name: `ResponseCompletedEvent`
 
             - `string`
 
+              `maxLength: 512`
+
             - `number`
 
             - `boolean`
@@ -20593,6 +21185,8 @@ Schema name: `ResponseCompletedEvent`
           - `score: optional number`
 
             The relevance score of the file - a value between 0 and 1.
+
+            `format: float`
 
           - `text: optional string`
 
@@ -20638,7 +21232,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `"incomplete"`
 
-        - `type: "computer_call"`
+        - `type: "computer_call" (default: "computer_call")`
 
           The type of the computer call. Always `computer_call`.
 
@@ -20666,17 +21260,17 @@ Schema name: `ResponseCompletedEvent`
 
               - `"forward"`
 
-            - `type: "click"`
+            - `type: "click" (default: "click")`
 
               Specifies the event type. For a click action, this property is always `click`.
 
               - `"click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the click occurred.
 
@@ -20692,17 +21286,17 @@ Schema name: `ResponseCompletedEvent`
 
               The keys being held while double-clicking.
 
-            - `type: "double_click"`
+            - `type: "double_click" (default: "double_click")`
 
               Specifies the event type. For a double click action, this property is always set to `double_click`.
 
               - `"double_click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the double click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the double click occurred.
 
@@ -20721,15 +21315,15 @@ Schema name: `ResponseCompletedEvent`
               ]
               ```
 
-              - `x: number`
+              - `x: integer`
 
                 The x-coordinate.
 
-              - `y: number`
+              - `y: integer`
 
                 The y-coordinate.
 
-            - `type: "drag"`
+            - `type: "drag" (default: "drag")`
 
               Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -20747,7 +21341,7 @@ Schema name: `ResponseCompletedEvent`
 
               The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-            - `type: "keypress"`
+            - `type: "keypress" (default: "keypress")`
 
               Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -20757,17 +21351,17 @@ Schema name: `ResponseCompletedEvent`
 
             A mouse move action.
 
-            - `type: "move"`
+            - `type: "move" (default: "move")`
 
               Specifies the event type. For a move action, this property is always set to `move`.
 
               - `"move"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate to move to.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate to move to.
 
@@ -20779,7 +21373,7 @@ Schema name: `ResponseCompletedEvent`
 
             A screenshot action.
 
-            - `type: "screenshot"`
+            - `type: "screenshot" (default: "screenshot")`
 
               Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -20789,25 +21383,25 @@ Schema name: `ResponseCompletedEvent`
 
             A scroll action.
 
-            - `scroll_x: number`
+            - `scroll_x: integer`
 
               The horizontal scroll distance.
 
-            - `scroll_y: number`
+            - `scroll_y: integer`
 
               The vertical scroll distance.
 
-            - `type: "scroll"`
+            - `type: "scroll" (default: "scroll")`
 
               Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
               - `"scroll"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the scroll occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the scroll occurred.
 
@@ -20823,7 +21417,7 @@ Schema name: `ResponseCompletedEvent`
 
               The text to type.
 
-            - `type: "type"`
+            - `type: "type" (default: "type")`
 
               Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -20833,7 +21427,7 @@ Schema name: `ResponseCompletedEvent`
 
             A wait action.
 
-            - `type: "wait"`
+            - `type: "wait" (default: "wait")`
 
               Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -20888,11 +21482,13 @@ Schema name: `ResponseCompletedEvent`
 
           The ID of the computer tool call that produced the output.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: ResponseComputerToolCallOutputScreenshot`
 
           A computer screenshot image used with the computer use tool.
 
-          - `type: "computer_screenshot"`
+          - `type: "computer_screenshot" (default: "computer_screenshot")`
 
             Specifies the event type. For a computer screenshot, this property is
             always set to `computer_screenshot`.
@@ -20907,7 +21503,9 @@ Schema name: `ResponseCompletedEvent`
 
             The URL of the screenshot image.
 
-        - `type: "computer_call_output"`
+            `format: uri`
+
+        - `type: "computer_call_output" (default: "computer_call_output")`
 
           The type of the computer tool call output. Always `computer_call_output`.
 
@@ -21009,6 +21607,8 @@ Schema name: `ResponseCompletedEvent`
 
                 The URL of the source.
 
+                `format: uri`
+
           - `OpenPage object { type, url }`
 
             Action type "open_page" - Opens a specific URL from search results.
@@ -21022,6 +21622,8 @@ Schema name: `ResponseCompletedEvent`
             - `url: optional string or null`
 
               The URL opened by the model.
+
+              `format: uri`
 
           - `FindInPage object { pattern, type, url }`
 
@@ -21040,6 +21642,8 @@ Schema name: `ResponseCompletedEvent`
             - `url: optional string or null`
 
               The URL of the page searched for the pattern, when available.
+
+              `format: uri`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -21078,7 +21682,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -21088,7 +21692,7 @@ Schema name: `ResponseCompletedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -21119,6 +21723,8 @@ Schema name: `ResponseCompletedEvent`
 
             A JSON string of the output of the function tool call.
 
+            `maxLength: 10485760`
+
           - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
             An array of content outputs (text, image, file) for the function tool call.
@@ -21131,7 +21737,9 @@ Schema name: `ResponseCompletedEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+                `maxLength: 10485760`
+
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -21141,7 +21749,7 @@ Schema name: `ResponseCompletedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -21159,7 +21767,7 @@ Schema name: `ResponseCompletedEvent`
 
               An image input to the model. Learn about [image inputs](https://developers.openai.com/api/docs/guides/images-vision)
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -21177,11 +21785,13 @@ Schema name: `ResponseCompletedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `maxLength: 20971520`, `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -21199,7 +21809,7 @@ Schema name: `ResponseCompletedEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -21219,6 +21829,8 @@ Schema name: `ResponseCompletedEvent`
 
                 The base64-encoded data of the file to be sent to the model.
 
+                `maxLength: 73400320`
+
               - `file_id: optional string or null`
 
                 The ID of the file to be sent to the model.
@@ -21226,6 +21838,8 @@ Schema name: `ResponseCompletedEvent`
               - `file_url: optional string or null`
 
                 The URL of the file to be sent to the model.
+
+                `format: uri`
 
               - `filename: optional string or null`
 
@@ -21235,7 +21849,7 @@ Schema name: `ResponseCompletedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -21249,7 +21863,7 @@ Schema name: `ResponseCompletedEvent`
 
                   - `"12h"`
 
-        - `type: "function_call_output"`
+        - `type: "function_call_output" (default: "function_call_output")`
 
           The type of the function tool call output. Always `function_call_output`.
 
@@ -21263,13 +21877,15 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the function tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -21281,7 +21897,9 @@ Schema name: `ResponseCompletedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -21291,9 +21909,13 @@ Schema name: `ResponseCompletedEvent`
 
           The name of the tool that produced the output.
 
+          `minLength: 1`, `maxLength: 128`
+
         - `namespace: optional string or null`
 
           The namespace of the tool that produced the output.
+
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -21311,7 +21933,7 @@ Schema name: `ResponseCompletedEvent`
 
           The arguments supplied to the tool search call.
 
-        - `type: "tool_search_call"`
+        - `type: "tool_search_call" (default: "tool_search_call")`
 
           The item type. Always `tool_search_call`.
 
@@ -21324,6 +21946,8 @@ Schema name: `ResponseCompletedEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -21365,7 +21989,7 @@ Schema name: `ResponseCompletedEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -21397,7 +22021,7 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -21419,7 +22043,7 @@ Schema name: `ResponseCompletedEvent`
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -21488,7 +22112,7 @@ Schema name: `ResponseCompletedEvent`
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -21524,7 +22148,7 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -21534,11 +22158,11 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -21556,7 +22180,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -21567,7 +22191,7 @@ Schema name: `ResponseCompletedEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -21575,7 +22199,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -21583,14 +22207,14 @@ Schema name: `ResponseCompletedEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -21622,7 +22246,7 @@ Schema name: `ResponseCompletedEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -21646,6 +22270,8 @@ Schema name: `ResponseCompletedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -21725,7 +22351,7 @@ Schema name: `ResponseCompletedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -21782,10 +22408,14 @@ Schema name: `ResponseCompletedEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -21805,7 +22435,7 @@ Schema name: `ResponseCompletedEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -21814,6 +22444,8 @@ Schema name: `ResponseCompletedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -21833,7 +22465,7 @@ Schema name: `ResponseCompletedEvent`
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -21845,7 +22477,9 @@ Schema name: `ResponseCompletedEvent`
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -21855,17 +22489,25 @@ Schema name: `ResponseCompletedEvent`
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -21877,13 +22519,15 @@ Schema name: `ResponseCompletedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -21909,7 +22553,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -21990,7 +22634,7 @@ Schema name: `ResponseCompletedEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -21998,11 +22642,13 @@ Schema name: `ResponseCompletedEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -22013,11 +22659,13 @@ Schema name: `ResponseCompletedEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -22036,7 +22684,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -22058,7 +22706,7 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -22068,7 +22716,7 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -22078,6 +22726,8 @@ Schema name: `ResponseCompletedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -22086,7 +22736,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -22095,6 +22745,8 @@ Schema name: `ResponseCompletedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -22120,13 +22772,17 @@ Schema name: `ResponseCompletedEvent`
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -22154,19 +22810,21 @@ Schema name: `ResponseCompletedEvent`
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -22174,7 +22832,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -22183,6 +22841,8 @@ Schema name: `ResponseCompletedEvent`
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -22202,7 +22862,7 @@ Schema name: `ResponseCompletedEvent`
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -22216,7 +22876,7 @@ Schema name: `ResponseCompletedEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -22225,6 +22885,8 @@ Schema name: `ResponseCompletedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -22250,7 +22912,7 @@ Schema name: `ResponseCompletedEvent`
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -22272,7 +22934,7 @@ Schema name: `ResponseCompletedEvent`
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -22290,9 +22952,13 @@ Schema name: `ResponseCompletedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools loaded inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
@@ -22300,13 +22966,17 @@ Schema name: `ResponseCompletedEvent`
 
                   The name of the loaded function tool.
 
-                - `type: "function"`
+                  `pattern: ^(?![\s\S]*[\r\n])[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -22340,7 +23010,7 @@ Schema name: `ResponseCompletedEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -22349,6 +23019,8 @@ Schema name: `ResponseCompletedEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -22370,7 +23042,7 @@ Schema name: `ResponseCompletedEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -22380,7 +23052,7 @@ Schema name: `ResponseCompletedEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -22406,7 +23078,7 @@ Schema name: `ResponseCompletedEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -22434,7 +23106,7 @@ Schema name: `ResponseCompletedEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -22460,7 +23132,7 @@ Schema name: `ResponseCompletedEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -22470,11 +23142,13 @@ Schema name: `ResponseCompletedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "tool_search_output"`
+        - `type: "tool_search_output" (default: "tool_search_output")`
 
           The item type. Always `tool_search_output`.
 
@@ -22487,6 +23161,8 @@ Schema name: `ResponseCompletedEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -22508,7 +23184,7 @@ Schema name: `ResponseCompletedEvent`
 
       - `AdditionalTools object { role, tools, type, id }`
 
-        - `role: "developer"`
+        - `role: "developer" (default: "developer")`
 
           The role that provided the additional tools. Only `developer` is supported.
 
@@ -22534,7 +23210,7 @@ Schema name: `ResponseCompletedEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -22566,7 +23242,7 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -22588,7 +23264,7 @@ Schema name: `ResponseCompletedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -22624,7 +23300,7 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -22634,11 +23310,11 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -22656,7 +23332,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -22667,7 +23343,7 @@ Schema name: `ResponseCompletedEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -22675,7 +23351,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -22683,14 +23359,14 @@ Schema name: `ResponseCompletedEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -22722,7 +23398,7 @@ Schema name: `ResponseCompletedEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -22746,6 +23422,8 @@ Schema name: `ResponseCompletedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -22825,7 +23503,7 @@ Schema name: `ResponseCompletedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -22882,10 +23560,14 @@ Schema name: `ResponseCompletedEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -22905,7 +23587,7 @@ Schema name: `ResponseCompletedEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -22914,6 +23596,8 @@ Schema name: `ResponseCompletedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -22945,13 +23629,15 @@ Schema name: `ResponseCompletedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -22977,7 +23663,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -23058,7 +23744,7 @@ Schema name: `ResponseCompletedEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -23066,11 +23752,13 @@ Schema name: `ResponseCompletedEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -23081,11 +23769,13 @@ Schema name: `ResponseCompletedEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -23104,7 +23794,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -23126,7 +23816,7 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -23136,7 +23826,7 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -23145,6 +23835,8 @@ Schema name: `ResponseCompletedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -23166,7 +23858,7 @@ Schema name: `ResponseCompletedEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -23175,6 +23867,8 @@ Schema name: `ResponseCompletedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -23208,21 +23902,29 @@ Schema name: `ResponseCompletedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -23256,7 +23958,7 @@ Schema name: `ResponseCompletedEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -23265,6 +23967,8 @@ Schema name: `ResponseCompletedEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -23286,7 +23990,7 @@ Schema name: `ResponseCompletedEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -23296,7 +24000,7 @@ Schema name: `ResponseCompletedEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -23322,7 +24026,7 @@ Schema name: `ResponseCompletedEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -23350,7 +24054,7 @@ Schema name: `ResponseCompletedEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -23376,7 +24080,7 @@ Schema name: `ResponseCompletedEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -23386,11 +24090,13 @@ Schema name: `ResponseCompletedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "additional_tools"`
+        - `type: "additional_tools" (default: "additional_tools")`
 
           The item type. Always `additional_tools`.
 
@@ -23406,7 +24112,7 @@ Schema name: `ResponseCompletedEvent`
         remains in effect for subsequent responses until it is replaced by another
         configuration update.
 
-        - `type: "configuration_update"`
+        - `type: "configuration_update" (default: "configuration_update")`
 
           The item type. Always `configuration_update`.
 
@@ -23420,7 +24126,7 @@ Schema name: `ResponseCompletedEvent`
 
           Updates to reasoning configuration. Only effort is supported.
 
-          - `effort: optional ReasoningEffort or null`
+          - `effort: optional ReasoningEffort or null (default: "medium")`
 
             The reasoning effort to use for subsequent responses until another
             configuration update replaces it.
@@ -23458,7 +24164,7 @@ Schema name: `ResponseCompletedEvent`
 
             A summary of the reasoning output from the model so far.
 
-          - `type: "summary_text"`
+          - `type: "summary_text" (default: "summary_text")`
 
             The type of the object. Always `summary_text`.
 
@@ -23478,7 +24184,7 @@ Schema name: `ResponseCompletedEvent`
 
             The reasoning text from the model.
 
-          - `type: "reasoning_text"`
+          - `type: "reasoning_text" (default: "reasoning_text")`
 
             The type of the reasoning text. Always `reasoning_text`.
 
@@ -23515,7 +24221,9 @@ Schema name: `ResponseCompletedEvent`
 
           The encrypted content of the compaction summary.
 
-        - `type: "compaction"`
+          `maxLength: 104857600`
+
+        - `type: "compaction" (default: "compaction")`
 
           The type of the item. Always `compaction`.
 
@@ -23688,7 +24396,7 @@ Schema name: `ResponseCompletedEvent`
 
               The logs output from the code interpreter.
 
-            - `type: "logs"`
+            - `type: "logs" (default: "logs")`
 
               The type of the output. Always `logs`.
 
@@ -23698,7 +24406,7 @@ Schema name: `ResponseCompletedEvent`
 
             The image output from the code interpreter.
 
-            - `type: "image"`
+            - `type: "image" (default: "image")`
 
               The type of the output. Always `image`.
 
@@ -23707,6 +24415,8 @@ Schema name: `ResponseCompletedEvent`
             - `url: string`
 
               The URL of the image output from the code interpreter.
+
+              `format: uri`
 
         - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -23722,7 +24432,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `"failed"`
 
-        - `type: "code_interpreter_call"`
+        - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
           The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -23748,13 +24458,13 @@ Schema name: `ResponseCompletedEvent`
 
             Environment variables to set for the command.
 
-          - `type: "exec"`
+          - `type: "exec" (default: "exec")`
 
             The type of the local shell action. Always `exec`.
 
             - `"exec"`
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Optional timeout in milliseconds for the command.
 
@@ -23826,11 +24536,11 @@ Schema name: `ResponseCompletedEvent`
 
             Ordered shell commands for the execution environment to run.
 
-          - `max_output_length: optional number or null`
+          - `max_output_length: optional integer or null`
 
             Maximum number of UTF-8 characters to capture from combined stdout and stderr output.
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
@@ -23838,7 +24548,9 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the shell tool call generated by the model.
 
-        - `type: "shell_call"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "shell_call" (default: "shell_call")`
 
           The type of the item. Always `shell_call`.
 
@@ -23854,7 +24566,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -23866,7 +24578,9 @@ Schema name: `ResponseCompletedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -23898,6 +24612,8 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the shell tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: array of ResponseFunctionShellCallOutputContent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
@@ -23910,7 +24626,7 @@ Schema name: `ResponseCompletedEvent`
 
               Indicates that the shell call exceeded its configured time limit.
 
-              - `type: "timeout"`
+              - `type: "timeout" (default: "timeout")`
 
                 The outcome type. Always `timeout`.
 
@@ -23920,11 +24636,11 @@ Schema name: `ResponseCompletedEvent`
 
               Indicates that the shell commands finished and returned an exit code.
 
-              - `exit_code: number`
+              - `exit_code: integer`
 
                 The exit code returned by the shell process.
 
-              - `type: "exit"`
+              - `type: "exit" (default: "exit")`
 
                 The outcome type. Always `exit`.
 
@@ -23934,11 +24650,15 @@ Schema name: `ResponseCompletedEvent`
 
             Captured stderr output for the shell call.
 
+            `maxLength: 10485760`
+
           - `stdout: string`
 
             Captured stdout output for the shell call.
 
-        - `type: "shell_call_output"`
+            `maxLength: 10485760`
+
+        - `type: "shell_call_output" (default: "shell_call_output")`
 
           The type of the item. Always `shell_call_output`.
 
@@ -23954,7 +24674,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -23966,13 +24686,15 @@ Schema name: `ResponseCompletedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
               - `"program"`
 
-        - `max_output_length: optional number or null`
+        - `max_output_length: optional integer or null`
 
           The maximum number of UTF-8 characters captured for this shell call's combined output.
 
@@ -23994,6 +24716,8 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
@@ -24006,11 +24730,15 @@ Schema name: `ResponseCompletedEvent`
 
               Unified diff content to apply when creating the file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to create relative to the workspace root.
 
-            - `type: "create_file"`
+              `minLength: 1`
+
+            - `type: "create_file" (default: "create_file")`
 
               The operation type. Always `create_file`.
 
@@ -24024,7 +24752,9 @@ Schema name: `ResponseCompletedEvent`
 
               Path of the file to delete relative to the workspace root.
 
-            - `type: "delete_file"`
+              `minLength: 1`
+
+            - `type: "delete_file" (default: "delete_file")`
 
               The operation type. Always `delete_file`.
 
@@ -24038,11 +24768,15 @@ Schema name: `ResponseCompletedEvent`
 
               Unified diff content to apply to the existing file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to update relative to the workspace root.
 
-            - `type: "update_file"`
+              `minLength: 1`
+
+            - `type: "update_file" (default: "update_file")`
 
               The operation type. Always `update_file`.
 
@@ -24056,7 +24790,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `"completed"`
 
-        - `type: "apply_patch_call"`
+        - `type: "apply_patch_call" (default: "apply_patch_call")`
 
           The type of the item. Always `apply_patch_call`.
 
@@ -24072,7 +24806,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -24084,7 +24818,9 @@ Schema name: `ResponseCompletedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -24098,6 +24834,8 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `status: "completed" or "failed"`
 
           The status of the apply patch tool call output. One of `completed` or `failed`.
@@ -24106,7 +24844,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `"failed"`
 
-        - `type: "apply_patch_call_output"`
+        - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
           The type of the item. Always `apply_patch_call_output`.
 
@@ -24122,7 +24860,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -24134,7 +24872,9 @@ Schema name: `ResponseCompletedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -24143,6 +24883,8 @@ Schema name: `ResponseCompletedEvent`
         - `output: optional string or null`
 
           Optional human-readable log text from the apply patch tool (e.g., patch results or errors).
+
+          `maxLength: 10485760`
 
       - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -24275,11 +25017,11 @@ Schema name: `ResponseCompletedEvent`
 
           - `McpProtocolError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "mcp_protocol_error"`
+            - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
               - `"mcp_protocol_error"`
 
@@ -24287,17 +25029,17 @@ Schema name: `ResponseCompletedEvent`
 
             - `content: unknown`
 
-            - `type: "mcp_tool_execution_error"`
+            - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
               - `"mcp_tool_execution_error"`
 
           - `HTTPError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "http_error"`
+            - `type: "http_error" (default: "http_error")`
 
               - `"http_error"`
 
@@ -24368,7 +25110,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -24380,7 +25122,9 @@ Schema name: `ResponseCompletedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -24422,7 +25166,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -24432,7 +25176,7 @@ Schema name: `ResponseCompletedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -24444,7 +25188,7 @@ Schema name: `ResponseCompletedEvent`
 
         Compacts the current context. Must be the final input item.
 
-        - `type: "compaction_trigger"`
+        - `type: "compaction_trigger" (default: "compaction_trigger")`
 
           The type of the item. Always `compaction_trigger`.
 
@@ -24462,7 +25206,7 @@ Schema name: `ResponseCompletedEvent`
 
           The ID of the item to reference.
 
-        - `type: optional "item_reference" or null`
+        - `type: optional "item_reference" or null (default: "item_reference")`
 
           The type of item to reference. Always `item_reference`.
 
@@ -24478,15 +25222,21 @@ Schema name: `ResponseCompletedEvent`
 
           The stable call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `code: string`
 
           The JavaScript source executed by programmatic tool calling.
+
+          `maxLength: 10485760`
 
         - `fingerprint: string`
 
           Opaque program replay fingerprint that must be round-tripped.
 
-        - `type: "program"`
+          `maxLength: 10485760`
+
+        - `type: "program" (default: "program")`
 
           The item type. Always `program`.
 
@@ -24502,9 +25252,13 @@ Schema name: `ResponseCompletedEvent`
 
           The call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `result: string`
 
           The result produced by the program item.
+
+          `maxLength: 10485760`
 
         - `status: "completed" or "incomplete"`
 
@@ -24514,7 +25268,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `"incomplete"`
 
-        - `type: "program_output"`
+        - `type: "program_output" (default: "program_output")`
 
           The item type. Always `program_output`.
 
@@ -24831,6 +25585,8 @@ Schema name: `ResponseCompletedEvent`
 
           - `string`
 
+            `maxLength: 512`
+
           - `number`
 
           - `boolean`
@@ -24846,6 +25602,8 @@ Schema name: `ResponseCompletedEvent`
         - `score: optional number`
 
           The relevance score of the file - a value between 0 and 1.
+
+          `format: float`
 
         - `text: optional string`
 
@@ -24888,7 +25646,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -24898,7 +25656,7 @@ Schema name: `ResponseCompletedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -24975,7 +25733,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -24987,7 +25745,9 @@ Schema name: `ResponseCompletedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -25071,6 +25831,8 @@ Schema name: `ResponseCompletedEvent`
 
               The URL of the source.
 
+              `format: uri`
+
         - `OpenPage object { type, url }`
 
           Action type "open_page" - Opens a specific URL from search results.
@@ -25084,6 +25846,8 @@ Schema name: `ResponseCompletedEvent`
           - `url: optional string or null`
 
             The URL opened by the model.
+
+            `format: uri`
 
         - `FindInPage object { pattern, type, url }`
 
@@ -25102,6 +25866,8 @@ Schema name: `ResponseCompletedEvent`
           - `url: optional string or null`
 
             The URL of the page searched for the pattern, when available.
+
+            `format: uri`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -25143,7 +25909,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"incomplete"`
 
-      - `type: "computer_call"`
+      - `type: "computer_call" (default: "computer_call")`
 
         The type of the computer call. Always `computer_call`.
 
@@ -25185,7 +25951,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"in_progress"`
 
-      - `type: "computer_call_output"`
+      - `type: "computer_call_output" (default: "computer_call_output")`
 
         The type of the computer tool call output. Always `computer_call_output`.
 
@@ -25231,7 +25997,7 @@ Schema name: `ResponseCompletedEvent`
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -25249,7 +26015,7 @@ Schema name: `ResponseCompletedEvent`
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -25296,7 +26062,7 @@ Schema name: `ResponseCompletedEvent`
 
         Opaque program replay fingerprint that must be round-tripped.
 
-      - `type: "program"`
+      - `type: "program" (default: "program")`
 
         The type of the item. Always `program`.
 
@@ -25324,7 +26090,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"incomplete"`
 
-      - `type: "program_output"`
+      - `type: "program_output" (default: "program_output")`
 
         The type of the item. Always `program_output`.
 
@@ -25362,7 +26128,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"incomplete"`
 
-      - `type: "tool_search_call"`
+      - `type: "tool_search_call" (default: "tool_search_call")`
 
         The type of the item. Always `tool_search_call`.
 
@@ -25420,7 +26186,7 @@ Schema name: `ResponseCompletedEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -25452,7 +26218,7 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -25474,7 +26240,7 @@ Schema name: `ResponseCompletedEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -25510,7 +26276,7 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -25520,11 +26286,11 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -25542,7 +26308,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -25553,7 +26319,7 @@ Schema name: `ResponseCompletedEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -25561,7 +26327,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -25569,14 +26335,14 @@ Schema name: `ResponseCompletedEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -25608,7 +26374,7 @@ Schema name: `ResponseCompletedEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -25632,6 +26398,8 @@ Schema name: `ResponseCompletedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -25711,7 +26479,7 @@ Schema name: `ResponseCompletedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -25768,10 +26536,14 @@ Schema name: `ResponseCompletedEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -25791,7 +26563,7 @@ Schema name: `ResponseCompletedEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -25800,6 +26572,8 @@ Schema name: `ResponseCompletedEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -25831,13 +26605,15 @@ Schema name: `ResponseCompletedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -25863,7 +26639,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -25944,7 +26720,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -25952,11 +26728,13 @@ Schema name: `ResponseCompletedEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -25967,11 +26745,13 @@ Schema name: `ResponseCompletedEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -25990,7 +26770,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -26012,7 +26792,7 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -26022,7 +26802,7 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -26031,6 +26811,8 @@ Schema name: `ResponseCompletedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -26052,7 +26834,7 @@ Schema name: `ResponseCompletedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -26061,6 +26843,8 @@ Schema name: `ResponseCompletedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -26094,21 +26878,29 @@ Schema name: `ResponseCompletedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -26142,7 +26934,7 @@ Schema name: `ResponseCompletedEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -26151,6 +26943,8 @@ Schema name: `ResponseCompletedEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -26172,7 +26966,7 @@ Schema name: `ResponseCompletedEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -26182,7 +26976,7 @@ Schema name: `ResponseCompletedEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -26208,7 +27002,7 @@ Schema name: `ResponseCompletedEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -26236,7 +27030,7 @@ Schema name: `ResponseCompletedEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -26262,7 +27056,7 @@ Schema name: `ResponseCompletedEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -26272,11 +27066,13 @@ Schema name: `ResponseCompletedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "tool_search_output"`
+      - `type: "tool_search_output" (default: "tool_search_output")`
 
         The type of the item. Always `tool_search_output`.
 
@@ -26332,7 +27128,7 @@ Schema name: `ResponseCompletedEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -26364,7 +27160,7 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -26386,7 +27182,7 @@ Schema name: `ResponseCompletedEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -26422,7 +27218,7 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -26432,11 +27228,11 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -26454,7 +27250,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -26465,7 +27261,7 @@ Schema name: `ResponseCompletedEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -26473,7 +27269,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -26481,14 +27277,14 @@ Schema name: `ResponseCompletedEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -26520,7 +27316,7 @@ Schema name: `ResponseCompletedEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -26544,6 +27340,8 @@ Schema name: `ResponseCompletedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -26623,7 +27421,7 @@ Schema name: `ResponseCompletedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -26680,10 +27478,14 @@ Schema name: `ResponseCompletedEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -26703,7 +27505,7 @@ Schema name: `ResponseCompletedEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -26712,6 +27514,8 @@ Schema name: `ResponseCompletedEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -26743,13 +27547,15 @@ Schema name: `ResponseCompletedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -26775,7 +27581,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -26856,7 +27662,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -26864,11 +27670,13 @@ Schema name: `ResponseCompletedEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -26879,11 +27687,13 @@ Schema name: `ResponseCompletedEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -26902,7 +27712,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -26924,7 +27734,7 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -26934,7 +27744,7 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -26943,6 +27753,8 @@ Schema name: `ResponseCompletedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -26964,7 +27776,7 @@ Schema name: `ResponseCompletedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -26973,6 +27785,8 @@ Schema name: `ResponseCompletedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -27006,21 +27820,29 @@ Schema name: `ResponseCompletedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -27054,7 +27876,7 @@ Schema name: `ResponseCompletedEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -27063,6 +27885,8 @@ Schema name: `ResponseCompletedEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -27084,7 +27908,7 @@ Schema name: `ResponseCompletedEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -27094,7 +27918,7 @@ Schema name: `ResponseCompletedEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -27120,7 +27944,7 @@ Schema name: `ResponseCompletedEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -27148,7 +27972,7 @@ Schema name: `ResponseCompletedEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -27174,7 +27998,7 @@ Schema name: `ResponseCompletedEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -27184,11 +28008,13 @@ Schema name: `ResponseCompletedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "additional_tools"`
+      - `type: "additional_tools" (default: "additional_tools")`
 
         The type of the item. Always `additional_tools`.
 
@@ -27206,7 +28032,7 @@ Schema name: `ResponseCompletedEvent`
 
         The encrypted content that was produced by compaction.
 
-      - `type: "compaction"`
+      - `type: "compaction" (default: "compaction")`
 
         The type of the item. Always `compaction`.
 
@@ -27379,7 +28205,7 @@ Schema name: `ResponseCompletedEvent`
 
             The logs output from the code interpreter.
 
-          - `type: "logs"`
+          - `type: "logs" (default: "logs")`
 
             The type of the output. Always `logs`.
 
@@ -27389,7 +28215,7 @@ Schema name: `ResponseCompletedEvent`
 
           The image output from the code interpreter.
 
-          - `type: "image"`
+          - `type: "image" (default: "image")`
 
             The type of the output. Always `image`.
 
@@ -27398,6 +28224,8 @@ Schema name: `ResponseCompletedEvent`
           - `url: string`
 
             The URL of the image output from the code interpreter.
+
+            `format: uri`
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -27413,7 +28241,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"failed"`
 
-      - `type: "code_interpreter_call"`
+      - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
         The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -27439,13 +28267,13 @@ Schema name: `ResponseCompletedEvent`
 
           Environment variables to set for the command.
 
-        - `type: "exec"`
+        - `type: "exec" (default: "exec")`
 
           The type of the local shell action. Always `exec`.
 
           - `"exec"`
 
-        - `timeout_ms: optional number or null`
+        - `timeout_ms: optional integer or null`
 
           Optional timeout in milliseconds for the command.
 
@@ -27519,11 +28347,11 @@ Schema name: `ResponseCompletedEvent`
 
         - `commands: array of string`
 
-        - `max_output_length: number or null`
+        - `max_output_length: integer or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number or null`
+        - `timeout_ms: integer or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -27539,7 +28367,7 @@ Schema name: `ResponseCompletedEvent`
 
           Represents the use of a local environment to perform shell actions.
 
-          - `type: "local"`
+          - `type: "local" (default: "local")`
 
             The environment type. Always `local`.
 
@@ -27551,7 +28379,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `container_id: string`
 
-          - `type: "container_reference"`
+          - `type: "container_reference" (default: "container_reference")`
 
             The environment type. Always `container_reference`.
 
@@ -27567,7 +28395,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call"`
+      - `type: "shell_call" (default: "shell_call")`
 
         The type of the item. Always `shell_call`.
 
@@ -27579,7 +28407,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -27589,7 +28417,7 @@ Schema name: `ResponseCompletedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -27609,7 +28437,7 @@ Schema name: `ResponseCompletedEvent`
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -27625,7 +28453,7 @@ Schema name: `ResponseCompletedEvent`
 
             Indicates that the shell call exceeded its configured time limit.
 
-            - `type: "timeout"`
+            - `type: "timeout" (default: "timeout")`
 
               The outcome type. Always `timeout`.
 
@@ -27635,11 +28463,11 @@ Schema name: `ResponseCompletedEvent`
 
             Indicates that the shell commands finished and returned an exit code.
 
-            - `exit_code: number`
+            - `exit_code: integer`
 
               Exit code from the shell process.
 
-            - `type: "exit"`
+            - `type: "exit" (default: "exit")`
 
               The outcome type. Always `exit`.
 
@@ -27667,7 +28495,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call_output"`
+      - `type: "shell_call_output" (default: "shell_call_output")`
 
         The type of the shell call output. Always `shell_call_output`.
 
@@ -27679,7 +28507,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -27689,7 +28517,7 @@ Schema name: `ResponseCompletedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -27725,7 +28553,7 @@ Schema name: `ResponseCompletedEvent`
 
             Path of the file to create.
 
-          - `type: "create_file"`
+          - `type: "create_file" (default: "create_file")`
 
             Create a new file with the provided diff.
 
@@ -27739,7 +28567,7 @@ Schema name: `ResponseCompletedEvent`
 
             Path of the file to delete.
 
-          - `type: "delete_file"`
+          - `type: "delete_file" (default: "delete_file")`
 
             Delete the specified file.
 
@@ -27757,7 +28585,7 @@ Schema name: `ResponseCompletedEvent`
 
             Path of the file to update.
 
-          - `type: "update_file"`
+          - `type: "update_file" (default: "update_file")`
 
             Update an existing file with the provided diff.
 
@@ -27771,7 +28599,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"completed"`
 
-      - `type: "apply_patch_call"`
+      - `type: "apply_patch_call" (default: "apply_patch_call")`
 
         The type of the item. Always `apply_patch_call`.
 
@@ -27783,7 +28611,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -27793,7 +28621,7 @@ Schema name: `ResponseCompletedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -27821,7 +28649,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"failed"`
 
-      - `type: "apply_patch_call_output"`
+      - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
         The type of the item. Always `apply_patch_call_output`.
 
@@ -27833,7 +28661,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -27843,7 +28671,7 @@ Schema name: `ResponseCompletedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -28038,7 +28866,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -28048,7 +28876,7 @@ Schema name: `ResponseCompletedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -28114,7 +28942,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -28126,7 +28954,9 @@ Schema name: `ResponseCompletedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -28136,14 +28966,16 @@ Schema name: `ResponseCompletedEvent`
 
         The identifier of the actor that created the item.
 
-  - `parallel_tool_calls: boolean`
+  - `parallel_tool_calls: boolean (default: true)`
 
     Whether to allow the model to run tool calls in parallel.
 
-  - `temperature: number or null`
+  - `temperature: number or null (default: 1)`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
     We generally recommend altering this or `top_p` but not both.
+
+    `minimum: 0`, `maximum: 2`
 
   - `tool_choice: ToolChoiceOptions or ToolChoiceAllowed or ToolChoiceTypes or 6 more`
 
@@ -28289,7 +29121,7 @@ Schema name: `ResponseCompletedEvent`
 
     - `SpecificProgrammaticToolCallingParam object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The tool to call. Always `programmatic_tool_calling`.
 
@@ -28299,7 +29131,7 @@ Schema name: `ResponseCompletedEvent`
 
       Forces the model to call the apply_patch tool when executing a tool call.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The tool to call. Always `apply_patch`.
 
@@ -28309,7 +29141,7 @@ Schema name: `ResponseCompletedEvent`
 
       Forces the model to call the shell tool when a tool call is required.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The tool to call. Always `shell`.
 
@@ -28351,7 +29183,7 @@ Schema name: `ResponseCompletedEvent`
 
         Whether strict parameter validation is enforced for this function tool.
 
-      - `type: "function"`
+      - `type: "function" (default: "function")`
 
         The type of the function tool. Always `function`.
 
@@ -28383,7 +29215,7 @@ Schema name: `ResponseCompletedEvent`
 
       A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-      - `type: "file_search"`
+      - `type: "file_search" (default: "file_search")`
 
         The type of the file search tool. Always `file_search`.
 
@@ -28405,7 +29237,7 @@ Schema name: `ResponseCompletedEvent`
 
           Combine multiple filters using `and` or `or`.
 
-      - `max_num_results: optional number`
+      - `max_num_results: optional integer`
 
         The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -28441,7 +29273,7 @@ Schema name: `ResponseCompletedEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `type: "computer"`
+      - `type: "computer" (default: "computer")`
 
         The type of the computer tool. Always `computer`.
 
@@ -28451,11 +29283,11 @@ Schema name: `ResponseCompletedEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `display_height: number`
+      - `display_height: integer`
 
         The height of the computer display.
 
-      - `display_width: number`
+      - `display_width: integer`
 
         The width of the computer display.
 
@@ -28473,7 +29305,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"browser"`
 
-      - `type: "computer_use_preview"`
+      - `type: "computer_use_preview" (default: "computer_use_preview")`
 
         The type of the computer use tool. Always `computer_use_preview`.
 
@@ -28484,7 +29316,7 @@ Schema name: `ResponseCompletedEvent`
       Search the Internet for sources related to the prompt. Learn more about the
       [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search" or "web_search_2025_08_26"`
+      - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
         The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -28492,7 +29324,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"web_search_2025_08_26"`
 
-      - `external_web_access: optional boolean`
+      - `external_web_access: optional boolean (default: true)`
 
         Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -28500,14 +29332,14 @@ Schema name: `ResponseCompletedEvent`
 
         Filters for the search.
 
-        - `allowed_domains: optional array of string or null`
+        - `allowed_domains: optional array of string or null (default: [])`
 
           Allowed domains for the search. If not provided, all domains are allowed.
           Subdomains of the provided domains are allowed as well.
 
           Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-      - `search_context_size: optional "low" or "medium" or "high"`
+      - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
         High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -28539,7 +29371,7 @@ Schema name: `ResponseCompletedEvent`
 
           The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-        - `type: optional "approximate"`
+        - `type: optional "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -28563,6 +29395,8 @@ Schema name: `ResponseCompletedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -28642,7 +29476,7 @@ Schema name: `ResponseCompletedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
         Specify which of the MCP server's tools require approval.
 
@@ -28699,10 +29533,14 @@ Schema name: `ResponseCompletedEvent`
         The URL for the MCP server. One of `server_url`, `connector_id`, or
         `tunnel_id` must be provided.
 
+        `format: uri`
+
       - `tunnel_id: optional string`
 
         The Secure MCP Tunnel ID to use instead of a direct server URL. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+        `pattern: ^tunnel_[a-z0-9]{32}$`
 
     - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -28722,7 +29560,7 @@ Schema name: `ResponseCompletedEvent`
 
           Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-          - `type: "auto"`
+          - `type: "auto" (default: "auto")`
 
             Always `auto`.
 
@@ -28731,6 +29569,8 @@ Schema name: `ResponseCompletedEvent`
           - `file_ids: optional array of string`
 
             An optional list of uploaded files to make available to your code.
+
+            `maxItems: 50`
 
           - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -28762,13 +29602,15 @@ Schema name: `ResponseCompletedEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
     - `ProgrammaticToolCalling object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The type of the tool. Always `programmatic_tool_calling`.
 
@@ -28794,7 +29636,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"auto"`
 
-      - `background: optional "transparent" or "opaque" or "auto"`
+      - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
         Set the background of the generated image. One of `transparent`, `opaque`,
         or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -28875,7 +29717,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
 
-      - `moderation: optional "auto" or "low"`
+      - `moderation: optional "auto" or "low" (default: "auto")`
 
         Moderation level for the generated image. Default: `auto`.
 
@@ -28883,11 +29725,13 @@ Schema name: `ResponseCompletedEvent`
 
         - `"low"`
 
-      - `output_compression: optional number`
+      - `output_compression: optional integer (default: 100)`
 
         Compression level for the output image. Default: 100.
 
-      - `output_format: optional "png" or "webp" or "jpeg"`
+        `minimum: 0`, `maximum: 100`
+
+      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
         The output format of the generated image. One of `png`, `webp`, or
         `jpeg`. Default: `png`.
@@ -28898,11 +29742,13 @@ Schema name: `ResponseCompletedEvent`
 
         - `"jpeg"`
 
-      - `partial_images: optional number`
+      - `partial_images: optional integer (default: 0)`
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or 3 more`
+        `minimum: 0`, `maximum: 3`
+
+      - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
         The quality of the generated image. The GPT image models support `low`,
         `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -28921,7 +29767,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"auto"`
 
-      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
         The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -28943,7 +29789,7 @@ Schema name: `ResponseCompletedEvent`
 
       A tool that allows the model to execute shell commands in a local environment.
 
-      - `type: "local_shell"`
+      - `type: "local_shell" (default: "local_shell")`
 
         The type of the local shell tool. Always `local_shell`.
 
@@ -28953,7 +29799,7 @@ Schema name: `ResponseCompletedEvent`
 
       A tool that allows the model to execute shell commands.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The type of the shell tool. Always `shell`.
 
@@ -28962,6 +29808,8 @@ Schema name: `ResponseCompletedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -28983,7 +29831,7 @@ Schema name: `ResponseCompletedEvent`
 
         The name of the custom tool, used to identify it in tool calls.
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of the custom tool. Always `custom`.
 
@@ -28992,6 +29840,8 @@ Schema name: `ResponseCompletedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -29025,21 +29875,29 @@ Schema name: `ResponseCompletedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
+        `minLength: 1`
+
       - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
+
+        `minItems: 1`
 
         - `Function object { name, type, allowed_callers, 6 more }`
 
           - `name: string`
 
-          - `type: "function"`
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+          - `type: "function" (default: "function")`
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -29073,7 +29931,7 @@ Schema name: `ResponseCompletedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -29082,6 +29940,8 @@ Schema name: `ResponseCompletedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -29103,7 +29963,7 @@ Schema name: `ResponseCompletedEvent`
 
             The input format for the custom tool. Default is unconstrained text.
 
-      - `type: "namespace"`
+      - `type: "namespace" (default: "namespace")`
 
         The type of the tool. Always `namespace`.
 
@@ -29113,7 +29973,7 @@ Schema name: `ResponseCompletedEvent`
 
       Hosted or BYOT tool search configuration for deferred tools.
 
-      - `type: "tool_search"`
+      - `type: "tool_search" (default: "tool_search")`
 
         The type of the tool. Always `tool_search`.
 
@@ -29139,7 +29999,7 @@ Schema name: `ResponseCompletedEvent`
 
       This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+      - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
         The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -29167,7 +30027,7 @@ Schema name: `ResponseCompletedEvent`
 
         The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-        - `type: "approximate"`
+        - `type: "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -29193,7 +30053,7 @@ Schema name: `ResponseCompletedEvent`
 
       Allows the assistant to create, delete, or update files using unified diffs.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The type of the tool. Always `apply_patch`.
 
@@ -29203,11 +30063,13 @@ Schema name: `ResponseCompletedEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
-  - `top_p: number or null`
+  - `top_p: number or null (default: 1)`
 
     An alternative to sampling with temperature, called nucleus sampling,
     where the model considers the results of the tokens with top_p probability
@@ -29216,7 +30078,9 @@ Schema name: `ResponseCompletedEvent`
 
     We generally recommend altering this or `temperature` but not both.
 
-  - `background: optional boolean or null`
+    `minimum: 0`, `maximum: 1`
+
+  - `background: optional boolean or null (default: false)`
 
     Whether to run the model response in the background.
     [Learn more](https://developers.openai.com/api/docs/guides/background).
@@ -29226,6 +30090,8 @@ Schema name: `ResponseCompletedEvent`
     Unix timestamp (in seconds) of when this Response was completed.
     Only present when the status is `completed`.
 
+    `format: unixtime`
+
   - `conversation: optional object { id }  or null`
 
     The conversation that this response belonged to. Input items and output items from this response were automatically added to this conversation.
@@ -29234,11 +30100,11 @@ Schema name: `ResponseCompletedEvent`
 
       The unique ID of the conversation that this response was associated with.
 
-  - `max_output_tokens: optional number or null`
+  - `max_output_tokens: optional integer or null`
 
     An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](https://developers.openai.com/api/docs/guides/reasoning).
 
-  - `max_tool_calls: optional number or null`
+  - `max_tool_calls: optional integer or null`
 
     The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored.
 
@@ -29278,7 +30144,7 @@ Schema name: `ResponseCompletedEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -29296,7 +30162,7 @@ Schema name: `ResponseCompletedEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -29334,7 +30200,7 @@ Schema name: `ResponseCompletedEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -29352,7 +30218,7 @@ Schema name: `ResponseCompletedEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -29409,7 +30275,7 @@ Schema name: `ResponseCompletedEvent`
 
     - `CacheMiss object { cache_missed_tokens, reason, type, comparison_reusable_tokens }`
 
-      - `cache_missed_tokens: number`
+      - `cache_missed_tokens: integer`
 
         The estimated number of input tokens affected after the first detected divergence.
 
@@ -29435,29 +30301,29 @@ Schema name: `ResponseCompletedEvent`
 
         - `"service_tier_changed"`
 
-      - `type: "cache_miss"`
+      - `type: "cache_miss" (default: "cache_miss")`
 
         - `"cache_miss"`
 
-      - `comparison_reusable_tokens: optional number`
+      - `comparison_reusable_tokens: optional integer`
 
         The raw token count of the reusable prefix in the compared response.
 
     - `CacheHit object { type }`
 
-      - `type: "cache_hit"`
+      - `type: "cache_hit" (default: "cache_hit")`
 
         - `"cache_hit"`
 
     - `ComparisonResponseNotFound object { type }`
 
-      - `type: "comparison_response_not_found"`
+      - `type: "comparison_response_not_found" (default: "comparison_response_not_found")`
 
         - `"comparison_response_not_found"`
 
     - `Unavailable object { type }`
 
-      - `type: "unavailable"`
+      - `type: "unavailable" (default: "unavailable")`
 
         - `"unavailable"`
 
@@ -29527,7 +30393,7 @@ Schema name: `ResponseCompletedEvent`
 
       - `"all_turns"`
 
-    - `effort: optional ReasoningEffort or null`
+    - `effort: optional ReasoningEffort or null (default: "medium")`
 
       Constrains effort on reasoning for reasoning models. Currently supported
       values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -29588,7 +30454,9 @@ Schema name: `ResponseCompletedEvent`
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
     The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-  - `service_tier: optional ServiceTier or null`
+    `maxLength: 128`
+
+  - `service_tier: optional ServiceTier or null (default: "auto")`
 
     Specifies the processing type used for serving the request.
 
@@ -29692,7 +30560,7 @@ Schema name: `ResponseCompletedEvent`
           A description of what the response format is for, used by the model to
           determine how to respond in the format.
 
-        - `strict: optional boolean or null`
+        - `strict: optional boolean or null (default: false)`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -29713,7 +30581,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `"json_object"`
 
-    - `verbosity: optional "low" or "medium" or "high" or null`
+    - `verbosity: optional "low" or "medium" or "high" or null (default: "medium")`
 
       Constrains the verbosity of the model's response. Lower values will result in
       more concise responses, while higher values will result in more verbose responses.
@@ -29745,7 +30613,7 @@ Schema name: `ResponseCompletedEvent`
 
       Aggregated usage statistics for image generation tool calls.
 
-      - `input_tokens: number`
+      - `input_tokens: integer`
 
         The number of tokens (images and text) in the input prompt.
 
@@ -29753,39 +30621,39 @@ Schema name: `ResponseCompletedEvent`
 
         The input tokens detailed information for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image tokens in the input prompt.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text tokens in the input prompt.
 
-      - `output_tokens: number`
+      - `output_tokens: integer`
 
         The number of output tokens generated by the model.
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
         The total number of tokens (images and text) used for the image generation.
 
-      - `cached_tokens: optional number`
+      - `cached_tokens: optional integer`
 
       - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
 
-        - `cached_image_tokens: number`
+        - `cached_image_tokens: integer`
 
-        - `cached_text_tokens: number`
+        - `cached_text_tokens: integer`
 
       - `output_tokens_details: optional object { image_tokens, text_tokens }`
 
         The output token details for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image output tokens generated by the model.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text output tokens generated by the model.
 
@@ -29793,18 +30661,20 @@ Schema name: `ResponseCompletedEvent`
 
       Aggregated billable usage statistics for web search tool calls.
 
-      - `num_requests: number`
+      - `num_requests: integer`
 
         The number of billable web search requests issued.
 
-  - `top_logprobs: optional number or null`
+  - `top_logprobs: optional integer or null`
 
     An integer between 0 and 20 specifying the maximum number of most likely
     tokens to return at each token position, each with an associated log
     probability. In some cases, the number of returned tokens may be fewer than
     requested.
 
-  - `truncation: optional "auto" or "disabled" or null`
+    `minimum: 0`, `maximum: 20`
+
+  - `truncation: optional "auto" or "disabled" or null (default: "disabled")`
 
     The truncation strategy to use for the model response.
 
@@ -29823,7 +30693,7 @@ Schema name: `ResponseCompletedEvent`
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -29831,16 +30701,16 @@ Schema name: `ResponseCompletedEvent`
 
       A detailed breakdown of the input tokens.
 
-      - `cache_write_tokens: number`
+      - `cache_write_tokens: integer`
 
         The number of input tokens that were written to the cache.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache.
         [More on prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -29848,11 +30718,11 @@ Schema name: `ResponseCompletedEvent`
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -29862,7 +30732,7 @@ Schema name: `ResponseCompletedEvent`
     A stable identifier for your end-users.
     Used to boost cache hit rates by better bucketing similar requests and  to help OpenAI detect and prevent abuse. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number for this event.
 
@@ -29973,6 +30843,8 @@ Schema name: `ResponseFailedEvent`
 
     Unix timestamp (in seconds) of when this Response was created.
 
+    `format: unixtime`
+
   - `error: ResponseError or null`
 
     An error object returned when the model fails to generate a Response.
@@ -30054,6 +30926,8 @@ Schema name: `ResponseFailedEvent`
       - `review_target: optional string or null`
 
         An opaque target for explicitly continuing this review, or null when unavailable.
+
+        `pattern: ^[A-Za-z0-9._~:-]+$`, `minLength: 1`, `maxLength: 96`
 
       - `steer: optional object { message }`
 
@@ -30138,7 +31012,7 @@ Schema name: `ResponseFailedEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -30148,7 +31022,7 @@ Schema name: `ResponseFailedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -30178,7 +31052,7 @@ Schema name: `ResponseFailedEvent`
 
                 - `"original"`
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -30192,11 +31066,13 @@ Schema name: `ResponseFailedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -30214,7 +31090,7 @@ Schema name: `ResponseFailedEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -30242,6 +31118,8 @@ Schema name: `ResponseFailedEvent`
 
                 The URL of the file to be sent to the model.
 
+                `format: uri`
+
               - `filename: optional string`
 
                 The name of the file to be sent to the model.
@@ -30250,7 +31128,7 @@ Schema name: `ResponseFailedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -30363,11 +31241,11 @@ Schema name: `ResponseFailedEvent`
 
                   The filename of the file cited.
 
-                - `index: number`
+                - `index: integer`
 
                   The index in the output text at which to insert the file citation.
 
-                - `type: "file_citation"`
+                - `type: "file_citation" (default: "file_citation")`
 
                   The type of the file citation. Always `file_citation`.
 
@@ -30377,11 +31255,11 @@ Schema name: `ResponseFailedEvent`
 
                 A citation for a web resource used to generate a model response.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the URL citation in the message.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the URL citation in the message.
 
@@ -30389,7 +31267,7 @@ Schema name: `ResponseFailedEvent`
 
                   The title of the web resource.
 
-                - `type: "url_citation"`
+                - `type: "url_citation" (default: "url_citation")`
 
                   The type of the URL citation. Always `url_citation`.
 
@@ -30399,6 +31277,8 @@ Schema name: `ResponseFailedEvent`
 
                   The URL of the web resource.
 
+                  `format: uri`
+
               - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
                 A citation for a container file used to generate a model response.
@@ -30407,7 +31287,7 @@ Schema name: `ResponseFailedEvent`
 
                   The ID of the container file.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the container file citation in the message.
 
@@ -30419,11 +31299,11 @@ Schema name: `ResponseFailedEvent`
 
                   The filename of the container file cited.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the container file citation in the message.
 
-                - `type: "container_file_citation"`
+                - `type: "container_file_citation" (default: "container_file_citation")`
 
                   The type of the container file citation. Always `container_file_citation`.
 
@@ -30437,7 +31317,7 @@ Schema name: `ResponseFailedEvent`
 
                   The ID of the file.
 
-                - `index: number`
+                - `index: integer`
 
                   The index of the file in the list of files.
 
@@ -30467,7 +31347,7 @@ Schema name: `ResponseFailedEvent`
 
               The text output from the model.
 
-            - `type: "output_text"`
+            - `type: "output_text" (default: "output_text")`
 
               The type of the output text. Always `output_text`.
 
@@ -30481,7 +31361,7 @@ Schema name: `ResponseFailedEvent`
 
               The refusal explanation from the model.
 
-            - `type: "refusal"`
+            - `type: "refusal" (default: "refusal")`
 
               The type of the refusal. Always `refusal`.
 
@@ -30568,6 +31448,8 @@ Schema name: `ResponseFailedEvent`
 
             - `string`
 
+              `maxLength: 512`
+
             - `number`
 
             - `boolean`
@@ -30583,6 +31465,8 @@ Schema name: `ResponseFailedEvent`
           - `score: optional number`
 
             The relevance score of the file - a value between 0 and 1.
+
+            `format: float`
 
           - `text: optional string`
 
@@ -30628,7 +31512,7 @@ Schema name: `ResponseFailedEvent`
 
           - `"incomplete"`
 
-        - `type: "computer_call"`
+        - `type: "computer_call" (default: "computer_call")`
 
           The type of the computer call. Always `computer_call`.
 
@@ -30656,17 +31540,17 @@ Schema name: `ResponseFailedEvent`
 
               - `"forward"`
 
-            - `type: "click"`
+            - `type: "click" (default: "click")`
 
               Specifies the event type. For a click action, this property is always `click`.
 
               - `"click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the click occurred.
 
@@ -30682,17 +31566,17 @@ Schema name: `ResponseFailedEvent`
 
               The keys being held while double-clicking.
 
-            - `type: "double_click"`
+            - `type: "double_click" (default: "double_click")`
 
               Specifies the event type. For a double click action, this property is always set to `double_click`.
 
               - `"double_click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the double click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the double click occurred.
 
@@ -30711,15 +31595,15 @@ Schema name: `ResponseFailedEvent`
               ]
               ```
 
-              - `x: number`
+              - `x: integer`
 
                 The x-coordinate.
 
-              - `y: number`
+              - `y: integer`
 
                 The y-coordinate.
 
-            - `type: "drag"`
+            - `type: "drag" (default: "drag")`
 
               Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -30737,7 +31621,7 @@ Schema name: `ResponseFailedEvent`
 
               The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-            - `type: "keypress"`
+            - `type: "keypress" (default: "keypress")`
 
               Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -30747,17 +31631,17 @@ Schema name: `ResponseFailedEvent`
 
             A mouse move action.
 
-            - `type: "move"`
+            - `type: "move" (default: "move")`
 
               Specifies the event type. For a move action, this property is always set to `move`.
 
               - `"move"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate to move to.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate to move to.
 
@@ -30769,7 +31653,7 @@ Schema name: `ResponseFailedEvent`
 
             A screenshot action.
 
-            - `type: "screenshot"`
+            - `type: "screenshot" (default: "screenshot")`
 
               Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -30779,25 +31663,25 @@ Schema name: `ResponseFailedEvent`
 
             A scroll action.
 
-            - `scroll_x: number`
+            - `scroll_x: integer`
 
               The horizontal scroll distance.
 
-            - `scroll_y: number`
+            - `scroll_y: integer`
 
               The vertical scroll distance.
 
-            - `type: "scroll"`
+            - `type: "scroll" (default: "scroll")`
 
               Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
               - `"scroll"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the scroll occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the scroll occurred.
 
@@ -30813,7 +31697,7 @@ Schema name: `ResponseFailedEvent`
 
               The text to type.
 
-            - `type: "type"`
+            - `type: "type" (default: "type")`
 
               Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -30823,7 +31707,7 @@ Schema name: `ResponseFailedEvent`
 
             A wait action.
 
-            - `type: "wait"`
+            - `type: "wait" (default: "wait")`
 
               Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -30878,11 +31762,13 @@ Schema name: `ResponseFailedEvent`
 
           The ID of the computer tool call that produced the output.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: ResponseComputerToolCallOutputScreenshot`
 
           A computer screenshot image used with the computer use tool.
 
-          - `type: "computer_screenshot"`
+          - `type: "computer_screenshot" (default: "computer_screenshot")`
 
             Specifies the event type. For a computer screenshot, this property is
             always set to `computer_screenshot`.
@@ -30897,7 +31783,9 @@ Schema name: `ResponseFailedEvent`
 
             The URL of the screenshot image.
 
-        - `type: "computer_call_output"`
+            `format: uri`
+
+        - `type: "computer_call_output" (default: "computer_call_output")`
 
           The type of the computer tool call output. Always `computer_call_output`.
 
@@ -30999,6 +31887,8 @@ Schema name: `ResponseFailedEvent`
 
                 The URL of the source.
 
+                `format: uri`
+
           - `OpenPage object { type, url }`
 
             Action type "open_page" - Opens a specific URL from search results.
@@ -31012,6 +31902,8 @@ Schema name: `ResponseFailedEvent`
             - `url: optional string or null`
 
               The URL opened by the model.
+
+              `format: uri`
 
           - `FindInPage object { pattern, type, url }`
 
@@ -31030,6 +31922,8 @@ Schema name: `ResponseFailedEvent`
             - `url: optional string or null`
 
               The URL of the page searched for the pattern, when available.
+
+              `format: uri`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -31068,7 +31962,7 @@ Schema name: `ResponseFailedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -31078,7 +31972,7 @@ Schema name: `ResponseFailedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -31109,6 +32003,8 @@ Schema name: `ResponseFailedEvent`
 
             A JSON string of the output of the function tool call.
 
+            `maxLength: 10485760`
+
           - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
             An array of content outputs (text, image, file) for the function tool call.
@@ -31121,7 +32017,9 @@ Schema name: `ResponseFailedEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+                `maxLength: 10485760`
+
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -31131,7 +32029,7 @@ Schema name: `ResponseFailedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -31149,7 +32047,7 @@ Schema name: `ResponseFailedEvent`
 
               An image input to the model. Learn about [image inputs](https://developers.openai.com/api/docs/guides/images-vision)
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -31167,11 +32065,13 @@ Schema name: `ResponseFailedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `maxLength: 20971520`, `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -31189,7 +32089,7 @@ Schema name: `ResponseFailedEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -31209,6 +32109,8 @@ Schema name: `ResponseFailedEvent`
 
                 The base64-encoded data of the file to be sent to the model.
 
+                `maxLength: 73400320`
+
               - `file_id: optional string or null`
 
                 The ID of the file to be sent to the model.
@@ -31216,6 +32118,8 @@ Schema name: `ResponseFailedEvent`
               - `file_url: optional string or null`
 
                 The URL of the file to be sent to the model.
+
+                `format: uri`
 
               - `filename: optional string or null`
 
@@ -31225,7 +32129,7 @@ Schema name: `ResponseFailedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -31239,7 +32143,7 @@ Schema name: `ResponseFailedEvent`
 
                   - `"12h"`
 
-        - `type: "function_call_output"`
+        - `type: "function_call_output" (default: "function_call_output")`
 
           The type of the function tool call output. Always `function_call_output`.
 
@@ -31253,13 +32157,15 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the function tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -31271,7 +32177,9 @@ Schema name: `ResponseFailedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -31281,9 +32189,13 @@ Schema name: `ResponseFailedEvent`
 
           The name of the tool that produced the output.
 
+          `minLength: 1`, `maxLength: 128`
+
         - `namespace: optional string or null`
 
           The namespace of the tool that produced the output.
+
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -31301,7 +32213,7 @@ Schema name: `ResponseFailedEvent`
 
           The arguments supplied to the tool search call.
 
-        - `type: "tool_search_call"`
+        - `type: "tool_search_call" (default: "tool_search_call")`
 
           The item type. Always `tool_search_call`.
 
@@ -31314,6 +32226,8 @@ Schema name: `ResponseFailedEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -31355,7 +32269,7 @@ Schema name: `ResponseFailedEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -31387,7 +32301,7 @@ Schema name: `ResponseFailedEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -31409,7 +32323,7 @@ Schema name: `ResponseFailedEvent`
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -31478,7 +32392,7 @@ Schema name: `ResponseFailedEvent`
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -31514,7 +32428,7 @@ Schema name: `ResponseFailedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -31524,11 +32438,11 @@ Schema name: `ResponseFailedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -31546,7 +32460,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -31557,7 +32471,7 @@ Schema name: `ResponseFailedEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -31565,7 +32479,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -31573,14 +32487,14 @@ Schema name: `ResponseFailedEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -31612,7 +32526,7 @@ Schema name: `ResponseFailedEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -31636,6 +32550,8 @@ Schema name: `ResponseFailedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -31715,7 +32631,7 @@ Schema name: `ResponseFailedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -31772,10 +32688,14 @@ Schema name: `ResponseFailedEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -31795,7 +32715,7 @@ Schema name: `ResponseFailedEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -31804,6 +32724,8 @@ Schema name: `ResponseFailedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -31823,7 +32745,7 @@ Schema name: `ResponseFailedEvent`
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -31835,7 +32757,9 @@ Schema name: `ResponseFailedEvent`
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -31845,17 +32769,25 @@ Schema name: `ResponseFailedEvent`
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -31867,13 +32799,15 @@ Schema name: `ResponseFailedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -31899,7 +32833,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -31980,7 +32914,7 @@ Schema name: `ResponseFailedEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -31988,11 +32922,13 @@ Schema name: `ResponseFailedEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -32003,11 +32939,13 @@ Schema name: `ResponseFailedEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -32026,7 +32964,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -32048,7 +32986,7 @@ Schema name: `ResponseFailedEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -32058,7 +32996,7 @@ Schema name: `ResponseFailedEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -32068,6 +33006,8 @@ Schema name: `ResponseFailedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -32076,7 +33016,7 @@ Schema name: `ResponseFailedEvent`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -32085,6 +33025,8 @@ Schema name: `ResponseFailedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -32110,13 +33052,17 @@ Schema name: `ResponseFailedEvent`
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -32144,19 +33090,21 @@ Schema name: `ResponseFailedEvent`
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -32164,7 +33112,7 @@ Schema name: `ResponseFailedEvent`
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -32173,6 +33121,8 @@ Schema name: `ResponseFailedEvent`
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -32192,7 +33142,7 @@ Schema name: `ResponseFailedEvent`
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -32206,7 +33156,7 @@ Schema name: `ResponseFailedEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -32215,6 +33165,8 @@ Schema name: `ResponseFailedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -32240,7 +33192,7 @@ Schema name: `ResponseFailedEvent`
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -32262,7 +33214,7 @@ Schema name: `ResponseFailedEvent`
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -32280,9 +33232,13 @@ Schema name: `ResponseFailedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools loaded inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
@@ -32290,13 +33246,17 @@ Schema name: `ResponseFailedEvent`
 
                   The name of the loaded function tool.
 
-                - `type: "function"`
+                  `pattern: ^(?![\s\S]*[\r\n])[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -32330,7 +33290,7 @@ Schema name: `ResponseFailedEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -32339,6 +33299,8 @@ Schema name: `ResponseFailedEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -32360,7 +33322,7 @@ Schema name: `ResponseFailedEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -32370,7 +33332,7 @@ Schema name: `ResponseFailedEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -32396,7 +33358,7 @@ Schema name: `ResponseFailedEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -32424,7 +33386,7 @@ Schema name: `ResponseFailedEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -32450,7 +33412,7 @@ Schema name: `ResponseFailedEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -32460,11 +33422,13 @@ Schema name: `ResponseFailedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "tool_search_output"`
+        - `type: "tool_search_output" (default: "tool_search_output")`
 
           The item type. Always `tool_search_output`.
 
@@ -32477,6 +33441,8 @@ Schema name: `ResponseFailedEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -32498,7 +33464,7 @@ Schema name: `ResponseFailedEvent`
 
       - `AdditionalTools object { role, tools, type, id }`
 
-        - `role: "developer"`
+        - `role: "developer" (default: "developer")`
 
           The role that provided the additional tools. Only `developer` is supported.
 
@@ -32524,7 +33490,7 @@ Schema name: `ResponseFailedEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -32556,7 +33522,7 @@ Schema name: `ResponseFailedEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -32578,7 +33544,7 @@ Schema name: `ResponseFailedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -32614,7 +33580,7 @@ Schema name: `ResponseFailedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -32624,11 +33590,11 @@ Schema name: `ResponseFailedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -32646,7 +33612,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -32657,7 +33623,7 @@ Schema name: `ResponseFailedEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -32665,7 +33631,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -32673,14 +33639,14 @@ Schema name: `ResponseFailedEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -32712,7 +33678,7 @@ Schema name: `ResponseFailedEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -32736,6 +33702,8 @@ Schema name: `ResponseFailedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -32815,7 +33783,7 @@ Schema name: `ResponseFailedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -32872,10 +33840,14 @@ Schema name: `ResponseFailedEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -32895,7 +33867,7 @@ Schema name: `ResponseFailedEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -32904,6 +33876,8 @@ Schema name: `ResponseFailedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -32935,13 +33909,15 @@ Schema name: `ResponseFailedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -32967,7 +33943,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -33048,7 +34024,7 @@ Schema name: `ResponseFailedEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -33056,11 +34032,13 @@ Schema name: `ResponseFailedEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -33071,11 +34049,13 @@ Schema name: `ResponseFailedEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -33094,7 +34074,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -33116,7 +34096,7 @@ Schema name: `ResponseFailedEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -33126,7 +34106,7 @@ Schema name: `ResponseFailedEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -33135,6 +34115,8 @@ Schema name: `ResponseFailedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -33156,7 +34138,7 @@ Schema name: `ResponseFailedEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -33165,6 +34147,8 @@ Schema name: `ResponseFailedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -33198,21 +34182,29 @@ Schema name: `ResponseFailedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -33246,7 +34238,7 @@ Schema name: `ResponseFailedEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -33255,6 +34247,8 @@ Schema name: `ResponseFailedEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -33276,7 +34270,7 @@ Schema name: `ResponseFailedEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -33286,7 +34280,7 @@ Schema name: `ResponseFailedEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -33312,7 +34306,7 @@ Schema name: `ResponseFailedEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -33340,7 +34334,7 @@ Schema name: `ResponseFailedEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -33366,7 +34360,7 @@ Schema name: `ResponseFailedEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -33376,11 +34370,13 @@ Schema name: `ResponseFailedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "additional_tools"`
+        - `type: "additional_tools" (default: "additional_tools")`
 
           The item type. Always `additional_tools`.
 
@@ -33396,7 +34392,7 @@ Schema name: `ResponseFailedEvent`
         remains in effect for subsequent responses until it is replaced by another
         configuration update.
 
-        - `type: "configuration_update"`
+        - `type: "configuration_update" (default: "configuration_update")`
 
           The item type. Always `configuration_update`.
 
@@ -33410,7 +34406,7 @@ Schema name: `ResponseFailedEvent`
 
           Updates to reasoning configuration. Only effort is supported.
 
-          - `effort: optional ReasoningEffort or null`
+          - `effort: optional ReasoningEffort or null (default: "medium")`
 
             The reasoning effort to use for subsequent responses until another
             configuration update replaces it.
@@ -33448,7 +34444,7 @@ Schema name: `ResponseFailedEvent`
 
             A summary of the reasoning output from the model so far.
 
-          - `type: "summary_text"`
+          - `type: "summary_text" (default: "summary_text")`
 
             The type of the object. Always `summary_text`.
 
@@ -33468,7 +34464,7 @@ Schema name: `ResponseFailedEvent`
 
             The reasoning text from the model.
 
-          - `type: "reasoning_text"`
+          - `type: "reasoning_text" (default: "reasoning_text")`
 
             The type of the reasoning text. Always `reasoning_text`.
 
@@ -33505,7 +34501,9 @@ Schema name: `ResponseFailedEvent`
 
           The encrypted content of the compaction summary.
 
-        - `type: "compaction"`
+          `maxLength: 104857600`
+
+        - `type: "compaction" (default: "compaction")`
 
           The type of the item. Always `compaction`.
 
@@ -33678,7 +34676,7 @@ Schema name: `ResponseFailedEvent`
 
               The logs output from the code interpreter.
 
-            - `type: "logs"`
+            - `type: "logs" (default: "logs")`
 
               The type of the output. Always `logs`.
 
@@ -33688,7 +34686,7 @@ Schema name: `ResponseFailedEvent`
 
             The image output from the code interpreter.
 
-            - `type: "image"`
+            - `type: "image" (default: "image")`
 
               The type of the output. Always `image`.
 
@@ -33697,6 +34695,8 @@ Schema name: `ResponseFailedEvent`
             - `url: string`
 
               The URL of the image output from the code interpreter.
+
+              `format: uri`
 
         - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -33712,7 +34712,7 @@ Schema name: `ResponseFailedEvent`
 
           - `"failed"`
 
-        - `type: "code_interpreter_call"`
+        - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
           The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -33738,13 +34738,13 @@ Schema name: `ResponseFailedEvent`
 
             Environment variables to set for the command.
 
-          - `type: "exec"`
+          - `type: "exec" (default: "exec")`
 
             The type of the local shell action. Always `exec`.
 
             - `"exec"`
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Optional timeout in milliseconds for the command.
 
@@ -33816,11 +34816,11 @@ Schema name: `ResponseFailedEvent`
 
             Ordered shell commands for the execution environment to run.
 
-          - `max_output_length: optional number or null`
+          - `max_output_length: optional integer or null`
 
             Maximum number of UTF-8 characters to capture from combined stdout and stderr output.
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
@@ -33828,7 +34828,9 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the shell tool call generated by the model.
 
-        - `type: "shell_call"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "shell_call" (default: "shell_call")`
 
           The type of the item. Always `shell_call`.
 
@@ -33844,7 +34846,7 @@ Schema name: `ResponseFailedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -33856,7 +34858,9 @@ Schema name: `ResponseFailedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -33888,6 +34892,8 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the shell tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: array of ResponseFunctionShellCallOutputContent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
@@ -33900,7 +34906,7 @@ Schema name: `ResponseFailedEvent`
 
               Indicates that the shell call exceeded its configured time limit.
 
-              - `type: "timeout"`
+              - `type: "timeout" (default: "timeout")`
 
                 The outcome type. Always `timeout`.
 
@@ -33910,11 +34916,11 @@ Schema name: `ResponseFailedEvent`
 
               Indicates that the shell commands finished and returned an exit code.
 
-              - `exit_code: number`
+              - `exit_code: integer`
 
                 The exit code returned by the shell process.
 
-              - `type: "exit"`
+              - `type: "exit" (default: "exit")`
 
                 The outcome type. Always `exit`.
 
@@ -33924,11 +34930,15 @@ Schema name: `ResponseFailedEvent`
 
             Captured stderr output for the shell call.
 
+            `maxLength: 10485760`
+
           - `stdout: string`
 
             Captured stdout output for the shell call.
 
-        - `type: "shell_call_output"`
+            `maxLength: 10485760`
+
+        - `type: "shell_call_output" (default: "shell_call_output")`
 
           The type of the item. Always `shell_call_output`.
 
@@ -33944,7 +34954,7 @@ Schema name: `ResponseFailedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -33956,13 +34966,15 @@ Schema name: `ResponseFailedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
               - `"program"`
 
-        - `max_output_length: optional number or null`
+        - `max_output_length: optional integer or null`
 
           The maximum number of UTF-8 characters captured for this shell call's combined output.
 
@@ -33984,6 +34996,8 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
@@ -33996,11 +35010,15 @@ Schema name: `ResponseFailedEvent`
 
               Unified diff content to apply when creating the file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to create relative to the workspace root.
 
-            - `type: "create_file"`
+              `minLength: 1`
+
+            - `type: "create_file" (default: "create_file")`
 
               The operation type. Always `create_file`.
 
@@ -34014,7 +35032,9 @@ Schema name: `ResponseFailedEvent`
 
               Path of the file to delete relative to the workspace root.
 
-            - `type: "delete_file"`
+              `minLength: 1`
+
+            - `type: "delete_file" (default: "delete_file")`
 
               The operation type. Always `delete_file`.
 
@@ -34028,11 +35048,15 @@ Schema name: `ResponseFailedEvent`
 
               Unified diff content to apply to the existing file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to update relative to the workspace root.
 
-            - `type: "update_file"`
+              `minLength: 1`
+
+            - `type: "update_file" (default: "update_file")`
 
               The operation type. Always `update_file`.
 
@@ -34046,7 +35070,7 @@ Schema name: `ResponseFailedEvent`
 
           - `"completed"`
 
-        - `type: "apply_patch_call"`
+        - `type: "apply_patch_call" (default: "apply_patch_call")`
 
           The type of the item. Always `apply_patch_call`.
 
@@ -34062,7 +35086,7 @@ Schema name: `ResponseFailedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -34074,7 +35098,9 @@ Schema name: `ResponseFailedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -34088,6 +35114,8 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `status: "completed" or "failed"`
 
           The status of the apply patch tool call output. One of `completed` or `failed`.
@@ -34096,7 +35124,7 @@ Schema name: `ResponseFailedEvent`
 
           - `"failed"`
 
-        - `type: "apply_patch_call_output"`
+        - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
           The type of the item. Always `apply_patch_call_output`.
 
@@ -34112,7 +35140,7 @@ Schema name: `ResponseFailedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -34124,7 +35152,9 @@ Schema name: `ResponseFailedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -34133,6 +35163,8 @@ Schema name: `ResponseFailedEvent`
         - `output: optional string or null`
 
           Optional human-readable log text from the apply patch tool (e.g., patch results or errors).
+
+          `maxLength: 10485760`
 
       - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -34265,11 +35297,11 @@ Schema name: `ResponseFailedEvent`
 
           - `McpProtocolError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "mcp_protocol_error"`
+            - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
               - `"mcp_protocol_error"`
 
@@ -34277,17 +35309,17 @@ Schema name: `ResponseFailedEvent`
 
             - `content: unknown`
 
-            - `type: "mcp_tool_execution_error"`
+            - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
               - `"mcp_tool_execution_error"`
 
           - `HTTPError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "http_error"`
+            - `type: "http_error" (default: "http_error")`
 
               - `"http_error"`
 
@@ -34358,7 +35390,7 @@ Schema name: `ResponseFailedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -34370,7 +35402,9 @@ Schema name: `ResponseFailedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -34412,7 +35446,7 @@ Schema name: `ResponseFailedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -34422,7 +35456,7 @@ Schema name: `ResponseFailedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -34434,7 +35468,7 @@ Schema name: `ResponseFailedEvent`
 
         Compacts the current context. Must be the final input item.
 
-        - `type: "compaction_trigger"`
+        - `type: "compaction_trigger" (default: "compaction_trigger")`
 
           The type of the item. Always `compaction_trigger`.
 
@@ -34452,7 +35486,7 @@ Schema name: `ResponseFailedEvent`
 
           The ID of the item to reference.
 
-        - `type: optional "item_reference" or null`
+        - `type: optional "item_reference" or null (default: "item_reference")`
 
           The type of item to reference. Always `item_reference`.
 
@@ -34468,15 +35502,21 @@ Schema name: `ResponseFailedEvent`
 
           The stable call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `code: string`
 
           The JavaScript source executed by programmatic tool calling.
+
+          `maxLength: 10485760`
 
         - `fingerprint: string`
 
           Opaque program replay fingerprint that must be round-tripped.
 
-        - `type: "program"`
+          `maxLength: 10485760`
+
+        - `type: "program" (default: "program")`
 
           The item type. Always `program`.
 
@@ -34492,9 +35532,13 @@ Schema name: `ResponseFailedEvent`
 
           The call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `result: string`
 
           The result produced by the program item.
+
+          `maxLength: 10485760`
 
         - `status: "completed" or "incomplete"`
 
@@ -34504,7 +35548,7 @@ Schema name: `ResponseFailedEvent`
 
           - `"incomplete"`
 
-        - `type: "program_output"`
+        - `type: "program_output" (default: "program_output")`
 
           The item type. Always `program_output`.
 
@@ -34821,6 +35865,8 @@ Schema name: `ResponseFailedEvent`
 
           - `string`
 
+            `maxLength: 512`
+
           - `number`
 
           - `boolean`
@@ -34836,6 +35882,8 @@ Schema name: `ResponseFailedEvent`
         - `score: optional number`
 
           The relevance score of the file - a value between 0 and 1.
+
+          `format: float`
 
         - `text: optional string`
 
@@ -34878,7 +35926,7 @@ Schema name: `ResponseFailedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -34888,7 +35936,7 @@ Schema name: `ResponseFailedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -34965,7 +36013,7 @@ Schema name: `ResponseFailedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -34977,7 +36025,9 @@ Schema name: `ResponseFailedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -35061,6 +36111,8 @@ Schema name: `ResponseFailedEvent`
 
               The URL of the source.
 
+              `format: uri`
+
         - `OpenPage object { type, url }`
 
           Action type "open_page" - Opens a specific URL from search results.
@@ -35074,6 +36126,8 @@ Schema name: `ResponseFailedEvent`
           - `url: optional string or null`
 
             The URL opened by the model.
+
+            `format: uri`
 
         - `FindInPage object { pattern, type, url }`
 
@@ -35092,6 +36146,8 @@ Schema name: `ResponseFailedEvent`
           - `url: optional string or null`
 
             The URL of the page searched for the pattern, when available.
+
+            `format: uri`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -35133,7 +36189,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"incomplete"`
 
-      - `type: "computer_call"`
+      - `type: "computer_call" (default: "computer_call")`
 
         The type of the computer call. Always `computer_call`.
 
@@ -35175,7 +36231,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"in_progress"`
 
-      - `type: "computer_call_output"`
+      - `type: "computer_call_output" (default: "computer_call_output")`
 
         The type of the computer tool call output. Always `computer_call_output`.
 
@@ -35221,7 +36277,7 @@ Schema name: `ResponseFailedEvent`
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -35239,7 +36295,7 @@ Schema name: `ResponseFailedEvent`
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -35286,7 +36342,7 @@ Schema name: `ResponseFailedEvent`
 
         Opaque program replay fingerprint that must be round-tripped.
 
-      - `type: "program"`
+      - `type: "program" (default: "program")`
 
         The type of the item. Always `program`.
 
@@ -35314,7 +36370,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"incomplete"`
 
-      - `type: "program_output"`
+      - `type: "program_output" (default: "program_output")`
 
         The type of the item. Always `program_output`.
 
@@ -35352,7 +36408,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"incomplete"`
 
-      - `type: "tool_search_call"`
+      - `type: "tool_search_call" (default: "tool_search_call")`
 
         The type of the item. Always `tool_search_call`.
 
@@ -35410,7 +36466,7 @@ Schema name: `ResponseFailedEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -35442,7 +36498,7 @@ Schema name: `ResponseFailedEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -35464,7 +36520,7 @@ Schema name: `ResponseFailedEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -35500,7 +36556,7 @@ Schema name: `ResponseFailedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -35510,11 +36566,11 @@ Schema name: `ResponseFailedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -35532,7 +36588,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -35543,7 +36599,7 @@ Schema name: `ResponseFailedEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -35551,7 +36607,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -35559,14 +36615,14 @@ Schema name: `ResponseFailedEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -35598,7 +36654,7 @@ Schema name: `ResponseFailedEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -35622,6 +36678,8 @@ Schema name: `ResponseFailedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -35701,7 +36759,7 @@ Schema name: `ResponseFailedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -35758,10 +36816,14 @@ Schema name: `ResponseFailedEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -35781,7 +36843,7 @@ Schema name: `ResponseFailedEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -35790,6 +36852,8 @@ Schema name: `ResponseFailedEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -35821,13 +36885,15 @@ Schema name: `ResponseFailedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -35853,7 +36919,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -35934,7 +37000,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -35942,11 +37008,13 @@ Schema name: `ResponseFailedEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -35957,11 +37025,13 @@ Schema name: `ResponseFailedEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -35980,7 +37050,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -36002,7 +37072,7 @@ Schema name: `ResponseFailedEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -36012,7 +37082,7 @@ Schema name: `ResponseFailedEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -36021,6 +37091,8 @@ Schema name: `ResponseFailedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -36042,7 +37114,7 @@ Schema name: `ResponseFailedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -36051,6 +37123,8 @@ Schema name: `ResponseFailedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -36084,21 +37158,29 @@ Schema name: `ResponseFailedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -36132,7 +37214,7 @@ Schema name: `ResponseFailedEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -36141,6 +37223,8 @@ Schema name: `ResponseFailedEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -36162,7 +37246,7 @@ Schema name: `ResponseFailedEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -36172,7 +37256,7 @@ Schema name: `ResponseFailedEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -36198,7 +37282,7 @@ Schema name: `ResponseFailedEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -36226,7 +37310,7 @@ Schema name: `ResponseFailedEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -36252,7 +37336,7 @@ Schema name: `ResponseFailedEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -36262,11 +37346,13 @@ Schema name: `ResponseFailedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "tool_search_output"`
+      - `type: "tool_search_output" (default: "tool_search_output")`
 
         The type of the item. Always `tool_search_output`.
 
@@ -36322,7 +37408,7 @@ Schema name: `ResponseFailedEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -36354,7 +37440,7 @@ Schema name: `ResponseFailedEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -36376,7 +37462,7 @@ Schema name: `ResponseFailedEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -36412,7 +37498,7 @@ Schema name: `ResponseFailedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -36422,11 +37508,11 @@ Schema name: `ResponseFailedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -36444,7 +37530,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -36455,7 +37541,7 @@ Schema name: `ResponseFailedEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -36463,7 +37549,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -36471,14 +37557,14 @@ Schema name: `ResponseFailedEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -36510,7 +37596,7 @@ Schema name: `ResponseFailedEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -36534,6 +37620,8 @@ Schema name: `ResponseFailedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -36613,7 +37701,7 @@ Schema name: `ResponseFailedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -36670,10 +37758,14 @@ Schema name: `ResponseFailedEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -36693,7 +37785,7 @@ Schema name: `ResponseFailedEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -36702,6 +37794,8 @@ Schema name: `ResponseFailedEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -36733,13 +37827,15 @@ Schema name: `ResponseFailedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -36765,7 +37861,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -36846,7 +37942,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -36854,11 +37950,13 @@ Schema name: `ResponseFailedEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -36869,11 +37967,13 @@ Schema name: `ResponseFailedEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -36892,7 +37992,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -36914,7 +38014,7 @@ Schema name: `ResponseFailedEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -36924,7 +38024,7 @@ Schema name: `ResponseFailedEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -36933,6 +38033,8 @@ Schema name: `ResponseFailedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -36954,7 +38056,7 @@ Schema name: `ResponseFailedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -36963,6 +38065,8 @@ Schema name: `ResponseFailedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -36996,21 +38100,29 @@ Schema name: `ResponseFailedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -37044,7 +38156,7 @@ Schema name: `ResponseFailedEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -37053,6 +38165,8 @@ Schema name: `ResponseFailedEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -37074,7 +38188,7 @@ Schema name: `ResponseFailedEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -37084,7 +38198,7 @@ Schema name: `ResponseFailedEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -37110,7 +38224,7 @@ Schema name: `ResponseFailedEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -37138,7 +38252,7 @@ Schema name: `ResponseFailedEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -37164,7 +38278,7 @@ Schema name: `ResponseFailedEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -37174,11 +38288,13 @@ Schema name: `ResponseFailedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "additional_tools"`
+      - `type: "additional_tools" (default: "additional_tools")`
 
         The type of the item. Always `additional_tools`.
 
@@ -37196,7 +38312,7 @@ Schema name: `ResponseFailedEvent`
 
         The encrypted content that was produced by compaction.
 
-      - `type: "compaction"`
+      - `type: "compaction" (default: "compaction")`
 
         The type of the item. Always `compaction`.
 
@@ -37369,7 +38485,7 @@ Schema name: `ResponseFailedEvent`
 
             The logs output from the code interpreter.
 
-          - `type: "logs"`
+          - `type: "logs" (default: "logs")`
 
             The type of the output. Always `logs`.
 
@@ -37379,7 +38495,7 @@ Schema name: `ResponseFailedEvent`
 
           The image output from the code interpreter.
 
-          - `type: "image"`
+          - `type: "image" (default: "image")`
 
             The type of the output. Always `image`.
 
@@ -37388,6 +38504,8 @@ Schema name: `ResponseFailedEvent`
           - `url: string`
 
             The URL of the image output from the code interpreter.
+
+            `format: uri`
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -37403,7 +38521,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"failed"`
 
-      - `type: "code_interpreter_call"`
+      - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
         The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -37429,13 +38547,13 @@ Schema name: `ResponseFailedEvent`
 
           Environment variables to set for the command.
 
-        - `type: "exec"`
+        - `type: "exec" (default: "exec")`
 
           The type of the local shell action. Always `exec`.
 
           - `"exec"`
 
-        - `timeout_ms: optional number or null`
+        - `timeout_ms: optional integer or null`
 
           Optional timeout in milliseconds for the command.
 
@@ -37509,11 +38627,11 @@ Schema name: `ResponseFailedEvent`
 
         - `commands: array of string`
 
-        - `max_output_length: number or null`
+        - `max_output_length: integer or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number or null`
+        - `timeout_ms: integer or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -37529,7 +38647,7 @@ Schema name: `ResponseFailedEvent`
 
           Represents the use of a local environment to perform shell actions.
 
-          - `type: "local"`
+          - `type: "local" (default: "local")`
 
             The environment type. Always `local`.
 
@@ -37541,7 +38659,7 @@ Schema name: `ResponseFailedEvent`
 
           - `container_id: string`
 
-          - `type: "container_reference"`
+          - `type: "container_reference" (default: "container_reference")`
 
             The environment type. Always `container_reference`.
 
@@ -37557,7 +38675,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call"`
+      - `type: "shell_call" (default: "shell_call")`
 
         The type of the item. Always `shell_call`.
 
@@ -37569,7 +38687,7 @@ Schema name: `ResponseFailedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -37579,7 +38697,7 @@ Schema name: `ResponseFailedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -37599,7 +38717,7 @@ Schema name: `ResponseFailedEvent`
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -37615,7 +38733,7 @@ Schema name: `ResponseFailedEvent`
 
             Indicates that the shell call exceeded its configured time limit.
 
-            - `type: "timeout"`
+            - `type: "timeout" (default: "timeout")`
 
               The outcome type. Always `timeout`.
 
@@ -37625,11 +38743,11 @@ Schema name: `ResponseFailedEvent`
 
             Indicates that the shell commands finished and returned an exit code.
 
-            - `exit_code: number`
+            - `exit_code: integer`
 
               Exit code from the shell process.
 
-            - `type: "exit"`
+            - `type: "exit" (default: "exit")`
 
               The outcome type. Always `exit`.
 
@@ -37657,7 +38775,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call_output"`
+      - `type: "shell_call_output" (default: "shell_call_output")`
 
         The type of the shell call output. Always `shell_call_output`.
 
@@ -37669,7 +38787,7 @@ Schema name: `ResponseFailedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -37679,7 +38797,7 @@ Schema name: `ResponseFailedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -37715,7 +38833,7 @@ Schema name: `ResponseFailedEvent`
 
             Path of the file to create.
 
-          - `type: "create_file"`
+          - `type: "create_file" (default: "create_file")`
 
             Create a new file with the provided diff.
 
@@ -37729,7 +38847,7 @@ Schema name: `ResponseFailedEvent`
 
             Path of the file to delete.
 
-          - `type: "delete_file"`
+          - `type: "delete_file" (default: "delete_file")`
 
             Delete the specified file.
 
@@ -37747,7 +38865,7 @@ Schema name: `ResponseFailedEvent`
 
             Path of the file to update.
 
-          - `type: "update_file"`
+          - `type: "update_file" (default: "update_file")`
 
             Update an existing file with the provided diff.
 
@@ -37761,7 +38879,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"completed"`
 
-      - `type: "apply_patch_call"`
+      - `type: "apply_patch_call" (default: "apply_patch_call")`
 
         The type of the item. Always `apply_patch_call`.
 
@@ -37773,7 +38891,7 @@ Schema name: `ResponseFailedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -37783,7 +38901,7 @@ Schema name: `ResponseFailedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -37811,7 +38929,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"failed"`
 
-      - `type: "apply_patch_call_output"`
+      - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
         The type of the item. Always `apply_patch_call_output`.
 
@@ -37823,7 +38941,7 @@ Schema name: `ResponseFailedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -37833,7 +38951,7 @@ Schema name: `ResponseFailedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -38028,7 +39146,7 @@ Schema name: `ResponseFailedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -38038,7 +39156,7 @@ Schema name: `ResponseFailedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -38104,7 +39222,7 @@ Schema name: `ResponseFailedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -38116,7 +39234,9 @@ Schema name: `ResponseFailedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -38126,14 +39246,16 @@ Schema name: `ResponseFailedEvent`
 
         The identifier of the actor that created the item.
 
-  - `parallel_tool_calls: boolean`
+  - `parallel_tool_calls: boolean (default: true)`
 
     Whether to allow the model to run tool calls in parallel.
 
-  - `temperature: number or null`
+  - `temperature: number or null (default: 1)`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
     We generally recommend altering this or `top_p` but not both.
+
+    `minimum: 0`, `maximum: 2`
 
   - `tool_choice: ToolChoiceOptions or ToolChoiceAllowed or ToolChoiceTypes or 6 more`
 
@@ -38279,7 +39401,7 @@ Schema name: `ResponseFailedEvent`
 
     - `SpecificProgrammaticToolCallingParam object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The tool to call. Always `programmatic_tool_calling`.
 
@@ -38289,7 +39411,7 @@ Schema name: `ResponseFailedEvent`
 
       Forces the model to call the apply_patch tool when executing a tool call.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The tool to call. Always `apply_patch`.
 
@@ -38299,7 +39421,7 @@ Schema name: `ResponseFailedEvent`
 
       Forces the model to call the shell tool when a tool call is required.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The tool to call. Always `shell`.
 
@@ -38341,7 +39463,7 @@ Schema name: `ResponseFailedEvent`
 
         Whether strict parameter validation is enforced for this function tool.
 
-      - `type: "function"`
+      - `type: "function" (default: "function")`
 
         The type of the function tool. Always `function`.
 
@@ -38373,7 +39495,7 @@ Schema name: `ResponseFailedEvent`
 
       A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-      - `type: "file_search"`
+      - `type: "file_search" (default: "file_search")`
 
         The type of the file search tool. Always `file_search`.
 
@@ -38395,7 +39517,7 @@ Schema name: `ResponseFailedEvent`
 
           Combine multiple filters using `and` or `or`.
 
-      - `max_num_results: optional number`
+      - `max_num_results: optional integer`
 
         The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -38431,7 +39553,7 @@ Schema name: `ResponseFailedEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `type: "computer"`
+      - `type: "computer" (default: "computer")`
 
         The type of the computer tool. Always `computer`.
 
@@ -38441,11 +39563,11 @@ Schema name: `ResponseFailedEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `display_height: number`
+      - `display_height: integer`
 
         The height of the computer display.
 
-      - `display_width: number`
+      - `display_width: integer`
 
         The width of the computer display.
 
@@ -38463,7 +39585,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"browser"`
 
-      - `type: "computer_use_preview"`
+      - `type: "computer_use_preview" (default: "computer_use_preview")`
 
         The type of the computer use tool. Always `computer_use_preview`.
 
@@ -38474,7 +39596,7 @@ Schema name: `ResponseFailedEvent`
       Search the Internet for sources related to the prompt. Learn more about the
       [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search" or "web_search_2025_08_26"`
+      - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
         The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -38482,7 +39604,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"web_search_2025_08_26"`
 
-      - `external_web_access: optional boolean`
+      - `external_web_access: optional boolean (default: true)`
 
         Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -38490,14 +39612,14 @@ Schema name: `ResponseFailedEvent`
 
         Filters for the search.
 
-        - `allowed_domains: optional array of string or null`
+        - `allowed_domains: optional array of string or null (default: [])`
 
           Allowed domains for the search. If not provided, all domains are allowed.
           Subdomains of the provided domains are allowed as well.
 
           Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-      - `search_context_size: optional "low" or "medium" or "high"`
+      - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
         High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -38529,7 +39651,7 @@ Schema name: `ResponseFailedEvent`
 
           The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-        - `type: optional "approximate"`
+        - `type: optional "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -38553,6 +39675,8 @@ Schema name: `ResponseFailedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -38632,7 +39756,7 @@ Schema name: `ResponseFailedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
         Specify which of the MCP server's tools require approval.
 
@@ -38689,10 +39813,14 @@ Schema name: `ResponseFailedEvent`
         The URL for the MCP server. One of `server_url`, `connector_id`, or
         `tunnel_id` must be provided.
 
+        `format: uri`
+
       - `tunnel_id: optional string`
 
         The Secure MCP Tunnel ID to use instead of a direct server URL. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+        `pattern: ^tunnel_[a-z0-9]{32}$`
 
     - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -38712,7 +39840,7 @@ Schema name: `ResponseFailedEvent`
 
           Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-          - `type: "auto"`
+          - `type: "auto" (default: "auto")`
 
             Always `auto`.
 
@@ -38721,6 +39849,8 @@ Schema name: `ResponseFailedEvent`
           - `file_ids: optional array of string`
 
             An optional list of uploaded files to make available to your code.
+
+            `maxItems: 50`
 
           - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -38752,13 +39882,15 @@ Schema name: `ResponseFailedEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
     - `ProgrammaticToolCalling object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The type of the tool. Always `programmatic_tool_calling`.
 
@@ -38784,7 +39916,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"auto"`
 
-      - `background: optional "transparent" or "opaque" or "auto"`
+      - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
         Set the background of the generated image. One of `transparent`, `opaque`,
         or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -38865,7 +39997,7 @@ Schema name: `ResponseFailedEvent`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
 
-      - `moderation: optional "auto" or "low"`
+      - `moderation: optional "auto" or "low" (default: "auto")`
 
         Moderation level for the generated image. Default: `auto`.
 
@@ -38873,11 +40005,13 @@ Schema name: `ResponseFailedEvent`
 
         - `"low"`
 
-      - `output_compression: optional number`
+      - `output_compression: optional integer (default: 100)`
 
         Compression level for the output image. Default: 100.
 
-      - `output_format: optional "png" or "webp" or "jpeg"`
+        `minimum: 0`, `maximum: 100`
+
+      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
         The output format of the generated image. One of `png`, `webp`, or
         `jpeg`. Default: `png`.
@@ -38888,11 +40022,13 @@ Schema name: `ResponseFailedEvent`
 
         - `"jpeg"`
 
-      - `partial_images: optional number`
+      - `partial_images: optional integer (default: 0)`
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or 3 more`
+        `minimum: 0`, `maximum: 3`
+
+      - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
         The quality of the generated image. The GPT image models support `low`,
         `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -38911,7 +40047,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"auto"`
 
-      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
         The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -38933,7 +40069,7 @@ Schema name: `ResponseFailedEvent`
 
       A tool that allows the model to execute shell commands in a local environment.
 
-      - `type: "local_shell"`
+      - `type: "local_shell" (default: "local_shell")`
 
         The type of the local shell tool. Always `local_shell`.
 
@@ -38943,7 +40079,7 @@ Schema name: `ResponseFailedEvent`
 
       A tool that allows the model to execute shell commands.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The type of the shell tool. Always `shell`.
 
@@ -38952,6 +40088,8 @@ Schema name: `ResponseFailedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -38973,7 +40111,7 @@ Schema name: `ResponseFailedEvent`
 
         The name of the custom tool, used to identify it in tool calls.
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of the custom tool. Always `custom`.
 
@@ -38982,6 +40120,8 @@ Schema name: `ResponseFailedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -39015,21 +40155,29 @@ Schema name: `ResponseFailedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
+        `minLength: 1`
+
       - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
+
+        `minItems: 1`
 
         - `Function object { name, type, allowed_callers, 6 more }`
 
           - `name: string`
 
-          - `type: "function"`
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+          - `type: "function" (default: "function")`
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -39063,7 +40211,7 @@ Schema name: `ResponseFailedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -39072,6 +40220,8 @@ Schema name: `ResponseFailedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -39093,7 +40243,7 @@ Schema name: `ResponseFailedEvent`
 
             The input format for the custom tool. Default is unconstrained text.
 
-      - `type: "namespace"`
+      - `type: "namespace" (default: "namespace")`
 
         The type of the tool. Always `namespace`.
 
@@ -39103,7 +40253,7 @@ Schema name: `ResponseFailedEvent`
 
       Hosted or BYOT tool search configuration for deferred tools.
 
-      - `type: "tool_search"`
+      - `type: "tool_search" (default: "tool_search")`
 
         The type of the tool. Always `tool_search`.
 
@@ -39129,7 +40279,7 @@ Schema name: `ResponseFailedEvent`
 
       This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+      - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
         The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -39157,7 +40307,7 @@ Schema name: `ResponseFailedEvent`
 
         The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-        - `type: "approximate"`
+        - `type: "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -39183,7 +40333,7 @@ Schema name: `ResponseFailedEvent`
 
       Allows the assistant to create, delete, or update files using unified diffs.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The type of the tool. Always `apply_patch`.
 
@@ -39193,11 +40343,13 @@ Schema name: `ResponseFailedEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
-  - `top_p: number or null`
+  - `top_p: number or null (default: 1)`
 
     An alternative to sampling with temperature, called nucleus sampling,
     where the model considers the results of the tokens with top_p probability
@@ -39206,7 +40358,9 @@ Schema name: `ResponseFailedEvent`
 
     We generally recommend altering this or `temperature` but not both.
 
-  - `background: optional boolean or null`
+    `minimum: 0`, `maximum: 1`
+
+  - `background: optional boolean or null (default: false)`
 
     Whether to run the model response in the background.
     [Learn more](https://developers.openai.com/api/docs/guides/background).
@@ -39216,6 +40370,8 @@ Schema name: `ResponseFailedEvent`
     Unix timestamp (in seconds) of when this Response was completed.
     Only present when the status is `completed`.
 
+    `format: unixtime`
+
   - `conversation: optional object { id }  or null`
 
     The conversation that this response belonged to. Input items and output items from this response were automatically added to this conversation.
@@ -39224,11 +40380,11 @@ Schema name: `ResponseFailedEvent`
 
       The unique ID of the conversation that this response was associated with.
 
-  - `max_output_tokens: optional number or null`
+  - `max_output_tokens: optional integer or null`
 
     An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](https://developers.openai.com/api/docs/guides/reasoning).
 
-  - `max_tool_calls: optional number or null`
+  - `max_tool_calls: optional integer or null`
 
     The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored.
 
@@ -39268,7 +40424,7 @@ Schema name: `ResponseFailedEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -39286,7 +40442,7 @@ Schema name: `ResponseFailedEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -39324,7 +40480,7 @@ Schema name: `ResponseFailedEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -39342,7 +40498,7 @@ Schema name: `ResponseFailedEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -39399,7 +40555,7 @@ Schema name: `ResponseFailedEvent`
 
     - `CacheMiss object { cache_missed_tokens, reason, type, comparison_reusable_tokens }`
 
-      - `cache_missed_tokens: number`
+      - `cache_missed_tokens: integer`
 
         The estimated number of input tokens affected after the first detected divergence.
 
@@ -39425,29 +40581,29 @@ Schema name: `ResponseFailedEvent`
 
         - `"service_tier_changed"`
 
-      - `type: "cache_miss"`
+      - `type: "cache_miss" (default: "cache_miss")`
 
         - `"cache_miss"`
 
-      - `comparison_reusable_tokens: optional number`
+      - `comparison_reusable_tokens: optional integer`
 
         The raw token count of the reusable prefix in the compared response.
 
     - `CacheHit object { type }`
 
-      - `type: "cache_hit"`
+      - `type: "cache_hit" (default: "cache_hit")`
 
         - `"cache_hit"`
 
     - `ComparisonResponseNotFound object { type }`
 
-      - `type: "comparison_response_not_found"`
+      - `type: "comparison_response_not_found" (default: "comparison_response_not_found")`
 
         - `"comparison_response_not_found"`
 
     - `Unavailable object { type }`
 
-      - `type: "unavailable"`
+      - `type: "unavailable" (default: "unavailable")`
 
         - `"unavailable"`
 
@@ -39517,7 +40673,7 @@ Schema name: `ResponseFailedEvent`
 
       - `"all_turns"`
 
-    - `effort: optional ReasoningEffort or null`
+    - `effort: optional ReasoningEffort or null (default: "medium")`
 
       Constrains effort on reasoning for reasoning models. Currently supported
       values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -39578,7 +40734,9 @@ Schema name: `ResponseFailedEvent`
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
     The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-  - `service_tier: optional ServiceTier or null`
+    `maxLength: 128`
+
+  - `service_tier: optional ServiceTier or null (default: "auto")`
 
     Specifies the processing type used for serving the request.
 
@@ -39682,7 +40840,7 @@ Schema name: `ResponseFailedEvent`
           A description of what the response format is for, used by the model to
           determine how to respond in the format.
 
-        - `strict: optional boolean or null`
+        - `strict: optional boolean or null (default: false)`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -39703,7 +40861,7 @@ Schema name: `ResponseFailedEvent`
 
           - `"json_object"`
 
-    - `verbosity: optional "low" or "medium" or "high" or null`
+    - `verbosity: optional "low" or "medium" or "high" or null (default: "medium")`
 
       Constrains the verbosity of the model's response. Lower values will result in
       more concise responses, while higher values will result in more verbose responses.
@@ -39735,7 +40893,7 @@ Schema name: `ResponseFailedEvent`
 
       Aggregated usage statistics for image generation tool calls.
 
-      - `input_tokens: number`
+      - `input_tokens: integer`
 
         The number of tokens (images and text) in the input prompt.
 
@@ -39743,39 +40901,39 @@ Schema name: `ResponseFailedEvent`
 
         The input tokens detailed information for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image tokens in the input prompt.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text tokens in the input prompt.
 
-      - `output_tokens: number`
+      - `output_tokens: integer`
 
         The number of output tokens generated by the model.
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
         The total number of tokens (images and text) used for the image generation.
 
-      - `cached_tokens: optional number`
+      - `cached_tokens: optional integer`
 
       - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
 
-        - `cached_image_tokens: number`
+        - `cached_image_tokens: integer`
 
-        - `cached_text_tokens: number`
+        - `cached_text_tokens: integer`
 
       - `output_tokens_details: optional object { image_tokens, text_tokens }`
 
         The output token details for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image output tokens generated by the model.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text output tokens generated by the model.
 
@@ -39783,18 +40941,20 @@ Schema name: `ResponseFailedEvent`
 
       Aggregated billable usage statistics for web search tool calls.
 
-      - `num_requests: number`
+      - `num_requests: integer`
 
         The number of billable web search requests issued.
 
-  - `top_logprobs: optional number or null`
+  - `top_logprobs: optional integer or null`
 
     An integer between 0 and 20 specifying the maximum number of most likely
     tokens to return at each token position, each with an associated log
     probability. In some cases, the number of returned tokens may be fewer than
     requested.
 
-  - `truncation: optional "auto" or "disabled" or null`
+    `minimum: 0`, `maximum: 20`
+
+  - `truncation: optional "auto" or "disabled" or null (default: "disabled")`
 
     The truncation strategy to use for the model response.
 
@@ -39813,7 +40973,7 @@ Schema name: `ResponseFailedEvent`
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -39821,16 +40981,16 @@ Schema name: `ResponseFailedEvent`
 
       A detailed breakdown of the input tokens.
 
-      - `cache_write_tokens: number`
+      - `cache_write_tokens: integer`
 
         The number of input tokens that were written to the cache.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache.
         [More on prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -39838,11 +40998,11 @@ Schema name: `ResponseFailedEvent`
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -39852,7 +41012,7 @@ Schema name: `ResponseFailedEvent`
     A stable identifier for your end-users.
     Used to boost cache hit rates by better bucketing similar requests and  to help OpenAI detect and prevent abuse. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -39943,6 +41103,8 @@ Schema name: `ResponseIncompleteEvent`
 
     Unix timestamp (in seconds) of when this Response was created.
 
+    `format: unixtime`
+
   - `error: ResponseError or null`
 
     An error object returned when the model fails to generate a Response.
@@ -40024,6 +41186,8 @@ Schema name: `ResponseIncompleteEvent`
       - `review_target: optional string or null`
 
         An opaque target for explicitly continuing this review, or null when unavailable.
+
+        `pattern: ^[A-Za-z0-9._~:-]+$`, `minLength: 1`, `maxLength: 96`
 
       - `steer: optional object { message }`
 
@@ -40108,7 +41272,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -40118,7 +41282,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -40148,7 +41312,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 - `"original"`
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -40162,11 +41326,13 @@ Schema name: `ResponseIncompleteEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -40184,7 +41350,7 @@ Schema name: `ResponseIncompleteEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -40212,6 +41378,8 @@ Schema name: `ResponseIncompleteEvent`
 
                 The URL of the file to be sent to the model.
 
+                `format: uri`
+
               - `filename: optional string`
 
                 The name of the file to be sent to the model.
@@ -40220,7 +41388,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -40333,11 +41501,11 @@ Schema name: `ResponseIncompleteEvent`
 
                   The filename of the file cited.
 
-                - `index: number`
+                - `index: integer`
 
                   The index in the output text at which to insert the file citation.
 
-                - `type: "file_citation"`
+                - `type: "file_citation" (default: "file_citation")`
 
                   The type of the file citation. Always `file_citation`.
 
@@ -40347,11 +41515,11 @@ Schema name: `ResponseIncompleteEvent`
 
                 A citation for a web resource used to generate a model response.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the URL citation in the message.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the URL citation in the message.
 
@@ -40359,7 +41527,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   The title of the web resource.
 
-                - `type: "url_citation"`
+                - `type: "url_citation" (default: "url_citation")`
 
                   The type of the URL citation. Always `url_citation`.
 
@@ -40369,6 +41537,8 @@ Schema name: `ResponseIncompleteEvent`
 
                   The URL of the web resource.
 
+                  `format: uri`
+
               - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
                 A citation for a container file used to generate a model response.
@@ -40377,7 +41547,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   The ID of the container file.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the container file citation in the message.
 
@@ -40389,11 +41559,11 @@ Schema name: `ResponseIncompleteEvent`
 
                   The filename of the container file cited.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the container file citation in the message.
 
-                - `type: "container_file_citation"`
+                - `type: "container_file_citation" (default: "container_file_citation")`
 
                   The type of the container file citation. Always `container_file_citation`.
 
@@ -40407,7 +41577,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   The ID of the file.
 
-                - `index: number`
+                - `index: integer`
 
                   The index of the file in the list of files.
 
@@ -40437,7 +41607,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The text output from the model.
 
-            - `type: "output_text"`
+            - `type: "output_text" (default: "output_text")`
 
               The type of the output text. Always `output_text`.
 
@@ -40451,7 +41621,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The refusal explanation from the model.
 
-            - `type: "refusal"`
+            - `type: "refusal" (default: "refusal")`
 
               The type of the refusal. Always `refusal`.
 
@@ -40538,6 +41708,8 @@ Schema name: `ResponseIncompleteEvent`
 
             - `string`
 
+              `maxLength: 512`
+
             - `number`
 
             - `boolean`
@@ -40553,6 +41725,8 @@ Schema name: `ResponseIncompleteEvent`
           - `score: optional number`
 
             The relevance score of the file - a value between 0 and 1.
+
+            `format: float`
 
           - `text: optional string`
 
@@ -40598,7 +41772,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `"incomplete"`
 
-        - `type: "computer_call"`
+        - `type: "computer_call" (default: "computer_call")`
 
           The type of the computer call. Always `computer_call`.
 
@@ -40626,17 +41800,17 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"forward"`
 
-            - `type: "click"`
+            - `type: "click" (default: "click")`
 
               Specifies the event type. For a click action, this property is always `click`.
 
               - `"click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the click occurred.
 
@@ -40652,17 +41826,17 @@ Schema name: `ResponseIncompleteEvent`
 
               The keys being held while double-clicking.
 
-            - `type: "double_click"`
+            - `type: "double_click" (default: "double_click")`
 
               Specifies the event type. For a double click action, this property is always set to `double_click`.
 
               - `"double_click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the double click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the double click occurred.
 
@@ -40681,15 +41855,15 @@ Schema name: `ResponseIncompleteEvent`
               ]
               ```
 
-              - `x: number`
+              - `x: integer`
 
                 The x-coordinate.
 
-              - `y: number`
+              - `y: integer`
 
                 The y-coordinate.
 
-            - `type: "drag"`
+            - `type: "drag" (default: "drag")`
 
               Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -40707,7 +41881,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-            - `type: "keypress"`
+            - `type: "keypress" (default: "keypress")`
 
               Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -40717,17 +41891,17 @@ Schema name: `ResponseIncompleteEvent`
 
             A mouse move action.
 
-            - `type: "move"`
+            - `type: "move" (default: "move")`
 
               Specifies the event type. For a move action, this property is always set to `move`.
 
               - `"move"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate to move to.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate to move to.
 
@@ -40739,7 +41913,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A screenshot action.
 
-            - `type: "screenshot"`
+            - `type: "screenshot" (default: "screenshot")`
 
               Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -40749,25 +41923,25 @@ Schema name: `ResponseIncompleteEvent`
 
             A scroll action.
 
-            - `scroll_x: number`
+            - `scroll_x: integer`
 
               The horizontal scroll distance.
 
-            - `scroll_y: number`
+            - `scroll_y: integer`
 
               The vertical scroll distance.
 
-            - `type: "scroll"`
+            - `type: "scroll" (default: "scroll")`
 
               Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
               - `"scroll"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the scroll occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the scroll occurred.
 
@@ -40783,7 +41957,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The text to type.
 
-            - `type: "type"`
+            - `type: "type" (default: "type")`
 
               Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -40793,7 +41967,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A wait action.
 
-            - `type: "wait"`
+            - `type: "wait" (default: "wait")`
 
               Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -40848,11 +42022,13 @@ Schema name: `ResponseIncompleteEvent`
 
           The ID of the computer tool call that produced the output.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: ResponseComputerToolCallOutputScreenshot`
 
           A computer screenshot image used with the computer use tool.
 
-          - `type: "computer_screenshot"`
+          - `type: "computer_screenshot" (default: "computer_screenshot")`
 
             Specifies the event type. For a computer screenshot, this property is
             always set to `computer_screenshot`.
@@ -40867,7 +42043,9 @@ Schema name: `ResponseIncompleteEvent`
 
             The URL of the screenshot image.
 
-        - `type: "computer_call_output"`
+            `format: uri`
+
+        - `type: "computer_call_output" (default: "computer_call_output")`
 
           The type of the computer tool call output. Always `computer_call_output`.
 
@@ -40969,6 +42147,8 @@ Schema name: `ResponseIncompleteEvent`
 
                 The URL of the source.
 
+                `format: uri`
+
           - `OpenPage object { type, url }`
 
             Action type "open_page" - Opens a specific URL from search results.
@@ -40982,6 +42162,8 @@ Schema name: `ResponseIncompleteEvent`
             - `url: optional string or null`
 
               The URL opened by the model.
+
+              `format: uri`
 
           - `FindInPage object { pattern, type, url }`
 
@@ -41000,6 +42182,8 @@ Schema name: `ResponseIncompleteEvent`
             - `url: optional string or null`
 
               The URL of the page searched for the pattern, when available.
+
+              `format: uri`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -41038,7 +42222,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -41048,7 +42232,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -41079,6 +42263,8 @@ Schema name: `ResponseIncompleteEvent`
 
             A JSON string of the output of the function tool call.
 
+            `maxLength: 10485760`
+
           - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
             An array of content outputs (text, image, file) for the function tool call.
@@ -41091,7 +42277,9 @@ Schema name: `ResponseIncompleteEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+                `maxLength: 10485760`
+
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -41101,7 +42289,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -41119,7 +42307,7 @@ Schema name: `ResponseIncompleteEvent`
 
               An image input to the model. Learn about [image inputs](https://developers.openai.com/api/docs/guides/images-vision)
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -41137,11 +42325,13 @@ Schema name: `ResponseIncompleteEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `maxLength: 20971520`, `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -41159,7 +42349,7 @@ Schema name: `ResponseIncompleteEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -41179,6 +42369,8 @@ Schema name: `ResponseIncompleteEvent`
 
                 The base64-encoded data of the file to be sent to the model.
 
+                `maxLength: 73400320`
+
               - `file_id: optional string or null`
 
                 The ID of the file to be sent to the model.
@@ -41186,6 +42378,8 @@ Schema name: `ResponseIncompleteEvent`
               - `file_url: optional string or null`
 
                 The URL of the file to be sent to the model.
+
+                `format: uri`
 
               - `filename: optional string or null`
 
@@ -41195,7 +42389,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -41209,7 +42403,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   - `"12h"`
 
-        - `type: "function_call_output"`
+        - `type: "function_call_output" (default: "function_call_output")`
 
           The type of the function tool call output. Always `function_call_output`.
 
@@ -41223,13 +42417,15 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the function tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -41241,7 +42437,9 @@ Schema name: `ResponseIncompleteEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -41251,9 +42449,13 @@ Schema name: `ResponseIncompleteEvent`
 
           The name of the tool that produced the output.
 
+          `minLength: 1`, `maxLength: 128`
+
         - `namespace: optional string or null`
 
           The namespace of the tool that produced the output.
+
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -41271,7 +42473,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The arguments supplied to the tool search call.
 
-        - `type: "tool_search_call"`
+        - `type: "tool_search_call" (default: "tool_search_call")`
 
           The item type. Always `tool_search_call`.
 
@@ -41284,6 +42486,8 @@ Schema name: `ResponseIncompleteEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -41325,7 +42529,7 @@ Schema name: `ResponseIncompleteEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -41357,7 +42561,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -41379,7 +42583,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -41448,7 +42652,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -41484,7 +42688,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -41494,11 +42698,11 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -41516,7 +42720,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -41527,7 +42731,7 @@ Schema name: `ResponseIncompleteEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -41535,7 +42739,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -41543,14 +42747,14 @@ Schema name: `ResponseIncompleteEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -41582,7 +42786,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -41606,6 +42810,8 @@ Schema name: `ResponseIncompleteEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -41685,7 +42891,7 @@ Schema name: `ResponseIncompleteEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -41742,10 +42948,14 @@ Schema name: `ResponseIncompleteEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -41765,7 +42975,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -41774,6 +42984,8 @@ Schema name: `ResponseIncompleteEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -41793,7 +43005,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -41805,7 +43017,9 @@ Schema name: `ResponseIncompleteEvent`
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -41815,17 +43029,25 @@ Schema name: `ResponseIncompleteEvent`
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -41837,13 +43059,15 @@ Schema name: `ResponseIncompleteEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -41869,7 +43093,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -41950,7 +43174,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -41958,11 +43182,13 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -41973,11 +43199,13 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -41996,7 +43224,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -42018,7 +43246,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -42028,7 +43256,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -42038,6 +43266,8 @@ Schema name: `ResponseIncompleteEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -42046,7 +43276,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -42055,6 +43285,8 @@ Schema name: `ResponseIncompleteEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -42080,13 +43312,17 @@ Schema name: `ResponseIncompleteEvent`
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -42114,19 +43350,21 @@ Schema name: `ResponseIncompleteEvent`
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -42134,7 +43372,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -42143,6 +43381,8 @@ Schema name: `ResponseIncompleteEvent`
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -42162,7 +43402,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -42176,7 +43416,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -42185,6 +43425,8 @@ Schema name: `ResponseIncompleteEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -42210,7 +43452,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -42232,7 +43474,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -42250,9 +43492,13 @@ Schema name: `ResponseIncompleteEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools loaded inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
@@ -42260,13 +43506,17 @@ Schema name: `ResponseIncompleteEvent`
 
                   The name of the loaded function tool.
 
-                - `type: "function"`
+                  `pattern: ^(?![\s\S]*[\r\n])[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -42300,7 +43550,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -42309,6 +43559,8 @@ Schema name: `ResponseIncompleteEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -42330,7 +43582,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -42340,7 +43592,7 @@ Schema name: `ResponseIncompleteEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -42366,7 +43618,7 @@ Schema name: `ResponseIncompleteEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -42394,7 +43646,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -42420,7 +43672,7 @@ Schema name: `ResponseIncompleteEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -42430,11 +43682,13 @@ Schema name: `ResponseIncompleteEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "tool_search_output"`
+        - `type: "tool_search_output" (default: "tool_search_output")`
 
           The item type. Always `tool_search_output`.
 
@@ -42447,6 +43701,8 @@ Schema name: `ResponseIncompleteEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -42468,7 +43724,7 @@ Schema name: `ResponseIncompleteEvent`
 
       - `AdditionalTools object { role, tools, type, id }`
 
-        - `role: "developer"`
+        - `role: "developer" (default: "developer")`
 
           The role that provided the additional tools. Only `developer` is supported.
 
@@ -42494,7 +43750,7 @@ Schema name: `ResponseIncompleteEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -42526,7 +43782,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -42548,7 +43804,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -42584,7 +43840,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -42594,11 +43850,11 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -42616,7 +43872,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -42627,7 +43883,7 @@ Schema name: `ResponseIncompleteEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -42635,7 +43891,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -42643,14 +43899,14 @@ Schema name: `ResponseIncompleteEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -42682,7 +43938,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -42706,6 +43962,8 @@ Schema name: `ResponseIncompleteEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -42785,7 +44043,7 @@ Schema name: `ResponseIncompleteEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -42842,10 +44100,14 @@ Schema name: `ResponseIncompleteEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -42865,7 +44127,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -42874,6 +44136,8 @@ Schema name: `ResponseIncompleteEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -42905,13 +44169,15 @@ Schema name: `ResponseIncompleteEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -42937,7 +44203,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -43018,7 +44284,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -43026,11 +44292,13 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -43041,11 +44309,13 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -43064,7 +44334,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -43086,7 +44356,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -43096,7 +44366,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -43105,6 +44375,8 @@ Schema name: `ResponseIncompleteEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -43126,7 +44398,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -43135,6 +44407,8 @@ Schema name: `ResponseIncompleteEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -43168,21 +44442,29 @@ Schema name: `ResponseIncompleteEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -43216,7 +44498,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -43225,6 +44507,8 @@ Schema name: `ResponseIncompleteEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -43246,7 +44530,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -43256,7 +44540,7 @@ Schema name: `ResponseIncompleteEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -43282,7 +44566,7 @@ Schema name: `ResponseIncompleteEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -43310,7 +44594,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -43336,7 +44620,7 @@ Schema name: `ResponseIncompleteEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -43346,11 +44630,13 @@ Schema name: `ResponseIncompleteEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "additional_tools"`
+        - `type: "additional_tools" (default: "additional_tools")`
 
           The item type. Always `additional_tools`.
 
@@ -43366,7 +44652,7 @@ Schema name: `ResponseIncompleteEvent`
         remains in effect for subsequent responses until it is replaced by another
         configuration update.
 
-        - `type: "configuration_update"`
+        - `type: "configuration_update" (default: "configuration_update")`
 
           The item type. Always `configuration_update`.
 
@@ -43380,7 +44666,7 @@ Schema name: `ResponseIncompleteEvent`
 
           Updates to reasoning configuration. Only effort is supported.
 
-          - `effort: optional ReasoningEffort or null`
+          - `effort: optional ReasoningEffort or null (default: "medium")`
 
             The reasoning effort to use for subsequent responses until another
             configuration update replaces it.
@@ -43418,7 +44704,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A summary of the reasoning output from the model so far.
 
-          - `type: "summary_text"`
+          - `type: "summary_text" (default: "summary_text")`
 
             The type of the object. Always `summary_text`.
 
@@ -43438,7 +44724,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The reasoning text from the model.
 
-          - `type: "reasoning_text"`
+          - `type: "reasoning_text" (default: "reasoning_text")`
 
             The type of the reasoning text. Always `reasoning_text`.
 
@@ -43475,7 +44761,9 @@ Schema name: `ResponseIncompleteEvent`
 
           The encrypted content of the compaction summary.
 
-        - `type: "compaction"`
+          `maxLength: 104857600`
+
+        - `type: "compaction" (default: "compaction")`
 
           The type of the item. Always `compaction`.
 
@@ -43648,7 +44936,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The logs output from the code interpreter.
 
-            - `type: "logs"`
+            - `type: "logs" (default: "logs")`
 
               The type of the output. Always `logs`.
 
@@ -43658,7 +44946,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The image output from the code interpreter.
 
-            - `type: "image"`
+            - `type: "image" (default: "image")`
 
               The type of the output. Always `image`.
 
@@ -43667,6 +44955,8 @@ Schema name: `ResponseIncompleteEvent`
             - `url: string`
 
               The URL of the image output from the code interpreter.
+
+              `format: uri`
 
         - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -43682,7 +44972,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `"failed"`
 
-        - `type: "code_interpreter_call"`
+        - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
           The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -43708,13 +44998,13 @@ Schema name: `ResponseIncompleteEvent`
 
             Environment variables to set for the command.
 
-          - `type: "exec"`
+          - `type: "exec" (default: "exec")`
 
             The type of the local shell action. Always `exec`.
 
             - `"exec"`
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Optional timeout in milliseconds for the command.
 
@@ -43786,11 +45076,11 @@ Schema name: `ResponseIncompleteEvent`
 
             Ordered shell commands for the execution environment to run.
 
-          - `max_output_length: optional number or null`
+          - `max_output_length: optional integer or null`
 
             Maximum number of UTF-8 characters to capture from combined stdout and stderr output.
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
@@ -43798,7 +45088,9 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the shell tool call generated by the model.
 
-        - `type: "shell_call"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "shell_call" (default: "shell_call")`
 
           The type of the item. Always `shell_call`.
 
@@ -43814,7 +45106,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -43826,7 +45118,9 @@ Schema name: `ResponseIncompleteEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -43858,6 +45152,8 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the shell tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: array of ResponseFunctionShellCallOutputContent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
@@ -43870,7 +45166,7 @@ Schema name: `ResponseIncompleteEvent`
 
               Indicates that the shell call exceeded its configured time limit.
 
-              - `type: "timeout"`
+              - `type: "timeout" (default: "timeout")`
 
                 The outcome type. Always `timeout`.
 
@@ -43880,11 +45176,11 @@ Schema name: `ResponseIncompleteEvent`
 
               Indicates that the shell commands finished and returned an exit code.
 
-              - `exit_code: number`
+              - `exit_code: integer`
 
                 The exit code returned by the shell process.
 
-              - `type: "exit"`
+              - `type: "exit" (default: "exit")`
 
                 The outcome type. Always `exit`.
 
@@ -43894,11 +45190,15 @@ Schema name: `ResponseIncompleteEvent`
 
             Captured stderr output for the shell call.
 
+            `maxLength: 10485760`
+
           - `stdout: string`
 
             Captured stdout output for the shell call.
 
-        - `type: "shell_call_output"`
+            `maxLength: 10485760`
+
+        - `type: "shell_call_output" (default: "shell_call_output")`
 
           The type of the item. Always `shell_call_output`.
 
@@ -43914,7 +45214,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -43926,13 +45226,15 @@ Schema name: `ResponseIncompleteEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
               - `"program"`
 
-        - `max_output_length: optional number or null`
+        - `max_output_length: optional integer or null`
 
           The maximum number of UTF-8 characters captured for this shell call's combined output.
 
@@ -43954,6 +45256,8 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
@@ -43966,11 +45270,15 @@ Schema name: `ResponseIncompleteEvent`
 
               Unified diff content to apply when creating the file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to create relative to the workspace root.
 
-            - `type: "create_file"`
+              `minLength: 1`
+
+            - `type: "create_file" (default: "create_file")`
 
               The operation type. Always `create_file`.
 
@@ -43984,7 +45292,9 @@ Schema name: `ResponseIncompleteEvent`
 
               Path of the file to delete relative to the workspace root.
 
-            - `type: "delete_file"`
+              `minLength: 1`
+
+            - `type: "delete_file" (default: "delete_file")`
 
               The operation type. Always `delete_file`.
 
@@ -43998,11 +45308,15 @@ Schema name: `ResponseIncompleteEvent`
 
               Unified diff content to apply to the existing file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to update relative to the workspace root.
 
-            - `type: "update_file"`
+              `minLength: 1`
+
+            - `type: "update_file" (default: "update_file")`
 
               The operation type. Always `update_file`.
 
@@ -44016,7 +45330,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `"completed"`
 
-        - `type: "apply_patch_call"`
+        - `type: "apply_patch_call" (default: "apply_patch_call")`
 
           The type of the item. Always `apply_patch_call`.
 
@@ -44032,7 +45346,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -44044,7 +45358,9 @@ Schema name: `ResponseIncompleteEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -44058,6 +45374,8 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `status: "completed" or "failed"`
 
           The status of the apply patch tool call output. One of `completed` or `failed`.
@@ -44066,7 +45384,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `"failed"`
 
-        - `type: "apply_patch_call_output"`
+        - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
           The type of the item. Always `apply_patch_call_output`.
 
@@ -44082,7 +45400,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -44094,7 +45412,9 @@ Schema name: `ResponseIncompleteEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -44103,6 +45423,8 @@ Schema name: `ResponseIncompleteEvent`
         - `output: optional string or null`
 
           Optional human-readable log text from the apply patch tool (e.g., patch results or errors).
+
+          `maxLength: 10485760`
 
       - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -44235,11 +45557,11 @@ Schema name: `ResponseIncompleteEvent`
 
           - `McpProtocolError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "mcp_protocol_error"`
+            - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
               - `"mcp_protocol_error"`
 
@@ -44247,17 +45569,17 @@ Schema name: `ResponseIncompleteEvent`
 
             - `content: unknown`
 
-            - `type: "mcp_tool_execution_error"`
+            - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
               - `"mcp_tool_execution_error"`
 
           - `HTTPError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "http_error"`
+            - `type: "http_error" (default: "http_error")`
 
               - `"http_error"`
 
@@ -44328,7 +45650,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -44340,7 +45662,9 @@ Schema name: `ResponseIncompleteEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -44382,7 +45706,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -44392,7 +45716,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -44404,7 +45728,7 @@ Schema name: `ResponseIncompleteEvent`
 
         Compacts the current context. Must be the final input item.
 
-        - `type: "compaction_trigger"`
+        - `type: "compaction_trigger" (default: "compaction_trigger")`
 
           The type of the item. Always `compaction_trigger`.
 
@@ -44422,7 +45746,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The ID of the item to reference.
 
-        - `type: optional "item_reference" or null`
+        - `type: optional "item_reference" or null (default: "item_reference")`
 
           The type of item to reference. Always `item_reference`.
 
@@ -44438,15 +45762,21 @@ Schema name: `ResponseIncompleteEvent`
 
           The stable call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `code: string`
 
           The JavaScript source executed by programmatic tool calling.
+
+          `maxLength: 10485760`
 
         - `fingerprint: string`
 
           Opaque program replay fingerprint that must be round-tripped.
 
-        - `type: "program"`
+          `maxLength: 10485760`
+
+        - `type: "program" (default: "program")`
 
           The item type. Always `program`.
 
@@ -44462,9 +45792,13 @@ Schema name: `ResponseIncompleteEvent`
 
           The call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `result: string`
 
           The result produced by the program item.
+
+          `maxLength: 10485760`
 
         - `status: "completed" or "incomplete"`
 
@@ -44474,7 +45808,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `"incomplete"`
 
-        - `type: "program_output"`
+        - `type: "program_output" (default: "program_output")`
 
           The item type. Always `program_output`.
 
@@ -44791,6 +46125,8 @@ Schema name: `ResponseIncompleteEvent`
 
           - `string`
 
+            `maxLength: 512`
+
           - `number`
 
           - `boolean`
@@ -44806,6 +46142,8 @@ Schema name: `ResponseIncompleteEvent`
         - `score: optional number`
 
           The relevance score of the file - a value between 0 and 1.
+
+          `format: float`
 
         - `text: optional string`
 
@@ -44848,7 +46186,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -44858,7 +46196,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -44935,7 +46273,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -44947,7 +46285,9 @@ Schema name: `ResponseIncompleteEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -45031,6 +46371,8 @@ Schema name: `ResponseIncompleteEvent`
 
               The URL of the source.
 
+              `format: uri`
+
         - `OpenPage object { type, url }`
 
           Action type "open_page" - Opens a specific URL from search results.
@@ -45044,6 +46386,8 @@ Schema name: `ResponseIncompleteEvent`
           - `url: optional string or null`
 
             The URL opened by the model.
+
+            `format: uri`
 
         - `FindInPage object { pattern, type, url }`
 
@@ -45062,6 +46406,8 @@ Schema name: `ResponseIncompleteEvent`
           - `url: optional string or null`
 
             The URL of the page searched for the pattern, when available.
+
+            `format: uri`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -45103,7 +46449,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"incomplete"`
 
-      - `type: "computer_call"`
+      - `type: "computer_call" (default: "computer_call")`
 
         The type of the computer call. Always `computer_call`.
 
@@ -45145,7 +46491,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"in_progress"`
 
-      - `type: "computer_call_output"`
+      - `type: "computer_call_output" (default: "computer_call_output")`
 
         The type of the computer tool call output. Always `computer_call_output`.
 
@@ -45191,7 +46537,7 @@ Schema name: `ResponseIncompleteEvent`
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -45209,7 +46555,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -45256,7 +46602,7 @@ Schema name: `ResponseIncompleteEvent`
 
         Opaque program replay fingerprint that must be round-tripped.
 
-      - `type: "program"`
+      - `type: "program" (default: "program")`
 
         The type of the item. Always `program`.
 
@@ -45284,7 +46630,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"incomplete"`
 
-      - `type: "program_output"`
+      - `type: "program_output" (default: "program_output")`
 
         The type of the item. Always `program_output`.
 
@@ -45322,7 +46668,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"incomplete"`
 
-      - `type: "tool_search_call"`
+      - `type: "tool_search_call" (default: "tool_search_call")`
 
         The type of the item. Always `tool_search_call`.
 
@@ -45380,7 +46726,7 @@ Schema name: `ResponseIncompleteEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -45412,7 +46758,7 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -45434,7 +46780,7 @@ Schema name: `ResponseIncompleteEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -45470,7 +46816,7 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -45480,11 +46826,11 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -45502,7 +46848,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -45513,7 +46859,7 @@ Schema name: `ResponseIncompleteEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -45521,7 +46867,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -45529,14 +46875,14 @@ Schema name: `ResponseIncompleteEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -45568,7 +46914,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -45592,6 +46938,8 @@ Schema name: `ResponseIncompleteEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -45671,7 +47019,7 @@ Schema name: `ResponseIncompleteEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -45728,10 +47076,14 @@ Schema name: `ResponseIncompleteEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -45751,7 +47103,7 @@ Schema name: `ResponseIncompleteEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -45760,6 +47112,8 @@ Schema name: `ResponseIncompleteEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -45791,13 +47145,15 @@ Schema name: `ResponseIncompleteEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -45823,7 +47179,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -45904,7 +47260,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -45912,11 +47268,13 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -45927,11 +47285,13 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -45950,7 +47310,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -45972,7 +47332,7 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -45982,7 +47342,7 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -45991,6 +47351,8 @@ Schema name: `ResponseIncompleteEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -46012,7 +47374,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -46021,6 +47383,8 @@ Schema name: `ResponseIncompleteEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -46054,21 +47418,29 @@ Schema name: `ResponseIncompleteEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -46102,7 +47474,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -46111,6 +47483,8 @@ Schema name: `ResponseIncompleteEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -46132,7 +47506,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -46142,7 +47516,7 @@ Schema name: `ResponseIncompleteEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -46168,7 +47542,7 @@ Schema name: `ResponseIncompleteEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -46196,7 +47570,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -46222,7 +47596,7 @@ Schema name: `ResponseIncompleteEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -46232,11 +47606,13 @@ Schema name: `ResponseIncompleteEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "tool_search_output"`
+      - `type: "tool_search_output" (default: "tool_search_output")`
 
         The type of the item. Always `tool_search_output`.
 
@@ -46292,7 +47668,7 @@ Schema name: `ResponseIncompleteEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -46324,7 +47700,7 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -46346,7 +47722,7 @@ Schema name: `ResponseIncompleteEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -46382,7 +47758,7 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -46392,11 +47768,11 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -46414,7 +47790,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -46425,7 +47801,7 @@ Schema name: `ResponseIncompleteEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -46433,7 +47809,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -46441,14 +47817,14 @@ Schema name: `ResponseIncompleteEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -46480,7 +47856,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -46504,6 +47880,8 @@ Schema name: `ResponseIncompleteEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -46583,7 +47961,7 @@ Schema name: `ResponseIncompleteEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -46640,10 +48018,14 @@ Schema name: `ResponseIncompleteEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -46663,7 +48045,7 @@ Schema name: `ResponseIncompleteEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -46672,6 +48054,8 @@ Schema name: `ResponseIncompleteEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -46703,13 +48087,15 @@ Schema name: `ResponseIncompleteEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -46735,7 +48121,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -46816,7 +48202,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -46824,11 +48210,13 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -46839,11 +48227,13 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -46862,7 +48252,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -46884,7 +48274,7 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -46894,7 +48284,7 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -46903,6 +48293,8 @@ Schema name: `ResponseIncompleteEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -46924,7 +48316,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -46933,6 +48325,8 @@ Schema name: `ResponseIncompleteEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -46966,21 +48360,29 @@ Schema name: `ResponseIncompleteEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -47014,7 +48416,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -47023,6 +48425,8 @@ Schema name: `ResponseIncompleteEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -47044,7 +48448,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -47054,7 +48458,7 @@ Schema name: `ResponseIncompleteEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -47080,7 +48484,7 @@ Schema name: `ResponseIncompleteEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -47108,7 +48512,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -47134,7 +48538,7 @@ Schema name: `ResponseIncompleteEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -47144,11 +48548,13 @@ Schema name: `ResponseIncompleteEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "additional_tools"`
+      - `type: "additional_tools" (default: "additional_tools")`
 
         The type of the item. Always `additional_tools`.
 
@@ -47166,7 +48572,7 @@ Schema name: `ResponseIncompleteEvent`
 
         The encrypted content that was produced by compaction.
 
-      - `type: "compaction"`
+      - `type: "compaction" (default: "compaction")`
 
         The type of the item. Always `compaction`.
 
@@ -47339,7 +48745,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The logs output from the code interpreter.
 
-          - `type: "logs"`
+          - `type: "logs" (default: "logs")`
 
             The type of the output. Always `logs`.
 
@@ -47349,7 +48755,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The image output from the code interpreter.
 
-          - `type: "image"`
+          - `type: "image" (default: "image")`
 
             The type of the output. Always `image`.
 
@@ -47358,6 +48764,8 @@ Schema name: `ResponseIncompleteEvent`
           - `url: string`
 
             The URL of the image output from the code interpreter.
+
+            `format: uri`
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -47373,7 +48781,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"failed"`
 
-      - `type: "code_interpreter_call"`
+      - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
         The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -47399,13 +48807,13 @@ Schema name: `ResponseIncompleteEvent`
 
           Environment variables to set for the command.
 
-        - `type: "exec"`
+        - `type: "exec" (default: "exec")`
 
           The type of the local shell action. Always `exec`.
 
           - `"exec"`
 
-        - `timeout_ms: optional number or null`
+        - `timeout_ms: optional integer or null`
 
           Optional timeout in milliseconds for the command.
 
@@ -47479,11 +48887,11 @@ Schema name: `ResponseIncompleteEvent`
 
         - `commands: array of string`
 
-        - `max_output_length: number or null`
+        - `max_output_length: integer or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number or null`
+        - `timeout_ms: integer or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -47499,7 +48907,7 @@ Schema name: `ResponseIncompleteEvent`
 
           Represents the use of a local environment to perform shell actions.
 
-          - `type: "local"`
+          - `type: "local" (default: "local")`
 
             The environment type. Always `local`.
 
@@ -47511,7 +48919,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `container_id: string`
 
-          - `type: "container_reference"`
+          - `type: "container_reference" (default: "container_reference")`
 
             The environment type. Always `container_reference`.
 
@@ -47527,7 +48935,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call"`
+      - `type: "shell_call" (default: "shell_call")`
 
         The type of the item. Always `shell_call`.
 
@@ -47539,7 +48947,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -47549,7 +48957,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -47569,7 +48977,7 @@ Schema name: `ResponseIncompleteEvent`
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -47585,7 +48993,7 @@ Schema name: `ResponseIncompleteEvent`
 
             Indicates that the shell call exceeded its configured time limit.
 
-            - `type: "timeout"`
+            - `type: "timeout" (default: "timeout")`
 
               The outcome type. Always `timeout`.
 
@@ -47595,11 +49003,11 @@ Schema name: `ResponseIncompleteEvent`
 
             Indicates that the shell commands finished and returned an exit code.
 
-            - `exit_code: number`
+            - `exit_code: integer`
 
               Exit code from the shell process.
 
-            - `type: "exit"`
+            - `type: "exit" (default: "exit")`
 
               The outcome type. Always `exit`.
 
@@ -47627,7 +49035,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call_output"`
+      - `type: "shell_call_output" (default: "shell_call_output")`
 
         The type of the shell call output. Always `shell_call_output`.
 
@@ -47639,7 +49047,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -47649,7 +49057,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -47685,7 +49093,7 @@ Schema name: `ResponseIncompleteEvent`
 
             Path of the file to create.
 
-          - `type: "create_file"`
+          - `type: "create_file" (default: "create_file")`
 
             Create a new file with the provided diff.
 
@@ -47699,7 +49107,7 @@ Schema name: `ResponseIncompleteEvent`
 
             Path of the file to delete.
 
-          - `type: "delete_file"`
+          - `type: "delete_file" (default: "delete_file")`
 
             Delete the specified file.
 
@@ -47717,7 +49125,7 @@ Schema name: `ResponseIncompleteEvent`
 
             Path of the file to update.
 
-          - `type: "update_file"`
+          - `type: "update_file" (default: "update_file")`
 
             Update an existing file with the provided diff.
 
@@ -47731,7 +49139,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"completed"`
 
-      - `type: "apply_patch_call"`
+      - `type: "apply_patch_call" (default: "apply_patch_call")`
 
         The type of the item. Always `apply_patch_call`.
 
@@ -47743,7 +49151,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -47753,7 +49161,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -47781,7 +49189,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"failed"`
 
-      - `type: "apply_patch_call_output"`
+      - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
         The type of the item. Always `apply_patch_call_output`.
 
@@ -47793,7 +49201,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -47803,7 +49211,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -47998,7 +49406,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -48008,7 +49416,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -48074,7 +49482,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -48086,7 +49494,9 @@ Schema name: `ResponseIncompleteEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -48096,14 +49506,16 @@ Schema name: `ResponseIncompleteEvent`
 
         The identifier of the actor that created the item.
 
-  - `parallel_tool_calls: boolean`
+  - `parallel_tool_calls: boolean (default: true)`
 
     Whether to allow the model to run tool calls in parallel.
 
-  - `temperature: number or null`
+  - `temperature: number or null (default: 1)`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
     We generally recommend altering this or `top_p` but not both.
+
+    `minimum: 0`, `maximum: 2`
 
   - `tool_choice: ToolChoiceOptions or ToolChoiceAllowed or ToolChoiceTypes or 6 more`
 
@@ -48249,7 +49661,7 @@ Schema name: `ResponseIncompleteEvent`
 
     - `SpecificProgrammaticToolCallingParam object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The tool to call. Always `programmatic_tool_calling`.
 
@@ -48259,7 +49671,7 @@ Schema name: `ResponseIncompleteEvent`
 
       Forces the model to call the apply_patch tool when executing a tool call.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The tool to call. Always `apply_patch`.
 
@@ -48269,7 +49681,7 @@ Schema name: `ResponseIncompleteEvent`
 
       Forces the model to call the shell tool when a tool call is required.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The tool to call. Always `shell`.
 
@@ -48311,7 +49723,7 @@ Schema name: `ResponseIncompleteEvent`
 
         Whether strict parameter validation is enforced for this function tool.
 
-      - `type: "function"`
+      - `type: "function" (default: "function")`
 
         The type of the function tool. Always `function`.
 
@@ -48343,7 +49755,7 @@ Schema name: `ResponseIncompleteEvent`
 
       A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-      - `type: "file_search"`
+      - `type: "file_search" (default: "file_search")`
 
         The type of the file search tool. Always `file_search`.
 
@@ -48365,7 +49777,7 @@ Schema name: `ResponseIncompleteEvent`
 
           Combine multiple filters using `and` or `or`.
 
-      - `max_num_results: optional number`
+      - `max_num_results: optional integer`
 
         The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -48401,7 +49813,7 @@ Schema name: `ResponseIncompleteEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `type: "computer"`
+      - `type: "computer" (default: "computer")`
 
         The type of the computer tool. Always `computer`.
 
@@ -48411,11 +49823,11 @@ Schema name: `ResponseIncompleteEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `display_height: number`
+      - `display_height: integer`
 
         The height of the computer display.
 
-      - `display_width: number`
+      - `display_width: integer`
 
         The width of the computer display.
 
@@ -48433,7 +49845,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"browser"`
 
-      - `type: "computer_use_preview"`
+      - `type: "computer_use_preview" (default: "computer_use_preview")`
 
         The type of the computer use tool. Always `computer_use_preview`.
 
@@ -48444,7 +49856,7 @@ Schema name: `ResponseIncompleteEvent`
       Search the Internet for sources related to the prompt. Learn more about the
       [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search" or "web_search_2025_08_26"`
+      - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
         The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -48452,7 +49864,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"web_search_2025_08_26"`
 
-      - `external_web_access: optional boolean`
+      - `external_web_access: optional boolean (default: true)`
 
         Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -48460,14 +49872,14 @@ Schema name: `ResponseIncompleteEvent`
 
         Filters for the search.
 
-        - `allowed_domains: optional array of string or null`
+        - `allowed_domains: optional array of string or null (default: [])`
 
           Allowed domains for the search. If not provided, all domains are allowed.
           Subdomains of the provided domains are allowed as well.
 
           Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-      - `search_context_size: optional "low" or "medium" or "high"`
+      - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
         High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -48499,7 +49911,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-        - `type: optional "approximate"`
+        - `type: optional "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -48523,6 +49935,8 @@ Schema name: `ResponseIncompleteEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -48602,7 +50016,7 @@ Schema name: `ResponseIncompleteEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
         Specify which of the MCP server's tools require approval.
 
@@ -48659,10 +50073,14 @@ Schema name: `ResponseIncompleteEvent`
         The URL for the MCP server. One of `server_url`, `connector_id`, or
         `tunnel_id` must be provided.
 
+        `format: uri`
+
       - `tunnel_id: optional string`
 
         The Secure MCP Tunnel ID to use instead of a direct server URL. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+        `pattern: ^tunnel_[a-z0-9]{32}$`
 
     - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -48682,7 +50100,7 @@ Schema name: `ResponseIncompleteEvent`
 
           Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-          - `type: "auto"`
+          - `type: "auto" (default: "auto")`
 
             Always `auto`.
 
@@ -48691,6 +50109,8 @@ Schema name: `ResponseIncompleteEvent`
           - `file_ids: optional array of string`
 
             An optional list of uploaded files to make available to your code.
+
+            `maxItems: 50`
 
           - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -48722,13 +50142,15 @@ Schema name: `ResponseIncompleteEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
     - `ProgrammaticToolCalling object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The type of the tool. Always `programmatic_tool_calling`.
 
@@ -48754,7 +50176,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"auto"`
 
-      - `background: optional "transparent" or "opaque" or "auto"`
+      - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
         Set the background of the generated image. One of `transparent`, `opaque`,
         or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -48835,7 +50257,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
 
-      - `moderation: optional "auto" or "low"`
+      - `moderation: optional "auto" or "low" (default: "auto")`
 
         Moderation level for the generated image. Default: `auto`.
 
@@ -48843,11 +50265,13 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"low"`
 
-      - `output_compression: optional number`
+      - `output_compression: optional integer (default: 100)`
 
         Compression level for the output image. Default: 100.
 
-      - `output_format: optional "png" or "webp" or "jpeg"`
+        `minimum: 0`, `maximum: 100`
+
+      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
         The output format of the generated image. One of `png`, `webp`, or
         `jpeg`. Default: `png`.
@@ -48858,11 +50282,13 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"jpeg"`
 
-      - `partial_images: optional number`
+      - `partial_images: optional integer (default: 0)`
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or 3 more`
+        `minimum: 0`, `maximum: 3`
+
+      - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
         The quality of the generated image. The GPT image models support `low`,
         `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -48881,7 +50307,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"auto"`
 
-      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
         The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -48903,7 +50329,7 @@ Schema name: `ResponseIncompleteEvent`
 
       A tool that allows the model to execute shell commands in a local environment.
 
-      - `type: "local_shell"`
+      - `type: "local_shell" (default: "local_shell")`
 
         The type of the local shell tool. Always `local_shell`.
 
@@ -48913,7 +50339,7 @@ Schema name: `ResponseIncompleteEvent`
 
       A tool that allows the model to execute shell commands.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The type of the shell tool. Always `shell`.
 
@@ -48922,6 +50348,8 @@ Schema name: `ResponseIncompleteEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -48943,7 +50371,7 @@ Schema name: `ResponseIncompleteEvent`
 
         The name of the custom tool, used to identify it in tool calls.
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of the custom tool. Always `custom`.
 
@@ -48952,6 +50380,8 @@ Schema name: `ResponseIncompleteEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -48985,21 +50415,29 @@ Schema name: `ResponseIncompleteEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
+        `minLength: 1`
+
       - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
+
+        `minItems: 1`
 
         - `Function object { name, type, allowed_callers, 6 more }`
 
           - `name: string`
 
-          - `type: "function"`
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+          - `type: "function" (default: "function")`
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -49033,7 +50471,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -49042,6 +50480,8 @@ Schema name: `ResponseIncompleteEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -49063,7 +50503,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The input format for the custom tool. Default is unconstrained text.
 
-      - `type: "namespace"`
+      - `type: "namespace" (default: "namespace")`
 
         The type of the tool. Always `namespace`.
 
@@ -49073,7 +50513,7 @@ Schema name: `ResponseIncompleteEvent`
 
       Hosted or BYOT tool search configuration for deferred tools.
 
-      - `type: "tool_search"`
+      - `type: "tool_search" (default: "tool_search")`
 
         The type of the tool. Always `tool_search`.
 
@@ -49099,7 +50539,7 @@ Schema name: `ResponseIncompleteEvent`
 
       This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+      - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
         The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -49127,7 +50567,7 @@ Schema name: `ResponseIncompleteEvent`
 
         The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-        - `type: "approximate"`
+        - `type: "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -49153,7 +50593,7 @@ Schema name: `ResponseIncompleteEvent`
 
       Allows the assistant to create, delete, or update files using unified diffs.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The type of the tool. Always `apply_patch`.
 
@@ -49163,11 +50603,13 @@ Schema name: `ResponseIncompleteEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
-  - `top_p: number or null`
+  - `top_p: number or null (default: 1)`
 
     An alternative to sampling with temperature, called nucleus sampling,
     where the model considers the results of the tokens with top_p probability
@@ -49176,7 +50618,9 @@ Schema name: `ResponseIncompleteEvent`
 
     We generally recommend altering this or `temperature` but not both.
 
-  - `background: optional boolean or null`
+    `minimum: 0`, `maximum: 1`
+
+  - `background: optional boolean or null (default: false)`
 
     Whether to run the model response in the background.
     [Learn more](https://developers.openai.com/api/docs/guides/background).
@@ -49186,6 +50630,8 @@ Schema name: `ResponseIncompleteEvent`
     Unix timestamp (in seconds) of when this Response was completed.
     Only present when the status is `completed`.
 
+    `format: unixtime`
+
   - `conversation: optional object { id }  or null`
 
     The conversation that this response belonged to. Input items and output items from this response were automatically added to this conversation.
@@ -49194,11 +50640,11 @@ Schema name: `ResponseIncompleteEvent`
 
       The unique ID of the conversation that this response was associated with.
 
-  - `max_output_tokens: optional number or null`
+  - `max_output_tokens: optional integer or null`
 
     An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](https://developers.openai.com/api/docs/guides/reasoning).
 
-  - `max_tool_calls: optional number or null`
+  - `max_tool_calls: optional integer or null`
 
     The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored.
 
@@ -49238,7 +50684,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -49256,7 +50702,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -49294,7 +50740,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -49312,7 +50758,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -49369,7 +50815,7 @@ Schema name: `ResponseIncompleteEvent`
 
     - `CacheMiss object { cache_missed_tokens, reason, type, comparison_reusable_tokens }`
 
-      - `cache_missed_tokens: number`
+      - `cache_missed_tokens: integer`
 
         The estimated number of input tokens affected after the first detected divergence.
 
@@ -49395,29 +50841,29 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"service_tier_changed"`
 
-      - `type: "cache_miss"`
+      - `type: "cache_miss" (default: "cache_miss")`
 
         - `"cache_miss"`
 
-      - `comparison_reusable_tokens: optional number`
+      - `comparison_reusable_tokens: optional integer`
 
         The raw token count of the reusable prefix in the compared response.
 
     - `CacheHit object { type }`
 
-      - `type: "cache_hit"`
+      - `type: "cache_hit" (default: "cache_hit")`
 
         - `"cache_hit"`
 
     - `ComparisonResponseNotFound object { type }`
 
-      - `type: "comparison_response_not_found"`
+      - `type: "comparison_response_not_found" (default: "comparison_response_not_found")`
 
         - `"comparison_response_not_found"`
 
     - `Unavailable object { type }`
 
-      - `type: "unavailable"`
+      - `type: "unavailable" (default: "unavailable")`
 
         - `"unavailable"`
 
@@ -49487,7 +50933,7 @@ Schema name: `ResponseIncompleteEvent`
 
       - `"all_turns"`
 
-    - `effort: optional ReasoningEffort or null`
+    - `effort: optional ReasoningEffort or null (default: "medium")`
 
       Constrains effort on reasoning for reasoning models. Currently supported
       values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -49548,7 +50994,9 @@ Schema name: `ResponseIncompleteEvent`
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
     The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-  - `service_tier: optional ServiceTier or null`
+    `maxLength: 128`
+
+  - `service_tier: optional ServiceTier or null (default: "auto")`
 
     Specifies the processing type used for serving the request.
 
@@ -49652,7 +51100,7 @@ Schema name: `ResponseIncompleteEvent`
           A description of what the response format is for, used by the model to
           determine how to respond in the format.
 
-        - `strict: optional boolean or null`
+        - `strict: optional boolean or null (default: false)`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -49673,7 +51121,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `"json_object"`
 
-    - `verbosity: optional "low" or "medium" or "high" or null`
+    - `verbosity: optional "low" or "medium" or "high" or null (default: "medium")`
 
       Constrains the verbosity of the model's response. Lower values will result in
       more concise responses, while higher values will result in more verbose responses.
@@ -49705,7 +51153,7 @@ Schema name: `ResponseIncompleteEvent`
 
       Aggregated usage statistics for image generation tool calls.
 
-      - `input_tokens: number`
+      - `input_tokens: integer`
 
         The number of tokens (images and text) in the input prompt.
 
@@ -49713,39 +51161,39 @@ Schema name: `ResponseIncompleteEvent`
 
         The input tokens detailed information for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image tokens in the input prompt.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text tokens in the input prompt.
 
-      - `output_tokens: number`
+      - `output_tokens: integer`
 
         The number of output tokens generated by the model.
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
         The total number of tokens (images and text) used for the image generation.
 
-      - `cached_tokens: optional number`
+      - `cached_tokens: optional integer`
 
       - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
 
-        - `cached_image_tokens: number`
+        - `cached_image_tokens: integer`
 
-        - `cached_text_tokens: number`
+        - `cached_text_tokens: integer`
 
       - `output_tokens_details: optional object { image_tokens, text_tokens }`
 
         The output token details for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image output tokens generated by the model.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text output tokens generated by the model.
 
@@ -49753,18 +51201,20 @@ Schema name: `ResponseIncompleteEvent`
 
       Aggregated billable usage statistics for web search tool calls.
 
-      - `num_requests: number`
+      - `num_requests: integer`
 
         The number of billable web search requests issued.
 
-  - `top_logprobs: optional number or null`
+  - `top_logprobs: optional integer or null`
 
     An integer between 0 and 20 specifying the maximum number of most likely
     tokens to return at each token position, each with an associated log
     probability. In some cases, the number of returned tokens may be fewer than
     requested.
 
-  - `truncation: optional "auto" or "disabled" or null`
+    `minimum: 0`, `maximum: 20`
+
+  - `truncation: optional "auto" or "disabled" or null (default: "disabled")`
 
     The truncation strategy to use for the model response.
 
@@ -49783,7 +51233,7 @@ Schema name: `ResponseIncompleteEvent`
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -49791,16 +51241,16 @@ Schema name: `ResponseIncompleteEvent`
 
       A detailed breakdown of the input tokens.
 
-      - `cache_write_tokens: number`
+      - `cache_write_tokens: integer`
 
         The number of input tokens that were written to the cache.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache.
         [More on prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -49808,11 +51258,11 @@ Schema name: `ResponseIncompleteEvent`
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -49822,7 +51272,7 @@ Schema name: `ResponseIncompleteEvent`
     A stable identifier for your end-users.
     Used to boost cache hit rates by better bucketing similar requests and  to help OpenAI detect and prevent abuse. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -49923,11 +51373,11 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The filename of the file cited.
 
-            - `index: number`
+            - `index: integer`
 
               The index in the output text at which to insert the file citation.
 
-            - `type: "file_citation"`
+            - `type: "file_citation" (default: "file_citation")`
 
               The type of the file citation. Always `file_citation`.
 
@@ -49937,11 +51387,11 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             A citation for a web resource used to generate a model response.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the URL citation in the message.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the URL citation in the message.
 
@@ -49949,7 +51399,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The title of the web resource.
 
-            - `type: "url_citation"`
+            - `type: "url_citation" (default: "url_citation")`
 
               The type of the URL citation. Always `url_citation`.
 
@@ -49959,6 +51409,8 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The URL of the web resource.
 
+              `format: uri`
+
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
             A citation for a container file used to generate a model response.
@@ -49967,7 +51419,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The ID of the container file.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the container file citation in the message.
 
@@ -49979,11 +51431,11 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The filename of the container file cited.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the container file citation in the message.
 
-            - `type: "container_file_citation"`
+            - `type: "container_file_citation" (default: "container_file_citation")`
 
               The type of the container file citation. Always `container_file_citation`.
 
@@ -49997,7 +51449,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The ID of the file.
 
-            - `index: number`
+            - `index: integer`
 
               The index of the file in the list of files.
 
@@ -50027,7 +51479,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The text output from the model.
 
-        - `type: "output_text"`
+        - `type: "output_text" (default: "output_text")`
 
           The type of the output text. Always `output_text`.
 
@@ -50041,7 +51493,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The refusal explanation from the model.
 
-        - `type: "refusal"`
+        - `type: "refusal" (default: "refusal")`
 
           The type of the refusal. Always `refusal`.
 
@@ -50128,6 +51580,8 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         - `string`
 
+          `maxLength: 512`
+
         - `number`
 
         - `boolean`
@@ -50143,6 +51597,8 @@ Schema name: `ResponseOutputItemAddedEvent`
       - `score: optional number`
 
         The relevance score of the file - a value between 0 and 1.
+
+        `format: float`
 
       - `text: optional string`
 
@@ -50185,7 +51641,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -50195,7 +51651,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -50241,7 +51697,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -50251,7 +51707,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -50281,7 +51737,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -50295,11 +51751,13 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -50317,7 +51775,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -50345,6 +51803,8 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -50353,7 +51813,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -50394,7 +51854,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -50406,7 +51866,9 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -50490,6 +51952,8 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             The URL of the source.
 
+            `format: uri`
+
       - `OpenPage object { type, url }`
 
         Action type "open_page" - Opens a specific URL from search results.
@@ -50503,6 +51967,8 @@ Schema name: `ResponseOutputItemAddedEvent`
         - `url: optional string or null`
 
           The URL opened by the model.
+
+          `format: uri`
 
       - `FindInPage object { pattern, type, url }`
 
@@ -50521,6 +51987,8 @@ Schema name: `ResponseOutputItemAddedEvent`
         - `url: optional string or null`
 
           The URL of the page searched for the pattern, when available.
+
+          `format: uri`
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -50562,7 +52030,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"incomplete"`
 
-    - `type: "computer_call"`
+    - `type: "computer_call" (default: "computer_call")`
 
       The type of the computer call. Always `computer_call`.
 
@@ -50590,17 +52058,17 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"forward"`
 
-        - `type: "click"`
+        - `type: "click" (default: "click")`
 
           Specifies the event type. For a click action, this property is always `click`.
 
           - `"click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the click occurred.
 
@@ -50616,17 +52084,17 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The keys being held while double-clicking.
 
-        - `type: "double_click"`
+        - `type: "double_click" (default: "double_click")`
 
           Specifies the event type. For a double click action, this property is always set to `double_click`.
 
           - `"double_click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the double click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the double click occurred.
 
@@ -50645,15 +52113,15 @@ Schema name: `ResponseOutputItemAddedEvent`
           ]
           ```
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate.
 
-        - `type: "drag"`
+        - `type: "drag" (default: "drag")`
 
           Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -50671,7 +52139,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-        - `type: "keypress"`
+        - `type: "keypress" (default: "keypress")`
 
           Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -50681,17 +52149,17 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A mouse move action.
 
-        - `type: "move"`
+        - `type: "move" (default: "move")`
 
           Specifies the event type. For a move action, this property is always set to `move`.
 
           - `"move"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate to move to.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate to move to.
 
@@ -50703,7 +52171,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A screenshot action.
 
-        - `type: "screenshot"`
+        - `type: "screenshot" (default: "screenshot")`
 
           Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -50713,25 +52181,25 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A scroll action.
 
-        - `scroll_x: number`
+        - `scroll_x: integer`
 
           The horizontal scroll distance.
 
-        - `scroll_y: number`
+        - `scroll_y: integer`
 
           The vertical scroll distance.
 
-        - `type: "scroll"`
+        - `type: "scroll" (default: "scroll")`
 
           Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
           - `"scroll"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the scroll occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the scroll occurred.
 
@@ -50747,7 +52215,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The text to type.
 
-        - `type: "type"`
+        - `type: "type" (default: "type")`
 
           Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -50757,7 +52225,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A wait action.
 
-        - `type: "wait"`
+        - `type: "wait" (default: "wait")`
 
           Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -50818,7 +52286,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       A computer screenshot image used with the computer use tool.
 
-      - `type: "computer_screenshot"`
+      - `type: "computer_screenshot" (default: "computer_screenshot")`
 
         Specifies the event type. For a computer screenshot, this property is
         always set to `computer_screenshot`.
@@ -50833,6 +52301,8 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         The URL of the screenshot image.
 
+        `format: uri`
+
     - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
       The status of the message input. One of `in_progress`, `completed`, or
@@ -50846,7 +52316,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"in_progress"`
 
-    - `type: "computer_call_output"`
+    - `type: "computer_call_output" (default: "computer_call_output")`
 
       The type of the computer tool call output. Always `computer_call_output`.
 
@@ -50892,7 +52362,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A summary of the reasoning output from the model so far.
 
-      - `type: "summary_text"`
+      - `type: "summary_text" (default: "summary_text")`
 
         The type of the object. Always `summary_text`.
 
@@ -50912,7 +52382,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         The reasoning text from the model.
 
-      - `type: "reasoning_text"`
+      - `type: "reasoning_text" (default: "reasoning_text")`
 
         The type of the reasoning text. Always `reasoning_text`.
 
@@ -50959,7 +52429,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       Opaque program replay fingerprint that must be round-tripped.
 
-    - `type: "program"`
+    - `type: "program" (default: "program")`
 
       The type of the item. Always `program`.
 
@@ -50987,7 +52457,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"incomplete"`
 
-    - `type: "program_output"`
+    - `type: "program_output" (default: "program_output")`
 
       The type of the item. Always `program_output`.
 
@@ -51025,7 +52495,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"incomplete"`
 
-    - `type: "tool_search_call"`
+    - `type: "tool_search_call" (default: "tool_search_call")`
 
       The type of the item. Always `tool_search_call`.
 
@@ -51083,7 +52553,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -51115,7 +52585,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -51137,7 +52607,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The key to compare against the value.
 
-            - `type: "eq" or "ne" or "gt" or 5 more`
+            - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
               Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -51206,7 +52676,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               - `"or"`
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -51242,7 +52712,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -51252,11 +52722,11 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -51274,7 +52744,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -51285,7 +52755,7 @@ Schema name: `ResponseOutputItemAddedEvent`
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -51293,7 +52763,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -51301,14 +52771,14 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -51340,7 +52810,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -51364,6 +52834,8 @@ Schema name: `ResponseOutputItemAddedEvent`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -51443,7 +52915,7 @@ Schema name: `ResponseOutputItemAddedEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -51500,10 +52972,14 @@ Schema name: `ResponseOutputItemAddedEvent`
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -51523,7 +52999,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -51532,6 +53008,8 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -51551,7 +53029,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               - `ContainerNetworkPolicyDisabled object { type }`
 
-                - `type: "disabled"`
+                - `type: "disabled" (default: "disabled")`
 
                   Disable outbound network access. Always `disabled`.
 
@@ -51563,7 +53041,9 @@ Schema name: `ResponseOutputItemAddedEvent`
 
                   A list of allowed domains when type is `allowlist`.
 
-                - `type: "allowlist"`
+                  `minItems: 1`
+
+                - `type: "allowlist" (default: "allowlist")`
 
                   Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -51573,17 +53053,25 @@ Schema name: `ResponseOutputItemAddedEvent`
 
                   Optional domain-scoped secrets for allowlisted domains.
 
+                  `minItems: 1`
+
                   - `domain: string`
 
                     The domain associated with the secret.
+
+                    `minLength: 1`
 
                   - `name: string`
 
                     The name of the secret to inject for the domain.
 
+                    `minLength: 1`
+
                   - `value: string`
 
                     The secret value to inject for the domain.
+
+                    `minLength: 1`, `maxLength: 10485760`
 
         - `type: "code_interpreter"`
 
@@ -51595,13 +53083,15 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -51627,7 +53117,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -51708,7 +53198,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -51716,11 +53206,13 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -51731,11 +53223,13 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -51754,7 +53248,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -51776,7 +53270,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -51786,7 +53280,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -51796,6 +53290,8 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
@@ -51804,7 +53300,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-            - `type: "container_auto"`
+            - `type: "container_auto" (default: "container_auto")`
 
               Automatically creates a container for this request
 
@@ -51813,6 +53309,8 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -51838,13 +53336,17 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               An optional list of skills referenced by id or inline data.
 
+              `maxItems: 200`
+
               - `SkillReference object { skill_id, type, version }`
 
                 - `skill_id: string`
 
                   The ID of the referenced skill.
 
-                - `type: "skill_reference"`
+                  `minLength: 1`, `maxLength: 64`
+
+                - `type: "skill_reference" (default: "skill_reference")`
 
                   References a skill created with the /v1/skills endpoint.
 
@@ -51872,19 +53374,21 @@ Schema name: `ResponseOutputItemAddedEvent`
 
                     Base64-encoded skill zip bundle.
 
-                  - `media_type: "application/zip"`
+                    `minLength: 1`, `maxLength: 70254592`
+
+                  - `media_type: "application/zip" (default: "application/zip")`
 
                     The media type of the inline skill payload. Must be `application/zip`.
 
                     - `"application/zip"`
 
-                  - `type: "base64"`
+                  - `type: "base64" (default: "base64")`
 
                     The type of the inline skill source. Must be `base64`.
 
                     - `"base64"`
 
-                - `type: "inline"`
+                - `type: "inline" (default: "inline")`
 
                   Defines an inline skill for this request.
 
@@ -51892,7 +53396,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `LocalEnvironment object { type, skills }`
 
-            - `type: "local"`
+            - `type: "local" (default: "local")`
 
               Use a local computer environment.
 
@@ -51901,6 +53405,8 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `skills: optional array of LocalSkill`
 
               An optional list of skills.
+
+              `maxItems: 200`
 
               - `description: string`
 
@@ -51920,7 +53426,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The ID of the referenced container.
 
-            - `type: "container_reference"`
+            - `type: "container_reference" (default: "container_reference")`
 
               References a container created with the /v1/containers endpoint
 
@@ -51934,7 +53440,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -51943,6 +53449,8 @@ Schema name: `ResponseOutputItemAddedEvent`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -51968,7 +53476,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             Unconstrained free-form text.
 
-            - `type: "text"`
+            - `type: "text" (default: "text")`
 
               Unconstrained text format. Always `text`.
 
@@ -51990,7 +53498,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               - `"regex"`
 
-            - `type: "grammar"`
+            - `type: "grammar" (default: "grammar")`
 
               Grammar format. Always `grammar`.
 
@@ -52008,21 +53516,29 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-            - `type: "function"`
+              `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -52056,7 +53572,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -52065,6 +53581,8 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -52086,7 +53604,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -52096,7 +53614,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -52122,7 +53640,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -52150,7 +53668,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -52176,7 +53694,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -52186,11 +53704,13 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "tool_search_output"`
+    - `type: "tool_search_output" (default: "tool_search_output")`
 
       The type of the item. Always `tool_search_output`.
 
@@ -52246,7 +53766,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -52278,7 +53798,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -52300,7 +53820,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             Combine multiple filters using `and` or `or`.
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -52336,7 +53856,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -52346,11 +53866,11 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -52368,7 +53888,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -52379,7 +53899,7 @@ Schema name: `ResponseOutputItemAddedEvent`
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -52387,7 +53907,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -52395,14 +53915,14 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -52434,7 +53954,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -52458,6 +53978,8 @@ Schema name: `ResponseOutputItemAddedEvent`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -52537,7 +54059,7 @@ Schema name: `ResponseOutputItemAddedEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -52594,10 +54116,14 @@ Schema name: `ResponseOutputItemAddedEvent`
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -52617,7 +54143,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -52626,6 +54152,8 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -52657,13 +54185,15 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -52689,7 +54219,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -52770,7 +54300,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -52778,11 +54308,13 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -52793,11 +54325,13 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -52816,7 +54350,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -52838,7 +54372,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -52848,7 +54382,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -52857,6 +54391,8 @@ Schema name: `ResponseOutputItemAddedEvent`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -52878,7 +54414,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -52887,6 +54423,8 @@ Schema name: `ResponseOutputItemAddedEvent`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -52920,21 +54458,29 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-            - `type: "function"`
+              `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -52968,7 +54514,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -52977,6 +54523,8 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -52998,7 +54546,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -53008,7 +54556,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -53034,7 +54582,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -53062,7 +54610,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -53088,7 +54636,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -53098,11 +54646,13 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "additional_tools"`
+    - `type: "additional_tools" (default: "additional_tools")`
 
       The type of the item. Always `additional_tools`.
 
@@ -53120,7 +54670,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       The encrypted content that was produced by compaction.
 
-    - `type: "compaction"`
+    - `type: "compaction" (default: "compaction")`
 
       The type of the item. Always `compaction`.
 
@@ -53293,7 +54843,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The logs output from the code interpreter.
 
-        - `type: "logs"`
+        - `type: "logs" (default: "logs")`
 
           The type of the output. Always `logs`.
 
@@ -53303,7 +54853,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         The image output from the code interpreter.
 
-        - `type: "image"`
+        - `type: "image" (default: "image")`
 
           The type of the output. Always `image`.
 
@@ -53312,6 +54862,8 @@ Schema name: `ResponseOutputItemAddedEvent`
         - `url: string`
 
           The URL of the image output from the code interpreter.
+
+          `format: uri`
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -53327,7 +54879,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"failed"`
 
-    - `type: "code_interpreter_call"`
+    - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
       The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -53353,13 +54905,13 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         Environment variables to set for the command.
 
-      - `type: "exec"`
+      - `type: "exec" (default: "exec")`
 
         The type of the local shell action. Always `exec`.
 
         - `"exec"`
 
-      - `timeout_ms: optional number or null`
+      - `timeout_ms: optional integer or null`
 
         Optional timeout in milliseconds for the command.
 
@@ -53433,11 +54985,11 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `commands: array of string`
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         Optional maximum number of characters to return from each command.
 
-      - `timeout_ms: number or null`
+      - `timeout_ms: integer or null`
 
         Optional timeout in milliseconds for the commands.
 
@@ -53453,7 +55005,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         Represents the use of a local environment to perform shell actions.
 
-        - `type: "local"`
+        - `type: "local" (default: "local")`
 
           The environment type. Always `local`.
 
@@ -53465,7 +55017,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         - `container_id: string`
 
-        - `type: "container_reference"`
+        - `type: "container_reference" (default: "container_reference")`
 
           The environment type. Always `container_reference`.
 
@@ -53481,7 +55033,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"incomplete"`
 
-    - `type: "shell_call"`
+    - `type: "shell_call" (default: "shell_call")`
 
       The type of the item. Always `shell_call`.
 
@@ -53493,7 +55045,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -53503,7 +55055,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -53523,7 +55075,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       The unique ID of the shell tool call generated by the model.
 
-    - `max_output_length: number or null`
+    - `max_output_length: integer or null`
 
       The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -53539,7 +55091,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           Indicates that the shell call exceeded its configured time limit.
 
-          - `type: "timeout"`
+          - `type: "timeout" (default: "timeout")`
 
             The outcome type. Always `timeout`.
 
@@ -53549,11 +55101,11 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           Indicates that the shell commands finished and returned an exit code.
 
-          - `exit_code: number`
+          - `exit_code: integer`
 
             Exit code from the shell process.
 
-          - `type: "exit"`
+          - `type: "exit" (default: "exit")`
 
             The outcome type. Always `exit`.
 
@@ -53581,7 +55133,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"incomplete"`
 
-    - `type: "shell_call_output"`
+    - `type: "shell_call_output" (default: "shell_call_output")`
 
       The type of the shell call output. Always `shell_call_output`.
 
@@ -53593,7 +55145,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -53603,7 +55155,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -53639,7 +55191,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           Path of the file to create.
 
-        - `type: "create_file"`
+        - `type: "create_file" (default: "create_file")`
 
           Create a new file with the provided diff.
 
@@ -53653,7 +55205,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           Path of the file to delete.
 
-        - `type: "delete_file"`
+        - `type: "delete_file" (default: "delete_file")`
 
           Delete the specified file.
 
@@ -53671,7 +55223,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           Path of the file to update.
 
-        - `type: "update_file"`
+        - `type: "update_file" (default: "update_file")`
 
           Update an existing file with the provided diff.
 
@@ -53685,7 +55237,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"completed"`
 
-    - `type: "apply_patch_call"`
+    - `type: "apply_patch_call" (default: "apply_patch_call")`
 
       The type of the item. Always `apply_patch_call`.
 
@@ -53697,7 +55249,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -53707,7 +55259,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -53735,7 +55287,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"failed"`
 
-    - `type: "apply_patch_call_output"`
+    - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
       The type of the item. Always `apply_patch_call_output`.
 
@@ -53747,7 +55299,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -53757,7 +55309,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -53806,11 +55358,11 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `McpProtocolError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "mcp_protocol_error"`
+        - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
           - `"mcp_protocol_error"`
 
@@ -53818,17 +55370,17 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         - `content: unknown`
 
-        - `type: "mcp_tool_execution_error"`
+        - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
           - `"mcp_tool_execution_error"`
 
       - `HTTPError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "http_error"`
+        - `type: "http_error" (default: "http_error")`
 
           - `"http_error"`
 
@@ -53980,7 +55532,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -53990,7 +55542,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -54056,7 +55608,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -54068,7 +55620,9 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -54078,11 +55632,11 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       The identifier of the actor that created the item.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that was added.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -54155,11 +55709,11 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The filename of the file cited.
 
-            - `index: number`
+            - `index: integer`
 
               The index in the output text at which to insert the file citation.
 
-            - `type: "file_citation"`
+            - `type: "file_citation" (default: "file_citation")`
 
               The type of the file citation. Always `file_citation`.
 
@@ -54169,11 +55723,11 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             A citation for a web resource used to generate a model response.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the URL citation in the message.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the URL citation in the message.
 
@@ -54181,7 +55735,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The title of the web resource.
 
-            - `type: "url_citation"`
+            - `type: "url_citation" (default: "url_citation")`
 
               The type of the URL citation. Always `url_citation`.
 
@@ -54191,6 +55745,8 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The URL of the web resource.
 
+              `format: uri`
+
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
             A citation for a container file used to generate a model response.
@@ -54199,7 +55755,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The ID of the container file.
 
-            - `end_index: number`
+            - `end_index: integer`
 
               The index of the last character of the container file citation in the message.
 
@@ -54211,11 +55767,11 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The filename of the container file cited.
 
-            - `start_index: number`
+            - `start_index: integer`
 
               The index of the first character of the container file citation in the message.
 
-            - `type: "container_file_citation"`
+            - `type: "container_file_citation" (default: "container_file_citation")`
 
               The type of the container file citation. Always `container_file_citation`.
 
@@ -54229,7 +55785,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The ID of the file.
 
-            - `index: number`
+            - `index: integer`
 
               The index of the file in the list of files.
 
@@ -54259,7 +55815,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The text output from the model.
 
-        - `type: "output_text"`
+        - `type: "output_text" (default: "output_text")`
 
           The type of the output text. Always `output_text`.
 
@@ -54273,7 +55829,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The refusal explanation from the model.
 
-        - `type: "refusal"`
+        - `type: "refusal" (default: "refusal")`
 
           The type of the refusal. Always `refusal`.
 
@@ -54360,6 +55916,8 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         - `string`
 
+          `maxLength: 512`
+
         - `number`
 
         - `boolean`
@@ -54375,6 +55933,8 @@ Schema name: `ResponseOutputItemDoneEvent`
       - `score: optional number`
 
         The relevance score of the file - a value between 0 and 1.
+
+        `format: float`
 
       - `text: optional string`
 
@@ -54417,7 +55977,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -54427,7 +55987,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -54473,7 +56033,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -54483,7 +56043,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -54513,7 +56073,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -54527,11 +56087,13 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -54549,7 +56111,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -54577,6 +56139,8 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -54585,7 +56149,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -54626,7 +56190,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -54638,7 +56202,9 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -54722,6 +56288,8 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             The URL of the source.
 
+            `format: uri`
+
       - `OpenPage object { type, url }`
 
         Action type "open_page" - Opens a specific URL from search results.
@@ -54735,6 +56303,8 @@ Schema name: `ResponseOutputItemDoneEvent`
         - `url: optional string or null`
 
           The URL opened by the model.
+
+          `format: uri`
 
       - `FindInPage object { pattern, type, url }`
 
@@ -54753,6 +56323,8 @@ Schema name: `ResponseOutputItemDoneEvent`
         - `url: optional string or null`
 
           The URL of the page searched for the pattern, when available.
+
+          `format: uri`
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -54794,7 +56366,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"incomplete"`
 
-    - `type: "computer_call"`
+    - `type: "computer_call" (default: "computer_call")`
 
       The type of the computer call. Always `computer_call`.
 
@@ -54822,17 +56394,17 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"forward"`
 
-        - `type: "click"`
+        - `type: "click" (default: "click")`
 
           Specifies the event type. For a click action, this property is always `click`.
 
           - `"click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the click occurred.
 
@@ -54848,17 +56420,17 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The keys being held while double-clicking.
 
-        - `type: "double_click"`
+        - `type: "double_click" (default: "double_click")`
 
           Specifies the event type. For a double click action, this property is always set to `double_click`.
 
           - `"double_click"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the double click occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the double click occurred.
 
@@ -54877,15 +56449,15 @@ Schema name: `ResponseOutputItemDoneEvent`
           ]
           ```
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate.
 
-        - `type: "drag"`
+        - `type: "drag" (default: "drag")`
 
           Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -54903,7 +56475,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-        - `type: "keypress"`
+        - `type: "keypress" (default: "keypress")`
 
           Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -54913,17 +56485,17 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A mouse move action.
 
-        - `type: "move"`
+        - `type: "move" (default: "move")`
 
           Specifies the event type. For a move action, this property is always set to `move`.
 
           - `"move"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate to move to.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate to move to.
 
@@ -54935,7 +56507,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A screenshot action.
 
-        - `type: "screenshot"`
+        - `type: "screenshot" (default: "screenshot")`
 
           Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -54945,25 +56517,25 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A scroll action.
 
-        - `scroll_x: number`
+        - `scroll_x: integer`
 
           The horizontal scroll distance.
 
-        - `scroll_y: number`
+        - `scroll_y: integer`
 
           The vertical scroll distance.
 
-        - `type: "scroll"`
+        - `type: "scroll" (default: "scroll")`
 
           Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
           - `"scroll"`
 
-        - `x: number`
+        - `x: integer`
 
           The x-coordinate where the scroll occurred.
 
-        - `y: number`
+        - `y: integer`
 
           The y-coordinate where the scroll occurred.
 
@@ -54979,7 +56551,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The text to type.
 
-        - `type: "type"`
+        - `type: "type" (default: "type")`
 
           Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -54989,7 +56561,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A wait action.
 
-        - `type: "wait"`
+        - `type: "wait" (default: "wait")`
 
           Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -55050,7 +56622,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       A computer screenshot image used with the computer use tool.
 
-      - `type: "computer_screenshot"`
+      - `type: "computer_screenshot" (default: "computer_screenshot")`
 
         Specifies the event type. For a computer screenshot, this property is
         always set to `computer_screenshot`.
@@ -55065,6 +56637,8 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         The URL of the screenshot image.
 
+        `format: uri`
+
     - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
       The status of the message input. One of `in_progress`, `completed`, or
@@ -55078,7 +56652,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"in_progress"`
 
-    - `type: "computer_call_output"`
+    - `type: "computer_call_output" (default: "computer_call_output")`
 
       The type of the computer tool call output. Always `computer_call_output`.
 
@@ -55124,7 +56698,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A summary of the reasoning output from the model so far.
 
-      - `type: "summary_text"`
+      - `type: "summary_text" (default: "summary_text")`
 
         The type of the object. Always `summary_text`.
 
@@ -55144,7 +56718,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         The reasoning text from the model.
 
-      - `type: "reasoning_text"`
+      - `type: "reasoning_text" (default: "reasoning_text")`
 
         The type of the reasoning text. Always `reasoning_text`.
 
@@ -55191,7 +56765,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       Opaque program replay fingerprint that must be round-tripped.
 
-    - `type: "program"`
+    - `type: "program" (default: "program")`
 
       The type of the item. Always `program`.
 
@@ -55219,7 +56793,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"incomplete"`
 
-    - `type: "program_output"`
+    - `type: "program_output" (default: "program_output")`
 
       The type of the item. Always `program_output`.
 
@@ -55257,7 +56831,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"incomplete"`
 
-    - `type: "tool_search_call"`
+    - `type: "tool_search_call" (default: "tool_search_call")`
 
       The type of the item. Always `tool_search_call`.
 
@@ -55315,7 +56889,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -55347,7 +56921,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -55369,7 +56943,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The key to compare against the value.
 
-            - `type: "eq" or "ne" or "gt" or 5 more`
+            - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
               Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -55438,7 +57012,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               - `"or"`
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -55474,7 +57048,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -55484,11 +57058,11 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -55506,7 +57080,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -55517,7 +57091,7 @@ Schema name: `ResponseOutputItemDoneEvent`
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -55525,7 +57099,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -55533,14 +57107,14 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -55572,7 +57146,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -55596,6 +57170,8 @@ Schema name: `ResponseOutputItemDoneEvent`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -55675,7 +57251,7 @@ Schema name: `ResponseOutputItemDoneEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -55732,10 +57308,14 @@ Schema name: `ResponseOutputItemDoneEvent`
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -55755,7 +57335,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -55764,6 +57344,8 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -55783,7 +57365,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               - `ContainerNetworkPolicyDisabled object { type }`
 
-                - `type: "disabled"`
+                - `type: "disabled" (default: "disabled")`
 
                   Disable outbound network access. Always `disabled`.
 
@@ -55795,7 +57377,9 @@ Schema name: `ResponseOutputItemDoneEvent`
 
                   A list of allowed domains when type is `allowlist`.
 
-                - `type: "allowlist"`
+                  `minItems: 1`
+
+                - `type: "allowlist" (default: "allowlist")`
 
                   Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -55805,17 +57389,25 @@ Schema name: `ResponseOutputItemDoneEvent`
 
                   Optional domain-scoped secrets for allowlisted domains.
 
+                  `minItems: 1`
+
                   - `domain: string`
 
                     The domain associated with the secret.
+
+                    `minLength: 1`
 
                   - `name: string`
 
                     The name of the secret to inject for the domain.
 
+                    `minLength: 1`
+
                   - `value: string`
 
                     The secret value to inject for the domain.
+
+                    `minLength: 1`, `maxLength: 10485760`
 
         - `type: "code_interpreter"`
 
@@ -55827,13 +57419,15 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -55859,7 +57453,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -55940,7 +57534,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -55948,11 +57542,13 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -55963,11 +57559,13 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -55986,7 +57584,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -56008,7 +57606,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -56018,7 +57616,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -56028,6 +57626,8 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
@@ -56036,7 +57636,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-            - `type: "container_auto"`
+            - `type: "container_auto" (default: "container_auto")`
 
               Automatically creates a container for this request
 
@@ -56045,6 +57645,8 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -56070,13 +57672,17 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               An optional list of skills referenced by id or inline data.
 
+              `maxItems: 200`
+
               - `SkillReference object { skill_id, type, version }`
 
                 - `skill_id: string`
 
                   The ID of the referenced skill.
 
-                - `type: "skill_reference"`
+                  `minLength: 1`, `maxLength: 64`
+
+                - `type: "skill_reference" (default: "skill_reference")`
 
                   References a skill created with the /v1/skills endpoint.
 
@@ -56104,19 +57710,21 @@ Schema name: `ResponseOutputItemDoneEvent`
 
                     Base64-encoded skill zip bundle.
 
-                  - `media_type: "application/zip"`
+                    `minLength: 1`, `maxLength: 70254592`
+
+                  - `media_type: "application/zip" (default: "application/zip")`
 
                     The media type of the inline skill payload. Must be `application/zip`.
 
                     - `"application/zip"`
 
-                  - `type: "base64"`
+                  - `type: "base64" (default: "base64")`
 
                     The type of the inline skill source. Must be `base64`.
 
                     - `"base64"`
 
-                - `type: "inline"`
+                - `type: "inline" (default: "inline")`
 
                   Defines an inline skill for this request.
 
@@ -56124,7 +57732,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `LocalEnvironment object { type, skills }`
 
-            - `type: "local"`
+            - `type: "local" (default: "local")`
 
               Use a local computer environment.
 
@@ -56133,6 +57741,8 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `skills: optional array of LocalSkill`
 
               An optional list of skills.
+
+              `maxItems: 200`
 
               - `description: string`
 
@@ -56152,7 +57762,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The ID of the referenced container.
 
-            - `type: "container_reference"`
+            - `type: "container_reference" (default: "container_reference")`
 
               References a container created with the /v1/containers endpoint
 
@@ -56166,7 +57776,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -56175,6 +57785,8 @@ Schema name: `ResponseOutputItemDoneEvent`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -56200,7 +57812,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             Unconstrained free-form text.
 
-            - `type: "text"`
+            - `type: "text" (default: "text")`
 
               Unconstrained text format. Always `text`.
 
@@ -56222,7 +57834,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               - `"regex"`
 
-            - `type: "grammar"`
+            - `type: "grammar" (default: "grammar")`
 
               Grammar format. Always `grammar`.
 
@@ -56240,21 +57852,29 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-            - `type: "function"`
+              `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -56288,7 +57908,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -56297,6 +57917,8 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -56318,7 +57940,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -56328,7 +57950,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -56354,7 +57976,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -56382,7 +58004,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -56408,7 +58030,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -56418,11 +58040,13 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "tool_search_output"`
+    - `type: "tool_search_output" (default: "tool_search_output")`
 
       The type of the item. Always `tool_search_output`.
 
@@ -56478,7 +58102,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           Whether strict parameter validation is enforced for this function tool.
 
-        - `type: "function"`
+        - `type: "function" (default: "function")`
 
           The type of the function tool. Always `function`.
 
@@ -56510,7 +58134,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-        - `type: "file_search"`
+        - `type: "file_search" (default: "file_search")`
 
           The type of the file search tool. Always `file_search`.
 
@@ -56532,7 +58156,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             Combine multiple filters using `and` or `or`.
 
-        - `max_num_results: optional number`
+        - `max_num_results: optional integer`
 
           The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -56568,7 +58192,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `type: "computer"`
+        - `type: "computer" (default: "computer")`
 
           The type of the computer tool. Always `computer`.
 
@@ -56578,11 +58202,11 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-        - `display_height: number`
+        - `display_height: integer`
 
           The height of the computer display.
 
-        - `display_width: number`
+        - `display_width: integer`
 
           The width of the computer display.
 
@@ -56600,7 +58224,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"browser"`
 
-        - `type: "computer_use_preview"`
+        - `type: "computer_use_preview" (default: "computer_use_preview")`
 
           The type of the computer use tool. Always `computer_use_preview`.
 
@@ -56611,7 +58235,7 @@ Schema name: `ResponseOutputItemDoneEvent`
         Search the Internet for sources related to the prompt. Learn more about the
         [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search" or "web_search_2025_08_26"`
+        - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
           The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -56619,7 +58243,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"web_search_2025_08_26"`
 
-        - `external_web_access: optional boolean`
+        - `external_web_access: optional boolean (default: true)`
 
           Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -56627,14 +58251,14 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           Filters for the search.
 
-          - `allowed_domains: optional array of string or null`
+          - `allowed_domains: optional array of string or null (default: [])`
 
             Allowed domains for the search. If not provided, all domains are allowed.
             Subdomains of the provided domains are allowed as well.
 
             Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-        - `search_context_size: optional "low" or "medium" or "high"`
+        - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
           High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -56666,7 +58290,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-          - `type: optional "approximate"`
+          - `type: optional "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -56690,6 +58314,8 @@ Schema name: `ResponseOutputItemDoneEvent`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -56769,7 +58395,7 @@ Schema name: `ResponseOutputItemDoneEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
           Specify which of the MCP server's tools require approval.
 
@@ -56826,10 +58452,14 @@ Schema name: `ResponseOutputItemDoneEvent`
           The URL for the MCP server. One of `server_url`, `connector_id`, or
           `tunnel_id` must be provided.
 
+          `format: uri`
+
         - `tunnel_id: optional string`
 
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+          `pattern: ^tunnel_[a-z0-9]{32}$`
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -56849,7 +58479,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-            - `type: "auto"`
+            - `type: "auto" (default: "auto")`
 
               Always `auto`.
 
@@ -56858,6 +58488,8 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `file_ids: optional array of string`
 
               An optional list of uploaded files to make available to your code.
+
+              `maxItems: 50`
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -56889,13 +58521,15 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
       - `ProgrammaticToolCalling object { type }`
 
-        - `type: "programmatic_tool_calling"`
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
           The type of the tool. Always `programmatic_tool_calling`.
 
@@ -56921,7 +58555,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"auto"`
 
-        - `background: optional "transparent" or "opaque" or "auto"`
+        - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
           Set the background of the generated image. One of `transparent`, `opaque`,
           or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -57002,7 +58636,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             - `"gpt-image-2.5-flare-2026-09-08"`
 
-        - `moderation: optional "auto" or "low"`
+        - `moderation: optional "auto" or "low" (default: "auto")`
 
           Moderation level for the generated image. Default: `auto`.
 
@@ -57010,11 +58644,13 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"low"`
 
-        - `output_compression: optional number`
+        - `output_compression: optional integer (default: 100)`
 
           Compression level for the output image. Default: 100.
 
-        - `output_format: optional "png" or "webp" or "jpeg"`
+          `minimum: 0`, `maximum: 100`
+
+        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
           The output format of the generated image. One of `png`, `webp`, or
           `jpeg`. Default: `png`.
@@ -57025,11 +58661,13 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"jpeg"`
 
-        - `partial_images: optional number`
+        - `partial_images: optional integer (default: 0)`
 
           Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-        - `quality: optional "low" or "medium" or "high" or 3 more`
+          `minimum: 0`, `maximum: 3`
+
+        - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
           The quality of the generated image. The GPT image models support `low`,
           `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -57048,7 +58686,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"auto"`
 
-        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+        - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
           The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -57070,7 +58708,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that allows the model to execute shell commands in a local environment.
 
-        - `type: "local_shell"`
+        - `type: "local_shell" (default: "local_shell")`
 
           The type of the local shell tool. Always `local_shell`.
 
@@ -57080,7 +58718,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that allows the model to execute shell commands.
 
-        - `type: "shell"`
+        - `type: "shell" (default: "shell")`
 
           The type of the shell tool. Always `shell`.
 
@@ -57089,6 +58727,8 @@ Schema name: `ResponseOutputItemDoneEvent`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -57110,7 +58750,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The name of the custom tool, used to identify it in tool calls.
 
-        - `type: "custom"`
+        - `type: "custom" (default: "custom")`
 
           The type of the custom tool. Always `custom`.
 
@@ -57119,6 +58759,8 @@ Schema name: `ResponseOutputItemDoneEvent`
         - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
           The tool invocation context(s).
+
+          `minItems: 1`
 
           - `"direct"`
 
@@ -57152,21 +58794,29 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
+          `minLength: 1`
+
         - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
+
+          `minItems: 1`
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-            - `type: "function"`
+              `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+            - `type: "function" (default: "function")`
 
               - `"function"`
 
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -57200,7 +58850,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -57209,6 +58859,8 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -57230,7 +58882,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
               The input format for the custom tool. Default is unconstrained text.
 
-        - `type: "namespace"`
+        - `type: "namespace" (default: "namespace")`
 
           The type of the tool. Always `namespace`.
 
@@ -57240,7 +58892,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         Hosted or BYOT tool search configuration for deferred tools.
 
-        - `type: "tool_search"`
+        - `type: "tool_search" (default: "tool_search")`
 
           The type of the tool. Always `tool_search`.
 
@@ -57266,7 +58918,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-        - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+        - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
           The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -57294,7 +58946,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-          - `type: "approximate"`
+          - `type: "approximate" (default: "approximate")`
 
             The type of location approximation. Always `approximate`.
 
@@ -57320,7 +58972,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         Allows the assistant to create, delete, or update files using unified diffs.
 
-        - `type: "apply_patch"`
+        - `type: "apply_patch" (default: "apply_patch")`
 
           The type of the tool. Always `apply_patch`.
 
@@ -57330,11 +58982,13 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The tool invocation context(s).
 
+          `minItems: 1`
+
           - `"direct"`
 
           - `"programmatic"`
 
-    - `type: "additional_tools"`
+    - `type: "additional_tools" (default: "additional_tools")`
 
       The type of the item. Always `additional_tools`.
 
@@ -57352,7 +59006,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       The encrypted content that was produced by compaction.
 
-    - `type: "compaction"`
+    - `type: "compaction" (default: "compaction")`
 
       The type of the item. Always `compaction`.
 
@@ -57525,7 +59179,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The logs output from the code interpreter.
 
-        - `type: "logs"`
+        - `type: "logs" (default: "logs")`
 
           The type of the output. Always `logs`.
 
@@ -57535,7 +59189,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         The image output from the code interpreter.
 
-        - `type: "image"`
+        - `type: "image" (default: "image")`
 
           The type of the output. Always `image`.
 
@@ -57544,6 +59198,8 @@ Schema name: `ResponseOutputItemDoneEvent`
         - `url: string`
 
           The URL of the image output from the code interpreter.
+
+          `format: uri`
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -57559,7 +59215,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"failed"`
 
-    - `type: "code_interpreter_call"`
+    - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
       The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -57585,13 +59241,13 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         Environment variables to set for the command.
 
-      - `type: "exec"`
+      - `type: "exec" (default: "exec")`
 
         The type of the local shell action. Always `exec`.
 
         - `"exec"`
 
-      - `timeout_ms: optional number or null`
+      - `timeout_ms: optional integer or null`
 
         Optional timeout in milliseconds for the command.
 
@@ -57665,11 +59321,11 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `commands: array of string`
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         Optional maximum number of characters to return from each command.
 
-      - `timeout_ms: number or null`
+      - `timeout_ms: integer or null`
 
         Optional timeout in milliseconds for the commands.
 
@@ -57685,7 +59341,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         Represents the use of a local environment to perform shell actions.
 
-        - `type: "local"`
+        - `type: "local" (default: "local")`
 
           The environment type. Always `local`.
 
@@ -57697,7 +59353,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         - `container_id: string`
 
-        - `type: "container_reference"`
+        - `type: "container_reference" (default: "container_reference")`
 
           The environment type. Always `container_reference`.
 
@@ -57713,7 +59369,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"incomplete"`
 
-    - `type: "shell_call"`
+    - `type: "shell_call" (default: "shell_call")`
 
       The type of the item. Always `shell_call`.
 
@@ -57725,7 +59381,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -57735,7 +59391,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -57755,7 +59411,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       The unique ID of the shell tool call generated by the model.
 
-    - `max_output_length: number or null`
+    - `max_output_length: integer or null`
 
       The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -57771,7 +59427,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           Indicates that the shell call exceeded its configured time limit.
 
-          - `type: "timeout"`
+          - `type: "timeout" (default: "timeout")`
 
             The outcome type. Always `timeout`.
 
@@ -57781,11 +59437,11 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           Indicates that the shell commands finished and returned an exit code.
 
-          - `exit_code: number`
+          - `exit_code: integer`
 
             Exit code from the shell process.
 
-          - `type: "exit"`
+          - `type: "exit" (default: "exit")`
 
             The outcome type. Always `exit`.
 
@@ -57813,7 +59469,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"incomplete"`
 
-    - `type: "shell_call_output"`
+    - `type: "shell_call_output" (default: "shell_call_output")`
 
       The type of the shell call output. Always `shell_call_output`.
 
@@ -57825,7 +59481,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -57835,7 +59491,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -57871,7 +59527,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           Path of the file to create.
 
-        - `type: "create_file"`
+        - `type: "create_file" (default: "create_file")`
 
           Create a new file with the provided diff.
 
@@ -57885,7 +59541,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           Path of the file to delete.
 
-        - `type: "delete_file"`
+        - `type: "delete_file" (default: "delete_file")`
 
           Delete the specified file.
 
@@ -57903,7 +59559,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           Path of the file to update.
 
-        - `type: "update_file"`
+        - `type: "update_file" (default: "update_file")`
 
           Update an existing file with the provided diff.
 
@@ -57917,7 +59573,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"completed"`
 
-    - `type: "apply_patch_call"`
+    - `type: "apply_patch_call" (default: "apply_patch_call")`
 
       The type of the item. Always `apply_patch_call`.
 
@@ -57929,7 +59585,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -57939,7 +59595,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -57967,7 +59623,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"failed"`
 
-    - `type: "apply_patch_call_output"`
+    - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
       The type of the item. Always `apply_patch_call_output`.
 
@@ -57979,7 +59635,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -57989,7 +59645,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -58038,11 +59694,11 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `McpProtocolError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "mcp_protocol_error"`
+        - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
           - `"mcp_protocol_error"`
 
@@ -58050,17 +59706,17 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         - `content: unknown`
 
-        - `type: "mcp_tool_execution_error"`
+        - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
           - `"mcp_tool_execution_error"`
 
       - `HTTPError object { code, message, type }`
 
-        - `code: number`
+        - `code: integer`
 
         - `message: string`
 
-        - `type: "http_error"`
+        - `type: "http_error" (default: "http_error")`
 
           - `"http_error"`
 
@@ -58212,7 +59868,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           - `"direct"`
 
@@ -58222,7 +59878,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+        - `type: "program" (default: "program")`
 
           - `"program"`
 
@@ -58288,7 +59944,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `Direct object { type }`
 
-        - `type: "direct"`
+        - `type: "direct" (default: "direct")`
 
           The caller type. Always `direct`.
 
@@ -58300,7 +59956,9 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The call ID of the program item that produced this tool call.
 
-        - `type: "program"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "program" (default: "program")`
 
           The caller type. Always `program`.
 
@@ -58310,11 +59968,11 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       The identifier of the actor that created the item.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that was marked done.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -58358,7 +60016,7 @@ Emitted when a new content part is added.
 
 Schema name: `ResponseContentPartAddedEvent`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part that was added.
 
@@ -58366,7 +60024,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
   The ID of the output item that the content part was added to.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the content part was added to.
 
@@ -58394,11 +60052,11 @@ Schema name: `ResponseContentPartAddedEvent`
 
           The filename of the file cited.
 
-        - `index: number`
+        - `index: integer`
 
           The index in the output text at which to insert the file citation.
 
-        - `type: "file_citation"`
+        - `type: "file_citation" (default: "file_citation")`
 
           The type of the file citation. Always `file_citation`.
 
@@ -58408,11 +60066,11 @@ Schema name: `ResponseContentPartAddedEvent`
 
         A citation for a web resource used to generate a model response.
 
-        - `end_index: number`
+        - `end_index: integer`
 
           The index of the last character of the URL citation in the message.
 
-        - `start_index: number`
+        - `start_index: integer`
 
           The index of the first character of the URL citation in the message.
 
@@ -58420,7 +60078,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
           The title of the web resource.
 
-        - `type: "url_citation"`
+        - `type: "url_citation" (default: "url_citation")`
 
           The type of the URL citation. Always `url_citation`.
 
@@ -58430,6 +60088,8 @@ Schema name: `ResponseContentPartAddedEvent`
 
           The URL of the web resource.
 
+          `format: uri`
+
       - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
         A citation for a container file used to generate a model response.
@@ -58438,7 +60098,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
           The ID of the container file.
 
-        - `end_index: number`
+        - `end_index: integer`
 
           The index of the last character of the container file citation in the message.
 
@@ -58450,11 +60110,11 @@ Schema name: `ResponseContentPartAddedEvent`
 
           The filename of the container file cited.
 
-        - `start_index: number`
+        - `start_index: integer`
 
           The index of the first character of the container file citation in the message.
 
-        - `type: "container_file_citation"`
+        - `type: "container_file_citation" (default: "container_file_citation")`
 
           The type of the container file citation. Always `container_file_citation`.
 
@@ -58468,7 +60128,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
           The ID of the file.
 
-        - `index: number`
+        - `index: integer`
 
           The index of the file in the list of files.
 
@@ -58498,7 +60158,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
       The text output from the model.
 
-    - `type: "output_text"`
+    - `type: "output_text" (default: "output_text")`
 
       The type of the output text. Always `output_text`.
 
@@ -58512,7 +60172,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
       The refusal explanation from the model.
 
-    - `type: "refusal"`
+    - `type: "refusal" (default: "refusal")`
 
       The type of the refusal. Always `refusal`.
 
@@ -58526,13 +60186,13 @@ Schema name: `ResponseContentPartAddedEvent`
 
       The reasoning text from the model.
 
-    - `type: "reasoning_text"`
+    - `type: "reasoning_text" (default: "reasoning_text")`
 
       The type of the reasoning text. Always `reasoning_text`.
 
       - `"reasoning_text"`
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -58570,7 +60230,7 @@ Emitted when a content part is done.
 
 Schema name: `ResponseContentPartDoneEvent`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part that is done.
 
@@ -58578,7 +60238,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
   The ID of the output item that the content part was added to.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the content part was added to.
 
@@ -58606,11 +60266,11 @@ Schema name: `ResponseContentPartDoneEvent`
 
           The filename of the file cited.
 
-        - `index: number`
+        - `index: integer`
 
           The index in the output text at which to insert the file citation.
 
-        - `type: "file_citation"`
+        - `type: "file_citation" (default: "file_citation")`
 
           The type of the file citation. Always `file_citation`.
 
@@ -58620,11 +60280,11 @@ Schema name: `ResponseContentPartDoneEvent`
 
         A citation for a web resource used to generate a model response.
 
-        - `end_index: number`
+        - `end_index: integer`
 
           The index of the last character of the URL citation in the message.
 
-        - `start_index: number`
+        - `start_index: integer`
 
           The index of the first character of the URL citation in the message.
 
@@ -58632,7 +60292,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
           The title of the web resource.
 
-        - `type: "url_citation"`
+        - `type: "url_citation" (default: "url_citation")`
 
           The type of the URL citation. Always `url_citation`.
 
@@ -58642,6 +60302,8 @@ Schema name: `ResponseContentPartDoneEvent`
 
           The URL of the web resource.
 
+          `format: uri`
+
       - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
         A citation for a container file used to generate a model response.
@@ -58650,7 +60312,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
           The ID of the container file.
 
-        - `end_index: number`
+        - `end_index: integer`
 
           The index of the last character of the container file citation in the message.
 
@@ -58662,11 +60324,11 @@ Schema name: `ResponseContentPartDoneEvent`
 
           The filename of the container file cited.
 
-        - `start_index: number`
+        - `start_index: integer`
 
           The index of the first character of the container file citation in the message.
 
-        - `type: "container_file_citation"`
+        - `type: "container_file_citation" (default: "container_file_citation")`
 
           The type of the container file citation. Always `container_file_citation`.
 
@@ -58680,7 +60342,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
           The ID of the file.
 
-        - `index: number`
+        - `index: integer`
 
           The index of the file in the list of files.
 
@@ -58710,7 +60372,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
       The text output from the model.
 
-    - `type: "output_text"`
+    - `type: "output_text" (default: "output_text")`
 
       The type of the output text. Always `output_text`.
 
@@ -58724,7 +60386,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
       The refusal explanation from the model.
 
-    - `type: "refusal"`
+    - `type: "refusal" (default: "refusal")`
 
       The type of the refusal. Always `refusal`.
 
@@ -58738,13 +60400,13 @@ Schema name: `ResponseContentPartDoneEvent`
 
       The reasoning text from the model.
 
-    - `type: "reasoning_text"`
+    - `type: "reasoning_text" (default: "reasoning_text")`
 
       The type of the reasoning text. Always `reasoning_text`.
 
       - `"reasoning_text"`
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -58782,7 +60444,7 @@ Emitted when there is an additional text delta.
 
 Schema name: `ResponseTextDeltaEvent`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part that the text delta was added to.
 
@@ -58818,11 +60480,11 @@ Schema name: `ResponseTextDeltaEvent`
 
       The log probability of this token.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the text delta was added to.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number for this event.
 
@@ -58856,7 +60518,7 @@ Emitted when text content is finalized.
 
 Schema name: `ResponseTextDoneEvent`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part that the text content is finalized.
 
@@ -58888,11 +60550,11 @@ Schema name: `ResponseTextDoneEvent`
 
       The log probability of this token.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the text content is finalized.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number for this event.
 
@@ -58930,7 +60592,7 @@ Emitted when there is a partial refusal text.
 
 Schema name: `ResponseRefusalDeltaEvent`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part that the refusal text is added to.
 
@@ -58942,11 +60604,11 @@ Schema name: `ResponseRefusalDeltaEvent`
 
   The ID of the output item that the refusal text is added to.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the refusal text is added to.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -58979,7 +60641,7 @@ Emitted when refusal text is finalized.
 
 Schema name: `ResponseRefusalDoneEvent`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part that the refusal text is finalized.
 
@@ -58987,7 +60649,7 @@ Schema name: `ResponseRefusalDoneEvent`
 
   The ID of the output item that the refusal text is finalized.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the refusal text is finalized.
 
@@ -58995,7 +60657,7 @@ Schema name: `ResponseRefusalDoneEvent`
 
   The refusal text that is finalized.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59036,11 +60698,11 @@ Schema name: `ResponseFunctionCallArgumentsDeltaEvent`
 
   The ID of the output item that the function-call arguments delta is added to.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the function-call arguments delta is added to.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59080,11 +60742,11 @@ Schema name: `ResponseFunctionCallArgumentsDoneEvent`
 
   The ID of the item.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59118,11 +60780,11 @@ Schema name: `ResponseFileSearchCallInProgressEvent`
 
   The ID of the output item that the file search call is initiated.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the file search call is initiated.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59157,11 +60819,11 @@ Schema name: `ResponseFileSearchCallSearchingEvent`
 
   The ID of the output item that the file search call is initiated.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the file search call is searching.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59196,11 +60858,11 @@ Schema name: `ResponseFileSearchCallCompletedEvent`
 
   The ID of the output item that the file search call is initiated.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the file search call is initiated.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59235,11 +60897,11 @@ Schema name: `ResponseWebSearchCallInProgressEvent`
 
   Unique ID for the output item associated with the web search call.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the web search call is associated with.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the web search call being processed.
 
@@ -59274,11 +60936,11 @@ Schema name: `ResponseWebSearchCallSearchingEvent`
 
   Unique ID for the output item associated with the web search call.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the web search call is associated with.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the web search call being processed.
 
@@ -59313,11 +60975,11 @@ Schema name: `ResponseWebSearchCallCompletedEvent`
 
   Unique ID for the output item associated with the web search call.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that the web search call is associated with.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the web search call being processed.
 
@@ -59352,7 +61014,7 @@ Schema name: `ResponseReasoningSummaryPartAddedEvent`
 
   The ID of the item this summary part is associated with.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item this summary part is associated with.
 
@@ -59370,11 +61032,11 @@ Schema name: `ResponseReasoningSummaryPartAddedEvent`
 
     - `"summary_text"`
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
-- `summary_index: number`
+- `summary_index: integer`
 
   The index of the summary part within the reasoning summary.
 
@@ -59414,7 +61076,7 @@ Schema name: `ResponseReasoningSummaryPartDoneEvent`
 
   The ID of the item this summary part is associated with.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item this summary part is associated with.
 
@@ -59432,11 +61094,11 @@ Schema name: `ResponseReasoningSummaryPartDoneEvent`
 
     - `"summary_text"`
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
-- `summary_index: number`
+- `summary_index: integer`
 
   The index of the summary part within the reasoning summary.
 
@@ -59487,15 +61149,15 @@ Schema name: `ResponseReasoningSummaryTextDeltaEvent`
 
   The ID of the item this summary text delta is associated with.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item this summary text delta is associated with.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
-- `summary_index: number`
+- `summary_index: integer`
 
   The index of the summary part within the reasoning summary.
 
@@ -59532,15 +61194,15 @@ Schema name: `ResponseReasoningSummaryTextDoneEvent`
 
   The ID of the item this summary text is associated with.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item this summary text is associated with.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
-- `summary_index: number`
+- `summary_index: integer`
 
   The index of the summary part within the reasoning summary.
 
@@ -59577,7 +61239,7 @@ Emitted when a delta is added to a reasoning text.
 
 Schema name: `ResponseReasoningTextDeltaEvent`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the reasoning content part this delta is associated with.
 
@@ -59589,11 +61251,11 @@ Schema name: `ResponseReasoningTextDeltaEvent`
 
   The ID of the item this reasoning text delta is associated with.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item this reasoning text delta is associated with.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59626,7 +61288,7 @@ Emitted when a reasoning text is completed.
 
 Schema name: `ResponseReasoningTextDoneEvent`
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the reasoning content part.
 
@@ -59634,11 +61296,11 @@ Schema name: `ResponseReasoningTextDoneEvent`
 
   The ID of the item this reasoning text is associated with.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item this reasoning text is associated with.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59679,11 +61341,11 @@ Schema name: `ResponseImageGenCallCompletedEvent`
 
   The unique identifier of the image generation item being processed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response's output array.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59718,11 +61380,11 @@ Schema name: `ResponseImageGenCallGeneratingEvent`
 
   The unique identifier of the image generation item being processed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response's output array.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the image generation item being processed.
 
@@ -59757,11 +61419,11 @@ Schema name: `ResponseImageGenCallInProgressEvent`
 
   The unique identifier of the image generation item being processed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response's output array.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the image generation item being processed.
 
@@ -59796,7 +61458,7 @@ Schema name: `ResponseImageGenCallPartialImageEvent`
 
   The unique identifier of the image generation item being processed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response's output array.
 
@@ -59804,11 +61466,11 @@ Schema name: `ResponseImageGenCallPartialImageEvent`
 
   Base64-encoded partial image data, suitable for rendering as an image.
 
-- `partial_image_index: number`
+- `partial_image_index: integer`
 
   0-based index for the partial image (backend is 1-based, but this is 0-based for the user).
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the image generation item being processed.
 
@@ -59865,11 +61527,11 @@ Schema name: `ResponseMCPCallArgumentsDeltaEvent`
 
   The unique identifier of the MCP tool call item being processed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response's output array.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59909,11 +61571,11 @@ Schema name: `ResponseMCPCallArgumentsDoneEvent`
 
   The unique identifier of the MCP tool call item being processed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response's output array.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59949,11 +61611,11 @@ Schema name: `ResponseMCPCallCompletedEvent`
 
   The ID of the MCP tool call item that completed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that completed.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -59988,11 +61650,11 @@ Schema name: `ResponseMCPCallFailedEvent`
 
   The ID of the MCP tool call item that failed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that failed.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -60027,11 +61689,11 @@ Schema name: `ResponseMCPCallInProgressEvent`
 
   The unique identifier of the MCP tool call item being processed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response's output array.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -60066,11 +61728,11 @@ Schema name: `ResponseMCPListToolsCompletedEvent`
 
   The ID of the MCP tool call item that produced this output.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that was processed.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -60105,11 +61767,11 @@ Schema name: `ResponseMCPListToolsFailedEvent`
 
   The ID of the MCP tool call item that failed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that failed.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -60144,11 +61806,11 @@ Schema name: `ResponseMCPListToolsInProgressEvent`
 
   The ID of the MCP tool call item that is being processed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that is being processed.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -60183,11 +61845,11 @@ Schema name: `ResponseCodeInterpreterCallInProgressEvent`
 
   The unique identifier of the code interpreter tool call item.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response for which the code interpreter call is in progress.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event, used to order streaming events.
 
@@ -60222,11 +61884,11 @@ Schema name: `ResponseCodeInterpreterCallInterpretingEvent`
 
   The unique identifier of the code interpreter tool call item.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response for which the code interpreter is interpreting code.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event, used to order streaming events.
 
@@ -60261,11 +61923,11 @@ Schema name: `ResponseCodeInterpreterCallCompletedEvent`
 
   The unique identifier of the code interpreter tool call item.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response for which the code interpreter call is completed.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event, used to order streaming events.
 
@@ -60304,11 +61966,11 @@ Schema name: `ResponseCodeInterpreterCallCodeDeltaEvent`
 
   The unique identifier of the code interpreter tool call item.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response for which the code is being streamed.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event, used to order streaming events.
 
@@ -60348,11 +62010,11 @@ Schema name: `ResponseCodeInterpreterCallCodeDoneEvent`
 
   The unique identifier of the code interpreter tool call item.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response for which the code is finalized.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event, used to order streaming events.
 
@@ -60400,11 +62062,11 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
       The filename of the file cited.
 
-    - `index: number`
+    - `index: integer`
 
       The index in the output text at which to insert the file citation.
 
-    - `type: "file_citation"`
+    - `type: "file_citation" (default: "file_citation")`
 
       The type of the file citation. Always `file_citation`.
 
@@ -60414,11 +62076,11 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
     A citation for a web resource used to generate a model response.
 
-    - `end_index: number`
+    - `end_index: integer`
 
       The index of the last character of the URL citation in the message.
 
-    - `start_index: number`
+    - `start_index: integer`
 
       The index of the first character of the URL citation in the message.
 
@@ -60426,7 +62088,7 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
       The title of the web resource.
 
-    - `type: "url_citation"`
+    - `type: "url_citation" (default: "url_citation")`
 
       The type of the URL citation. Always `url_citation`.
 
@@ -60436,6 +62098,8 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
       The URL of the web resource.
 
+      `format: uri`
+
   - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
     A citation for a container file used to generate a model response.
@@ -60444,7 +62108,7 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
       The ID of the container file.
 
-    - `end_index: number`
+    - `end_index: integer`
 
       The index of the last character of the container file citation in the message.
 
@@ -60456,11 +62120,11 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
       The filename of the container file cited.
 
-    - `start_index: number`
+    - `start_index: integer`
 
       The index of the first character of the container file citation in the message.
 
-    - `type: "container_file_citation"`
+    - `type: "container_file_citation" (default: "container_file_citation")`
 
       The type of the container file citation. Always `container_file_citation`.
 
@@ -60474,7 +62138,7 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
       The ID of the file.
 
-    - `index: number`
+    - `index: integer`
 
       The index of the file in the list of files.
 
@@ -60484,11 +62148,11 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
       - `"file_path"`
 
-- `annotation_index: number`
+- `annotation_index: integer`
 
   The index of the annotation within the content part.
 
-- `content_index: number`
+- `content_index: integer`
 
   The index of the content part within the output item.
 
@@ -60496,11 +62160,11 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
   The unique identifier of the item to which the annotation is being added.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item in the response's output array.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -60562,6 +62226,8 @@ Schema name: `ResponseQueuedEvent`
   - `created_at: number`
 
     Unix timestamp (in seconds) of when this Response was created.
+
+    `format: unixtime`
 
   - `error: ResponseError or null`
 
@@ -60644,6 +62310,8 @@ Schema name: `ResponseQueuedEvent`
       - `review_target: optional string or null`
 
         An opaque target for explicitly continuing this review, or null when unavailable.
+
+        `pattern: ^[A-Za-z0-9._~:-]+$`, `minLength: 1`, `maxLength: 96`
 
       - `steer: optional object { message }`
 
@@ -60728,7 +62396,7 @@ Schema name: `ResponseQueuedEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -60738,7 +62406,7 @@ Schema name: `ResponseQueuedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -60768,7 +62436,7 @@ Schema name: `ResponseQueuedEvent`
 
                 - `"original"`
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -60782,11 +62450,13 @@ Schema name: `ResponseQueuedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -60804,7 +62474,7 @@ Schema name: `ResponseQueuedEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -60832,6 +62502,8 @@ Schema name: `ResponseQueuedEvent`
 
                 The URL of the file to be sent to the model.
 
+                `format: uri`
+
               - `filename: optional string`
 
                 The name of the file to be sent to the model.
@@ -60840,7 +62512,7 @@ Schema name: `ResponseQueuedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -60953,11 +62625,11 @@ Schema name: `ResponseQueuedEvent`
 
                   The filename of the file cited.
 
-                - `index: number`
+                - `index: integer`
 
                   The index in the output text at which to insert the file citation.
 
-                - `type: "file_citation"`
+                - `type: "file_citation" (default: "file_citation")`
 
                   The type of the file citation. Always `file_citation`.
 
@@ -60967,11 +62639,11 @@ Schema name: `ResponseQueuedEvent`
 
                 A citation for a web resource used to generate a model response.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the URL citation in the message.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the URL citation in the message.
 
@@ -60979,7 +62651,7 @@ Schema name: `ResponseQueuedEvent`
 
                   The title of the web resource.
 
-                - `type: "url_citation"`
+                - `type: "url_citation" (default: "url_citation")`
 
                   The type of the URL citation. Always `url_citation`.
 
@@ -60989,6 +62661,8 @@ Schema name: `ResponseQueuedEvent`
 
                   The URL of the web resource.
 
+                  `format: uri`
+
               - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
                 A citation for a container file used to generate a model response.
@@ -60997,7 +62671,7 @@ Schema name: `ResponseQueuedEvent`
 
                   The ID of the container file.
 
-                - `end_index: number`
+                - `end_index: integer`
 
                   The index of the last character of the container file citation in the message.
 
@@ -61009,11 +62683,11 @@ Schema name: `ResponseQueuedEvent`
 
                   The filename of the container file cited.
 
-                - `start_index: number`
+                - `start_index: integer`
 
                   The index of the first character of the container file citation in the message.
 
-                - `type: "container_file_citation"`
+                - `type: "container_file_citation" (default: "container_file_citation")`
 
                   The type of the container file citation. Always `container_file_citation`.
 
@@ -61027,7 +62701,7 @@ Schema name: `ResponseQueuedEvent`
 
                   The ID of the file.
 
-                - `index: number`
+                - `index: integer`
 
                   The index of the file in the list of files.
 
@@ -61057,7 +62731,7 @@ Schema name: `ResponseQueuedEvent`
 
               The text output from the model.
 
-            - `type: "output_text"`
+            - `type: "output_text" (default: "output_text")`
 
               The type of the output text. Always `output_text`.
 
@@ -61071,7 +62745,7 @@ Schema name: `ResponseQueuedEvent`
 
               The refusal explanation from the model.
 
-            - `type: "refusal"`
+            - `type: "refusal" (default: "refusal")`
 
               The type of the refusal. Always `refusal`.
 
@@ -61158,6 +62832,8 @@ Schema name: `ResponseQueuedEvent`
 
             - `string`
 
+              `maxLength: 512`
+
             - `number`
 
             - `boolean`
@@ -61173,6 +62849,8 @@ Schema name: `ResponseQueuedEvent`
           - `score: optional number`
 
             The relevance score of the file - a value between 0 and 1.
+
+            `format: float`
 
           - `text: optional string`
 
@@ -61218,7 +62896,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `"incomplete"`
 
-        - `type: "computer_call"`
+        - `type: "computer_call" (default: "computer_call")`
 
           The type of the computer call. Always `computer_call`.
 
@@ -61246,17 +62924,17 @@ Schema name: `ResponseQueuedEvent`
 
               - `"forward"`
 
-            - `type: "click"`
+            - `type: "click" (default: "click")`
 
               Specifies the event type. For a click action, this property is always `click`.
 
               - `"click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the click occurred.
 
@@ -61272,17 +62950,17 @@ Schema name: `ResponseQueuedEvent`
 
               The keys being held while double-clicking.
 
-            - `type: "double_click"`
+            - `type: "double_click" (default: "double_click")`
 
               Specifies the event type. For a double click action, this property is always set to `double_click`.
 
               - `"double_click"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the double click occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the double click occurred.
 
@@ -61301,15 +62979,15 @@ Schema name: `ResponseQueuedEvent`
               ]
               ```
 
-              - `x: number`
+              - `x: integer`
 
                 The x-coordinate.
 
-              - `y: number`
+              - `y: integer`
 
                 The y-coordinate.
 
-            - `type: "drag"`
+            - `type: "drag" (default: "drag")`
 
               Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -61327,7 +63005,7 @@ Schema name: `ResponseQueuedEvent`
 
               The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-            - `type: "keypress"`
+            - `type: "keypress" (default: "keypress")`
 
               Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -61337,17 +63015,17 @@ Schema name: `ResponseQueuedEvent`
 
             A mouse move action.
 
-            - `type: "move"`
+            - `type: "move" (default: "move")`
 
               Specifies the event type. For a move action, this property is always set to `move`.
 
               - `"move"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate to move to.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate to move to.
 
@@ -61359,7 +63037,7 @@ Schema name: `ResponseQueuedEvent`
 
             A screenshot action.
 
-            - `type: "screenshot"`
+            - `type: "screenshot" (default: "screenshot")`
 
               Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -61369,25 +63047,25 @@ Schema name: `ResponseQueuedEvent`
 
             A scroll action.
 
-            - `scroll_x: number`
+            - `scroll_x: integer`
 
               The horizontal scroll distance.
 
-            - `scroll_y: number`
+            - `scroll_y: integer`
 
               The vertical scroll distance.
 
-            - `type: "scroll"`
+            - `type: "scroll" (default: "scroll")`
 
               Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
               - `"scroll"`
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate where the scroll occurred.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate where the scroll occurred.
 
@@ -61403,7 +63081,7 @@ Schema name: `ResponseQueuedEvent`
 
               The text to type.
 
-            - `type: "type"`
+            - `type: "type" (default: "type")`
 
               Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -61413,7 +63091,7 @@ Schema name: `ResponseQueuedEvent`
 
             A wait action.
 
-            - `type: "wait"`
+            - `type: "wait" (default: "wait")`
 
               Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -61468,11 +63146,13 @@ Schema name: `ResponseQueuedEvent`
 
           The ID of the computer tool call that produced the output.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: ResponseComputerToolCallOutputScreenshot`
 
           A computer screenshot image used with the computer use tool.
 
-          - `type: "computer_screenshot"`
+          - `type: "computer_screenshot" (default: "computer_screenshot")`
 
             Specifies the event type. For a computer screenshot, this property is
             always set to `computer_screenshot`.
@@ -61487,7 +63167,9 @@ Schema name: `ResponseQueuedEvent`
 
             The URL of the screenshot image.
 
-        - `type: "computer_call_output"`
+            `format: uri`
+
+        - `type: "computer_call_output" (default: "computer_call_output")`
 
           The type of the computer tool call output. Always `computer_call_output`.
 
@@ -61589,6 +63271,8 @@ Schema name: `ResponseQueuedEvent`
 
                 The URL of the source.
 
+                `format: uri`
+
           - `OpenPage object { type, url }`
 
             Action type "open_page" - Opens a specific URL from search results.
@@ -61602,6 +63286,8 @@ Schema name: `ResponseQueuedEvent`
             - `url: optional string or null`
 
               The URL opened by the model.
+
+              `format: uri`
 
           - `FindInPage object { pattern, type, url }`
 
@@ -61620,6 +63306,8 @@ Schema name: `ResponseQueuedEvent`
             - `url: optional string or null`
 
               The URL of the page searched for the pattern, when available.
+
+              `format: uri`
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -61658,7 +63346,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -61668,7 +63356,7 @@ Schema name: `ResponseQueuedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -61699,6 +63387,8 @@ Schema name: `ResponseQueuedEvent`
 
             A JSON string of the output of the function tool call.
 
+            `maxLength: 10485760`
+
           - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
             An array of content outputs (text, image, file) for the function tool call.
@@ -61711,7 +63401,9 @@ Schema name: `ResponseQueuedEvent`
 
                 The text input to the model.
 
-              - `type: "input_text"`
+                `maxLength: 10485760`
+
+              - `type: "input_text" (default: "input_text")`
 
                 The type of the input item. Always `input_text`.
 
@@ -61721,7 +63413,7 @@ Schema name: `ResponseQueuedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -61739,7 +63431,7 @@ Schema name: `ResponseQueuedEvent`
 
               An image input to the model. Learn about [image inputs](https://developers.openai.com/api/docs/guides/images-vision)
 
-              - `type: "input_image"`
+              - `type: "input_image" (default: "input_image")`
 
                 The type of the input item. Always `input_image`.
 
@@ -61757,11 +63449,13 @@ Schema name: `ResponseQueuedEvent`
 
                 The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+                `maxLength: 20971520`, `format: uri`
+
               - `prompt_cache_breakpoint: optional object { mode, ttl }  or null`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -61779,7 +63473,7 @@ Schema name: `ResponseQueuedEvent`
 
               A file input to the model.
 
-              - `type: "input_file"`
+              - `type: "input_file" (default: "input_file")`
 
                 The type of the input item. Always `input_file`.
 
@@ -61799,6 +63493,8 @@ Schema name: `ResponseQueuedEvent`
 
                 The base64-encoded data of the file to be sent to the model.
 
+                `maxLength: 73400320`
+
               - `file_id: optional string or null`
 
                 The ID of the file to be sent to the model.
@@ -61806,6 +63502,8 @@ Schema name: `ResponseQueuedEvent`
               - `file_url: optional string or null`
 
                 The URL of the file to be sent to the model.
+
+                `format: uri`
 
               - `filename: optional string or null`
 
@@ -61815,7 +63513,7 @@ Schema name: `ResponseQueuedEvent`
 
                 Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-                - `mode: "explicit"`
+                - `mode: "explicit" (default: "explicit")`
 
                   The breakpoint mode. Always `explicit`.
 
@@ -61829,7 +63527,7 @@ Schema name: `ResponseQueuedEvent`
 
                   - `"12h"`
 
-        - `type: "function_call_output"`
+        - `type: "function_call_output" (default: "function_call_output")`
 
           The type of the function tool call output. Always `function_call_output`.
 
@@ -61843,13 +63541,15 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the function tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -61861,7 +63561,9 @@ Schema name: `ResponseQueuedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -61871,9 +63573,13 @@ Schema name: `ResponseQueuedEvent`
 
           The name of the tool that produced the output.
 
+          `minLength: 1`, `maxLength: 128`
+
         - `namespace: optional string or null`
 
           The namespace of the tool that produced the output.
+
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -61891,7 +63597,7 @@ Schema name: `ResponseQueuedEvent`
 
           The arguments supplied to the tool search call.
 
-        - `type: "tool_search_call"`
+        - `type: "tool_search_call" (default: "tool_search_call")`
 
           The item type. Always `tool_search_call`.
 
@@ -61904,6 +63610,8 @@ Schema name: `ResponseQueuedEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -61945,7 +63653,7 @@ Schema name: `ResponseQueuedEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -61977,7 +63685,7 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -61999,7 +63707,7 @@ Schema name: `ResponseQueuedEvent`
 
                   The key to compare against the value.
 
-                - `type: "eq" or "ne" or "gt" or 5 more`
+                - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                   Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -62068,7 +63776,7 @@ Schema name: `ResponseQueuedEvent`
 
                   - `"or"`
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -62104,7 +63812,7 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -62114,11 +63822,11 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -62136,7 +63844,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -62147,7 +63855,7 @@ Schema name: `ResponseQueuedEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -62155,7 +63863,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -62163,14 +63871,14 @@ Schema name: `ResponseQueuedEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -62202,7 +63910,7 @@ Schema name: `ResponseQueuedEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -62226,6 +63934,8 @@ Schema name: `ResponseQueuedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -62305,7 +64015,7 @@ Schema name: `ResponseQueuedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -62362,10 +64072,14 @@ Schema name: `ResponseQueuedEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -62385,7 +64099,7 @@ Schema name: `ResponseQueuedEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -62394,6 +64108,8 @@ Schema name: `ResponseQueuedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -62413,7 +64129,7 @@ Schema name: `ResponseQueuedEvent`
 
                   - `ContainerNetworkPolicyDisabled object { type }`
 
-                    - `type: "disabled"`
+                    - `type: "disabled" (default: "disabled")`
 
                       Disable outbound network access. Always `disabled`.
 
@@ -62425,7 +64141,9 @@ Schema name: `ResponseQueuedEvent`
 
                       A list of allowed domains when type is `allowlist`.
 
-                    - `type: "allowlist"`
+                      `minItems: 1`
+
+                    - `type: "allowlist" (default: "allowlist")`
 
                       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -62435,17 +64153,25 @@ Schema name: `ResponseQueuedEvent`
 
                       Optional domain-scoped secrets for allowlisted domains.
 
+                      `minItems: 1`
+
                       - `domain: string`
 
                         The domain associated with the secret.
+
+                        `minLength: 1`
 
                       - `name: string`
 
                         The name of the secret to inject for the domain.
 
+                        `minLength: 1`
+
                       - `value: string`
 
                         The secret value to inject for the domain.
+
+                        `minLength: 1`, `maxLength: 10485760`
 
             - `type: "code_interpreter"`
 
@@ -62457,13 +64183,15 @@ Schema name: `ResponseQueuedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -62489,7 +64217,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -62570,7 +64298,7 @@ Schema name: `ResponseQueuedEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -62578,11 +64306,13 @@ Schema name: `ResponseQueuedEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -62593,11 +64323,13 @@ Schema name: `ResponseQueuedEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -62616,7 +64348,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -62638,7 +64370,7 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -62648,7 +64380,7 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -62658,6 +64390,8 @@ Schema name: `ResponseQueuedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
@@ -62666,7 +64400,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-                - `type: "container_auto"`
+                - `type: "container_auto" (default: "container_auto")`
 
                   Automatically creates a container for this request
 
@@ -62675,6 +64409,8 @@ Schema name: `ResponseQueuedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -62700,13 +64436,17 @@ Schema name: `ResponseQueuedEvent`
 
                   An optional list of skills referenced by id or inline data.
 
+                  `maxItems: 200`
+
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
                       The ID of the referenced skill.
 
-                    - `type: "skill_reference"`
+                      `minLength: 1`, `maxLength: 64`
+
+                    - `type: "skill_reference" (default: "skill_reference")`
 
                       References a skill created with the /v1/skills endpoint.
 
@@ -62734,19 +64474,21 @@ Schema name: `ResponseQueuedEvent`
 
                         Base64-encoded skill zip bundle.
 
-                      - `media_type: "application/zip"`
+                        `minLength: 1`, `maxLength: 70254592`
+
+                      - `media_type: "application/zip" (default: "application/zip")`
 
                         The media type of the inline skill payload. Must be `application/zip`.
 
                         - `"application/zip"`
 
-                      - `type: "base64"`
+                      - `type: "base64" (default: "base64")`
 
                         The type of the inline skill source. Must be `base64`.
 
                         - `"base64"`
 
-                    - `type: "inline"`
+                    - `type: "inline" (default: "inline")`
 
                       Defines an inline skill for this request.
 
@@ -62754,7 +64496,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `LocalEnvironment object { type, skills }`
 
-                - `type: "local"`
+                - `type: "local" (default: "local")`
 
                   Use a local computer environment.
 
@@ -62763,6 +64505,8 @@ Schema name: `ResponseQueuedEvent`
                 - `skills: optional array of LocalSkill`
 
                   An optional list of skills.
+
+                  `maxItems: 200`
 
                   - `description: string`
 
@@ -62782,7 +64526,7 @@ Schema name: `ResponseQueuedEvent`
 
                   The ID of the referenced container.
 
-                - `type: "container_reference"`
+                - `type: "container_reference" (default: "container_reference")`
 
                   References a container created with the /v1/containers endpoint
 
@@ -62796,7 +64540,7 @@ Schema name: `ResponseQueuedEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -62805,6 +64549,8 @@ Schema name: `ResponseQueuedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -62830,7 +64576,7 @@ Schema name: `ResponseQueuedEvent`
 
                 Unconstrained free-form text.
 
-                - `type: "text"`
+                - `type: "text" (default: "text")`
 
                   Unconstrained text format. Always `text`.
 
@@ -62852,7 +64598,7 @@ Schema name: `ResponseQueuedEvent`
 
                   - `"regex"`
 
-                - `type: "grammar"`
+                - `type: "grammar" (default: "grammar")`
 
                   Grammar format. Always `grammar`.
 
@@ -62870,9 +64616,13 @@ Schema name: `ResponseQueuedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools loaded inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
@@ -62880,13 +64630,17 @@ Schema name: `ResponseQueuedEvent`
 
                   The name of the loaded function tool.
 
-                - `type: "function"`
+                  `pattern: ^(?![\s\S]*[\r\n])[a-zA-Z0-9_.-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -62920,7 +64674,7 @@ Schema name: `ResponseQueuedEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -62929,6 +64683,8 @@ Schema name: `ResponseQueuedEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -62950,7 +64706,7 @@ Schema name: `ResponseQueuedEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -62960,7 +64716,7 @@ Schema name: `ResponseQueuedEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -62986,7 +64742,7 @@ Schema name: `ResponseQueuedEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -63014,7 +64770,7 @@ Schema name: `ResponseQueuedEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -63040,7 +64796,7 @@ Schema name: `ResponseQueuedEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -63050,11 +64806,13 @@ Schema name: `ResponseQueuedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "tool_search_output"`
+        - `type: "tool_search_output" (default: "tool_search_output")`
 
           The item type. Always `tool_search_output`.
 
@@ -63067,6 +64825,8 @@ Schema name: `ResponseQueuedEvent`
         - `call_id: optional string or null`
 
           The unique ID of the tool search call generated by the model.
+
+          `minLength: 1`, `maxLength: 64`
 
         - `execution: optional "server" or "client"`
 
@@ -63088,7 +64848,7 @@ Schema name: `ResponseQueuedEvent`
 
       - `AdditionalTools object { role, tools, type, id }`
 
-        - `role: "developer"`
+        - `role: "developer" (default: "developer")`
 
           The role that provided the additional tools. Only `developer` is supported.
 
@@ -63114,7 +64874,7 @@ Schema name: `ResponseQueuedEvent`
 
               Whether strict parameter validation is enforced for this function tool.
 
-            - `type: "function"`
+            - `type: "function" (default: "function")`
 
               The type of the function tool. Always `function`.
 
@@ -63146,7 +64906,7 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-            - `type: "file_search"`
+            - `type: "file_search" (default: "file_search")`
 
               The type of the file search tool. Always `file_search`.
 
@@ -63168,7 +64928,7 @@ Schema name: `ResponseQueuedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-            - `max_num_results: optional number`
+            - `max_num_results: optional integer`
 
               The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -63204,7 +64964,7 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `type: "computer"`
+            - `type: "computer" (default: "computer")`
 
               The type of the computer tool. Always `computer`.
 
@@ -63214,11 +64974,11 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-            - `display_height: number`
+            - `display_height: integer`
 
               The height of the computer display.
 
-            - `display_width: number`
+            - `display_width: integer`
 
               The width of the computer display.
 
@@ -63236,7 +64996,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"browser"`
 
-            - `type: "computer_use_preview"`
+            - `type: "computer_use_preview" (default: "computer_use_preview")`
 
               The type of the computer use tool. Always `computer_use_preview`.
 
@@ -63247,7 +65007,7 @@ Schema name: `ResponseQueuedEvent`
             Search the Internet for sources related to the prompt. Learn more about the
             [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search" or "web_search_2025_08_26"`
+            - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
               The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -63255,7 +65015,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"web_search_2025_08_26"`
 
-            - `external_web_access: optional boolean`
+            - `external_web_access: optional boolean (default: true)`
 
               Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -63263,14 +65023,14 @@ Schema name: `ResponseQueuedEvent`
 
               Filters for the search.
 
-              - `allowed_domains: optional array of string or null`
+              - `allowed_domains: optional array of string or null (default: [])`
 
                 Allowed domains for the search. If not provided, all domains are allowed.
                 Subdomains of the provided domains are allowed as well.
 
                 Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-            - `search_context_size: optional "low" or "medium" or "high"`
+            - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
               High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -63302,7 +65062,7 @@ Schema name: `ResponseQueuedEvent`
 
                 The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-              - `type: optional "approximate"`
+              - `type: optional "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -63326,6 +65086,8 @@ Schema name: `ResponseQueuedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -63405,7 +65167,7 @@ Schema name: `ResponseQueuedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
               Specify which of the MCP server's tools require approval.
 
@@ -63462,10 +65224,14 @@ Schema name: `ResponseQueuedEvent`
               The URL for the MCP server. One of `server_url`, `connector_id`, or
               `tunnel_id` must be provided.
 
+              `format: uri`
+
             - `tunnel_id: optional string`
 
               The Secure MCP Tunnel ID to use instead of a direct server URL. One of
               `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+              `pattern: ^tunnel_[a-z0-9]{32}$`
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -63485,7 +65251,7 @@ Schema name: `ResponseQueuedEvent`
 
                 Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-                - `type: "auto"`
+                - `type: "auto" (default: "auto")`
 
                   Always `auto`.
 
@@ -63494,6 +65260,8 @@ Schema name: `ResponseQueuedEvent`
                 - `file_ids: optional array of string`
 
                   An optional list of uploaded files to make available to your code.
+
+                  `maxItems: 50`
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -63525,13 +65293,15 @@ Schema name: `ResponseQueuedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
           - `ProgrammaticToolCalling object { type }`
 
-            - `type: "programmatic_tool_calling"`
+            - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
               The type of the tool. Always `programmatic_tool_calling`.
 
@@ -63557,7 +65327,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"auto"`
 
-            - `background: optional "transparent" or "opaque" or "auto"`
+            - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
               Set the background of the generated image. One of `transparent`, `opaque`,
               or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -63638,7 +65408,7 @@ Schema name: `ResponseQueuedEvent`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
 
-            - `moderation: optional "auto" or "low"`
+            - `moderation: optional "auto" or "low" (default: "auto")`
 
               Moderation level for the generated image. Default: `auto`.
 
@@ -63646,11 +65416,13 @@ Schema name: `ResponseQueuedEvent`
 
               - `"low"`
 
-            - `output_compression: optional number`
+            - `output_compression: optional integer (default: 100)`
 
               Compression level for the output image. Default: 100.
 
-            - `output_format: optional "png" or "webp" or "jpeg"`
+              `minimum: 0`, `maximum: 100`
+
+            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
               The output format of the generated image. One of `png`, `webp`, or
               `jpeg`. Default: `png`.
@@ -63661,11 +65433,13 @@ Schema name: `ResponseQueuedEvent`
 
               - `"jpeg"`
 
-            - `partial_images: optional number`
+            - `partial_images: optional integer (default: 0)`
 
               Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-            - `quality: optional "low" or "medium" or "high" or 3 more`
+              `minimum: 0`, `maximum: 3`
+
+            - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
               The quality of the generated image. The GPT image models support `low`,
               `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -63684,7 +65458,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"auto"`
 
-            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+            - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
               The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -63706,7 +65480,7 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that allows the model to execute shell commands in a local environment.
 
-            - `type: "local_shell"`
+            - `type: "local_shell" (default: "local_shell")`
 
               The type of the local shell tool. Always `local_shell`.
 
@@ -63716,7 +65490,7 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that allows the model to execute shell commands.
 
-            - `type: "shell"`
+            - `type: "shell" (default: "shell")`
 
               The type of the shell tool. Always `shell`.
 
@@ -63725,6 +65499,8 @@ Schema name: `ResponseQueuedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -63746,7 +65522,7 @@ Schema name: `ResponseQueuedEvent`
 
               The name of the custom tool, used to identify it in tool calls.
 
-            - `type: "custom"`
+            - `type: "custom" (default: "custom")`
 
               The type of the custom tool. Always `custom`.
 
@@ -63755,6 +65531,8 @@ Schema name: `ResponseQueuedEvent`
             - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
               The tool invocation context(s).
+
+              `minItems: 1`
 
               - `"direct"`
 
@@ -63788,21 +65566,29 @@ Schema name: `ResponseQueuedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
+              `minLength: 1`
+
             - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
+
+              `minItems: 1`
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
 
-                - `type: "function"`
+                  `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+                - `type: "function" (default: "function")`
 
                   - `"function"`
 
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -63836,7 +65622,7 @@ Schema name: `ResponseQueuedEvent`
 
                   The name of the custom tool, used to identify it in tool calls.
 
-                - `type: "custom"`
+                - `type: "custom" (default: "custom")`
 
                   The type of the custom tool. Always `custom`.
 
@@ -63845,6 +65631,8 @@ Schema name: `ResponseQueuedEvent`
                 - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                   The tool invocation context(s).
+
+                  `minItems: 1`
 
                   - `"direct"`
 
@@ -63866,7 +65654,7 @@ Schema name: `ResponseQueuedEvent`
 
                   The input format for the custom tool. Default is unconstrained text.
 
-            - `type: "namespace"`
+            - `type: "namespace" (default: "namespace")`
 
               The type of the tool. Always `namespace`.
 
@@ -63876,7 +65664,7 @@ Schema name: `ResponseQueuedEvent`
 
             Hosted or BYOT tool search configuration for deferred tools.
 
-            - `type: "tool_search"`
+            - `type: "tool_search" (default: "tool_search")`
 
               The type of the tool. Always `tool_search`.
 
@@ -63902,7 +65690,7 @@ Schema name: `ResponseQueuedEvent`
 
             This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-            - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+            - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
               The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -63930,7 +65718,7 @@ Schema name: `ResponseQueuedEvent`
 
               The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-              - `type: "approximate"`
+              - `type: "approximate" (default: "approximate")`
 
                 The type of location approximation. Always `approximate`.
 
@@ -63956,7 +65744,7 @@ Schema name: `ResponseQueuedEvent`
 
             Allows the assistant to create, delete, or update files using unified diffs.
 
-            - `type: "apply_patch"`
+            - `type: "apply_patch" (default: "apply_patch")`
 
               The type of the tool. Always `apply_patch`.
 
@@ -63966,11 +65754,13 @@ Schema name: `ResponseQueuedEvent`
 
               The tool invocation context(s).
 
+              `minItems: 1`
+
               - `"direct"`
 
               - `"programmatic"`
 
-        - `type: "additional_tools"`
+        - `type: "additional_tools" (default: "additional_tools")`
 
           The item type. Always `additional_tools`.
 
@@ -63986,7 +65776,7 @@ Schema name: `ResponseQueuedEvent`
         remains in effect for subsequent responses until it is replaced by another
         configuration update.
 
-        - `type: "configuration_update"`
+        - `type: "configuration_update" (default: "configuration_update")`
 
           The item type. Always `configuration_update`.
 
@@ -64000,7 +65790,7 @@ Schema name: `ResponseQueuedEvent`
 
           Updates to reasoning configuration. Only effort is supported.
 
-          - `effort: optional ReasoningEffort or null`
+          - `effort: optional ReasoningEffort or null (default: "medium")`
 
             The reasoning effort to use for subsequent responses until another
             configuration update replaces it.
@@ -64038,7 +65828,7 @@ Schema name: `ResponseQueuedEvent`
 
             A summary of the reasoning output from the model so far.
 
-          - `type: "summary_text"`
+          - `type: "summary_text" (default: "summary_text")`
 
             The type of the object. Always `summary_text`.
 
@@ -64058,7 +65848,7 @@ Schema name: `ResponseQueuedEvent`
 
             The reasoning text from the model.
 
-          - `type: "reasoning_text"`
+          - `type: "reasoning_text" (default: "reasoning_text")`
 
             The type of the reasoning text. Always `reasoning_text`.
 
@@ -64095,7 +65885,9 @@ Schema name: `ResponseQueuedEvent`
 
           The encrypted content of the compaction summary.
 
-        - `type: "compaction"`
+          `maxLength: 104857600`
+
+        - `type: "compaction" (default: "compaction")`
 
           The type of the item. Always `compaction`.
 
@@ -64268,7 +66060,7 @@ Schema name: `ResponseQueuedEvent`
 
               The logs output from the code interpreter.
 
-            - `type: "logs"`
+            - `type: "logs" (default: "logs")`
 
               The type of the output. Always `logs`.
 
@@ -64278,7 +66070,7 @@ Schema name: `ResponseQueuedEvent`
 
             The image output from the code interpreter.
 
-            - `type: "image"`
+            - `type: "image" (default: "image")`
 
               The type of the output. Always `image`.
 
@@ -64287,6 +66079,8 @@ Schema name: `ResponseQueuedEvent`
             - `url: string`
 
               The URL of the image output from the code interpreter.
+
+              `format: uri`
 
         - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -64302,7 +66096,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `"failed"`
 
-        - `type: "code_interpreter_call"`
+        - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
           The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -64328,13 +66122,13 @@ Schema name: `ResponseQueuedEvent`
 
             Environment variables to set for the command.
 
-          - `type: "exec"`
+          - `type: "exec" (default: "exec")`
 
             The type of the local shell action. Always `exec`.
 
             - `"exec"`
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Optional timeout in milliseconds for the command.
 
@@ -64406,11 +66200,11 @@ Schema name: `ResponseQueuedEvent`
 
             Ordered shell commands for the execution environment to run.
 
-          - `max_output_length: optional number or null`
+          - `max_output_length: optional integer or null`
 
             Maximum number of UTF-8 characters to capture from combined stdout and stderr output.
 
-          - `timeout_ms: optional number or null`
+          - `timeout_ms: optional integer or null`
 
             Maximum wall-clock time in milliseconds to allow the shell commands to run.
 
@@ -64418,7 +66212,9 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the shell tool call generated by the model.
 
-        - `type: "shell_call"`
+          `minLength: 1`, `maxLength: 64`
+
+        - `type: "shell_call" (default: "shell_call")`
 
           The type of the item. Always `shell_call`.
 
@@ -64434,7 +66230,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -64446,7 +66242,9 @@ Schema name: `ResponseQueuedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -64478,6 +66276,8 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the shell tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `output: array of ResponseFunctionShellCallOutputContent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
@@ -64490,7 +66290,7 @@ Schema name: `ResponseQueuedEvent`
 
               Indicates that the shell call exceeded its configured time limit.
 
-              - `type: "timeout"`
+              - `type: "timeout" (default: "timeout")`
 
                 The outcome type. Always `timeout`.
 
@@ -64500,11 +66300,11 @@ Schema name: `ResponseQueuedEvent`
 
               Indicates that the shell commands finished and returned an exit code.
 
-              - `exit_code: number`
+              - `exit_code: integer`
 
                 The exit code returned by the shell process.
 
-              - `type: "exit"`
+              - `type: "exit" (default: "exit")`
 
                 The outcome type. Always `exit`.
 
@@ -64514,11 +66314,15 @@ Schema name: `ResponseQueuedEvent`
 
             Captured stderr output for the shell call.
 
+            `maxLength: 10485760`
+
           - `stdout: string`
 
             Captured stdout output for the shell call.
 
-        - `type: "shell_call_output"`
+            `maxLength: 10485760`
+
+        - `type: "shell_call_output" (default: "shell_call_output")`
 
           The type of the item. Always `shell_call_output`.
 
@@ -64534,7 +66338,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -64546,13 +66350,15 @@ Schema name: `ResponseQueuedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
               - `"program"`
 
-        - `max_output_length: optional number or null`
+        - `max_output_length: optional integer or null`
 
           The maximum number of UTF-8 characters captured for this shell call's combined output.
 
@@ -64574,6 +66380,8 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
@@ -64586,11 +66394,15 @@ Schema name: `ResponseQueuedEvent`
 
               Unified diff content to apply when creating the file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to create relative to the workspace root.
 
-            - `type: "create_file"`
+              `minLength: 1`
+
+            - `type: "create_file" (default: "create_file")`
 
               The operation type. Always `create_file`.
 
@@ -64604,7 +66416,9 @@ Schema name: `ResponseQueuedEvent`
 
               Path of the file to delete relative to the workspace root.
 
-            - `type: "delete_file"`
+              `minLength: 1`
+
+            - `type: "delete_file" (default: "delete_file")`
 
               The operation type. Always `delete_file`.
 
@@ -64618,11 +66432,15 @@ Schema name: `ResponseQueuedEvent`
 
               Unified diff content to apply to the existing file.
 
+              `maxLength: 10485760`
+
             - `path: string`
 
               Path of the file to update relative to the workspace root.
 
-            - `type: "update_file"`
+              `minLength: 1`
+
+            - `type: "update_file" (default: "update_file")`
 
               The operation type. Always `update_file`.
 
@@ -64636,7 +66454,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `"completed"`
 
-        - `type: "apply_patch_call"`
+        - `type: "apply_patch_call" (default: "apply_patch_call")`
 
           The type of the item. Always `apply_patch_call`.
 
@@ -64652,7 +66470,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -64664,7 +66482,9 @@ Schema name: `ResponseQueuedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -64678,6 +66498,8 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `status: "completed" or "failed"`
 
           The status of the apply patch tool call output. One of `completed` or `failed`.
@@ -64686,7 +66508,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `"failed"`
 
-        - `type: "apply_patch_call_output"`
+        - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
           The type of the item. Always `apply_patch_call_output`.
 
@@ -64702,7 +66524,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -64714,7 +66536,9 @@ Schema name: `ResponseQueuedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -64723,6 +66547,8 @@ Schema name: `ResponseQueuedEvent`
         - `output: optional string or null`
 
           Optional human-readable log text from the apply patch tool (e.g., patch results or errors).
+
+          `maxLength: 10485760`
 
       - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -64855,11 +66681,11 @@ Schema name: `ResponseQueuedEvent`
 
           - `McpProtocolError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "mcp_protocol_error"`
+            - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
               - `"mcp_protocol_error"`
 
@@ -64867,17 +66693,17 @@ Schema name: `ResponseQueuedEvent`
 
             - `content: unknown`
 
-            - `type: "mcp_tool_execution_error"`
+            - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
               - `"mcp_tool_execution_error"`
 
           - `HTTPError object { code, message, type }`
 
-            - `code: number`
+            - `code: integer`
 
             - `message: string`
 
-            - `type: "http_error"`
+            - `type: "http_error" (default: "http_error")`
 
               - `"http_error"`
 
@@ -64948,7 +66774,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               The caller type. Always `direct`.
 
@@ -64960,7 +66786,9 @@ Schema name: `ResponseQueuedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+              `minLength: 1`, `maxLength: 64`
+
+            - `type: "program" (default: "program")`
 
               The caller type. Always `program`.
 
@@ -65002,7 +66830,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `Direct object { type }`
 
-            - `type: "direct"`
+            - `type: "direct" (default: "direct")`
 
               - `"direct"`
 
@@ -65012,7 +66840,7 @@ Schema name: `ResponseQueuedEvent`
 
               The call ID of the program item that produced this tool call.
 
-            - `type: "program"`
+            - `type: "program" (default: "program")`
 
               - `"program"`
 
@@ -65024,7 +66852,7 @@ Schema name: `ResponseQueuedEvent`
 
         Compacts the current context. Must be the final input item.
 
-        - `type: "compaction_trigger"`
+        - `type: "compaction_trigger" (default: "compaction_trigger")`
 
           The type of the item. Always `compaction_trigger`.
 
@@ -65042,7 +66870,7 @@ Schema name: `ResponseQueuedEvent`
 
           The ID of the item to reference.
 
-        - `type: optional "item_reference" or null`
+        - `type: optional "item_reference" or null (default: "item_reference")`
 
           The type of item to reference. Always `item_reference`.
 
@@ -65058,15 +66886,21 @@ Schema name: `ResponseQueuedEvent`
 
           The stable call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `code: string`
 
           The JavaScript source executed by programmatic tool calling.
+
+          `maxLength: 10485760`
 
         - `fingerprint: string`
 
           Opaque program replay fingerprint that must be round-tripped.
 
-        - `type: "program"`
+          `maxLength: 10485760`
+
+        - `type: "program" (default: "program")`
 
           The item type. Always `program`.
 
@@ -65082,9 +66916,13 @@ Schema name: `ResponseQueuedEvent`
 
           The call ID of the program item.
 
+          `minLength: 1`, `maxLength: 64`
+
         - `result: string`
 
           The result produced by the program item.
+
+          `maxLength: 10485760`
 
         - `status: "completed" or "incomplete"`
 
@@ -65094,7 +66932,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `"incomplete"`
 
-        - `type: "program_output"`
+        - `type: "program_output" (default: "program_output")`
 
           The item type. Always `program_output`.
 
@@ -65411,6 +67249,8 @@ Schema name: `ResponseQueuedEvent`
 
           - `string`
 
+            `maxLength: 512`
+
           - `number`
 
           - `boolean`
@@ -65426,6 +67266,8 @@ Schema name: `ResponseQueuedEvent`
         - `score: optional number`
 
           The relevance score of the file - a value between 0 and 1.
+
+          `format: float`
 
         - `text: optional string`
 
@@ -65468,7 +67310,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -65478,7 +67320,7 @@ Schema name: `ResponseQueuedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -65555,7 +67397,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -65567,7 +67409,9 @@ Schema name: `ResponseQueuedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -65651,6 +67495,8 @@ Schema name: `ResponseQueuedEvent`
 
               The URL of the source.
 
+              `format: uri`
+
         - `OpenPage object { type, url }`
 
           Action type "open_page" - Opens a specific URL from search results.
@@ -65664,6 +67510,8 @@ Schema name: `ResponseQueuedEvent`
           - `url: optional string or null`
 
             The URL opened by the model.
+
+            `format: uri`
 
         - `FindInPage object { pattern, type, url }`
 
@@ -65682,6 +67530,8 @@ Schema name: `ResponseQueuedEvent`
           - `url: optional string or null`
 
             The URL of the page searched for the pattern, when available.
+
+            `format: uri`
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -65723,7 +67573,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"incomplete"`
 
-      - `type: "computer_call"`
+      - `type: "computer_call" (default: "computer_call")`
 
         The type of the computer call. Always `computer_call`.
 
@@ -65765,7 +67615,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"in_progress"`
 
-      - `type: "computer_call_output"`
+      - `type: "computer_call_output" (default: "computer_call_output")`
 
         The type of the computer tool call output. Always `computer_call_output`.
 
@@ -65811,7 +67661,7 @@ Schema name: `ResponseQueuedEvent`
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -65829,7 +67679,7 @@ Schema name: `ResponseQueuedEvent`
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -65876,7 +67726,7 @@ Schema name: `ResponseQueuedEvent`
 
         Opaque program replay fingerprint that must be round-tripped.
 
-      - `type: "program"`
+      - `type: "program" (default: "program")`
 
         The type of the item. Always `program`.
 
@@ -65904,7 +67754,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"incomplete"`
 
-      - `type: "program_output"`
+      - `type: "program_output" (default: "program_output")`
 
         The type of the item. Always `program_output`.
 
@@ -65942,7 +67792,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"incomplete"`
 
-      - `type: "tool_search_call"`
+      - `type: "tool_search_call" (default: "tool_search_call")`
 
         The type of the item. Always `tool_search_call`.
 
@@ -66000,7 +67850,7 @@ Schema name: `ResponseQueuedEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -66032,7 +67882,7 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -66054,7 +67904,7 @@ Schema name: `ResponseQueuedEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -66090,7 +67940,7 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -66100,11 +67950,11 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -66122,7 +67972,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -66133,7 +67983,7 @@ Schema name: `ResponseQueuedEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -66141,7 +67991,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -66149,14 +67999,14 @@ Schema name: `ResponseQueuedEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -66188,7 +68038,7 @@ Schema name: `ResponseQueuedEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -66212,6 +68062,8 @@ Schema name: `ResponseQueuedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -66291,7 +68143,7 @@ Schema name: `ResponseQueuedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -66348,10 +68200,14 @@ Schema name: `ResponseQueuedEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -66371,7 +68227,7 @@ Schema name: `ResponseQueuedEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -66380,6 +68236,8 @@ Schema name: `ResponseQueuedEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -66411,13 +68269,15 @@ Schema name: `ResponseQueuedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -66443,7 +68303,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -66524,7 +68384,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -66532,11 +68392,13 @@ Schema name: `ResponseQueuedEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -66547,11 +68409,13 @@ Schema name: `ResponseQueuedEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -66570,7 +68434,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -66592,7 +68456,7 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -66602,7 +68466,7 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -66611,6 +68475,8 @@ Schema name: `ResponseQueuedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -66632,7 +68498,7 @@ Schema name: `ResponseQueuedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -66641,6 +68507,8 @@ Schema name: `ResponseQueuedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -66674,21 +68542,29 @@ Schema name: `ResponseQueuedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -66722,7 +68598,7 @@ Schema name: `ResponseQueuedEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -66731,6 +68607,8 @@ Schema name: `ResponseQueuedEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -66752,7 +68630,7 @@ Schema name: `ResponseQueuedEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -66762,7 +68640,7 @@ Schema name: `ResponseQueuedEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -66788,7 +68666,7 @@ Schema name: `ResponseQueuedEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -66816,7 +68694,7 @@ Schema name: `ResponseQueuedEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -66842,7 +68720,7 @@ Schema name: `ResponseQueuedEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -66852,11 +68730,13 @@ Schema name: `ResponseQueuedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "tool_search_output"`
+      - `type: "tool_search_output" (default: "tool_search_output")`
 
         The type of the item. Always `tool_search_output`.
 
@@ -66912,7 +68792,7 @@ Schema name: `ResponseQueuedEvent`
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -66944,7 +68824,7 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -66966,7 +68846,7 @@ Schema name: `ResponseQueuedEvent`
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -67002,7 +68882,7 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -67012,11 +68892,11 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -67034,7 +68914,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -67045,7 +68925,7 @@ Schema name: `ResponseQueuedEvent`
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -67053,7 +68933,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -67061,14 +68941,14 @@ Schema name: `ResponseQueuedEvent`
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -67100,7 +68980,7 @@ Schema name: `ResponseQueuedEvent`
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -67124,6 +69004,8 @@ Schema name: `ResponseQueuedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -67203,7 +69085,7 @@ Schema name: `ResponseQueuedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -67260,10 +69142,14 @@ Schema name: `ResponseQueuedEvent`
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -67283,7 +69169,7 @@ Schema name: `ResponseQueuedEvent`
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -67292,6 +69178,8 @@ Schema name: `ResponseQueuedEvent`
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -67323,13 +69211,15 @@ Schema name: `ResponseQueuedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -67355,7 +69245,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -67436,7 +69326,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -67444,11 +69334,13 @@ Schema name: `ResponseQueuedEvent`
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -67459,11 +69351,13 @@ Schema name: `ResponseQueuedEvent`
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -67482,7 +69376,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -67504,7 +69398,7 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -67514,7 +69408,7 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -67523,6 +69417,8 @@ Schema name: `ResponseQueuedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -67544,7 +69440,7 @@ Schema name: `ResponseQueuedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -67553,6 +69449,8 @@ Schema name: `ResponseQueuedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -67586,21 +69484,29 @@ Schema name: `ResponseQueuedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -67634,7 +69540,7 @@ Schema name: `ResponseQueuedEvent`
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -67643,6 +69549,8 @@ Schema name: `ResponseQueuedEvent`
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -67664,7 +69572,7 @@ Schema name: `ResponseQueuedEvent`
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -67674,7 +69582,7 @@ Schema name: `ResponseQueuedEvent`
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -67700,7 +69608,7 @@ Schema name: `ResponseQueuedEvent`
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -67728,7 +69636,7 @@ Schema name: `ResponseQueuedEvent`
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -67754,7 +69662,7 @@ Schema name: `ResponseQueuedEvent`
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -67764,11 +69672,13 @@ Schema name: `ResponseQueuedEvent`
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "additional_tools"`
+      - `type: "additional_tools" (default: "additional_tools")`
 
         The type of the item. Always `additional_tools`.
 
@@ -67786,7 +69696,7 @@ Schema name: `ResponseQueuedEvent`
 
         The encrypted content that was produced by compaction.
 
-      - `type: "compaction"`
+      - `type: "compaction" (default: "compaction")`
 
         The type of the item. Always `compaction`.
 
@@ -67959,7 +69869,7 @@ Schema name: `ResponseQueuedEvent`
 
             The logs output from the code interpreter.
 
-          - `type: "logs"`
+          - `type: "logs" (default: "logs")`
 
             The type of the output. Always `logs`.
 
@@ -67969,7 +69879,7 @@ Schema name: `ResponseQueuedEvent`
 
           The image output from the code interpreter.
 
-          - `type: "image"`
+          - `type: "image" (default: "image")`
 
             The type of the output. Always `image`.
 
@@ -67978,6 +69888,8 @@ Schema name: `ResponseQueuedEvent`
           - `url: string`
 
             The URL of the image output from the code interpreter.
+
+            `format: uri`
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -67993,7 +69905,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"failed"`
 
-      - `type: "code_interpreter_call"`
+      - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
         The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -68019,13 +69931,13 @@ Schema name: `ResponseQueuedEvent`
 
           Environment variables to set for the command.
 
-        - `type: "exec"`
+        - `type: "exec" (default: "exec")`
 
           The type of the local shell action. Always `exec`.
 
           - `"exec"`
 
-        - `timeout_ms: optional number or null`
+        - `timeout_ms: optional integer or null`
 
           Optional timeout in milliseconds for the command.
 
@@ -68099,11 +70011,11 @@ Schema name: `ResponseQueuedEvent`
 
         - `commands: array of string`
 
-        - `max_output_length: number or null`
+        - `max_output_length: integer or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number or null`
+        - `timeout_ms: integer or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -68119,7 +70031,7 @@ Schema name: `ResponseQueuedEvent`
 
           Represents the use of a local environment to perform shell actions.
 
-          - `type: "local"`
+          - `type: "local" (default: "local")`
 
             The environment type. Always `local`.
 
@@ -68131,7 +70043,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `container_id: string`
 
-          - `type: "container_reference"`
+          - `type: "container_reference" (default: "container_reference")`
 
             The environment type. Always `container_reference`.
 
@@ -68147,7 +70059,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call"`
+      - `type: "shell_call" (default: "shell_call")`
 
         The type of the item. Always `shell_call`.
 
@@ -68159,7 +70071,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -68169,7 +70081,7 @@ Schema name: `ResponseQueuedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -68189,7 +70101,7 @@ Schema name: `ResponseQueuedEvent`
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -68205,7 +70117,7 @@ Schema name: `ResponseQueuedEvent`
 
             Indicates that the shell call exceeded its configured time limit.
 
-            - `type: "timeout"`
+            - `type: "timeout" (default: "timeout")`
 
               The outcome type. Always `timeout`.
 
@@ -68215,11 +70127,11 @@ Schema name: `ResponseQueuedEvent`
 
             Indicates that the shell commands finished and returned an exit code.
 
-            - `exit_code: number`
+            - `exit_code: integer`
 
               Exit code from the shell process.
 
-            - `type: "exit"`
+            - `type: "exit" (default: "exit")`
 
               The outcome type. Always `exit`.
 
@@ -68247,7 +70159,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"incomplete"`
 
-      - `type: "shell_call_output"`
+      - `type: "shell_call_output" (default: "shell_call_output")`
 
         The type of the shell call output. Always `shell_call_output`.
 
@@ -68259,7 +70171,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -68269,7 +70181,7 @@ Schema name: `ResponseQueuedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -68305,7 +70217,7 @@ Schema name: `ResponseQueuedEvent`
 
             Path of the file to create.
 
-          - `type: "create_file"`
+          - `type: "create_file" (default: "create_file")`
 
             Create a new file with the provided diff.
 
@@ -68319,7 +70231,7 @@ Schema name: `ResponseQueuedEvent`
 
             Path of the file to delete.
 
-          - `type: "delete_file"`
+          - `type: "delete_file" (default: "delete_file")`
 
             Delete the specified file.
 
@@ -68337,7 +70249,7 @@ Schema name: `ResponseQueuedEvent`
 
             Path of the file to update.
 
-          - `type: "update_file"`
+          - `type: "update_file" (default: "update_file")`
 
             Update an existing file with the provided diff.
 
@@ -68351,7 +70263,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"completed"`
 
-      - `type: "apply_patch_call"`
+      - `type: "apply_patch_call" (default: "apply_patch_call")`
 
         The type of the item. Always `apply_patch_call`.
 
@@ -68363,7 +70275,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -68373,7 +70285,7 @@ Schema name: `ResponseQueuedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -68401,7 +70313,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"failed"`
 
-      - `type: "apply_patch_call_output"`
+      - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
         The type of the item. Always `apply_patch_call_output`.
 
@@ -68413,7 +70325,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -68423,7 +70335,7 @@ Schema name: `ResponseQueuedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -68618,7 +70530,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -68628,7 +70540,7 @@ Schema name: `ResponseQueuedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -68694,7 +70606,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -68706,7 +70618,9 @@ Schema name: `ResponseQueuedEvent`
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -68716,14 +70630,16 @@ Schema name: `ResponseQueuedEvent`
 
         The identifier of the actor that created the item.
 
-  - `parallel_tool_calls: boolean`
+  - `parallel_tool_calls: boolean (default: true)`
 
     Whether to allow the model to run tool calls in parallel.
 
-  - `temperature: number or null`
+  - `temperature: number or null (default: 1)`
 
     What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
     We generally recommend altering this or `top_p` but not both.
+
+    `minimum: 0`, `maximum: 2`
 
   - `tool_choice: ToolChoiceOptions or ToolChoiceAllowed or ToolChoiceTypes or 6 more`
 
@@ -68869,7 +70785,7 @@ Schema name: `ResponseQueuedEvent`
 
     - `SpecificProgrammaticToolCallingParam object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The tool to call. Always `programmatic_tool_calling`.
 
@@ -68879,7 +70795,7 @@ Schema name: `ResponseQueuedEvent`
 
       Forces the model to call the apply_patch tool when executing a tool call.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The tool to call. Always `apply_patch`.
 
@@ -68889,7 +70805,7 @@ Schema name: `ResponseQueuedEvent`
 
       Forces the model to call the shell tool when a tool call is required.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The tool to call. Always `shell`.
 
@@ -68931,7 +70847,7 @@ Schema name: `ResponseQueuedEvent`
 
         Whether strict parameter validation is enforced for this function tool.
 
-      - `type: "function"`
+      - `type: "function" (default: "function")`
 
         The type of the function tool. Always `function`.
 
@@ -68963,7 +70879,7 @@ Schema name: `ResponseQueuedEvent`
 
       A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](https://developers.openai.com/api/docs/guides/tools-file-search).
 
-      - `type: "file_search"`
+      - `type: "file_search" (default: "file_search")`
 
         The type of the file search tool. Always `file_search`.
 
@@ -68985,7 +70901,7 @@ Schema name: `ResponseQueuedEvent`
 
           Combine multiple filters using `and` or `or`.
 
-      - `max_num_results: optional number`
+      - `max_num_results: optional integer`
 
         The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -69021,7 +70937,7 @@ Schema name: `ResponseQueuedEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `type: "computer"`
+      - `type: "computer" (default: "computer")`
 
         The type of the computer tool. Always `computer`.
 
@@ -69031,11 +70947,11 @@ Schema name: `ResponseQueuedEvent`
 
       A tool that controls a virtual computer. Learn more about the [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
-      - `display_height: number`
+      - `display_height: integer`
 
         The height of the computer display.
 
-      - `display_width: number`
+      - `display_width: integer`
 
         The width of the computer display.
 
@@ -69053,7 +70969,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"browser"`
 
-      - `type: "computer_use_preview"`
+      - `type: "computer_use_preview" (default: "computer_use_preview")`
 
         The type of the computer use tool. Always `computer_use_preview`.
 
@@ -69064,7 +70980,7 @@ Schema name: `ResponseQueuedEvent`
       Search the Internet for sources related to the prompt. Learn more about the
       [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search" or "web_search_2025_08_26"`
+      - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
         The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -69072,7 +70988,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"web_search_2025_08_26"`
 
-      - `external_web_access: optional boolean`
+      - `external_web_access: optional boolean (default: true)`
 
         Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -69080,14 +70996,14 @@ Schema name: `ResponseQueuedEvent`
 
         Filters for the search.
 
-        - `allowed_domains: optional array of string or null`
+        - `allowed_domains: optional array of string or null (default: [])`
 
           Allowed domains for the search. If not provided, all domains are allowed.
           Subdomains of the provided domains are allowed as well.
 
           Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-      - `search_context_size: optional "low" or "medium" or "high"`
+      - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
         High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -69119,7 +71035,7 @@ Schema name: `ResponseQueuedEvent`
 
           The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-        - `type: optional "approximate"`
+        - `type: optional "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -69143,6 +71059,8 @@ Schema name: `ResponseQueuedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -69222,7 +71140,7 @@ Schema name: `ResponseQueuedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
         Specify which of the MCP server's tools require approval.
 
@@ -69279,10 +71197,14 @@ Schema name: `ResponseQueuedEvent`
         The URL for the MCP server. One of `server_url`, `connector_id`, or
         `tunnel_id` must be provided.
 
+        `format: uri`
+
       - `tunnel_id: optional string`
 
         The Secure MCP Tunnel ID to use instead of a direct server URL. One of
         `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+        `pattern: ^tunnel_[a-z0-9]{32}$`
 
     - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -69302,7 +71224,7 @@ Schema name: `ResponseQueuedEvent`
 
           Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-          - `type: "auto"`
+          - `type: "auto" (default: "auto")`
 
             Always `auto`.
 
@@ -69311,6 +71233,8 @@ Schema name: `ResponseQueuedEvent`
           - `file_ids: optional array of string`
 
             An optional list of uploaded files to make available to your code.
+
+            `maxItems: 50`
 
           - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -69342,13 +71266,15 @@ Schema name: `ResponseQueuedEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
     - `ProgrammaticToolCalling object { type }`
 
-      - `type: "programmatic_tool_calling"`
+      - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
         The type of the tool. Always `programmatic_tool_calling`.
 
@@ -69374,7 +71300,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"auto"`
 
-      - `background: optional "transparent" or "opaque" or "auto"`
+      - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
         Set the background of the generated image. One of `transparent`, `opaque`,
         or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -69455,7 +71381,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
 
-      - `moderation: optional "auto" or "low"`
+      - `moderation: optional "auto" or "low" (default: "auto")`
 
         Moderation level for the generated image. Default: `auto`.
 
@@ -69463,11 +71389,13 @@ Schema name: `ResponseQueuedEvent`
 
         - `"low"`
 
-      - `output_compression: optional number`
+      - `output_compression: optional integer (default: 100)`
 
         Compression level for the output image. Default: 100.
 
-      - `output_format: optional "png" or "webp" or "jpeg"`
+        `minimum: 0`, `maximum: 100`
+
+      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
         The output format of the generated image. One of `png`, `webp`, or
         `jpeg`. Default: `png`.
@@ -69478,11 +71406,13 @@ Schema name: `ResponseQueuedEvent`
 
         - `"jpeg"`
 
-      - `partial_images: optional number`
+      - `partial_images: optional integer (default: 0)`
 
         Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-      - `quality: optional "low" or "medium" or "high" or 3 more`
+        `minimum: 0`, `maximum: 3`
+
+      - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
         The quality of the generated image. The GPT image models support `low`,
         `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -69501,7 +71431,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"auto"`
 
-      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+      - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
         The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -69523,7 +71453,7 @@ Schema name: `ResponseQueuedEvent`
 
       A tool that allows the model to execute shell commands in a local environment.
 
-      - `type: "local_shell"`
+      - `type: "local_shell" (default: "local_shell")`
 
         The type of the local shell tool. Always `local_shell`.
 
@@ -69533,7 +71463,7 @@ Schema name: `ResponseQueuedEvent`
 
       A tool that allows the model to execute shell commands.
 
-      - `type: "shell"`
+      - `type: "shell" (default: "shell")`
 
         The type of the shell tool. Always `shell`.
 
@@ -69542,6 +71472,8 @@ Schema name: `ResponseQueuedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -69563,7 +71495,7 @@ Schema name: `ResponseQueuedEvent`
 
         The name of the custom tool, used to identify it in tool calls.
 
-      - `type: "custom"`
+      - `type: "custom" (default: "custom")`
 
         The type of the custom tool. Always `custom`.
 
@@ -69572,6 +71504,8 @@ Schema name: `ResponseQueuedEvent`
       - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
         The tool invocation context(s).
+
+        `minItems: 1`
 
         - `"direct"`
 
@@ -69605,21 +71539,29 @@ Schema name: `ResponseQueuedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
+        `minLength: 1`
+
       - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
+
+        `minItems: 1`
 
         - `Function object { name, type, allowed_callers, 6 more }`
 
           - `name: string`
 
-          - `type: "function"`
+            `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+          - `type: "function" (default: "function")`
 
             - `"function"`
 
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -69653,7 +71595,7 @@ Schema name: `ResponseQueuedEvent`
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -69662,6 +71604,8 @@ Schema name: `ResponseQueuedEvent`
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -69683,7 +71627,7 @@ Schema name: `ResponseQueuedEvent`
 
             The input format for the custom tool. Default is unconstrained text.
 
-      - `type: "namespace"`
+      - `type: "namespace" (default: "namespace")`
 
         The type of the tool. Always `namespace`.
 
@@ -69693,7 +71637,7 @@ Schema name: `ResponseQueuedEvent`
 
       Hosted or BYOT tool search configuration for deferred tools.
 
-      - `type: "tool_search"`
+      - `type: "tool_search" (default: "tool_search")`
 
         The type of the tool. Always `tool_search`.
 
@@ -69719,7 +71663,7 @@ Schema name: `ResponseQueuedEvent`
 
       This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://developers.openai.com/api/docs/guides/tools-web-search).
 
-      - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+      - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
         The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -69747,7 +71691,7 @@ Schema name: `ResponseQueuedEvent`
 
         The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-        - `type: "approximate"`
+        - `type: "approximate" (default: "approximate")`
 
           The type of location approximation. Always `approximate`.
 
@@ -69773,7 +71717,7 @@ Schema name: `ResponseQueuedEvent`
 
       Allows the assistant to create, delete, or update files using unified diffs.
 
-      - `type: "apply_patch"`
+      - `type: "apply_patch" (default: "apply_patch")`
 
         The type of the tool. Always `apply_patch`.
 
@@ -69783,11 +71727,13 @@ Schema name: `ResponseQueuedEvent`
 
         The tool invocation context(s).
 
+        `minItems: 1`
+
         - `"direct"`
 
         - `"programmatic"`
 
-  - `top_p: number or null`
+  - `top_p: number or null (default: 1)`
 
     An alternative to sampling with temperature, called nucleus sampling,
     where the model considers the results of the tokens with top_p probability
@@ -69796,7 +71742,9 @@ Schema name: `ResponseQueuedEvent`
 
     We generally recommend altering this or `temperature` but not both.
 
-  - `background: optional boolean or null`
+    `minimum: 0`, `maximum: 1`
+
+  - `background: optional boolean or null (default: false)`
 
     Whether to run the model response in the background.
     [Learn more](https://developers.openai.com/api/docs/guides/background).
@@ -69806,6 +71754,8 @@ Schema name: `ResponseQueuedEvent`
     Unix timestamp (in seconds) of when this Response was completed.
     Only present when the status is `completed`.
 
+    `format: unixtime`
+
   - `conversation: optional object { id }  or null`
 
     The conversation that this response belonged to. Input items and output items from this response were automatically added to this conversation.
@@ -69814,11 +71764,11 @@ Schema name: `ResponseQueuedEvent`
 
       The unique ID of the conversation that this response was associated with.
 
-  - `max_output_tokens: optional number or null`
+  - `max_output_tokens: optional integer or null`
 
     An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](https://developers.openai.com/api/docs/guides/reasoning).
 
-  - `max_tool_calls: optional number or null`
+  - `max_tool_calls: optional integer or null`
 
     The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored.
 
@@ -69858,7 +71808,7 @@ Schema name: `ResponseQueuedEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -69876,7 +71826,7 @@ Schema name: `ResponseQueuedEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -69914,7 +71864,7 @@ Schema name: `ResponseQueuedEvent`
 
           The moderation model that produced this result.
 
-        - `type: "moderation_result"`
+        - `type: "moderation_result" (default: "moderation_result")`
 
           The object type, which was always `moderation_result` for successful moderation results.
 
@@ -69932,7 +71882,7 @@ Schema name: `ResponseQueuedEvent`
 
           The error message.
 
-        - `type: "error"`
+        - `type: "error" (default: "error")`
 
           The object type, which was always `error` for moderation failures.
 
@@ -69989,7 +71939,7 @@ Schema name: `ResponseQueuedEvent`
 
     - `CacheMiss object { cache_missed_tokens, reason, type, comparison_reusable_tokens }`
 
-      - `cache_missed_tokens: number`
+      - `cache_missed_tokens: integer`
 
         The estimated number of input tokens affected after the first detected divergence.
 
@@ -70015,29 +71965,29 @@ Schema name: `ResponseQueuedEvent`
 
         - `"service_tier_changed"`
 
-      - `type: "cache_miss"`
+      - `type: "cache_miss" (default: "cache_miss")`
 
         - `"cache_miss"`
 
-      - `comparison_reusable_tokens: optional number`
+      - `comparison_reusable_tokens: optional integer`
 
         The raw token count of the reusable prefix in the compared response.
 
     - `CacheHit object { type }`
 
-      - `type: "cache_hit"`
+      - `type: "cache_hit" (default: "cache_hit")`
 
         - `"cache_hit"`
 
     - `ComparisonResponseNotFound object { type }`
 
-      - `type: "comparison_response_not_found"`
+      - `type: "comparison_response_not_found" (default: "comparison_response_not_found")`
 
         - `"comparison_response_not_found"`
 
     - `Unavailable object { type }`
 
-      - `type: "unavailable"`
+      - `type: "unavailable" (default: "unavailable")`
 
         - `"unavailable"`
 
@@ -70107,7 +72057,7 @@ Schema name: `ResponseQueuedEvent`
 
       - `"all_turns"`
 
-    - `effort: optional ReasoningEffort or null`
+    - `effort: optional ReasoningEffort or null (default: "medium")`
 
       Constrains effort on reasoning for reasoning models. Currently supported
       values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`.
@@ -70168,7 +72118,9 @@ Schema name: `ResponseQueuedEvent`
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
     The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-  - `service_tier: optional ServiceTier or null`
+    `maxLength: 128`
+
+  - `service_tier: optional ServiceTier or null (default: "auto")`
 
     Specifies the processing type used for serving the request.
 
@@ -70272,7 +72224,7 @@ Schema name: `ResponseQueuedEvent`
           A description of what the response format is for, used by the model to
           determine how to respond in the format.
 
-        - `strict: optional boolean or null`
+        - `strict: optional boolean or null (default: false)`
 
           Whether to enable strict schema adherence when generating the output.
           If set to true, the model will always follow the exact schema defined
@@ -70293,7 +72245,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `"json_object"`
 
-    - `verbosity: optional "low" or "medium" or "high" or null`
+    - `verbosity: optional "low" or "medium" or "high" or null (default: "medium")`
 
       Constrains the verbosity of the model's response. Lower values will result in
       more concise responses, while higher values will result in more verbose responses.
@@ -70325,7 +72277,7 @@ Schema name: `ResponseQueuedEvent`
 
       Aggregated usage statistics for image generation tool calls.
 
-      - `input_tokens: number`
+      - `input_tokens: integer`
 
         The number of tokens (images and text) in the input prompt.
 
@@ -70333,39 +72285,39 @@ Schema name: `ResponseQueuedEvent`
 
         The input tokens detailed information for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image tokens in the input prompt.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text tokens in the input prompt.
 
-      - `output_tokens: number`
+      - `output_tokens: integer`
 
         The number of output tokens generated by the model.
 
-      - `total_tokens: number`
+      - `total_tokens: integer`
 
         The total number of tokens (images and text) used for the image generation.
 
-      - `cached_tokens: optional number`
+      - `cached_tokens: optional integer`
 
       - `cached_tokens_details: optional object { cached_image_tokens, cached_text_tokens }`
 
-        - `cached_image_tokens: number`
+        - `cached_image_tokens: integer`
 
-        - `cached_text_tokens: number`
+        - `cached_text_tokens: integer`
 
       - `output_tokens_details: optional object { image_tokens, text_tokens }`
 
         The output token details for the image generation.
 
-        - `image_tokens: number`
+        - `image_tokens: integer`
 
           The number of image output tokens generated by the model.
 
-        - `text_tokens: number`
+        - `text_tokens: integer`
 
           The number of text output tokens generated by the model.
 
@@ -70373,18 +72325,20 @@ Schema name: `ResponseQueuedEvent`
 
       Aggregated billable usage statistics for web search tool calls.
 
-      - `num_requests: number`
+      - `num_requests: integer`
 
         The number of billable web search requests issued.
 
-  - `top_logprobs: optional number or null`
+  - `top_logprobs: optional integer or null`
 
     An integer between 0 and 20 specifying the maximum number of most likely
     tokens to return at each token position, each with an associated log
     probability. In some cases, the number of returned tokens may be fewer than
     requested.
 
-  - `truncation: optional "auto" or "disabled" or null`
+    `minimum: 0`, `maximum: 20`
+
+  - `truncation: optional "auto" or "disabled" or null (default: "disabled")`
 
     The truncation strategy to use for the model response.
 
@@ -70403,7 +72357,7 @@ Schema name: `ResponseQueuedEvent`
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
 
-    - `input_tokens: number`
+    - `input_tokens: integer`
 
       The number of input tokens.
 
@@ -70411,16 +72365,16 @@ Schema name: `ResponseQueuedEvent`
 
       A detailed breakdown of the input tokens.
 
-      - `cache_write_tokens: number`
+      - `cache_write_tokens: integer`
 
         The number of input tokens that were written to the cache.
 
-      - `cached_tokens: number`
+      - `cached_tokens: integer`
 
         The number of tokens that were retrieved from the cache.
         [More on prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-    - `output_tokens: number`
+    - `output_tokens: integer`
 
       The number of output tokens.
 
@@ -70428,11 +72382,11 @@ Schema name: `ResponseQueuedEvent`
 
       A detailed breakdown of the output tokens.
 
-      - `reasoning_tokens: number`
+      - `reasoning_tokens: integer`
 
         The number of reasoning tokens.
 
-    - `total_tokens: number`
+    - `total_tokens: integer`
 
       The total number of tokens used.
 
@@ -70442,7 +72396,7 @@ Schema name: `ResponseQueuedEvent`
     A stable identifier for your end-users.
     Used to boost cache hit rates by better bucketing similar requests and  to help OpenAI detect and prevent abuse. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number for this event.
 
@@ -70497,11 +72451,11 @@ Schema name: `ResponseCustomToolCallInputDeltaEvent`
 
   Unique identifier for the API item associated with this event.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output this delta applies to.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -70541,11 +72495,11 @@ Schema name: `ResponseCustomToolCallInputDoneEvent`
 
   Unique identifier for the API item associated with this event.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output this event applies to.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -70589,7 +72543,7 @@ Schema name: `ResponseErrorEvent`
 
   The error parameter.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -70625,7 +72579,7 @@ Schema name: `ResponseAudioDeltaEvent`
 
   A chunk of Base64 encoded response audio bytes.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   A sequence number for this chunk of the stream response.
 
@@ -70656,7 +72610,7 @@ Emitted when the audio response is complete.
 
 Schema name: `ResponseAudioDoneEvent`
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the delta.
 
@@ -70690,7 +72644,7 @@ Schema name: `ResponseAudioTranscriptDeltaEvent`
 
   The partial transcript of the audio response.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -70721,7 +72675,7 @@ Emitted when the full audio transcript is completed.
 
 Schema name: `ResponseAudioTranscriptDoneEvent`
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of this event.
 
@@ -70755,15 +72709,15 @@ Schema name: `ResponseCompactionCompactingStreamingEvent`
 
   The ID of the compaction output item.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the compaction output item.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the event that was emitted.
 
-- `type: "response.compaction.compacting"`
+- `type: "response.compaction.compacting" (default: "response.compaction.compacting")`
 
   The type of the event, always `response.compaction.compacting`.
 
@@ -70794,19 +72748,19 @@ Schema name: `ResponseShellCallCommandAddedStreamingEvent`
 
   The shell command that was added.
 
-- `command_index: number`
+- `command_index: integer`
 
   The index of the shell command that was added.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that was updated.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the event that was emitted.
 
-- `type: "response.shell_call_command.added"`
+- `type: "response.shell_call_command.added" (default: "response.shell_call_command.added")`
 
   The type of the event, always `response.shell_call_command.added`.
 
@@ -70834,7 +72788,7 @@ A streaming event that indicated a shell command was incrementally updated.
 
 Schema name: `ResponseShellCallCommandDeltaStreamingEvent`
 
-- `command_index: number`
+- `command_index: integer`
 
   The index of the shell command that was updated.
 
@@ -70842,15 +72796,15 @@ Schema name: `ResponseShellCallCommandDeltaStreamingEvent`
 
   The shell command delta that was appended.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that was updated.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the event that was emitted.
 
-- `type: "response.shell_call_command.delta"`
+- `type: "response.shell_call_command.delta" (default: "response.shell_call_command.delta")`
 
   The type of the event, always `response.shell_call_command.delta`.
 
@@ -70887,19 +72841,19 @@ Schema name: `ResponseShellCallCommandDoneStreamingEvent`
 
   The final shell command that was emitted.
 
-- `command_index: number`
+- `command_index: integer`
 
   The index of the shell command that was completed.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that was updated.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the event that was emitted.
 
-- `type: "response.shell_call_command.done"`
+- `type: "response.shell_call_command.done" (default: "response.shell_call_command.done")`
 
   The type of the event, always `response.shell_call_command.done`.
 
@@ -70927,7 +72881,7 @@ A streaming event that indicated shell call output was incrementally added.
 
 Schema name: `ResponseShellCallOutputContentDeltaStreamingEvent`
 
-- `command_index: number`
+- `command_index: integer`
 
   The index of the shell command that produced output.
 
@@ -70947,15 +72901,15 @@ Schema name: `ResponseShellCallOutputContentDeltaStreamingEvent`
 
   The ID of the output item that was updated.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that was updated.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the event that was emitted.
 
-- `type: "response.shell_call_output_content.delta"`
+- `type: "response.shell_call_output_content.delta" (default: "response.shell_call_output_content.delta")`
 
   The type of the event, always `response.shell_call_output_content.delta`.
 
@@ -70987,7 +72941,7 @@ A streaming event that indicated shell call output was completed.
 
 Schema name: `ResponseShellCallOutputContentDoneStreamingEvent`
 
-- `command_index: number`
+- `command_index: integer`
 
   The index of the shell command that produced output.
 
@@ -71007,7 +72961,7 @@ Schema name: `ResponseShellCallOutputContentDoneStreamingEvent`
 
       Indicates that the shell call exceeded its configured time limit.
 
-      - `type: "timeout"`
+      - `type: "timeout" (default: "timeout")`
 
         The outcome type. Always `timeout`.
 
@@ -71017,11 +72971,11 @@ Schema name: `ResponseShellCallOutputContentDoneStreamingEvent`
 
       Indicates that the shell commands finished and returned an exit code.
 
-      - `exit_code: number`
+      - `exit_code: integer`
 
         Exit code from the shell process.
 
-      - `type: "exit"`
+      - `type: "exit" (default: "exit")`
 
         The outcome type. Always `exit`.
 
@@ -71039,15 +72993,15 @@ Schema name: `ResponseShellCallOutputContentDoneStreamingEvent`
 
     The identifier of the actor that created the item.
 
-- `output_index: number`
+- `output_index: integer`
 
   The index of the output item that was updated.
 
-- `sequence_number: number`
+- `sequence_number: integer`
 
   The sequence number of the event that was emitted.
 
-- `type: "response.shell_call_output_content.done"`
+- `type: "response.shell_call_output_content.done" (default: "response.shell_call_output_content.done")`
 
   The type of the event, always `response.shell_call_output_content.done`.
 

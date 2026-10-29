@@ -1,0 +1,64 @@
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
+## Delete project API key
+
+**delete** `/organization/projects/{project_id}/api_keys/{api_key_id}`
+
+Deletes an API key from the project, including keys owned by service accounts.
+
+Requires permission to write project API keys. Deleting a service-account key
+does not delete the service account or its other keys.
+
+Returns confirmation of the key deletion.
+
+### Path Parameters
+
+- `project_id: string`
+
+- `api_key_id: string`
+
+### Returns
+
+- `id: string`
+
+- `deleted: boolean`
+
+- `object: "organization.project.api_key.deleted"`
+
+  - `"organization.project.api_key.deleted"`
+
+### Example
+
+```http
+curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/api_keys/$API_KEY_ID \
+    -X DELETE \
+    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
+```
+
+#### 200 — Example
+
+```json
+{
+  "id": "id",
+  "deleted": true,
+  "object": "organization.project.api_key.deleted"
+}
+```
+
+### Example
+
+```http
+curl -X DELETE https://api.openai.com/v1/organization/projects/proj_abc/api_keys/key_abc \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "Content-Type: application/json"
+```
+
+#### Response example
+
+```json
+{
+    "object": "organization.project.api_key.deleted",
+    "id": "key_abc",
+    "deleted": true
+}
+```

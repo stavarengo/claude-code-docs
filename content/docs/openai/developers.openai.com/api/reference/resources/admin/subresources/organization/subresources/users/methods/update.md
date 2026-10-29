@@ -1,0 +1,213 @@
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
+## Modify user
+
+**post** `/organization/users/{user_id}`
+
+Modifies a user's role in the organization.
+
+### Path Parameters
+
+- `user_id: string`
+
+### Body Parameters
+
+- `developer_persona: optional string or null`
+
+  Developer persona metadata.
+
+- `role: optional string or null`
+
+  `owner` or `reader`
+
+- `role_id: optional string or null`
+
+  Role ID to assign to the user.
+
+- `technical_level: optional string or null`
+
+  Technical level metadata.
+
+### Returns
+
+- `OrganizationUser object { id, added_at, object, 13 more }`
+
+  Represents an individual `user` within an organization.
+
+  - `id: string`
+
+    The identifier, which can be referenced in API endpoints
+
+  - `added_at: integer`
+
+    The Unix timestamp (in seconds) of when the user was added.
+
+    `format: unixtime`
+
+  - `object: "organization.user"`
+
+    The object type, which is always `organization.user`
+
+    - `"organization.user"`
+
+  - `api_key_last_used_at: optional integer or null`
+
+    The Unix timestamp (in seconds) of the user's last API key usage.
+
+    `format: unixtime`
+
+  - `created: optional integer`
+
+    The Unix timestamp (in seconds) of when the user was created.
+
+    `format: unixtime`
+
+  - `developer_persona: optional string or null`
+
+    The developer persona metadata for the user.
+
+  - `email: optional string or null`
+
+    The email address of the user
+
+  - `is_default: optional boolean`
+
+    Whether this is the organization's default user.
+
+  - `is_scale_tier_authorized_purchaser: optional boolean or null`
+
+    Whether the user is an authorized purchaser for Scale Tier.
+
+  - `is_scim_managed: optional boolean`
+
+    Whether the user is managed through SCIM.
+
+  - `is_service_account: optional boolean`
+
+    Whether the user is a service account.
+
+  - `name: optional string or null`
+
+    The name of the user
+
+  - `projects: optional object { data, object }  or null`
+
+    Projects associated with the user, if included.
+
+    - `data: array of object { id, name, role }`
+
+      - `id: optional string or null`
+
+      - `name: optional string or null`
+
+      - `role: optional string or null`
+
+    - `object: "list"`
+
+      - `"list"`
+
+  - `role: optional string or null`
+
+    `owner` or `reader`
+
+  - `technical_level: optional string or null`
+
+    The technical level metadata for the user.
+
+  - `user: optional object { id, object, banned, 5 more }`
+
+    Nested user details.
+
+    - `id: string`
+
+    - `object: "user"`
+
+      - `"user"`
+
+    - `banned: optional boolean or null`
+
+    - `banned_at: optional integer or null`
+
+      `format: unixtime`
+
+    - `email: optional string or null`
+
+    - `enabled: optional boolean or null`
+
+    - `name: optional string or null`
+
+    - `picture: optional string or null`
+
+### Example
+
+```http
+curl https://api.openai.com/v1/organization/users/$USER_ID \
+    -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+    -d '{}'
+```
+
+#### 200 — Example
+
+```json
+{
+  "id": "id",
+  "added_at": 0,
+  "object": "organization.user",
+  "api_key_last_used_at": 0,
+  "created": 0,
+  "developer_persona": "developer_persona",
+  "email": "email",
+  "is_default": true,
+  "is_scale_tier_authorized_purchaser": true,
+  "is_scim_managed": true,
+  "is_service_account": true,
+  "name": "name",
+  "projects": {
+    "data": [
+      {
+        "id": "id",
+        "name": "name",
+        "role": "role"
+      }
+    ],
+    "object": "list"
+  },
+  "role": "role",
+  "technical_level": "technical_level",
+  "user": {
+    "id": "id",
+    "object": "user",
+    "banned": true,
+    "banned_at": 0,
+    "email": "email",
+    "enabled": true,
+    "name": "name",
+    "picture": "picture"
+  }
+}
+```
+
+### Example
+
+```http
+curl -X POST https://api.openai.com/v1/organization/users/user_abc \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+      "role": "owner"
+  }'
+```
+
+#### Response example
+
+```json
+{
+    "object": "organization.user",
+    "id": "user_abc",
+    "name": "First Last",
+    "email": "user@example.com",
+    "role": "owner",
+    "added_at": 1711471533
+}
+```

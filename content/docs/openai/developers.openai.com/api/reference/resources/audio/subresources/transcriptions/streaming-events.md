@@ -20,6 +20,8 @@ Schema name: `TranscriptTextSegmentEvent`
 
   End timestamp of the segment in seconds.
 
+  `format: double`
+
 - `speaker: string`
 
   Speaker label for this segment.
@@ -27,6 +29,8 @@ Schema name: `TranscriptTextSegmentEvent`
 - `start: number`
 
   Start timestamp of the segment in seconds.
+
+  `format: double`
 
 - `text: string`
 
@@ -148,15 +152,15 @@ Schema name: `TranscriptTextDoneEvent`
 
   Usage statistics for models billed by token usage.
 
-  - `input_tokens: number`
+  - `input_tokens: integer`
 
     Number of input tokens billed for this request.
 
-  - `output_tokens: number`
+  - `output_tokens: integer`
 
     Number of output tokens generated.
 
-  - `total_tokens: number`
+  - `total_tokens: integer`
 
     Total number of tokens used (input + output).
 
@@ -170,11 +174,11 @@ Schema name: `TranscriptTextDoneEvent`
 
     Details about the input tokens billed for this request.
 
-    - `audio_tokens: optional number`
+    - `audio_tokens: optional integer`
 
       Number of audio tokens billed for this request.
 
-    - `text_tokens: optional number`
+    - `text_tokens: optional integer`
 
       Number of text tokens billed for this request.
 

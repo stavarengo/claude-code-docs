@@ -1,0 +1,99 @@
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
+## Modify project user
+
+**post** `/organization/projects/{project_id}/users/{user_id}`
+
+Modifies a user's role in the project.
+
+### Path Parameters
+
+- `project_id: string`
+
+- `user_id: string`
+
+### Body Parameters
+
+- `role: optional string or null`
+
+  `owner` or `member`
+
+### Returns
+
+- `ProjectUser object { id, added_at, object, 3 more }`
+
+  Represents an individual user in a project.
+
+  - `id: string`
+
+    The identifier, which can be referenced in API endpoints
+
+  - `added_at: integer`
+
+    The Unix timestamp (in seconds) of when the project was added.
+
+    `format: unixtime`
+
+  - `object: "organization.project.user"`
+
+    The object type, which is always `organization.project.user`
+
+    - `"organization.project.user"`
+
+  - `role: string`
+
+    `owner` or `member`
+
+  - `email: optional string or null`
+
+    The email address of the user
+
+  - `name: optional string or null`
+
+    The name of the user
+
+### Example
+
+```http
+curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/users/$USER_ID \
+    -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+    -d '{}'
+```
+
+#### 200 — Example
+
+```json
+{
+  "id": "id",
+  "added_at": 0,
+  "object": "organization.project.user",
+  "role": "role",
+  "email": "email",
+  "name": "name"
+}
+```
+
+### Example
+
+```http
+curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/users/user_abc \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+      "role": "owner"
+  }'
+```
+
+#### Response example
+
+```json
+{
+    "object": "organization.project.user",
+    "id": "user_abc",
+    "name": "First Last",
+    "email": "user@example.com",
+    "role": "owner",
+    "added_at": 1711471533
+}
+```

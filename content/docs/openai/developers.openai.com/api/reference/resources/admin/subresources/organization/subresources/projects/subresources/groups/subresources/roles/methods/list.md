@@ -1,0 +1,199 @@
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
+## List project group role assignments
+
+**get** `/projects/{project_id}/groups/{group_id}/roles`
+
+Lists the project roles assigned to a group within a project.
+
+### Path Parameters
+
+- `project_id: string`
+
+- `group_id: string`
+
+### Query Parameters
+
+- `after: optional string`
+
+  Cursor for pagination. Provide the value from the previous response's `next` field to continue listing project roles.
+
+- `limit: optional integer`
+
+  A limit on the number of project role assignments to return.
+
+  `minimum: 0`, `maximum: 1000`
+
+- `order: optional "asc" or "desc"`
+
+  Sort order for the returned project roles.
+
+  - `"asc"`
+
+  - `"desc"`
+
+### Returns
+
+- `data: array of object { id, assignment_sources, created_at, 9 more }`
+
+  Role assignments returned in the current page.
+
+  - `id: string`
+
+    Identifier for the role.
+
+  - `assignment_sources: array of object { principal_id, principal_type }  or null`
+
+    Principals from which the role assignment is inherited, when available.
+
+    - `principal_id: string`
+
+    - `principal_type: string`
+
+  - `created_at: integer or null`
+
+    When the role was created.
+
+    `format: unixtime`
+
+  - `created_by: string or null`
+
+    Identifier of the actor who created the role.
+
+  - `created_by_user_obj: map[unknown] or null`
+
+    User details for the actor that created the role, when available.
+
+  - `description: string or null`
+
+    Description of the role.
+
+  - `metadata: map[unknown] or null`
+
+    Arbitrary metadata stored on the role.
+
+  - `name: string`
+
+    Name of the role.
+
+  - `permissions: array of string`
+
+    Permissions associated with the role.
+
+  - `predefined_role: boolean`
+
+    Whether the role is predefined by OpenAI.
+
+  - `resource_type: string`
+
+    Resource type the role applies to.
+
+  - `updated_at: integer or null`
+
+    When the role was last updated.
+
+    `format: unixtime`
+
+- `has_more: boolean`
+
+  Whether additional assignments are available when paginating.
+
+- `next: string or null`
+
+  Cursor to fetch the next page of results, or `null` when there are no more assignments.
+
+- `object: "list"`
+
+  Always `list`.
+
+  - `"list"`
+
+### Example
+
+```http
+curl https://api.openai.com/v1/projects/$PROJECT_ID/groups/$GROUP_ID/roles \
+    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
+```
+
+#### 200 — Example
+
+```json
+{
+  "data": [
+    {
+      "id": "id",
+      "assignment_sources": [
+        {
+          "principal_id": "principal_id",
+          "principal_type": "principal_type"
+        }
+      ],
+      "created_at": 0,
+      "created_by": "created_by",
+      "created_by_user_obj": {
+        "foo": "bar"
+      },
+      "description": "description",
+      "metadata": {
+        "foo": "bar"
+      },
+      "name": "name",
+      "permissions": [
+        "string"
+      ],
+      "predefined_role": true,
+      "resource_type": "resource_type",
+      "updated_at": 0
+    }
+  ],
+  "has_more": true,
+  "next": "next",
+  "object": "list"
+}
+```
+
+### Example
+
+```http
+curl https://api.openai.com/v1/projects/proj_abc123/groups/group_01J1F8ABCDXYZ/roles \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "Content-Type: application/json"
+```
+
+#### Response example
+
+```json
+{
+    "object": "list",
+    "data": [
+        {
+            "id": "role_01J1F8PROJ",
+            "name": "API Project Key Manager",
+            "permissions": [
+                "api.organization.projects.api_keys.read",
+                "api.organization.projects.api_keys.write"
+            ],
+            "resource_type": "api.project",
+            "predefined_role": false,
+            "description": "Allows managing API keys for the project",
+            "created_at": 1711471533,
+            "updated_at": 1711472599,
+            "created_by": "user_abc123",
+            "created_by_user_obj": {
+                "id": "user_abc123",
+                "name": "Ada Lovelace",
+                "email": "ada@example.com"
+            },
+            "metadata": {},
+            "assignment_sources": [
+                {
+                    "principal_id": "group_01J1F8ABCDXYZ",
+                    "principal_type": "group"
+                }
+            ]
+        }
+    ],
+    "has_more": false,
+    "next": null
+}
+```

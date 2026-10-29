@@ -22,6 +22,8 @@ Create a vector store file batch.
 
   - `string`
 
+    `maxLength: 512`
+
   - `number`
 
   - `boolean`
@@ -46,15 +48,17 @@ Create a vector store file batch.
 
     - `static: StaticFileChunkingStrategy`
 
-      - `chunk_overlap_tokens: number`
+      - `chunk_overlap_tokens: integer`
 
         The number of tokens that overlap between chunks. The default value is `400`.
 
         Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-      - `max_chunk_size_tokens: number`
+      - `max_chunk_size_tokens: integer`
 
         The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+        `minimum: 100`, `maximum: 4096`
 
     - `type: "static"`
 
@@ -66,9 +70,13 @@ Create a vector store file batch.
 
   A list of [File](/api/reference/resources/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files. If `attributes` or `chunking_strategy` are provided, they will be applied to all files in the batch. The maximum batch size is 2000 files. This endpoint is recommended for multi-file ingestion and helps reduce per-vector-store write request pressure. Mutually exclusive with `files`.
 
+  `minItems: 1`, `maxItems: 2000`
+
 - `files: optional array of object { file_id, attributes, chunking_strategy }`
 
   A list of objects that each include a `file_id` plus optional `attributes` or `chunking_strategy`. Use this when you need to override metadata for specific files. The global `attributes` or `chunking_strategy` will be ignored and must be specified for each file. The maximum batch size is 2000 files. This endpoint is recommended for multi-file ingestion and helps reduce per-vector-store write request pressure. Mutually exclusive with `file_ids`.
+
+  `minItems: 1`, `maxItems: 2000`
 
   - `file_id: string`
 
@@ -83,6 +91,8 @@ Create a vector store file batch.
     length of 512 characters, booleans, or numbers.
 
     - `string`
+
+      `maxLength: 512`
 
     - `number`
 
@@ -102,29 +112,31 @@ Create a vector store file batch.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store files batch was created.
 
+    `format: unixtime`
+
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
-    - `cancelled: number`
+    - `cancelled: integer`
 
       The number of files that where cancelled.
 
-    - `completed: number`
+    - `completed: integer`
 
       The number of files that have been processed.
 
-    - `failed: number`
+    - `failed: integer`
 
       The number of files that have failed to process.
 
-    - `in_progress: number`
+    - `in_progress: integer`
 
       The number of files that are currently being processed.
 
-    - `total: number`
+    - `total: integer`
 
       The total number of files.
 
@@ -164,7 +176,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/file_batches \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -208,7 +220,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/file_batches \
     }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

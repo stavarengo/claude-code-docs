@@ -21,9 +21,11 @@ Schema name: `WebhookResponseCompleted`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the model response was completed.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -72,9 +74,11 @@ Schema name: `WebhookResponseCancelled`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the model response was cancelled.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -123,9 +127,11 @@ Schema name: `WebhookResponseFailed`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the model response failed.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -174,9 +180,11 @@ Schema name: `WebhookResponseIncomplete`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the model response was interrupted.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -225,9 +233,11 @@ Schema name: `WebhookBatchCompleted`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the batch API request was completed.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -276,9 +286,11 @@ Schema name: `WebhookBatchCancelled`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the batch API request was cancelled.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -327,9 +339,11 @@ Schema name: `WebhookBatchExpired`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the batch API request expired.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -378,9 +392,11 @@ Schema name: `WebhookBatchFailed`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the batch API request failed.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -429,9 +445,11 @@ Schema name: `WebhookFineTuningJobSucceeded`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the fine-tuning job succeeded.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -480,9 +498,11 @@ Schema name: `WebhookFineTuningJobFailed`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the fine-tuning job failed.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -531,9 +551,11 @@ Schema name: `WebhookFineTuningJobCancelled`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the fine-tuning job was cancelled.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -582,9 +604,11 @@ Schema name: `WebhookEvalRunSucceeded`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the eval run succeeded.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -633,9 +657,11 @@ Schema name: `WebhookEvalRunFailed`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the eval run failed.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -684,9 +710,11 @@ Schema name: `WebhookEvalRunCanceled`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the eval run was canceled.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -737,9 +765,11 @@ Schema name: `WebhookRealtimeCallIncoming`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the model response was completed.
+
+  `format: unixtime`
 
 - `data: object { call_id, sip_headers, sip_media_security }`
 
@@ -834,9 +864,11 @@ Schema name: `WebhookLiveCallIncoming`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the event was created.
+
+  `format: unixtime`
 
 - `data: object { session_id, sip_headers, sip_media_security }`
 
@@ -929,9 +961,11 @@ Schema name: `WebhookLiveTransportIncoming`
 
   The unique ID of the event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) of when the event was created.
+
+  `format: unixtime`
 
 - `data: object { session_id, sip_headers, type, sip_media_security }`
 
@@ -1028,9 +1062,11 @@ Schema name: `WebhookSafetyWarningIssued`
 
   The unique ID of the webhook event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp in seconds when the event was created.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -1076,9 +1112,11 @@ Schema name: `WebhookSafetyDeactivationIssued`
 
   The unique ID of the webhook event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp in seconds when the event was created.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
@@ -1124,15 +1162,19 @@ Schema name: `WebhookSafetyAlertCreated`
 
   The unique ID of the webhook event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp in seconds when the event was created.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
   - `id: string`
 
     The safety alert ID to pass to `GET /v1/safety/alerts/{id}`.
+
+    `pattern: ^alert_[0-9a-f]{32}$`
 
 - `object: "event"`
 
@@ -1172,15 +1214,19 @@ Schema name: `WebhookSafetyOrgAlertCreated`
 
   The unique ID of the webhook event.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp in seconds when the event was created.
+
+  `format: unixtime`
 
 - `data: object { id }`
 
   - `id: string`
 
     The safety alert ID to pass to `GET /v1/safety/alerts/{id}`.
+
+    `pattern: ^alert_[0-9a-f]{32}$`
 
 - `object: "event"`
 

@@ -26,7 +26,7 @@ Returns the Upload object with status `pending`.
 
 ### Body Parameters
 
-- `bytes: number`
+- `bytes: integer`
 
   The number of bytes in the file you are uploading.
 
@@ -66,9 +66,11 @@ Returns the Upload object with status `pending`.
 
     - `"created_at"`
 
-  - `seconds: number`
+  - `seconds: integer`
 
     The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
+
+    `format: int64`, `minimum: 3600`, `maximum: 2592000`
 
 ### Returns
 
@@ -80,17 +82,21 @@ Returns the Upload object with status `pending`.
 
     The Upload unique identifier, which can be referenced in API endpoints.
 
-  - `bytes: number`
+  - `bytes: integer`
 
     The intended number of bytes to be uploaded.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the Upload was created.
 
-  - `expires_at: number`
+    `format: unixtime`
+
+  - `expires_at: integer`
 
     The Unix timestamp (in seconds) for when the Upload will expire.
+
+    `format: unixtime`
 
   - `filename: string`
 
@@ -120,14 +126,16 @@ Returns the Upload object with status `pending`.
 
       The file identifier, which can be referenced in the API endpoints.
 
-    - `bytes: number or null`
+    - `bytes: integer or null`
 
       The size of the file, in bytes. In a completed file upload response, this can
       be null when the file size is not yet available.
 
-    - `created_at: number`
+    - `created_at: integer`
 
       The Unix timestamp (in seconds) for when the file was created.
+
+      `format: unixtime`
 
     - `filename: string`
 
@@ -169,10 +177,12 @@ Returns the Upload object with status `pending`.
 
       - `"error"`
 
-    - `expires_at: optional number`
+    - `expires_at: optional integer`
 
       The Unix timestamp (in seconds) for when the file will expire. In a
       completed file upload response, this can be null when no expiry is set.
+
+      `format: unixtime`
 
     - `status_details: optional string`
 
@@ -198,7 +208,7 @@ curl https://api.openai.com/v1/uploads \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -241,7 +251,7 @@ curl https://api.openai.com/v1/uploads \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

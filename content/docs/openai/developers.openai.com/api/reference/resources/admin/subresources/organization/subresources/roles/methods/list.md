@@ -1,0 +1,139 @@
+> For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
+
+## List organization roles
+
+**get** `/organization/roles`
+
+Lists the roles configured for the organization.
+
+### Query Parameters
+
+- `after: optional string`
+
+  Cursor for pagination. Provide the value from the previous response's `next` field to continue listing roles.
+
+- `limit: optional integer (default: 1000)`
+
+  A limit on the number of roles to return. Defaults to 1000.
+
+  `minimum: 0`, `maximum: 1000`
+
+- `order: optional "asc" or "desc" (default: "asc")`
+
+  Sort order for the returned roles.
+
+  - `"asc"`
+
+  - `"desc"`
+
+### Returns
+
+- `data: array of Role`
+
+  Roles returned in the current page.
+
+  - `id: string`
+
+    Identifier for the role.
+
+  - `description: string or null`
+
+    Optional description of the role.
+
+  - `name: string`
+
+    Unique name for the role.
+
+  - `object: "role"`
+
+    Always `role`.
+
+    - `"role"`
+
+  - `permissions: array of string`
+
+    Permissions granted by the role.
+
+  - `predefined_role: boolean`
+
+    Whether the role is predefined and managed by OpenAI.
+
+  - `resource_type: string`
+
+    Resource type the role is bound to (for example `api.organization` or `api.project`).
+
+- `has_more: boolean`
+
+  Whether more roles are available when paginating.
+
+- `next: string or null`
+
+  Cursor to fetch the next page of results, or `null` when there are no additional roles.
+
+- `object: "list"`
+
+  Always `list`.
+
+  - `"list"`
+
+### Example
+
+```http
+curl https://api.openai.com/v1/organization/roles \
+    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
+```
+
+#### 200 — Example
+
+```json
+{
+  "data": [
+    {
+      "id": "id",
+      "description": "description",
+      "name": "name",
+      "object": "role",
+      "permissions": [
+        "string"
+      ],
+      "predefined_role": true,
+      "resource_type": "resource_type"
+    }
+  ],
+  "has_more": true,
+  "next": "next",
+  "object": "list"
+}
+```
+
+### Example
+
+```http
+curl https://api.openai.com/v1/organization/roles?limit=20 \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "Content-Type: application/json"
+```
+
+#### Response example
+
+```json
+{
+    "object": "list",
+    "data": [
+        {
+            "object": "role",
+            "id": "role_01J1F8ROLE01",
+            "name": "API Group Manager",
+            "description": "Allows managing organization groups",
+            "permissions": [
+                "api.groups.read",
+                "api.groups.write"
+            ],
+            "resource_type": "api.organization",
+            "predefined_role": false
+        }
+    ],
+    "has_more": false,
+    "next": null
+}
+```

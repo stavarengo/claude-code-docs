@@ -516,16 +516,31 @@ client.responses().create(params).output().forEach(System.out::println);
 ```
 
 ```ruby
+require "json"
 require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-4.1",
   instructions: "Act as a coding agent. Inspect the reported failure, identify the smallest correct change, and explain how you would verify it.",
-  input: "The parser rejects an empty optional field even though the schema permits it. Diagnose the likely validation bug."
+  input: "The parser rejects an empty optional field even though the schema permits it. Diagnose the likely validation bug.",
+  tools: [
+    {
+      type: :function,
+      name: "python",
+      description: "Run Python code or a terminal command prefixed with an exclamation mark in the repository environment.",
+      parameters: {
+        type: "object",
+        properties: { input: { type: "string" } },
+        required: ["input"],
+        additionalProperties: false
+      },
+      strict: true
+    }
+  ]
 )
 
-puts(response.output_text)
+puts(JSON.pretty_generate(response.output.map(&:to_h)))
 ```
 
 
@@ -974,16 +989,48 @@ private static FunctionTool customerServiceTool(
 ```
 
 ```ruby
+require "json"
 require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
   model: "gpt-4.1",
   instructions: "You are a customer service assistant. Confirm the customer's goal, use only supplied account facts, and clearly explain the next action.",
-  input: "A customer says a replacement order still has not shipped. Draft a concise response."
+  input: "A customer says a replacement order still has not shipped. Draft a concise response.",
+  tools: [
+    {
+      type: :function,
+      name: "lookup_policy_document",
+      description: "Look up company policies and documents by topic.",
+      parameters: {
+        type: "object",
+        properties: { topic: { type: "string" } },
+        required: ["topic"],
+        additionalProperties: false
+      },
+      strict: true
+    },
+    {
+      type: :function,
+      name: "get_user_account_info",
+      description: "Get user account information.",
+      parameters: {
+        type: "object",
+        properties: {
+          phone_number: {
+            type: "string",
+            description: "Formatted as '(xxx) xxx-xxxx'"
+          }
+        },
+        required: ["phone_number"],
+        additionalProperties: false
+      },
+      strict: true
+    }
+  ]
 )
 
-puts(response.output_text)
+puts(JSON.pretty_generate(response.output.map(&:to_h)))
 ```
 
 

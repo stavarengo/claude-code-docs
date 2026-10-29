@@ -20,9 +20,11 @@ Creates a new service account in the project. By default, this also returns an u
 
   Create the service account without default roles or an API key.
 
-- `expires_in_seconds: optional number or null`
+- `expires_in_seconds: optional integer or null`
 
   Number of seconds until the initial API key expires. If omitted or null, the key does not expire unless the effective organization or project policy requires an expiration. When a policy sets a maximum lifetime, this value must be provided and must not exceed that limit. A non-null value cannot be used when `create_service_account_only` is true.
+
+  `minimum: 1`, `maximum: 31536000`
 
 ### Returns
 
@@ -32,7 +34,9 @@ Creates a new service account in the project. By default, this also returns an u
 
   - `id: string`
 
-  - `created_at: number`
+  - `created_at: integer`
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -44,11 +48,15 @@ Creates a new service account in the project. By default, this also returns an u
 
   - `value: string`
 
-  - `expires_at: optional number or null`
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
 
-- `created_at: number`
+    `format: unixtime`
+
+- `created_at: integer`
+
+  `format: unixtime`
 
 - `name: string`
 
@@ -75,7 +83,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_account
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -106,7 +114,7 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_ac
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -158,7 +166,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_account
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -176,7 +184,7 @@ curl -X DELETE https://api.openai.com/v1/organization/projects/proj_abc/service_
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -202,7 +210,7 @@ Returns a list of service accounts in the project.
 
   A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
 
@@ -214,9 +222,11 @@ Returns a list of service accounts in the project.
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the service account was created
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -255,7 +265,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_account
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -283,7 +293,7 @@ curl https://api.openai.com/v1/organization/projects/proj_abc/service_accounts?a
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -325,9 +335,11 @@ Retrieves a service account in the project.
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the service account was created
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -356,7 +368,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_account
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -376,7 +388,7 @@ curl https://api.openai.com/v1/organization/projects/proj_abc/service_accounts/s
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -424,9 +436,11 @@ Updates a service account in the project.
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the service account was created
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -457,7 +471,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_account
     -d '{}'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -481,7 +495,7 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_ac
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -505,9 +519,11 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_ac
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the service account was created
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -539,7 +555,9 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_ac
 
     - `id: string`
 
-    - `created_at: number`
+    - `created_at: integer`
+
+      `format: unixtime`
 
     - `name: string`
 
@@ -551,11 +569,15 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_ac
 
     - `value: string`
 
-    - `expires_at: optional number or null`
+    - `expires_at: optional integer or null`
 
       The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
 
-  - `created_at: number`
+      `format: unixtime`
+
+  - `created_at: integer`
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -603,9 +625,11 @@ Creates an API key for a service account in the project.
 
 ### Body Parameters
 
-- `expires_in_seconds: optional number or null`
+- `expires_in_seconds: optional integer or null`
 
   Number of seconds until the API key expires.
+
+  `minimum: 1`, `maximum: 31536000`
 
 - `name: optional string`
 
@@ -621,15 +645,17 @@ Creates an API key for a service account in the project.
 
   The identifier of the API key.
 
-- `created_at: number`
+- `created_at: integer`
 
   The Unix timestamp (in seconds) when the API key was created.
+
+  `format: unixtime`
 
 - `name: string`
 
   The name of the API key.
 
-- `object: "organization.project.service_account.api_key"`
+- `object: "organization.project.service_account.api_key" (default: "organization.project.service_account.api_key")`
 
   The object type, which is always `organization.project.service_account.api_key`
 
@@ -639,9 +665,11 @@ Creates an API key for a service account in the project.
 
   The unredacted API key value.
 
-- `expires_at: optional number or null`
+- `expires_at: optional integer or null`
 
   The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
+
+  `format: unixtime`
 
 ### Example
 
@@ -651,7 +679,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_account
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -676,7 +704,7 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_ac
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -698,15 +726,17 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_ac
 
     The identifier of the API key.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) when the API key was created.
+
+    `format: unixtime`
 
   - `name: string`
 
     The name of the API key.
 
-  - `object: "organization.project.service_account.api_key"`
+  - `object: "organization.project.service_account.api_key" (default: "organization.project.service_account.api_key")`
 
     The object type, which is always `organization.project.service_account.api_key`
 
@@ -716,6 +746,8 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_ac
 
     The unredacted API key value.
 
-  - `expires_at: optional number or null`
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
+
+    `format: unixtime`

@@ -34,9 +34,11 @@ Adds a user to the project. Users must already be members of the organization to
 
     The identifier, which can be referenced in API endpoints
 
-  - `added_at: number`
+  - `added_at: integer`
 
     The Unix timestamp (in seconds) of when the project was added.
+
+    `format: unixtime`
 
   - `object: "organization.project.user"`
 
@@ -67,7 +69,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/users \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -92,7 +94,7 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/users \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -137,7 +139,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/users/$USER_ID 
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -155,7 +157,7 @@ curl -X DELETE https://api.openai.com/v1/organization/projects/proj_abc/users/us
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -181,7 +183,7 @@ Returns a list of users in the project.
 
   A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
 
@@ -193,9 +195,11 @@ Returns a list of users in the project.
 
     The identifier, which can be referenced in API endpoints
 
-  - `added_at: number`
+  - `added_at: integer`
 
     The Unix timestamp (in seconds) of when the project was added.
+
+    `format: unixtime`
 
   - `object: "organization.project.user"`
 
@@ -230,7 +234,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/users \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -259,7 +263,7 @@ curl https://api.openai.com/v1/organization/projects/proj_abc/users?after=user_a
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -302,9 +306,11 @@ Retrieves a user in the project.
 
     The identifier, which can be referenced in API endpoints
 
-  - `added_at: number`
+  - `added_at: integer`
 
     The Unix timestamp (in seconds) of when the project was added.
+
+    `format: unixtime`
 
   - `object: "organization.project.user"`
 
@@ -331,7 +337,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/users/$USER_ID 
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -352,7 +358,7 @@ curl https://api.openai.com/v1/organization/projects/proj_abc/users/user_abc \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -393,9 +399,11 @@ Modifies a user's role in the project.
 
     The identifier, which can be referenced in API endpoints
 
-  - `added_at: number`
+  - `added_at: integer`
 
     The Unix timestamp (in seconds) of when the project was added.
+
+    `format: unixtime`
 
   - `object: "organization.project.user"`
 
@@ -424,7 +432,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/users/$USER_ID 
     -d '{}'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -448,7 +456,7 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/users/user
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -473,9 +481,11 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/users/user
 
     The identifier, which can be referenced in API endpoints
 
-  - `added_at: number`
+  - `added_at: integer`
 
     The Unix timestamp (in seconds) of when the project was added.
+
+    `format: unixtime`
 
   - `object: "organization.project.user"`
 
@@ -577,9 +587,11 @@ Assigns a project role to a user within a project.
 
     The identifier, which can be referenced in API endpoints
 
-  - `added_at: number`
+  - `added_at: integer`
 
     The Unix timestamp (in seconds) of when the user was added.
+
+    `format: unixtime`
 
   - `object: "organization.user"`
 
@@ -587,13 +599,17 @@ Assigns a project role to a user within a project.
 
     - `"organization.user"`
 
-  - `api_key_last_used_at: optional number or null`
+  - `api_key_last_used_at: optional integer or null`
 
     The Unix timestamp (in seconds) of the user's last API key usage.
 
-  - `created: optional number`
+    `format: unixtime`
+
+  - `created: optional integer`
 
     The Unix timestamp (in seconds) of when the user was created.
+
+    `format: unixtime`
 
   - `developer_persona: optional string or null`
 
@@ -659,7 +675,9 @@ Assigns a project role to a user within a project.
 
     - `banned: optional boolean or null`
 
-    - `banned_at: optional number or null`
+    - `banned_at: optional integer or null`
+
+      `format: unixtime`
 
     - `email: optional string or null`
 
@@ -680,7 +698,7 @@ curl https://api.openai.com/v1/projects/$PROJECT_ID/users/$USER_ID/roles \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -746,7 +764,7 @@ curl -X POST https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/ro
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -806,7 +824,7 @@ curl https://api.openai.com/v1/projects/$PROJECT_ID/users/$USER_ID/roles/$ROLE_I
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -823,7 +841,7 @@ curl -X DELETE https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -850,9 +868,11 @@ Lists the project roles assigned to a user within a project.
 
   Cursor for pagination. Provide the value from the previous response's `next` field to continue listing project roles.
 
-- `limit: optional number`
+- `limit: optional integer`
 
   A limit on the number of project role assignments to return.
+
+  `minimum: 0`, `maximum: 1000`
 
 - `order: optional "asc" or "desc"`
 
@@ -880,9 +900,11 @@ Lists the project roles assigned to a user within a project.
 
     - `principal_type: string`
 
-  - `created_at: number or null`
+  - `created_at: integer or null`
 
     When the role was created.
+
+    `format: unixtime`
 
   - `created_by: string or null`
 
@@ -916,9 +938,11 @@ Lists the project roles assigned to a user within a project.
 
     Resource type the role applies to.
 
-  - `updated_at: number or null`
+  - `updated_at: integer or null`
 
     When the role was last updated.
+
+    `format: unixtime`
 
 - `has_more: boolean`
 
@@ -941,7 +965,7 @@ curl https://api.openai.com/v1/projects/$PROJECT_ID/users/$USER_ID/roles \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -986,7 +1010,7 @@ curl https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1052,9 +1076,11 @@ Retrieves a project role assigned to a user.
 
   - `principal_type: string`
 
-- `created_at: number or null`
+- `created_at: integer or null`
 
   When the role was created.
+
+  `format: unixtime`
 
 - `created_by: string or null`
 
@@ -1088,9 +1114,11 @@ Retrieves a project role assigned to a user.
 
   Resource type the role applies to.
 
-- `updated_at: number or null`
+- `updated_at: integer or null`
 
   When the role was last updated.
+
+  `format: unixtime`
 
 ### Example
 
@@ -1099,7 +1127,7 @@ curl https://api.openai.com/v1/projects/$PROJECT_ID/users/$USER_ID/roles/$ROLE_I
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -1137,7 +1165,7 @@ curl https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles/role
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1215,9 +1243,11 @@ curl https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles/role
 
       The identifier, which can be referenced in API endpoints
 
-    - `added_at: number`
+    - `added_at: integer`
 
       The Unix timestamp (in seconds) of when the user was added.
+
+      `format: unixtime`
 
     - `object: "organization.user"`
 
@@ -1225,13 +1255,17 @@ curl https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles/role
 
       - `"organization.user"`
 
-    - `api_key_last_used_at: optional number or null`
+    - `api_key_last_used_at: optional integer or null`
 
       The Unix timestamp (in seconds) of the user's last API key usage.
 
-    - `created: optional number`
+      `format: unixtime`
+
+    - `created: optional integer`
 
       The Unix timestamp (in seconds) of when the user was created.
+
+      `format: unixtime`
 
     - `developer_persona: optional string or null`
 
@@ -1297,7 +1331,9 @@ curl https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles/role
 
       - `banned: optional boolean or null`
 
-      - `banned_at: optional number or null`
+      - `banned_at: optional integer or null`
+
+        `format: unixtime`
 
       - `email: optional string or null`
 
@@ -1339,9 +1375,11 @@ curl https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles/role
 
     - `principal_type: string`
 
-  - `created_at: number or null`
+  - `created_at: integer or null`
 
     When the role was created.
+
+    `format: unixtime`
 
   - `created_by: string or null`
 
@@ -1375,9 +1413,11 @@ curl https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles/role
 
     Resource type the role applies to.
 
-  - `updated_at: number or null`
+  - `updated_at: integer or null`
 
     When the role was last updated.
+
+    `format: unixtime`
 
 ### Role Retrieve Response
 
@@ -1397,9 +1437,11 @@ curl https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles/role
 
     - `principal_type: string`
 
-  - `created_at: number or null`
+  - `created_at: integer or null`
 
     When the role was created.
+
+    `format: unixtime`
 
   - `created_by: string or null`
 
@@ -1433,6 +1475,8 @@ curl https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles/role
 
     Resource type the role applies to.
 
-  - `updated_at: number or null`
+  - `updated_at: integer or null`
 
     When the role was last updated.
+
+    `format: unixtime`

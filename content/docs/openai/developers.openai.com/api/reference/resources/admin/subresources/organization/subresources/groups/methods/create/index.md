@@ -10,6 +10,8 @@ Creates a new group in the organization.
 
   Human readable name for the group.
 
+  `minLength: 1`, `maxLength: 255`
+
 ### Returns
 
 - `Group object { id, created_at, group_type, 2 more }`
@@ -20,9 +22,11 @@ Creates a new group in the organization.
 
     Identifier for the group.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     Unix timestamp (in seconds) when the group was created.
+
+    `format: unixtime`
 
   - `group_type: "group" or "tenant_group"`
 
@@ -51,7 +55,7 @@ curl https://api.openai.com/v1/organization/groups \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -74,7 +78,7 @@ curl -X POST https://api.openai.com/v1/organization/groups \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

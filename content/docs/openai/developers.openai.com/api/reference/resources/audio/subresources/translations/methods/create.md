@@ -6,6 +6,12 @@
 
 Translates audio into English.
 
+This endpoint supports only `whisper-1`. The endpoint and model are deprecated
+and scheduled to shut down on February 26, 2027. Migrate to
+`/v1/realtime/translations`, which requires a separate integration. See the
+[deprecation schedule](https://developers.openai.com/api/docs/deprecations)
+for details.
+
 ### Returns
 
 - `Translation object { text }`
@@ -17,6 +23,8 @@ Translates audio into English.
   - `duration: number`
 
     The duration of the input audio.
+
+    `format: double`
 
   - `language: string`
 
@@ -30,7 +38,7 @@ Translates audio into English.
 
     Segments of the translated text and their corresponding details.
 
-    - `id: number`
+    - `id: integer`
 
       Unique identifier of the segment.
 
@@ -38,19 +46,27 @@ Translates audio into English.
 
       Average logprob of the segment. If the value is lower than -1, consider the logprobs failed.
 
+      `format: float`
+
     - `compression_ratio: number`
 
       Compression ratio of the segment. If the value is greater than 2.4, consider the compression failed.
+
+      `format: float`
 
     - `end: number`
 
       End time of the segment in seconds.
 
+      `format: double`
+
     - `no_speech_prob: number`
 
       Probability of no speech in the segment. If the value is higher than 1.0 and the `avg_logprob` is below -1, consider this segment silent.
 
-    - `seek: number`
+      `format: float`
+
+    - `seek: integer`
 
       Seek offset of the segment.
 
@@ -58,9 +74,13 @@ Translates audio into English.
 
       Start time of the segment in seconds.
 
+      `format: double`
+
     - `temperature: number`
 
       Temperature parameter used for generating the segment.
+
+      `format: float`
 
     - `text: string`
 
@@ -80,7 +100,7 @@ curl https://api.openai.com/v1/audio/translations \
     -F model=whisper-1
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -98,7 +118,7 @@ curl https://api.openai.com/v1/audio/translations \
   -F model="whisper-1"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

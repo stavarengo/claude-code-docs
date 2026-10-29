@@ -20,13 +20,17 @@ Retrieves an API key in the project.
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the API key was created
 
-  - `last_used_at: number or null`
+    `format: unixtime`
+
+  - `last_used_at: integer or null`
 
     The Unix timestamp (in seconds) of when the API key was last used.
+
+    `format: unixtime`
 
   - `name: string`
 
@@ -48,9 +52,11 @@ Retrieves an API key in the project.
 
         The identifier, which can be referenced in API endpoints
 
-      - `created_at: number`
+      - `created_at: integer`
 
         The Unix timestamp (in seconds) of when the service account was created.
+
+        `format: unixtime`
 
       - `name: string`
 
@@ -76,9 +82,11 @@ Retrieves an API key in the project.
 
         The identifier, which can be referenced in API endpoints
 
-      - `created_at: number`
+      - `created_at: integer`
 
         The Unix timestamp (in seconds) of when the user was created.
+
+        `format: unixtime`
 
       - `email: string`
 
@@ -104,9 +112,11 @@ Retrieves an API key in the project.
 
     The redacted value of the API key
 
-  - `expires_at: optional number or null`
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
+
+    `format: unixtime`
 
 ### Example
 
@@ -115,7 +125,7 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/api_keys/$API_K
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -154,7 +164,7 @@ curl https://api.openai.com/v1/organization/projects/proj_abc/api_keys/key_abc \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

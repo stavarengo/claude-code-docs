@@ -50,7 +50,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID/con
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -74,7 +74,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -113,6 +113,8 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
   - `string`
 
+    `maxLength: 512`
+
   - `number`
 
   - `boolean`
@@ -137,15 +139,17 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
     - `static: StaticFileChunkingStrategy`
 
-      - `chunk_overlap_tokens: number`
+      - `chunk_overlap_tokens: integer`
 
         The number of tokens that overlap between chunks. The default value is `400`.
 
         Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-      - `max_chunk_size_tokens: number`
+      - `max_chunk_size_tokens: integer`
 
         The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+        `minimum: 100`, `maximum: 4096`
 
     - `type: "static"`
 
@@ -163,9 +167,11 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store file was created.
+
+    `format: unixtime`
 
   - `last_error: object { code, message }  or null`
 
@@ -203,7 +209,7 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
     - `"failed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total vector store usage in bytes. Note that this may be different from the original file size.
 
@@ -221,6 +227,8 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
     - `string`
 
+      `maxLength: 512`
+
     - `number`
 
     - `boolean`
@@ -233,15 +241,17 @@ Create a vector store file by attaching a [File](/api/reference/resources/files)
 
       - `static: StaticFileChunkingStrategy`
 
-        - `chunk_overlap_tokens: number`
+        - `chunk_overlap_tokens: integer`
 
           The number of tokens that overlap between chunks. The default value is `400`.
 
           Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-        - `max_chunk_size_tokens: number`
+        - `max_chunk_size_tokens: integer`
 
           The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+          `minimum: 100`, `maximum: 4096`
 
       - `type: "static"`
 
@@ -271,7 +281,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -310,7 +320,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
     }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -357,7 +367,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -377,7 +387,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
   -X DELETE
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -419,11 +429,11 @@ Returns a list of vector store files.
 
   - `"cancelled"`
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
 
-- `order: optional "asc" or "desc"`
+- `order: optional "asc" or "desc" (default: "desc")`
 
   Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
 
@@ -439,9 +449,11 @@ Returns a list of vector store files.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store file was created.
+
+    `format: unixtime`
 
   - `last_error: object { code, message }  or null`
 
@@ -479,7 +491,7 @@ Returns a list of vector store files.
 
     - `"failed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total vector store usage in bytes. Note that this may be different from the original file size.
 
@@ -497,6 +509,8 @@ Returns a list of vector store files.
 
     - `string`
 
+      `maxLength: 512`
+
     - `number`
 
     - `boolean`
@@ -509,15 +523,17 @@ Returns a list of vector store files.
 
       - `static: StaticFileChunkingStrategy`
 
-        - `chunk_overlap_tokens: number`
+        - `chunk_overlap_tokens: integer`
 
           The number of tokens that overlap between chunks. The default value is `400`.
 
           Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-        - `max_chunk_size_tokens: number`
+        - `max_chunk_size_tokens: integer`
 
           The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+          `minimum: 100`, `maximum: 4096`
 
       - `type: "static"`
 
@@ -551,7 +567,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -595,7 +611,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
   -H "OpenAI-Beta: assistants=v2"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -648,9 +664,11 @@ Retrieves a vector store file.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store file was created.
+
+    `format: unixtime`
 
   - `last_error: object { code, message }  or null`
 
@@ -688,7 +706,7 @@ Retrieves a vector store file.
 
     - `"failed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total vector store usage in bytes. Note that this may be different from the original file size.
 
@@ -706,6 +724,8 @@ Retrieves a vector store file.
 
     - `string`
 
+      `maxLength: 512`
+
     - `number`
 
     - `boolean`
@@ -718,15 +738,17 @@ Retrieves a vector store file.
 
       - `static: StaticFileChunkingStrategy`
 
-        - `chunk_overlap_tokens: number`
+        - `chunk_overlap_tokens: integer`
 
           The number of tokens that overlap between chunks. The default value is `400`.
 
           Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-        - `max_chunk_size_tokens: number`
+        - `max_chunk_size_tokens: integer`
 
           The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+          `minimum: 100`, `maximum: 4096`
 
       - `type: "static"`
 
@@ -752,7 +774,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -788,7 +810,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
   -H "OpenAI-Beta: assistants=v2"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -826,6 +848,8 @@ Update attributes on a vector store file.
 
   - `string`
 
+    `maxLength: 512`
+
   - `number`
 
   - `boolean`
@@ -840,9 +864,11 @@ Update attributes on a vector store file.
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store file was created.
+
+    `format: unixtime`
 
   - `last_error: object { code, message }  or null`
 
@@ -880,7 +906,7 @@ Update attributes on a vector store file.
 
     - `"failed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total vector store usage in bytes. Note that this may be different from the original file size.
 
@@ -898,6 +924,8 @@ Update attributes on a vector store file.
 
     - `string`
 
+      `maxLength: 512`
+
     - `number`
 
     - `boolean`
@@ -910,15 +938,17 @@ Update attributes on a vector store file.
 
       - `static: StaticFileChunkingStrategy`
 
-        - `chunk_overlap_tokens: number`
+        - `chunk_overlap_tokens: integer`
 
           The number of tokens that overlap between chunks. The default value is `400`.
 
           Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-        - `max_chunk_size_tokens: number`
+        - `max_chunk_size_tokens: integer`
 
           The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+          `minimum: 100`, `maximum: 4096`
 
       - `type: "static"`
 
@@ -950,7 +980,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -986,7 +1016,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
   -d '{"attributes": {"key1": "value1", "key2": 2}}'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
@@ -1032,9 +1062,11 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
     The identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the vector store file was created.
+
+    `format: unixtime`
 
   - `last_error: object { code, message }  or null`
 
@@ -1072,7 +1104,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
     - `"failed"`
 
-  - `usage_bytes: number`
+  - `usage_bytes: integer`
 
     The total vector store usage in bytes. Note that this may be different from the original file size.
 
@@ -1090,6 +1122,8 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
     - `string`
 
+      `maxLength: 512`
+
     - `number`
 
     - `boolean`
@@ -1102,15 +1136,17 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
       - `static: StaticFileChunkingStrategy`
 
-        - `chunk_overlap_tokens: number`
+        - `chunk_overlap_tokens: integer`
 
           The number of tokens that overlap between chunks. The default value is `400`.
 
           Note that the overlap must not exceed half of `max_chunk_size_tokens`.
 
-        - `max_chunk_size_tokens: number`
+        - `max_chunk_size_tokens: integer`
 
           The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+
+          `minimum: 100`, `maximum: 4096`
 
       - `type: "static"`
 

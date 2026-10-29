@@ -14,7 +14,7 @@ Lists all of the users in the organization.
 
   Filter by the email address of users.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
 
@@ -26,9 +26,11 @@ Lists all of the users in the organization.
 
     The identifier, which can be referenced in API endpoints
 
-  - `added_at: number`
+  - `added_at: integer`
 
     The Unix timestamp (in seconds) of when the user was added.
+
+    `format: unixtime`
 
   - `object: "organization.user"`
 
@@ -36,13 +38,17 @@ Lists all of the users in the organization.
 
     - `"organization.user"`
 
-  - `api_key_last_used_at: optional number or null`
+  - `api_key_last_used_at: optional integer or null`
 
     The Unix timestamp (in seconds) of the user's last API key usage.
 
-  - `created: optional number`
+    `format: unixtime`
+
+  - `created: optional integer`
 
     The Unix timestamp (in seconds) of when the user was created.
+
+    `format: unixtime`
 
   - `developer_persona: optional string or null`
 
@@ -108,7 +114,9 @@ Lists all of the users in the organization.
 
     - `banned: optional boolean or null`
 
-    - `banned_at: optional number or null`
+    - `banned_at: optional integer or null`
+
+      `format: unixtime`
 
     - `email: optional string or null`
 
@@ -135,7 +143,7 @@ curl https://api.openai.com/v1/organization/users \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -192,7 +200,7 @@ curl https://api.openai.com/v1/organization/users?after=user_abc&limit=20 \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

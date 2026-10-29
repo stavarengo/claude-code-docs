@@ -20,14 +20,16 @@ Returns information about a specific file.
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number or null`
+  - `bytes: integer or null`
 
     The size of the file, in bytes. In a completed file upload response, this can
     be null when the file size is not yet available.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the file was created.
+
+    `format: unixtime`
 
   - `filename: string`
 
@@ -69,10 +71,12 @@ Returns information about a specific file.
 
     - `"error"`
 
-  - `expires_at: optional number`
+  - `expires_at: optional integer`
 
     The Unix timestamp (in seconds) for when the file will expire. In a
     completed file upload response, this can be null when no expiry is set.
+
+    `format: unixtime`
 
   - `status_details: optional string`
 
@@ -85,7 +89,7 @@ curl https://api.openai.com/v1/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -108,7 +112,7 @@ curl https://api.openai.com/v1/files/file-abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

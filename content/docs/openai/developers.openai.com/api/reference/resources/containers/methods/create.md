@@ -22,7 +22,7 @@ Create Container
 
     - `"last_active_at"`
 
-  - `minutes: number`
+  - `minutes: integer`
 
 - `file_ids: optional array of string`
 
@@ -46,7 +46,7 @@ Create Container
 
   - `ContainerNetworkPolicyDisabled object { type }`
 
-    - `type: "disabled"`
+    - `type: "disabled" (default: "disabled")`
 
       Disable outbound network access. Always `disabled`.
 
@@ -58,7 +58,9 @@ Create Container
 
       A list of allowed domains when type is `allowlist`.
 
-    - `type: "allowlist"`
+      `minItems: 1`
+
+    - `type: "allowlist" (default: "allowlist")`
 
       Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -68,17 +70,25 @@ Create Container
 
       Optional domain-scoped secrets for allowlisted domains.
 
+      `minItems: 1`
+
       - `domain: string`
 
         The domain associated with the secret.
+
+        `minLength: 1`
 
       - `name: string`
 
         The name of the secret to inject for the domain.
 
+        `minLength: 1`
+
       - `value: string`
 
         The secret value to inject for the domain.
+
+        `minLength: 1`, `maxLength: 10485760`
 
 - `skills: optional array of SkillReference or InlineSkill`
 
@@ -90,7 +100,9 @@ Create Container
 
       The ID of the referenced skill.
 
-    - `type: "skill_reference"`
+      `minLength: 1`, `maxLength: 64`
+
+    - `type: "skill_reference" (default: "skill_reference")`
 
       References a skill created with the /v1/skills endpoint.
 
@@ -118,19 +130,21 @@ Create Container
 
         Base64-encoded skill zip bundle.
 
-      - `media_type: "application/zip"`
+        `minLength: 1`, `maxLength: 70254592`
+
+      - `media_type: "application/zip" (default: "application/zip")`
 
         The media type of the inline skill payload. Must be `application/zip`.
 
         - `"application/zip"`
 
-      - `type: "base64"`
+      - `type: "base64" (default: "base64")`
 
         The type of the inline skill source. Must be `base64`.
 
         - `"base64"`
 
-    - `type: "inline"`
+    - `type: "inline" (default: "inline")`
 
       Defines an inline skill for this request.
 
@@ -142,9 +156,11 @@ Create Container
 
   Unique identifier for the container.
 
-- `created_at: number`
+- `created_at: integer`
 
   Unix timestamp (in seconds) when the container was created.
+
+  `format: unixtime`
 
 - `name: string`
 
@@ -170,13 +186,15 @@ Create Container
 
     - `"last_active_at"`
 
-  - `minutes: optional number`
+  - `minutes: optional integer`
 
     The number of minutes after the anchor before the container expires.
 
-- `last_active_at: optional number`
+- `last_active_at: optional integer`
 
   Unix timestamp (in seconds) when the container was last active.
+
+  `format: unixtime`
 
 - `memory_limit: optional "1g" or "4g" or "16g" or "64g"`
 
@@ -217,7 +235,7 @@ curl https://api.openai.com/v1/containers \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -268,7 +286,7 @@ curl https://api.openai.com/v1/containers \
       }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

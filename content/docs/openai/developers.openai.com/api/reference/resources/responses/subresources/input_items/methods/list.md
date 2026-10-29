@@ -37,7 +37,7 @@ Returns a list of input items for a given response.
 
   - `"message.output_text.logprobs"`
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between
   1 and 100, and the default is 20.
@@ -82,7 +82,7 @@ Returns a list of input items for a given response.
 
             The text input to the model.
 
-          - `type: "input_text"`
+          - `type: "input_text" (default: "input_text")`
 
             The type of the input item. Always `input_text`.
 
@@ -92,7 +92,7 @@ Returns a list of input items for a given response.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -122,7 +122,7 @@ Returns a list of input items for a given response.
 
             - `"original"`
 
-          - `type: "input_image"`
+          - `type: "input_image" (default: "input_image")`
 
             The type of the input item. Always `input_image`.
 
@@ -136,11 +136,13 @@ Returns a list of input items for a given response.
 
             The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL.
 
+            `format: uri`
+
           - `prompt_cache_breakpoint: optional object { mode, ttl }`
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -158,7 +160,7 @@ Returns a list of input items for a given response.
 
           A file input to the model.
 
-          - `type: "input_file"`
+          - `type: "input_file" (default: "input_file")`
 
             The type of the input item. Always `input_file`.
 
@@ -186,6 +188,8 @@ Returns a list of input items for a given response.
 
             The URL of the file to be sent to the model.
 
+            `format: uri`
+
           - `filename: optional string`
 
             The name of the file to be sent to the model.
@@ -194,7 +198,7 @@ Returns a list of input items for a given response.
 
             Marks the exact end of a reusable prompt prefix. When `ttl` is omitted, the breakpoint inherits the request's `prompt_cache_options.ttl`; the boundary is not rounded to a token block.
 
-            - `mode: "explicit"`
+            - `mode: "explicit" (default: "explicit")`
 
               The breakpoint mode. Always `explicit`.
 
@@ -267,11 +271,11 @@ Returns a list of input items for a given response.
 
                 The filename of the file cited.
 
-              - `index: number`
+              - `index: integer`
 
                 The index in the output text at which to insert the file citation.
 
-              - `type: "file_citation"`
+              - `type: "file_citation" (default: "file_citation")`
 
                 The type of the file citation. Always `file_citation`.
 
@@ -281,11 +285,11 @@ Returns a list of input items for a given response.
 
               A citation for a web resource used to generate a model response.
 
-              - `end_index: number`
+              - `end_index: integer`
 
                 The index of the last character of the URL citation in the message.
 
-              - `start_index: number`
+              - `start_index: integer`
 
                 The index of the first character of the URL citation in the message.
 
@@ -293,7 +297,7 @@ Returns a list of input items for a given response.
 
                 The title of the web resource.
 
-              - `type: "url_citation"`
+              - `type: "url_citation" (default: "url_citation")`
 
                 The type of the URL citation. Always `url_citation`.
 
@@ -303,6 +307,8 @@ Returns a list of input items for a given response.
 
                 The URL of the web resource.
 
+                `format: uri`
+
             - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
               A citation for a container file used to generate a model response.
@@ -311,7 +317,7 @@ Returns a list of input items for a given response.
 
                 The ID of the container file.
 
-              - `end_index: number`
+              - `end_index: integer`
 
                 The index of the last character of the container file citation in the message.
 
@@ -323,11 +329,11 @@ Returns a list of input items for a given response.
 
                 The filename of the container file cited.
 
-              - `start_index: number`
+              - `start_index: integer`
 
                 The index of the first character of the container file citation in the message.
 
-              - `type: "container_file_citation"`
+              - `type: "container_file_citation" (default: "container_file_citation")`
 
                 The type of the container file citation. Always `container_file_citation`.
 
@@ -341,7 +347,7 @@ Returns a list of input items for a given response.
 
                 The ID of the file.
 
-              - `index: number`
+              - `index: integer`
 
                 The index of the file in the list of files.
 
@@ -371,7 +377,7 @@ Returns a list of input items for a given response.
 
             The text output from the model.
 
-          - `type: "output_text"`
+          - `type: "output_text" (default: "output_text")`
 
             The type of the output text. Always `output_text`.
 
@@ -385,7 +391,7 @@ Returns a list of input items for a given response.
 
             The refusal explanation from the model.
 
-          - `type: "refusal"`
+          - `type: "refusal" (default: "refusal")`
 
             The type of the refusal. Always `refusal`.
 
@@ -472,6 +478,8 @@ Returns a list of input items for a given response.
 
           - `string`
 
+            `maxLength: 512`
+
           - `number`
 
           - `boolean`
@@ -487,6 +495,8 @@ Returns a list of input items for a given response.
         - `score: optional number`
 
           The relevance score of the file - a value between 0 and 1.
+
+          `format: float`
 
         - `text: optional string`
 
@@ -532,7 +542,7 @@ Returns a list of input items for a given response.
 
         - `"incomplete"`
 
-      - `type: "computer_call"`
+      - `type: "computer_call" (default: "computer_call")`
 
         The type of the computer call. Always `computer_call`.
 
@@ -560,17 +570,17 @@ Returns a list of input items for a given response.
 
             - `"forward"`
 
-          - `type: "click"`
+          - `type: "click" (default: "click")`
 
             Specifies the event type. For a click action, this property is always `click`.
 
             - `"click"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the click occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the click occurred.
 
@@ -586,17 +596,17 @@ Returns a list of input items for a given response.
 
             The keys being held while double-clicking.
 
-          - `type: "double_click"`
+          - `type: "double_click" (default: "double_click")`
 
             Specifies the event type. For a double click action, this property is always set to `double_click`.
 
             - `"double_click"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the double click occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the double click occurred.
 
@@ -615,15 +625,15 @@ Returns a list of input items for a given response.
             ]
             ```
 
-            - `x: number`
+            - `x: integer`
 
               The x-coordinate.
 
-            - `y: number`
+            - `y: integer`
 
               The y-coordinate.
 
-          - `type: "drag"`
+          - `type: "drag" (default: "drag")`
 
             Specifies the event type. For a drag action, this property is always set to `drag`.
 
@@ -641,7 +651,7 @@ Returns a list of input items for a given response.
 
             The combination of keys the model is requesting to be pressed. This is an array of strings, each representing a key.
 
-          - `type: "keypress"`
+          - `type: "keypress" (default: "keypress")`
 
             Specifies the event type. For a keypress action, this property is always set to `keypress`.
 
@@ -651,17 +661,17 @@ Returns a list of input items for a given response.
 
           A mouse move action.
 
-          - `type: "move"`
+          - `type: "move" (default: "move")`
 
             Specifies the event type. For a move action, this property is always set to `move`.
 
             - `"move"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate to move to.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate to move to.
 
@@ -673,7 +683,7 @@ Returns a list of input items for a given response.
 
           A screenshot action.
 
-          - `type: "screenshot"`
+          - `type: "screenshot" (default: "screenshot")`
 
             Specifies the event type. For a screenshot action, this property is always set to `screenshot`.
 
@@ -683,25 +693,25 @@ Returns a list of input items for a given response.
 
           A scroll action.
 
-          - `scroll_x: number`
+          - `scroll_x: integer`
 
             The horizontal scroll distance.
 
-          - `scroll_y: number`
+          - `scroll_y: integer`
 
             The vertical scroll distance.
 
-          - `type: "scroll"`
+          - `type: "scroll" (default: "scroll")`
 
             Specifies the event type. For a scroll action, this property is always set to `scroll`.
 
             - `"scroll"`
 
-          - `x: number`
+          - `x: integer`
 
             The x-coordinate where the scroll occurred.
 
-          - `y: number`
+          - `y: integer`
 
             The y-coordinate where the scroll occurred.
 
@@ -717,7 +727,7 @@ Returns a list of input items for a given response.
 
             The text to type.
 
-          - `type: "type"`
+          - `type: "type" (default: "type")`
 
             Specifies the event type. For a type action, this property is always set to `type`.
 
@@ -727,7 +737,7 @@ Returns a list of input items for a given response.
 
           A wait action.
 
-          - `type: "wait"`
+          - `type: "wait" (default: "wait")`
 
             Specifies the event type. For a wait action, this property is always set to `wait`.
 
@@ -788,7 +798,7 @@ Returns a list of input items for a given response.
 
         A computer screenshot image used with the computer use tool.
 
-        - `type: "computer_screenshot"`
+        - `type: "computer_screenshot" (default: "computer_screenshot")`
 
           Specifies the event type. For a computer screenshot, this property is
           always set to `computer_screenshot`.
@@ -803,6 +813,8 @@ Returns a list of input items for a given response.
 
           The URL of the screenshot image.
 
+          `format: uri`
+
       - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
         The status of the message input. One of `in_progress`, `completed`, or
@@ -816,7 +828,7 @@ Returns a list of input items for a given response.
 
         - `"in_progress"`
 
-      - `type: "computer_call_output"`
+      - `type: "computer_call_output" (default: "computer_call_output")`
 
         The type of the computer tool call output. Always `computer_call_output`.
 
@@ -909,6 +921,8 @@ Returns a list of input items for a given response.
 
               The URL of the source.
 
+              `format: uri`
+
         - `OpenPage object { type, url }`
 
           Action type "open_page" - Opens a specific URL from search results.
@@ -922,6 +936,8 @@ Returns a list of input items for a given response.
           - `url: optional string or null`
 
             The URL opened by the model.
+
+            `format: uri`
 
         - `FindInPage object { pattern, type, url }`
 
@@ -940,6 +956,8 @@ Returns a list of input items for a given response.
           - `url: optional string or null`
 
             The URL of the page searched for the pattern, when available.
+
+            `format: uri`
 
     - `FunctionCall object { id, arguments, call_id, 7 more }`
 
@@ -986,7 +1004,7 @@ Returns a list of input items for a given response.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -996,7 +1014,7 @@ Returns a list of input items for a given response.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -1066,7 +1084,7 @@ Returns a list of input items for a given response.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -1078,7 +1096,9 @@ Returns a list of input items for a given response.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -1128,7 +1148,7 @@ Returns a list of input items for a given response.
 
         - `"incomplete"`
 
-      - `type: "tool_search_call"`
+      - `type: "tool_search_call" (default: "tool_search_call")`
 
         The type of the item. Always `tool_search_call`.
 
@@ -1186,7 +1206,7 @@ Returns a list of input items for a given response.
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -1218,7 +1238,7 @@ Returns a list of input items for a given response.
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -1240,7 +1260,7 @@ Returns a list of input items for a given response.
 
                 The key to compare against the value.
 
-              - `type: "eq" or "ne" or "gt" or 5 more`
+              - `type: "eq" or "ne" or "gt" or 5 more (default: "eq")`
 
                 Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
@@ -1309,7 +1329,7 @@ Returns a list of input items for a given response.
 
                 - `"or"`
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -1345,7 +1365,7 @@ Returns a list of input items for a given response.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -1355,11 +1375,11 @@ Returns a list of input items for a given response.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -1377,7 +1397,7 @@ Returns a list of input items for a given response.
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -1388,7 +1408,7 @@ Returns a list of input items for a given response.
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -1396,7 +1416,7 @@ Returns a list of input items for a given response.
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -1404,14 +1424,14 @@ Returns a list of input items for a given response.
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -1443,7 +1463,7 @@ Returns a list of input items for a given response.
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -1467,6 +1487,8 @@ Returns a list of input items for a given response.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -1546,7 +1568,7 @@ Returns a list of input items for a given response.
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -1603,10 +1625,14 @@ Returns a list of input items for a given response.
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -1626,7 +1652,7 @@ Returns a list of input items for a given response.
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -1635,6 +1661,8 @@ Returns a list of input items for a given response.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -1654,7 +1682,7 @@ Returns a list of input items for a given response.
 
                 - `ContainerNetworkPolicyDisabled object { type }`
 
-                  - `type: "disabled"`
+                  - `type: "disabled" (default: "disabled")`
 
                     Disable outbound network access. Always `disabled`.
 
@@ -1666,7 +1694,9 @@ Returns a list of input items for a given response.
 
                     A list of allowed domains when type is `allowlist`.
 
-                  - `type: "allowlist"`
+                    `minItems: 1`
+
+                  - `type: "allowlist" (default: "allowlist")`
 
                     Allow outbound network access only to specified domains. Always `allowlist`.
 
@@ -1676,17 +1706,25 @@ Returns a list of input items for a given response.
 
                     Optional domain-scoped secrets for allowlisted domains.
 
+                    `minItems: 1`
+
                     - `domain: string`
 
                       The domain associated with the secret.
+
+                      `minLength: 1`
 
                     - `name: string`
 
                       The name of the secret to inject for the domain.
 
+                      `minLength: 1`
+
                     - `value: string`
 
                       The secret value to inject for the domain.
+
+                      `minLength: 1`, `maxLength: 10485760`
 
           - `type: "code_interpreter"`
 
@@ -1698,13 +1736,15 @@ Returns a list of input items for a given response.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -1730,7 +1770,7 @@ Returns a list of input items for a given response.
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -1811,7 +1851,7 @@ Returns a list of input items for a given response.
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -1819,11 +1859,13 @@ Returns a list of input items for a given response.
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -1834,11 +1876,13 @@ Returns a list of input items for a given response.
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -1857,7 +1901,7 @@ Returns a list of input items for a given response.
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -1879,7 +1923,7 @@ Returns a list of input items for a given response.
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -1889,7 +1933,7 @@ Returns a list of input items for a given response.
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -1899,6 +1943,8 @@ Returns a list of input items for a given response.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
@@ -1907,7 +1953,7 @@ Returns a list of input items for a given response.
 
             - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
-              - `type: "container_auto"`
+              - `type: "container_auto" (default: "container_auto")`
 
                 Automatically creates a container for this request
 
@@ -1916,6 +1962,8 @@ Returns a list of input items for a given response.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -1941,13 +1989,17 @@ Returns a list of input items for a given response.
 
                 An optional list of skills referenced by id or inline data.
 
+                `maxItems: 200`
+
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
                     The ID of the referenced skill.
 
-                  - `type: "skill_reference"`
+                    `minLength: 1`, `maxLength: 64`
+
+                  - `type: "skill_reference" (default: "skill_reference")`
 
                     References a skill created with the /v1/skills endpoint.
 
@@ -1975,19 +2027,21 @@ Returns a list of input items for a given response.
 
                       Base64-encoded skill zip bundle.
 
-                    - `media_type: "application/zip"`
+                      `minLength: 1`, `maxLength: 70254592`
+
+                    - `media_type: "application/zip" (default: "application/zip")`
 
                       The media type of the inline skill payload. Must be `application/zip`.
 
                       - `"application/zip"`
 
-                    - `type: "base64"`
+                    - `type: "base64" (default: "base64")`
 
                       The type of the inline skill source. Must be `base64`.
 
                       - `"base64"`
 
-                  - `type: "inline"`
+                  - `type: "inline" (default: "inline")`
 
                     Defines an inline skill for this request.
 
@@ -1995,7 +2049,7 @@ Returns a list of input items for a given response.
 
             - `LocalEnvironment object { type, skills }`
 
-              - `type: "local"`
+              - `type: "local" (default: "local")`
 
                 Use a local computer environment.
 
@@ -2004,6 +2058,8 @@ Returns a list of input items for a given response.
               - `skills: optional array of LocalSkill`
 
                 An optional list of skills.
+
+                `maxItems: 200`
 
                 - `description: string`
 
@@ -2023,7 +2079,7 @@ Returns a list of input items for a given response.
 
                 The ID of the referenced container.
 
-              - `type: "container_reference"`
+              - `type: "container_reference" (default: "container_reference")`
 
                 References a container created with the /v1/containers endpoint
 
@@ -2037,7 +2093,7 @@ Returns a list of input items for a given response.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -2046,6 +2102,8 @@ Returns a list of input items for a given response.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -2071,7 +2129,7 @@ Returns a list of input items for a given response.
 
               Unconstrained free-form text.
 
-              - `type: "text"`
+              - `type: "text" (default: "text")`
 
                 Unconstrained text format. Always `text`.
 
@@ -2093,7 +2151,7 @@ Returns a list of input items for a given response.
 
                 - `"regex"`
 
-              - `type: "grammar"`
+              - `type: "grammar" (default: "grammar")`
 
                 Grammar format. Always `grammar`.
 
@@ -2111,21 +2169,29 @@ Returns a list of input items for a given response.
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -2159,7 +2225,7 @@ Returns a list of input items for a given response.
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -2168,6 +2234,8 @@ Returns a list of input items for a given response.
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -2189,7 +2257,7 @@ Returns a list of input items for a given response.
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -2199,7 +2267,7 @@ Returns a list of input items for a given response.
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -2225,7 +2293,7 @@ Returns a list of input items for a given response.
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -2253,7 +2321,7 @@ Returns a list of input items for a given response.
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -2279,7 +2347,7 @@ Returns a list of input items for a given response.
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -2289,11 +2357,13 @@ Returns a list of input items for a given response.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "tool_search_output"`
+      - `type: "tool_search_output" (default: "tool_search_output")`
 
         The type of the item. Always `tool_search_output`.
 
@@ -2349,7 +2419,7 @@ Returns a list of input items for a given response.
 
             Whether strict parameter validation is enforced for this function tool.
 
-          - `type: "function"`
+          - `type: "function" (default: "function")`
 
             The type of the function tool. Always `function`.
 
@@ -2381,7 +2451,7 @@ Returns a list of input items for a given response.
 
           A tool that searches for relevant content from uploaded files. Learn more about the [file search tool](/api/docs/guides/tools-file-search).
 
-          - `type: "file_search"`
+          - `type: "file_search" (default: "file_search")`
 
             The type of the file search tool. Always `file_search`.
 
@@ -2403,7 +2473,7 @@ Returns a list of input items for a given response.
 
               Combine multiple filters using `and` or `or`.
 
-          - `max_num_results: optional number`
+          - `max_num_results: optional integer`
 
             The maximum number of results to return. This number should be between 1 and 50 inclusive.
 
@@ -2439,7 +2509,7 @@ Returns a list of input items for a given response.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `type: "computer"`
+          - `type: "computer" (default: "computer")`
 
             The type of the computer tool. Always `computer`.
 
@@ -2449,11 +2519,11 @@ Returns a list of input items for a given response.
 
           A tool that controls a virtual computer. Learn more about the [computer tool](/api/docs/guides/tools-computer-use).
 
-          - `display_height: number`
+          - `display_height: integer`
 
             The height of the computer display.
 
-          - `display_width: number`
+          - `display_width: integer`
 
             The width of the computer display.
 
@@ -2471,7 +2541,7 @@ Returns a list of input items for a given response.
 
             - `"browser"`
 
-          - `type: "computer_use_preview"`
+          - `type: "computer_use_preview" (default: "computer_use_preview")`
 
             The type of the computer use tool. Always `computer_use_preview`.
 
@@ -2482,7 +2552,7 @@ Returns a list of input items for a given response.
           Search the Internet for sources related to the prompt. Learn more about the
           [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search" or "web_search_2025_08_26"`
+          - `type: "web_search" or "web_search_2025_08_26" (default: "web_search")`
 
             The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.
 
@@ -2490,7 +2560,7 @@ Returns a list of input items for a given response.
 
             - `"web_search_2025_08_26"`
 
-          - `external_web_access: optional boolean`
+          - `external_web_access: optional boolean (default: true)`
 
             Allow live internet access for web search. Defaults to true when omitted. When false, the web search tool runs in offline/cache-only mode and will not fetch new external content.
 
@@ -2498,14 +2568,14 @@ Returns a list of input items for a given response.
 
             Filters for the search.
 
-            - `allowed_domains: optional array of string or null`
+            - `allowed_domains: optional array of string or null (default: [])`
 
               Allowed domains for the search. If not provided, all domains are allowed.
               Subdomains of the provided domains are allowed as well.
 
               Example: `["pubmed.ncbi.nlm.nih.gov"]`
 
-          - `search_context_size: optional "low" or "medium" or "high"`
+          - `search_context_size: optional "low" or "medium" or "high" (default: "medium")`
 
             High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
 
@@ -2537,7 +2607,7 @@ Returns a list of input items for a given response.
 
               The [IANA timezone](https://timeapi.io/documentation/iana-timezones) of the user, e.g. `America/Los_Angeles`.
 
-            - `type: optional "approximate"`
+            - `type: optional "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -2561,6 +2631,8 @@ Returns a list of input items for a given response.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -2640,7 +2712,7 @@ Returns a list of input items for a given response.
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null (default: "always")`
 
             Specify which of the MCP server's tools require approval.
 
@@ -2697,10 +2769,14 @@ Returns a list of input items for a given response.
             The URL for the MCP server. One of `server_url`, `connector_id`, or
             `tunnel_id` must be provided.
 
+            `format: uri`
+
           - `tunnel_id: optional string`
 
             The Secure MCP Tunnel ID to use instead of a direct server URL. One of
             `server_url`, `connector_id`, or `tunnel_id` must be provided.
+
+            `pattern: ^tunnel_[a-z0-9]{32}$`
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
@@ -2720,7 +2796,7 @@ Returns a list of input items for a given response.
 
               Configuration for a code interpreter container. Optionally specify the IDs of the files to run the code on.
 
-              - `type: "auto"`
+              - `type: "auto" (default: "auto")`
 
                 Always `auto`.
 
@@ -2729,6 +2805,8 @@ Returns a list of input items for a given response.
               - `file_ids: optional array of string`
 
                 An optional list of uploaded files to make available to your code.
+
+                `maxItems: 50`
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -2760,13 +2838,15 @@ Returns a list of input items for a given response.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
         - `ProgrammaticToolCalling object { type }`
 
-          - `type: "programmatic_tool_calling"`
+          - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
 
             The type of the tool. Always `programmatic_tool_calling`.
 
@@ -2792,7 +2872,7 @@ Returns a list of input items for a given response.
 
             - `"auto"`
 
-          - `background: optional "transparent" or "opaque" or "auto"`
+          - `background: optional "transparent" or "opaque" or "auto" (default: "auto")`
 
             Set the background of the generated image. One of `transparent`, `opaque`,
             or `auto`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including
@@ -2873,7 +2953,7 @@ Returns a list of input items for a given response.
 
               - `"gpt-image-2.5-flare-2026-09-08"`
 
-          - `moderation: optional "auto" or "low"`
+          - `moderation: optional "auto" or "low" (default: "auto")`
 
             Moderation level for the generated image. Default: `auto`.
 
@@ -2881,11 +2961,13 @@ Returns a list of input items for a given response.
 
             - `"low"`
 
-          - `output_compression: optional number`
+          - `output_compression: optional integer (default: 100)`
 
             Compression level for the output image. Default: 100.
 
-          - `output_format: optional "png" or "webp" or "jpeg"`
+            `minimum: 0`, `maximum: 100`
+
+          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
 
             The output format of the generated image. One of `png`, `webp`, or
             `jpeg`. Default: `png`.
@@ -2896,11 +2978,13 @@ Returns a list of input items for a given response.
 
             - `"jpeg"`
 
-          - `partial_images: optional number`
+          - `partial_images: optional integer (default: 0)`
 
             Number of partial images to generate in streaming mode, from 0 (default value) to 3.
 
-          - `quality: optional "low" or "medium" or "high" or 3 more`
+            `minimum: 0`, `maximum: 3`
+
+          - `quality: optional "low" or "medium" or "high" or 3 more (default: "auto")`
 
             The quality of the generated image. The GPT image models support `low`,
             `medium`, and `high`. `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`,
@@ -2919,7 +3003,7 @@ Returns a list of input items for a given response.
 
             - `"auto"`
 
-          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
+          - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto" (default: "auto")`
 
             The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
@@ -2941,7 +3025,7 @@ Returns a list of input items for a given response.
 
           A tool that allows the model to execute shell commands in a local environment.
 
-          - `type: "local_shell"`
+          - `type: "local_shell" (default: "local_shell")`
 
             The type of the local shell tool. Always `local_shell`.
 
@@ -2951,7 +3035,7 @@ Returns a list of input items for a given response.
 
           A tool that allows the model to execute shell commands.
 
-          - `type: "shell"`
+          - `type: "shell" (default: "shell")`
 
             The type of the shell tool. Always `shell`.
 
@@ -2960,6 +3044,8 @@ Returns a list of input items for a given response.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -2981,7 +3067,7 @@ Returns a list of input items for a given response.
 
             The name of the custom tool, used to identify it in tool calls.
 
-          - `type: "custom"`
+          - `type: "custom" (default: "custom")`
 
             The type of the custom tool. Always `custom`.
 
@@ -2990,6 +3076,8 @@ Returns a list of input items for a given response.
           - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
             The tool invocation context(s).
+
+            `minItems: 1`
 
             - `"direct"`
 
@@ -3023,21 +3111,29 @@ Returns a list of input items for a given response.
 
             The namespace name used in tool calls (for example, `crm`).
 
+            `minLength: 1`
+
           - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
+
+            `minItems: 1`
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
 
-              - `type: "function"`
+                `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
+
+              - `type: "function" (default: "function")`
 
                 - `"function"`
 
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -3071,7 +3167,7 @@ Returns a list of input items for a given response.
 
                 The name of the custom tool, used to identify it in tool calls.
 
-              - `type: "custom"`
+              - `type: "custom" (default: "custom")`
 
                 The type of the custom tool. Always `custom`.
 
@@ -3080,6 +3176,8 @@ Returns a list of input items for a given response.
               - `allowed_callers: optional array of "direct" or "programmatic" or null`
 
                 The tool invocation context(s).
+
+                `minItems: 1`
 
                 - `"direct"`
 
@@ -3101,7 +3199,7 @@ Returns a list of input items for a given response.
 
                 The input format for the custom tool. Default is unconstrained text.
 
-          - `type: "namespace"`
+          - `type: "namespace" (default: "namespace")`
 
             The type of the tool. Always `namespace`.
 
@@ -3111,7 +3209,7 @@ Returns a list of input items for a given response.
 
           Hosted or BYOT tool search configuration for deferred tools.
 
-          - `type: "tool_search"`
+          - `type: "tool_search" (default: "tool_search")`
 
             The type of the tool. Always `tool_search`.
 
@@ -3137,7 +3235,7 @@ Returns a list of input items for a given response.
 
           This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](/api/docs/guides/tools-web-search).
 
-          - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
+          - `type: "web_search_preview" or "web_search_preview_2025_03_11" (default: "web_search_preview")`
 
             The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.
 
@@ -3165,7 +3263,7 @@ Returns a list of input items for a given response.
 
             The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
-            - `type: "approximate"`
+            - `type: "approximate" (default: "approximate")`
 
               The type of location approximation. Always `approximate`.
 
@@ -3191,7 +3289,7 @@ Returns a list of input items for a given response.
 
           Allows the assistant to create, delete, or update files using unified diffs.
 
-          - `type: "apply_patch"`
+          - `type: "apply_patch" (default: "apply_patch")`
 
             The type of the tool. Always `apply_patch`.
 
@@ -3201,11 +3299,13 @@ Returns a list of input items for a given response.
 
             The tool invocation context(s).
 
+            `minItems: 1`
+
             - `"direct"`
 
             - `"programmatic"`
 
-      - `type: "additional_tools"`
+      - `type: "additional_tools" (default: "additional_tools")`
 
         The type of the item. Always `additional_tools`.
 
@@ -3220,7 +3320,7 @@ Returns a list of input items for a given response.
 
         The unique ID of the configuration update item.
 
-      - `type: "configuration_update"`
+      - `type: "configuration_update" (default: "configuration_update")`
 
         The item type. Always `configuration_update`.
 
@@ -3230,7 +3330,7 @@ Returns a list of input items for a given response.
 
         The reasoning configuration applied by this update.
 
-        - `effort: optional ReasoningEffort or null`
+        - `effort: optional ReasoningEffort or null (default: "medium")`
 
           The reasoning effort used for subsequent responses until another
           configuration update replaces it.
@@ -3268,7 +3368,7 @@ Returns a list of input items for a given response.
 
           A summary of the reasoning output from the model so far.
 
-        - `type: "summary_text"`
+        - `type: "summary_text" (default: "summary_text")`
 
           The type of the object. Always `summary_text`.
 
@@ -3288,7 +3388,7 @@ Returns a list of input items for a given response.
 
           The reasoning text from the model.
 
-        - `type: "reasoning_text"`
+        - `type: "reasoning_text" (default: "reasoning_text")`
 
           The type of the reasoning text. Always `reasoning_text`.
 
@@ -3335,7 +3435,7 @@ Returns a list of input items for a given response.
 
         Opaque program replay fingerprint that must be round-tripped.
 
-      - `type: "program"`
+      - `type: "program" (default: "program")`
 
         The type of the item. Always `program`.
 
@@ -3363,7 +3463,7 @@ Returns a list of input items for a given response.
 
         - `"incomplete"`
 
-      - `type: "program_output"`
+      - `type: "program_output" (default: "program_output")`
 
         The type of the item. Always `program_output`.
 
@@ -3381,7 +3481,7 @@ Returns a list of input items for a given response.
 
         The encrypted content that was produced by compaction.
 
-      - `type: "compaction"`
+      - `type: "compaction" (default: "compaction")`
 
         The type of the item. Always `compaction`.
 
@@ -3554,7 +3654,7 @@ Returns a list of input items for a given response.
 
             The logs output from the code interpreter.
 
-          - `type: "logs"`
+          - `type: "logs" (default: "logs")`
 
             The type of the output. Always `logs`.
 
@@ -3564,7 +3664,7 @@ Returns a list of input items for a given response.
 
           The image output from the code interpreter.
 
-          - `type: "image"`
+          - `type: "image" (default: "image")`
 
             The type of the output. Always `image`.
 
@@ -3573,6 +3673,8 @@ Returns a list of input items for a given response.
           - `url: string`
 
             The URL of the image output from the code interpreter.
+
+            `format: uri`
 
       - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
@@ -3588,7 +3690,7 @@ Returns a list of input items for a given response.
 
         - `"failed"`
 
-      - `type: "code_interpreter_call"`
+      - `type: "code_interpreter_call" (default: "code_interpreter_call")`
 
         The type of the code interpreter tool call. Always `code_interpreter_call`.
 
@@ -3614,13 +3716,13 @@ Returns a list of input items for a given response.
 
           Environment variables to set for the command.
 
-        - `type: "exec"`
+        - `type: "exec" (default: "exec")`
 
           The type of the local shell action. Always `exec`.
 
           - `"exec"`
 
-        - `timeout_ms: optional number or null`
+        - `timeout_ms: optional integer or null`
 
           Optional timeout in milliseconds for the command.
 
@@ -3694,11 +3796,11 @@ Returns a list of input items for a given response.
 
         - `commands: array of string`
 
-        - `max_output_length: number or null`
+        - `max_output_length: integer or null`
 
           Optional maximum number of characters to return from each command.
 
-        - `timeout_ms: number or null`
+        - `timeout_ms: integer or null`
 
           Optional timeout in milliseconds for the commands.
 
@@ -3714,7 +3816,7 @@ Returns a list of input items for a given response.
 
           Represents the use of a local environment to perform shell actions.
 
-          - `type: "local"`
+          - `type: "local" (default: "local")`
 
             The environment type. Always `local`.
 
@@ -3726,7 +3828,7 @@ Returns a list of input items for a given response.
 
           - `container_id: string`
 
-          - `type: "container_reference"`
+          - `type: "container_reference" (default: "container_reference")`
 
             The environment type. Always `container_reference`.
 
@@ -3742,7 +3844,7 @@ Returns a list of input items for a given response.
 
         - `"incomplete"`
 
-      - `type: "shell_call"`
+      - `type: "shell_call" (default: "shell_call")`
 
         The type of the item. Always `shell_call`.
 
@@ -3754,7 +3856,7 @@ Returns a list of input items for a given response.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -3764,7 +3866,7 @@ Returns a list of input items for a given response.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -3784,7 +3886,7 @@ Returns a list of input items for a given response.
 
         The unique ID of the shell tool call generated by the model.
 
-      - `max_output_length: number or null`
+      - `max_output_length: integer or null`
 
         The maximum length of the shell command output. This is generated by the model and should be passed back with the raw output.
 
@@ -3800,7 +3902,7 @@ Returns a list of input items for a given response.
 
             Indicates that the shell call exceeded its configured time limit.
 
-            - `type: "timeout"`
+            - `type: "timeout" (default: "timeout")`
 
               The outcome type. Always `timeout`.
 
@@ -3810,11 +3912,11 @@ Returns a list of input items for a given response.
 
             Indicates that the shell commands finished and returned an exit code.
 
-            - `exit_code: number`
+            - `exit_code: integer`
 
               Exit code from the shell process.
 
-            - `type: "exit"`
+            - `type: "exit" (default: "exit")`
 
               The outcome type. Always `exit`.
 
@@ -3842,7 +3944,7 @@ Returns a list of input items for a given response.
 
         - `"incomplete"`
 
-      - `type: "shell_call_output"`
+      - `type: "shell_call_output" (default: "shell_call_output")`
 
         The type of the shell call output. Always `shell_call_output`.
 
@@ -3854,7 +3956,7 @@ Returns a list of input items for a given response.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -3864,7 +3966,7 @@ Returns a list of input items for a given response.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -3900,7 +4002,7 @@ Returns a list of input items for a given response.
 
             Path of the file to create.
 
-          - `type: "create_file"`
+          - `type: "create_file" (default: "create_file")`
 
             Create a new file with the provided diff.
 
@@ -3914,7 +4016,7 @@ Returns a list of input items for a given response.
 
             Path of the file to delete.
 
-          - `type: "delete_file"`
+          - `type: "delete_file" (default: "delete_file")`
 
             Delete the specified file.
 
@@ -3932,7 +4034,7 @@ Returns a list of input items for a given response.
 
             Path of the file to update.
 
-          - `type: "update_file"`
+          - `type: "update_file" (default: "update_file")`
 
             Update an existing file with the provided diff.
 
@@ -3946,7 +4048,7 @@ Returns a list of input items for a given response.
 
         - `"completed"`
 
-      - `type: "apply_patch_call"`
+      - `type: "apply_patch_call" (default: "apply_patch_call")`
 
         The type of the item. Always `apply_patch_call`.
 
@@ -3958,7 +4060,7 @@ Returns a list of input items for a given response.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -3968,7 +4070,7 @@ Returns a list of input items for a given response.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -3996,7 +4098,7 @@ Returns a list of input items for a given response.
 
         - `"failed"`
 
-      - `type: "apply_patch_call_output"`
+      - `type: "apply_patch_call_output" (default: "apply_patch_call_output")`
 
         The type of the item. Always `apply_patch_call_output`.
 
@@ -4008,7 +4110,7 @@ Returns a list of input items for a given response.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -4018,7 +4120,7 @@ Returns a list of input items for a given response.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -4161,11 +4263,11 @@ Returns a list of input items for a given response.
 
         - `McpProtocolError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
-          - `type: "mcp_protocol_error"`
+          - `type: "mcp_protocol_error" (default: "mcp_protocol_error")`
 
             - `"mcp_protocol_error"`
 
@@ -4173,17 +4275,17 @@ Returns a list of input items for a given response.
 
           - `content: unknown`
 
-          - `type: "mcp_tool_execution_error"`
+          - `type: "mcp_tool_execution_error" (default: "mcp_tool_execution_error")`
 
             - `"mcp_tool_execution_error"`
 
         - `HTTPError object { code, message, type }`
 
-          - `code: number`
+          - `code: integer`
 
           - `message: string`
 
-          - `type: "http_error"`
+          - `type: "http_error" (default: "http_error")`
 
             - `"http_error"`
 
@@ -4250,7 +4352,7 @@ Returns a list of input items for a given response.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             - `"direct"`
 
@@ -4260,7 +4362,7 @@ Returns a list of input items for a given response.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+          - `type: "program" (default: "program")`
 
             - `"program"`
 
@@ -4330,7 +4432,7 @@ Returns a list of input items for a given response.
 
         - `Direct object { type }`
 
-          - `type: "direct"`
+          - `type: "direct" (default: "direct")`
 
             The caller type. Always `direct`.
 
@@ -4342,7 +4444,9 @@ Returns a list of input items for a given response.
 
             The call ID of the program item that produced this tool call.
 
-          - `type: "program"`
+            `minLength: 1`, `maxLength: 64`
+
+          - `type: "program" (default: "program")`
 
             The caller type. Always `program`.
 
@@ -4377,7 +4481,7 @@ curl https://api.openai.com/v1/responses/$RESPONSE_ID/input_items \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -4414,7 +4518,7 @@ curl https://api.openai.com/v1/responses/resp_abc123/input_items \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

@@ -10,11 +10,11 @@ Returns a list of projects.
 
   A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
 
-- `include_archived: optional boolean`
+- `include_archived: optional boolean (default: false)`
 
   If `true` returns all projects including those that have been `archived`. Archived projects are not included by default.
 
-- `limit: optional number`
+- `limit: optional integer (default: 20)`
 
   A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
 
@@ -26,9 +26,11 @@ Returns a list of projects.
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the project was created.
+
+    `format: unixtime`
 
   - `object: "organization.project"`
 
@@ -36,9 +38,11 @@ Returns a list of projects.
 
     - `"organization.project"`
 
-  - `archived_at: optional number or null`
+  - `archived_at: optional integer or null`
 
     The Unix timestamp (in seconds) of when the project was archived or `null`.
+
+    `format: unixtime`
 
   - `external_key_id: optional string or null`
 
@@ -103,7 +107,7 @@ curl https://api.openai.com/v1/organization/projects \
     -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -134,7 +138,7 @@ curl https://api.openai.com/v1/organization/projects?after=proj_abc&limit=20&inc
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

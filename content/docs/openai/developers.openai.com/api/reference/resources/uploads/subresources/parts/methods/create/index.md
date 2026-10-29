@@ -22,9 +22,11 @@ It is possible to add multiple Parts in parallel. You can decide the intended or
 
     The upload Part unique identifier, which can be referenced in API endpoints.
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) for when the Part was created.
+
+    `format: unixtime`
 
   - `object: "upload.part"`
 
@@ -45,7 +47,7 @@ curl https://api.openai.com/v1/uploads/$UPLOAD_ID/parts \
     -F 'data=@/path/to/data'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -63,7 +65,7 @@ curl https://api.openai.com/v1/uploads/upload_abc123/parts
   -F data="aHR0cHM6Ly9hcGkub3BlbmFpLmNvbS92MS91cGxvYWRz..."
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

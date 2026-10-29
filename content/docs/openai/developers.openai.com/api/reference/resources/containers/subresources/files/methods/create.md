@@ -28,7 +28,7 @@ You can send either a multipart/form-data request with the raw file content, or 
 
   Unique identifier for the file.
 
-- `bytes: number`
+- `bytes: integer`
 
   Size of the file in bytes.
 
@@ -36,9 +36,11 @@ You can send either a multipart/form-data request with the raw file content, or 
 
   The container this file belongs to.
 
-- `created_at: number`
+- `created_at: integer`
 
   Unix timestamp (in seconds) when the file was created.
+
+  `format: unixtime`
 
 - `object: string`
 
@@ -61,7 +63,7 @@ curl https://api.openai.com/v1/containers/$CONTAINER_ID/files \
     -d '{}'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -83,7 +85,7 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
   -F file="@example.txt"
 ```
 
-#### Response
+#### Response example
 
 ```json
 {

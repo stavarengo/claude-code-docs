@@ -44,9 +44,11 @@ Create an invite for a user to the organization. The invite must be accepted by 
 
     The identifier, which can be referenced in API endpoints
 
-  - `created_at: number`
+  - `created_at: integer`
 
     The Unix timestamp (in seconds) of when the invite was sent.
+
+    `format: unixtime`
 
   - `email: string`
 
@@ -92,13 +94,17 @@ Create an invite for a user to the organization. The invite must be accepted by 
 
     - `"pending"`
 
-  - `accepted_at: optional number or null`
+  - `accepted_at: optional integer or null`
 
     The Unix timestamp (in seconds) of when the invite was accepted.
 
-  - `expires_at: optional number or null`
+    `format: unixtime`
+
+  - `expires_at: optional integer or null`
 
     The Unix timestamp (in seconds) of when the invite expires.
+
+    `format: unixtime`
 
 ### Example
 
@@ -112,7 +118,7 @@ curl https://api.openai.com/v1/organization/invites \
         }'
 ```
 
-#### Response
+#### 200 — Example
 
 ```json
 {
@@ -155,7 +161,7 @@ curl -X POST https://api.openai.com/v1/organization/invites \
   }'
 ```
 
-#### Response
+#### Response example
 
 ```json
 {
