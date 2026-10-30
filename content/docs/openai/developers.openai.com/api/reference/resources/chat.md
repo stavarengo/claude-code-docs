@@ -2651,6 +2651,8 @@ created with the `store` parameter set to `true` can be deleted.
 
 - `completion_id: string`
 
+  The ID of the chat completion to delete.
+
 ### Returns
 
 - `ChatCompletionDeleted object { id, deleted, object }`
@@ -3509,6 +3511,8 @@ with the `store` parameter set to `true` will be returned.
 
 - `completion_id: string`
 
+  The ID of the chat completion to retrieve.
+
 ### Returns
 
 - `ChatCompletion object { id, choices, created, 7 more }`
@@ -4244,6 +4248,8 @@ the only supported modification is to update the `metadata` field.
 ### Path Parameters
 
 - `completion_id: string`
+
+  The ID of the chat completion to update.
 
 ### Body Parameters
 
@@ -8274,6 +8280,8 @@ returned.
 ### Path Parameters
 
 - `completion_id: string`
+
+  The ID of the chat completion to retrieve messages from.
 
 ### Query Parameters
 

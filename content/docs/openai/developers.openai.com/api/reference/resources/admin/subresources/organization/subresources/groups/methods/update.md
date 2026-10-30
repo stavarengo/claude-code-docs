@@ -10,6 +10,8 @@ Updates a group's information.
 
 - `group_id: string`
 
+  The ID of the group to update.
+
 ### Body Parameters
 
 - `name: string`

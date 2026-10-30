@@ -10,7 +10,11 @@ Updates an existing project role.
 
 - `project_id: string`
 
+  The ID of the project to update.
+
 - `role_id: string`
+
+  The ID of the role to update.
 
 ### Body Parameters
 

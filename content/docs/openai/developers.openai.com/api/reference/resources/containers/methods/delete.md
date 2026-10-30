@@ -10,6 +10,8 @@ Delete Container
 
 - `container_id: string`
 
+  The ID of the container to delete.
+
 ### Returns
 
 - `id: string`

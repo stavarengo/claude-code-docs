@@ -171,7 +171,7 @@ To get the same behavior with a self-hosted sandbox, you can run your own proxy 
 
     Request payloads are often assembled from content the agent is working with, so the request body is the broader exposure surface. Most services read an API key from a request header, so enabling only `header` is the narrower configuration. It scopes substitution to request header values for that credential.
 
-    The credential’s `injection_location` controls which parts of an outbound request the secret is substituted into. It is an optional object, a sibling of `networking`, with two Boolean fields: `header` (request headers) and `body` (request body). `injection_location` is independent of `allowed_hosts` in `networking`: `allowed_hosts` scopes which hosts the secret is substituted for, and `injection_location` scopes which parts of the request it is substituted into.
+    The credential’s `injection_location` controls which parts of an outbound request the secret is substituted into. It is an optional object, a sibling of `networking`, with two boolean fields: `header` (request headers) and `body` (request body). `injection_location` is independent of `allowed_hosts` in `networking`: `allowed_hosts` scopes which hosts the secret is substituted for, and `injection_location` scopes which parts of the request it is substituted into.
 
     `injection_location` behaves differently on create and on update:
 

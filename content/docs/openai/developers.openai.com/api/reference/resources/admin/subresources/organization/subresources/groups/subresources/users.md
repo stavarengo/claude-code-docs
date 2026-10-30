@@ -12,6 +12,8 @@ Adds a user to a group.
 
 - `group_id: string`
 
+  The ID of the group to update.
+
 ### Body Parameters
 
 - `user_id: string`
@@ -86,7 +88,11 @@ Removes a user from a group.
 
 - `group_id: string`
 
+  The ID of the group to update.
+
 - `user_id: string`
+
+  The ID of the user to remove from the group.
 
 ### Returns
 
@@ -143,6 +149,8 @@ Lists the users assigned to a group.
 ### Path Parameters
 
 - `group_id: string`
+
+  The ID of the group to inspect.
 
 ### Query Parameters
 
@@ -255,7 +263,11 @@ Retrieves a user in a group.
 
 - `group_id: string`
 
+  The ID of the group to inspect.
+
 - `user_id: string`
+
+  The ID of the user to retrieve from the group.
 
 ### Returns
 

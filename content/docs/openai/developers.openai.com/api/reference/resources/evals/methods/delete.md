@@ -10,6 +10,8 @@ Delete an evaluation.
 
 - `eval_id: string`
 
+  The ID of the evaluation to delete.
+
 ### Returns
 
 - `deleted: boolean`

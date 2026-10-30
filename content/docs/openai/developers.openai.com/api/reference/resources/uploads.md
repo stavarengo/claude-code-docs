@@ -14,6 +14,8 @@ Returns the Upload object with status `cancelled`.
 
 - `upload_id: string`
 
+  The ID of the Upload.
+
 ### Returns
 
 - `Upload object { id, bytes, created_at, 6 more }`
@@ -207,6 +209,8 @@ Returns the Upload object with status `completed`, including an additional `file
 ### Path Parameters
 
 - `upload_id: string`
+
+  The ID of the Upload.
 
 ### Body Parameters
 
@@ -817,6 +821,8 @@ It is possible to add multiple Parts in parallel. You can decide the intended or
 ### Path Parameters
 
 - `upload_id: string`
+
+  The ID of the Upload.
 
 ### Returns
 

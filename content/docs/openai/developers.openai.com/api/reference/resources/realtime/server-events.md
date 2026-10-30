@@ -166,9 +166,13 @@ Schema name: `RealtimeServerEventSessionCreated`
 
             - `"far_field"`
 
-        - `transcription: optional object { language, languages, model, prompt }  or null`
+        - `transcription: optional object { keywords, language, languages, 2 more }  or null`
 
           Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+
+          - `keywords: optional array of string`
+
+            Words or phrases configured to guide transcription of the input audio.
 
           - `language: optional string or null`
 
@@ -989,9 +993,13 @@ Schema name: `RealtimeServerEventSessionCreated`
 
             Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.
 
-        - `transcription: optional object { language, languages, model, prompt }  or null`
+        - `transcription: optional object { keywords, language, languages, 2 more }  or null`
 
           Configuration of the transcription model.
+
+          - `keywords: optional array of string`
+
+            Words or phrases configured to guide transcription of the input audio.
 
           - `language: optional string or null`
 
@@ -1232,9 +1240,13 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
             - `"far_field"`
 
-        - `transcription: optional object { language, languages, model, prompt }  or null`
+        - `transcription: optional object { keywords, language, languages, 2 more }  or null`
 
           Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
+
+          - `keywords: optional array of string`
+
+            Words or phrases configured to guide transcription of the input audio.
 
           - `language: optional string or null`
 
@@ -2055,9 +2067,13 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
             Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.
 
-        - `transcription: optional object { language, languages, model, prompt }  or null`
+        - `transcription: optional object { keywords, language, languages, 2 more }  or null`
 
           Configuration of the transcription model.
+
+          - `keywords: optional array of string`
+
+            Words or phrases configured to guide transcription of the input audio.
 
           - `language: optional string or null`
 

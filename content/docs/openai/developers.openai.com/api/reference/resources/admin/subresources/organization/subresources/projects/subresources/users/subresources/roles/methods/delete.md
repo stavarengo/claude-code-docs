@@ -10,9 +10,15 @@ Unassigns a project role from a user within a project.
 
 - `project_id: string`
 
+  The ID of the project to modify.
+
 - `user_id: string`
 
+  The ID of the user whose project role assignment should be removed.
+
 - `role_id: string`
+
+  The ID of the project role to remove from the user.
 
 ### Returns
 

@@ -10,6 +10,8 @@ Returns a list of service accounts in the project.
 
 - `project_id: string`
 
+  The ID of the project.
+
 ### Query Parameters
 
 - `after: optional string`

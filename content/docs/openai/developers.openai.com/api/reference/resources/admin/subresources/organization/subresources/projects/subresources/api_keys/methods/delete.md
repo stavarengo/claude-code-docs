@@ -15,7 +15,11 @@ Returns confirmation of the key deletion.
 
 - `project_id: string`
 
+  The ID of the project.
+
 - `api_key_id: string`
+
+  The ID of the API key.
 
 ### Returns
 

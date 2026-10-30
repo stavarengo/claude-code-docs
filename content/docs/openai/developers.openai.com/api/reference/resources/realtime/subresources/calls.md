@@ -13,6 +13,10 @@ handle it.
 
 - `call_id: string`
 
+  The identifier for the call provided in the
+  [`realtime.call.incoming`](/api/reference/resources/webhooks#realtime.call.incoming)
+  webhook.
+
 ### Body Parameters
 
 - `type: "realtime"`
@@ -982,6 +986,12 @@ WebRTC.
 
 - `call_id: string`
 
+  The identifier for the call. For SIP calls, use the value provided in the
+  [`realtime.call.incoming`](/api/reference/resources/webhooks#realtime.call.incoming)
+  webhook. For WebRTC sessions, reuse the call ID returned in the `Location`
+  header when creating the call with
+  [`POST /v1/realtime/calls`](/api/reference/resources/realtime/subresources/calls/methods/create).
+
 ### Example
 
 ```http
@@ -1006,6 +1016,10 @@ Transfer an active SIP call to a new destination using the SIP REFER verb.
 ### Path Parameters
 
 - `call_id: string`
+
+  The identifier for the call provided in the
+  [`realtime.call.incoming`](/api/reference/resources/webhooks#realtime.call.incoming)
+  webhook.
 
 ### Body Parameters
 
@@ -1043,6 +1057,10 @@ Decline an incoming SIP call by returning a SIP status code to the caller.
 ### Path Parameters
 
 - `call_id: string`
+
+  The identifier for the call provided in the
+  [`realtime.call.incoming`](/api/reference/resources/webhooks#realtime.call.incoming)
+  webhook.
 
 ### Body Parameters
 

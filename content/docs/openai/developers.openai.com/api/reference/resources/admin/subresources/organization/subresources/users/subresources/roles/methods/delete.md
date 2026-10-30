@@ -10,7 +10,11 @@ Unassigns an organization role from a user within the organization.
 
 - `user_id: string`
 
+  The ID of the user to modify.
+
 - `role_id: string`
+
+  The ID of the organization role to remove from the user.
 
 ### Returns
 

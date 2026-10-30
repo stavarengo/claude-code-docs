@@ -10,7 +10,11 @@ Retrieves an API key in the project.
 
 - `project_id: string`
 
+  The ID of the project.
+
 - `api_key_id: string`
+
+  The ID of the API key.
 
 ### Returns
 

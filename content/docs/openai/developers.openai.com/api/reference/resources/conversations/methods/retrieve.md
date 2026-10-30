@@ -10,6 +10,8 @@ Get a conversation
 
 - `conversation_id: string`
 
+  The ID of the conversation to retrieve.
+
 ### Returns
 
 - `Conversation object { id, created_at, metadata, object }`

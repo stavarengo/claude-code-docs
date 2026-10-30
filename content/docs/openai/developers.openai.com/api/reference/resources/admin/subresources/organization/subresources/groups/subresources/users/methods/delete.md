@@ -10,7 +10,11 @@ Removes a user from a group.
 
 - `group_id: string`
 
+  The ID of the group to update.
+
 - `user_id: string`
+
+  The ID of the user to remove from the group.
 
 ### Returns
 

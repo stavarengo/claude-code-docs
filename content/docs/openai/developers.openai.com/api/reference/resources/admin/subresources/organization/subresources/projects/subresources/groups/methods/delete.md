@@ -10,7 +10,11 @@ Revokes a group's access to a project.
 
 - `project_id: string`
 
+  The ID of the project to update.
+
 - `group_id: string`
+
+  The ID of the group to remove from the project.
 
 ### Returns
 

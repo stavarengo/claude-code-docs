@@ -12,6 +12,8 @@ Creates a new service account in the project. By default, this also returns an u
 
 - `project_id: string`
 
+  The ID of the project.
+
 ### Body Parameters
 
 - `name: string`
@@ -148,7 +150,11 @@ is archived (archived projects have no service accounts).
 
 - `project_id: string`
 
+  The ID of the project.
+
 - `service_account_id: string`
+
+  The ID of the service account.
 
 ### Returns
 
@@ -205,6 +211,8 @@ Returns a list of service accounts in the project.
 ### Path Parameters
 
 - `project_id: string`
+
+  The ID of the project.
 
 ### Query Parameters
 
@@ -325,7 +333,11 @@ Retrieves a service account in the project.
 
 - `project_id: string`
 
+  The ID of the project.
+
 - `service_account_id: string`
+
+  The ID of the service account.
 
 ### Returns
 
@@ -412,7 +424,11 @@ Updates a service account in the project.
 
 - `project_id: string`
 
+  The ID of the project.
+
 - `service_account_id: string`
+
+  The ID of the service account.
 
 ### Body Parameters
 

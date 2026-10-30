@@ -10,7 +10,11 @@ Retrieves a user in the project.
 
 - `project_id: string`
 
+  The ID of the project.
+
 - `user_id: string`
+
+  The ID of the user.
 
 ### Returns
 

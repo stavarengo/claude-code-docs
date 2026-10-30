@@ -10,6 +10,8 @@ Updates a voice consent recording (metadata only).
 
 - `consent_id: string`
 
+  The ID of the consent recording to update.
+
 ### Body Parameters
 
 - `name: string`

@@ -10,6 +10,8 @@ Adds a user to a group.
 
 - `group_id: string`
 
+  The ID of the group to update.
+
 ### Body Parameters
 
 - `user_id: string`

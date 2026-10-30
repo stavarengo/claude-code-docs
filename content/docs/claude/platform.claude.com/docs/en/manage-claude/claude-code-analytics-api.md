@@ -283,7 +283,7 @@ The Claude Code Analytics API helps you understand and optimize your team’s de
 * [Admin API](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli)
 * [Admin API reference](https://platform.claude.com/docs/en/api/beta/organization?sdk_languages=cli)
 * [Claude Code Analytics dashboard](https://platform.claude.com/claude-code) in the Claude Console
-* [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api?sdk_languages=cli) - Track API usage across all Anthropic services
+* [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli) - Track token usage and cost across your organization
 * [Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api?sdk_languages=cli) - Retrieve audit and activity data
 * [Identity and access management](https://code.claude.com/docs/en/iam)
 * [Monitoring usage with OpenTelemetry](https://code.claude.com/docs/en/monitoring-usage) for custom metrics and alerting

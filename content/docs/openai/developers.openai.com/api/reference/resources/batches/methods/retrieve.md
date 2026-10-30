@@ -10,6 +10,8 @@ Retrieves a batch.
 
 - `batch_id: string`
 
+  The ID of the batch to retrieve.
+
 ### Returns
 
 - `Batch object { id, completion_window, created_at, 19 more }`

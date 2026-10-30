@@ -10,7 +10,11 @@ Modifies a user's role in the project.
 
 - `project_id: string`
 
+  The ID of the project.
+
 - `user_id: string`
+
+  The ID of the user.
 
 ### Body Parameters
 

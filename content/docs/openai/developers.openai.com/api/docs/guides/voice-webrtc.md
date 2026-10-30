@@ -38,6 +38,8 @@ Creating a WebRTC session with `POST /v1/live/sessions` bills 15 seconds of voic
 
 Save the server example in a new directory and set `OPENAI_API_KEY` in its environment. For Node.js, use `server.mjs` and install `openai` and `express` with `npm install openai express`. For Python, install `openai`. This example binds to `127.0.0.1`, accepts session requests from `http://localhost:3000`, and serves `index.html` from the directory where you run it.
 
+For Go, save the example as `main.go`, initialize a module with `go mod init live-demo`, and install `github.com/openai/openai-go/v3@v3.85.1` with `go get`. Run `go run .` with Go 1.26 or later. For Java, use Java 17 or later, add the Maven dependency `com.openai:openai-java:4.90.0`, and run the `LiveConnectionWebrtcExample` class. For Ruby 3.3 or later, install `openai` 0.110.0 and `webrick` with `gem install openai -v 0.110.0` and `gem install webrick`, save the example as `server.rb`, and run `ruby server.rb`.
+
 Choose a server language below; each variant serves `index.html` and the same `/api/session` endpoint on port 3000. Use an SDK version with Live support. Run only one variant at a time.
 
 ```javascript
@@ -149,7 +151,10 @@ class SessionHandler(BaseHTTPRequestHandler):
             self.reply(403, b'{"error":"Unexpected request origin"}')
             return
         length = int(self.headers.get("Content-Length", "0"))
-        if not 0 < length <= 65536:
+        if length > 65536:
+            self.reply(413, b'{"error":"SDP offer is too large"}')
+            return
+        if length <= 0:
             self.reply(400, b'{"error":"An SDP offer is required"}')
             return
         try:
@@ -190,6 +195,272 @@ class SessionHandler(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     print(f"Open {origin}")
     ThreadingHTTPServer(("127.0.0.1", 3000), SessionHandler).serve_forever()
+```
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/live"
+	"github.com/openai/openai-go/v3/option"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+)
+
+func main() {
+	client := openai.NewClient(option.WithMaxRetries(0))
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" || r.Method != http.MethodGet {
+			http.NotFound(w, r)
+			return
+		}
+		http.ServeFile(w, r, "index.html")
+	})
+	mux.HandleFunc("/api/session", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+		if r.Header.Get("Origin") != "http://localhost:3000" {
+			http.Error(w, "Forbidden", 403)
+			return
+		}
+		if os.Getenv("OPENAI_API_KEY") == "" {
+			http.Error(w, "Server API key is not configured", 503)
+			return
+		}
+		body, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 64*1024))
+		if err != nil {
+			http.Error(w, "Invalid SDP offer", 413)
+			return
+		}
+		var offer struct {
+			SDP string `json:"sdp"`
+		}
+		if err := json.Unmarshal(body, &offer); err != nil || strings.TrimSpace(offer.SDP) == "" {
+			http.Error(w, "SDP offer is required", 400)
+			return
+		}
+		result, err := client.Live.New(r.Context(), live.LiveNewParams{
+			Session: live.MediaSessionConfigParam{
+				Model:        "gpt-live-1",
+				Instructions: openai.String("Be concise. Delegate requests needing current information to the backend, which can search the web."),
+				Delegation: live.MediaSessionConfigDelegationUnionParam{OfResponses: &live.MediaSessionConfigDelegationResponsesParam{Responses: live.ResponsesDelegationConfigParam{
+					Model:        "gpt-5.6-terra",
+					Instructions: openai.String("Use web search when current facts are needed. Return concise, grounded results for a spoken conversation."),
+					Tools:        []live.ResponsesDelegationConfigToolUnionParam{{OfWebSearch: &live.ResponsesDelegationConfigToolWebSearchParam{}}},
+					ToolChoice:   live.ResponsesDelegationConfigToolChoiceUnionParam{OfLiveToolChoiceEnum: openai.String("auto")},
+				}}},
+			},
+			Transport: live.LiveNewParamsTransport{Sdp: offer.SDP},
+		})
+		if err != nil {
+			log.Printf("Live session creation failed: %T", err)
+			http.Error(w, "Session creation failed", 502)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		if err := json.NewEncoder(w).Encode(result); err != nil {
+			log.Print("Could not write session response")
+		}
+	})
+	server := &http.Server{Addr: "127.0.0.1:3000", Handler: mux, ReadHeaderTimeout: 5 * time.Second}
+	fmt.Println("Open http://localhost:3000")
+	log.Fatal(server.ListenAndServe())
+}
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.live.*;
+import com.sun.net.httpserver.HttpServer;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+
+public final class LiveConnectionWebrtcExample {
+  public static void main(String[] args) throws Exception {
+    var client = OpenAIOkHttpClient.builder().fromEnv().maxRetries(0).build();
+    var server = HttpServer.create(new InetSocketAddress("127.0.0.1", 3000), 0);
+    server.createContext(
+        "/",
+        exchange -> {
+          try (exchange) {
+            var path = exchange.getRequestURI().getPath();
+            int status;
+            byte[] body;
+            String contentType = "text/plain; charset=utf-8";
+            if (path.equals("/") && exchange.getRequestMethod().equals("GET")) {
+              status = 200;
+              body = Files.readAllBytes(Path.of("index.html"));
+              contentType = "text/html; charset=utf-8";
+            } else if (!path.equals("/api/session")) {
+              status = 404;
+              body = "Not found".getBytes(StandardCharsets.UTF_8);
+            } else if (!exchange.getRequestMethod().equals("POST")) {
+              status = 405;
+              body = "Method not allowed".getBytes(StandardCharsets.UTF_8);
+            } else if (!"http://localhost:3000"
+                .equals(exchange.getRequestHeaders().getFirst("Origin"))) {
+              status = 403;
+              body = "Forbidden".getBytes(StandardCharsets.UTF_8);
+            } else if (System.getenv("OPENAI_API_KEY") == null
+                || System.getenv("OPENAI_API_KEY").isBlank()) {
+              status = 503;
+              body = "Server API key is not configured".getBytes(StandardCharsets.UTF_8);
+            } else {
+              var offer = exchange.getRequestBody().readNBytes(64 * 1024 + 1);
+              String sdp = "";
+              if (offer.length <= 64 * 1024) {
+                try {
+                  var request = com.openai.core.ObjectMappers.jsonMapper().readTree(offer);
+                  if (request != null && request.path("sdp").isTextual()) {
+                    sdp = request.path("sdp").asText();
+                  }
+                } catch (com.fasterxml.jackson.core.JsonProcessingException error) {
+                  // Invalid browser JSON is rejected below without creating a session.
+                }
+              }
+              if (offer.length > 64 * 1024 || sdp.isBlank()) {
+                status = offer.length > 64 * 1024 ? 413 : 400;
+                body = "Invalid SDP offer".getBytes(StandardCharsets.UTF_8);
+              } else {
+                try {
+                  var result =
+                      client
+                          .live()
+                          .create(
+                              LiveCreateParams.builder()
+                                  .session(
+                                      MediaSessionConfig.builder()
+                                          .model("gpt-live-1")
+                                          .instructions(
+                                              "Be concise. Delegate requests needing current information to the backend, which can search the web.")
+                                          .responsesDelegation(
+                                              ResponsesDelegationConfig.builder()
+                                                  .model("gpt-5.6-terra")
+                                                  .instructions(
+                                                      "Use web search when current facts are needed. Return concise, grounded results for a spoken conversation.")
+                                                  .addToolWebSearch()
+                                                  .toolChoice(
+                                                      ResponsesDelegationConfig.ToolChoice
+                                                          .LiveToolChoiceEnum.AUTO)
+                                                  .build())
+                                          .build())
+                                  .transport(LiveCreateParams.Transport.builder().sdp(sdp).build())
+                                  .build());
+                  body = com.openai.core.ObjectMappers.jsonMapper().writeValueAsBytes(result);
+                  status = 201;
+                  contentType = "application/json";
+                } catch (RuntimeException error) {
+                  System.err.println(
+                      "Live session creation failed: " + error.getClass().getSimpleName());
+                  status = 502;
+                  body = "Session creation failed".getBytes(StandardCharsets.UTF_8);
+                }
+              }
+            }
+            exchange.getResponseHeaders().set("Content-Type", contentType);
+            exchange.sendResponseHeaders(status, body.length);
+            exchange.getResponseBody().write(body);
+          }
+        });
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  server.stop(0);
+                  client.close();
+                }));
+    server.start();
+    System.out.println("Open http://localhost:3000");
+  }
+}
+```
+
+```ruby
+require "openai"
+require "webrick"
+require "json"
+client = OpenAI::Client.new(api_key: ENV["OPENAI_API_KEY"] || "", max_retries: 0)
+server = WEBrick::HTTPServer.new(BindAddress: "127.0.0.1", Port: 3000)
+server.mount_proc "/" do |request, response|
+  response["Content-Type"] = "text/plain; charset=utf-8"
+  if request.path == "/" && request.request_method == "GET"
+    response["Content-Type"] = "text/html; charset=utf-8"
+    response.body = File.read("index.html")
+  elsif request.path != "/api/session"
+    response.status = 404
+    response.body = "Not found"
+  elsif request.request_method != "POST"
+    response.status = 405
+    response.body = "Method not allowed"
+  elsif request["origin"] != "http://localhost:3000"
+    response.status = 403
+    response.body = "Forbidden"
+  elsif ENV["OPENAI_API_KEY"].to_s.empty?
+    response.status = 503
+    response.body = "Server API key is not configured"
+  else
+    raise WEBrick::HTTPStatus::LengthRequired if request.content_length.nil?
+    raise WEBrick::HTTPStatus::BadRequest if request["transfer-encoding"]
+    raise WEBrick::HTTPStatus::RequestEntityTooLarge if request.content_length.to_i > 64 * 1024
+
+    offer = request.body.to_s
+    raise WEBrick::HTTPStatus::RequestEntityTooLarge if offer.bytesize > 64 * 1024
+
+    begin
+      payload = JSON.parse(offer)
+    rescue JSON::ParserError
+      raise WEBrick::HTTPStatus::BadRequest
+    end
+    sdp = payload.is_a?(Hash) ? payload["sdp"] : nil
+    raise WEBrick::HTTPStatus::BadRequest unless sdp.is_a?(String) && !sdp.strip.empty?
+
+    begin
+      result = client.live.create(
+        session: {
+          model: "gpt-live-1",
+          instructions: "Be concise. Delegate requests needing current information to the backend, which can search the web.",
+          delegation: {
+            type: :responses,
+
+            responses: {
+              model: "gpt-5.6-terra",
+              instructions: "Use web search when current facts are needed. Return concise, grounded results for a spoken conversation.",
+              tools: [{ type: :web_search }],
+
+              tool_choice: :auto
+            }
+          }
+        },
+        transport: {
+          type: :webrtc,
+          sdp: sdp
+        }
+      )
+      response.status = 201
+      response["Content-Type"] = "application/json"
+      response.body = result.to_json
+    rescue OpenAI::Errors::Error => error
+      warn "Live session creation failed: #{error.class}"
+      response.status = 502
+      response.body = "Session creation failed"
+    end
+  end
+end
+trap("INT") { server.shutdown }
+puts "Open http://localhost:3000"
+server.start
 ```
 
 

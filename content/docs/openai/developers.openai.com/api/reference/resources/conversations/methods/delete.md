@@ -10,6 +10,8 @@ Delete a conversation. Items in the conversation will not be deleted.
 
 - `conversation_id: string`
 
+  The ID of the conversation to delete.
+
 ### Returns
 
 - `ConversationDeletedResource object { id, deleted, object }`

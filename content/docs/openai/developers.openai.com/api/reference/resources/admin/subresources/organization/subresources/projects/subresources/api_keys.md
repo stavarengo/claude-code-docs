@@ -17,7 +17,11 @@ Returns confirmation of the key deletion.
 
 - `project_id: string`
 
+  The ID of the project.
+
 - `api_key_id: string`
+
+  The ID of the API key.
 
 ### Returns
 
@@ -74,6 +78,8 @@ Returns a list of API keys in the project.
 ### Path Parameters
 
 - `project_id: string`
+
+  The ID of the project.
 
 ### Query Parameters
 
@@ -307,7 +313,11 @@ Retrieves an API key in the project.
 
 - `project_id: string`
 
+  The ID of the project.
+
 - `api_key_id: string`
+
+  The ID of the API key.
 
 ### Returns
 
@@ -513,7 +523,11 @@ the new request. The response contains only the redacted key, not its secret.
 
 - `project_id: string`
 
+  The ID of the project.
+
 - `api_key_id: string`
+
+  The ID of the API key.
 
 ### Body Parameters
 

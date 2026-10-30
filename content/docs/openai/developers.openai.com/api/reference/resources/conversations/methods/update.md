@@ -10,6 +10,8 @@ Update a conversation
 
 - `conversation_id: string`
 
+  The ID of the conversation to update.
+
 ### Body Parameters
 
 - `metadata: Metadata or null`

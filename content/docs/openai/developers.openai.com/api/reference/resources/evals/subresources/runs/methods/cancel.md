@@ -10,7 +10,11 @@ Cancel an ongoing evaluation run.
 
 - `eval_id: string`
 
+  The ID of the evaluation whose run you want to cancel.
+
 - `run_id: string`
+
+  The ID of the run to cancel.
 
 ### Returns
 

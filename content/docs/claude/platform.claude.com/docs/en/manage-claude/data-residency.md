@@ -186,8 +186,8 @@ Legacy models are unaffected by this migration. For current pricing on newer mod
     Learn about workspace configuration.
   </Card>
 
-  <Card title="Usage and Cost API" icon="chart" href="https://platform.claude.com/docs/en/manage-claude/usage-cost-api?sdk_languages=cli">
-    Track usage and costs by data residency.
+  <Card title="Usage and Cost Analytics API" icon="chart" href="https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli">
+    Track usage and costs by inference geo.
   </Card>
 </CardGroup>
 

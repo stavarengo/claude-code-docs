@@ -10,6 +10,8 @@ Delete a vector store.
 
 - `vector_store_id: string`
 
+  The ID of the vector store to delete.
+
 ### Returns
 
 - `VectorStoreDeleted object { id, deleted, object }`
