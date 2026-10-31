@@ -190,7 +190,7 @@ You don't have to use the terminal. Claude Code is also available in:
 
 If you run into problems installing on macOS or Linux, check these common issues:
 
-> **'command not found: claude'**
+> [accordion] 'command not found: claude'
 >
 > If you see `command not found: claude` after installing, the folder where the installer put `claude` isn't in your PATH. The installer prints the exact fix under `Setup notes` at the end of the install, so run that command, or use the one for your shell below.
 >
@@ -212,7 +212,7 @@ If you run into problems installing on macOS or Linux, check these common issues
 >
 > Then open a new terminal and try `claude` again. If it still isn't found, check that the file `~/.local/bin/claude` exists. If it doesn't, the install didn't finish. For more details, see [fix your PATH](./troubleshoot-install.md#verify-your-path).
 
-> **Error with HTML code or 'syntax error near unexpected token'**
+> [accordion] Error with HTML code or 'syntax error near unexpected token'
 >
 > If you see `bash: line 1: syntax error near unexpected token '<'` or HTML code like `<!DOCTYPE html>` in your terminal, the install URL returned a web page instead of the installer script.
 >
@@ -226,7 +226,7 @@ If you run into problems installing on macOS or Linux, check these common issues
 >
 > When it finishes, open a new terminal window, type `claude --version`, and press Enter: the command prints a version number such as `2.1.211 (Claude Code)` when the install worked.
 
-> **'dyld' error or 'built for Mac OS X 13.0'**
+> [accordion] 'dyld' error or 'built for Mac OS X 13.0'
 >
 > If you see `dyld: cannot load`, `dyld: Symbol not found`, or `built for Mac OS X 13.0`, your macOS version is likely older than Claude Code supports.
 >
@@ -238,7 +238,7 @@ For other errors, see the full [installation troubleshooting guide](./troublesho
 
 If you run into problems installing on Windows, check these common issues:
 
-> **'irm is not recognized'**
+> [accordion] 'irm is not recognized'
 >
 > You're in CMD, not PowerShell. Close this window and open PowerShell instead (`Win + X` then select Windows PowerShell).
 >
@@ -248,7 +248,7 @@ If you run into problems installing on Windows, check these common issues:
 > curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd
 > ```
 
-> **SSL/TLS error or 'Could not create SSL/TLS secure channel'**
+> [accordion] SSL/TLS error or 'Could not create SSL/TLS secure channel'
 >
 > This usually happens on older Windows 10 systems. Run this line first, then retry the install:
 >
@@ -257,7 +257,7 @@ If you run into problems installing on Windows, check these common issues:
 > irm https://claude.ai/install.ps1 | iex
 > ```
 
-> **'Claude Code on Windows requires either Git for Windows (for bash) or PowerShell'**
+> [accordion] 'Claude Code on Windows requires either Git for Windows (for bash) or PowerShell'
 >
 > Neither PowerShell nor Git Bash was found. Claude Code needs at least one shell.
 >
@@ -275,7 +275,7 @@ If you run into problems installing on Windows, check these common issues:
 >
 > To make this permanent so you don't have to set it every time, see [configure Git Bash path](./troubleshoot-install.md#claude-code-on-windows-requires-either-git-for-windows-for-bash-or-powershell).
 
-> **'claude is not recognized'**
+> [accordion] 'claude is not recognized'
 >
 > If the error started right after Claude Code updated, see [restore `claude.exe` from its backup](https://code.claude.com/docs/en/troubleshoot-install#claude-exe-missing-after-an-update-on-windows) first.
 >
@@ -288,7 +288,7 @@ If you run into problems installing on Windows, check these common issues:
 >
 > Close PowerShell, open a new window, and try `claude` again. You should see the Claude Code welcome screen. See [verify your PATH](./troubleshoot-install.md#verify-your-path) for more details.
 
-> **'Claude Code does not support 32-bit Windows'**
+> [accordion] 'Claude Code does not support 32-bit Windows'
 >
 > On a 64-bit machine, this error means you opened `Windows PowerShell (x86)` instead of `Windows PowerShell`. The x86 entry runs as a 32-bit process. Close it, open the Start menu entry without `(x86)` in its name, and run the install command again. If you're not sure your machine is 64-bit, or the error persists, see [the full explanation](./troubleshoot-install.md#claude-code-does-not-support-32-bit-windows).
 

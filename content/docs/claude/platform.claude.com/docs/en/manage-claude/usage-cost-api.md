@@ -347,5 +347,5 @@ Use the Usage and Cost APIs to deliver a better experience for your users, manag
 * [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) - Optimize costs with caching
 * [Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli) - 50 percent discount on batch requests
 * [Rate limits](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli) - Understand usage tiers
-* [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api?sdk_languages=cli) - Read your configured rate limits
+* [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api?sdk_languages=cli) - Read your configured rate limits and set workspace rate limits
 * [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) - Control inference geography

@@ -500,18 +500,18 @@ See [Non-interactive mode](./headless.md) for output formats, permission flags, 
 
 ## Next steps
 
-> **[Best practices](./best-practices.md)**
+> [card] [Best practices](./best-practices.md)
 >
 > Patterns for getting the most out of Claude Code
 
-> **[Manage sessions](./sessions.md)**
+> [card] [Manage sessions](./sessions.md)
 >
 > Resume, name, and branch conversations
 
-> **[Worktrees](./worktrees.md)**
+> [card] [Worktrees](./worktrees.md)
 >
 > Run isolated parallel sessions
 
-> **[Extend Claude Code](./features-overview.md)**
+> [card] [Extend Claude Code](./features-overview.md)
 >
 > Add skills, hooks, MCP, subagents, and plugins

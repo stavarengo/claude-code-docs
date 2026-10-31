@@ -680,7 +680,7 @@ The process for initializing a WebRTC connection using the unified interface is 
 
 To create a realtime API session via the unified interface, you will need to build a small server-side application (or integrate with an existing one) to make a request to `/v1/realtime/calls`. You will use a [standard API key](https://platform.openai.com/settings/organization/api-keys) to authenticate this request on your backend server.
 
-Below is an example of a simple Node.js [express](https://expressjs.com/) server which creates a realtime API session:
+Create a Realtime API session from your application server:
 
 ```javascript
 import express from "express";
@@ -723,6 +723,47 @@ app.post("/session", async (req, res) => {
 app.listen(3000);
 ```
 
+```go
+func handler(client openai.Client) http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("POST /session", func(w http.ResponseWriter, r *http.Request) {
+		offer, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 64*1024))
+		if err != nil || strings.TrimSpace(string(offer)) == "" {
+			http.Error(w, "A valid SDP offer is required", http.StatusBadRequest)
+			return
+		}
+		opts := []option.RequestOption{
+			option.WithHeader("OpenAI-Safety-Identifier", "hashed-user-id"),
+		}
+		response, err := client.Realtime.Calls.New(r.Context(), realtime.CallNewParams{
+			Sdp: string(offer),
+			Session: realtime.RealtimeSessionCreateRequestParam{
+				Model: "gpt-realtime-2.1",
+				Audio: realtime.RealtimeAudioConfigParam{
+					Output: realtime.RealtimeAudioConfigOutputParam{
+						Voice: realtime.RealtimeAudioConfigOutputVoiceUnionParam{
+							OfString: openai.String("marin"),
+						},
+					},
+				},
+			},
+		}, opts...)
+		if err != nil {
+			http.Error(w, "Could not create Realtime call", http.StatusBadGateway)
+			return
+		}
+		defer response.Body.Close()
+		w.Header().Set("Content-Type", "application/sdp")
+		w.Header().Set("Location", response.Header.Get("Location"))
+		w.WriteHeader(response.StatusCode)
+		if _, err := io.Copy(w, response.Body); err != nil {
+			log.Print("Could not write SDP answer")
+		}
+	})
+	return mux
+}
+```
+
 
 If your application assigns a [safety identifier](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers)
 for each end user, include it as the `OpenAI-Safety-Identifier` header in this
@@ -732,7 +773,7 @@ browser.
 
 #### Connecting to the server
 
-In the browser, you can use standard WebRTC APIs to connect to the Realtime API via your application server. The client directly POSTs its SDP data to your server.
+In the browser, you can use standard WebRTC APIs to connect to the Realtime API via your application server. The client sends its SDP data to your server in a `POST` request.
 
 ```javascript
 // Create a peer connection
@@ -786,7 +827,7 @@ The process for initializing a WebRTC connection using an ephemeral API key is a
 
 To create an ephemeral token to use on the client-side, you will need to build a small server-side application (or integrate with an existing one) to make an [OpenAI REST API](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets) request for an ephemeral key. You will use a [standard API key](https://platform.openai.com/settings/organization/api-keys) to authenticate this request on your backend server.
 
-Below is an example of a simple Node.js [express](https://expressjs.com/) server which mints an ephemeral API key using the REST API:
+Create an ephemeral API key from your application server using the REST API:
 
 ```javascript
 import express from "express";
@@ -833,6 +874,38 @@ app.get("/token", async (req, res) => {
 app.listen(3000);
 ```
 
+```go
+func handler(client openai.Client) http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /token", func(w http.ResponseWriter, r *http.Request) {
+		secret, err := client.Realtime.ClientSecrets.New(r.Context(), realtime.ClientSecretNewParams{
+			Session: realtime.ClientSecretNewParamsSessionUnion{
+				OfRealtime: &realtime.RealtimeSessionCreateRequestParam{
+					Model: "gpt-realtime-2.1",
+					Audio: realtime.RealtimeAudioConfigParam{
+						Output: realtime.RealtimeAudioConfigOutputParam{
+							Voice: realtime.RealtimeAudioConfigOutputVoiceUnionParam{
+								OfString: openai.String("marin"),
+							},
+						},
+					},
+				},
+			},
+		}, option.WithHeader("OpenAI-Safety-Identifier", "hashed-user-id"))
+		if err != nil {
+			http.Error(w, "Could not create client credential", http.StatusBadGateway)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Cache-Control", "no-store")
+		if err := json.NewEncoder(w).Encode(secret); err != nil {
+			log.Print("Could not write client credential")
+		}
+	})
+	return mux
+}
+```
+
 
 You can create a server endpoint like this one on any platform that can send and receive HTTP requests. Just ensure that **you only use standard OpenAI API keys on the server, not in the browser.**
 
@@ -843,7 +916,7 @@ identifier when it later connects with that token.
 
 #### Connecting to the server
 
-In the browser, you can use standard WebRTC APIs to connect to the Realtime API with an ephemeral token. The client first fetches a token from your server endpoint, and then POSTs its SDP data (with the ephemeral token) to the Realtime API.
+In the browser, you can use standard WebRTC APIs to connect to the Realtime API with an ephemeral token. The client first fetches a token from your server endpoint, and then sends its SDP data (with the ephemeral token) to the Realtime API in a `POST` request.
 
 ```javascript
 // Get a session token for OpenAI Realtime API

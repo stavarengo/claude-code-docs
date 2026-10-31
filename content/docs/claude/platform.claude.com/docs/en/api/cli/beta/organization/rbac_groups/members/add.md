@@ -56,7 +56,7 @@ The RBAC Groups API is available to Claude Enterprise organizations only.
 ```bash
 ant beta:organization:rbac-groups:members add \
   --rbac-group-id rbac_group_id \
-  --user-id user_01WCz1FkmYMm4gnmykNKUu3Q
+  --user-id user_01WxYzAbCdEfGhJkMnPqRsTu
 ```
 
 ### Response (200)
@@ -67,6 +67,6 @@ ant beta:organization:rbac-groups:members add \
   "email": "user@emaildomain.com",
   "rbac_group_id": "rbac_group_012rppKaSVsmTo6NqRDXQXNF",
   "type": "rbac_group_member",
-  "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+  "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
 }
 ```

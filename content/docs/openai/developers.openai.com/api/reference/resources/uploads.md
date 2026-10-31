@@ -214,6 +214,8 @@ Returns the Upload object with status `completed`, including an additional `file
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `part_ids: array of string`
 
   The ordered list of Part IDs.
@@ -441,6 +443,8 @@ File](/api/reference/resources/files/methods/create).
 Returns the Upload object with status `pending`.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `bytes: integer`
 
@@ -823,6 +827,14 @@ It is possible to add multiple Parts in parallel. You can decide the intended or
 - `upload_id: string`
 
   The ID of the Upload.
+
+### Body Parameters
+
+Content type: `multipart/form-data`
+
+- `data: string`
+
+  The chunk of bytes for this Part.
 
 ### Returns
 

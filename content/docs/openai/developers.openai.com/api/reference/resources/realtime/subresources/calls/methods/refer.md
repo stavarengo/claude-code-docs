@@ -16,6 +16,8 @@ Transfer an active SIP call to a new destination using the SIP REFER verb.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `target_uri: string`
 
   URI that should appear in the SIP Refer-To header. Supports values like

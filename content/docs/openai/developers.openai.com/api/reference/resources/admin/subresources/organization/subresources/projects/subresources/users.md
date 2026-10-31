@@ -16,6 +16,8 @@ Adds a user to the project. Users must already be members of the organization to
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `role: string`
 
   `owner` or `member`
@@ -403,6 +405,8 @@ Modifies a user's role in the project.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `role: optional string or null`
 
   `owner` or `member`
@@ -554,6 +558,8 @@ Assigns a project role to a user within a project.
   The ID of the user that should receive the project role.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `role_id: string`
 

@@ -140,6 +140,8 @@ Create a new project in the organization. Projects can be created and archived, 
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `name: string`
 
   The friendly name of the project, this name appears in reports.
@@ -614,6 +616,8 @@ Modifies a project in the organization.
   The ID of the project.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `external_key_id: optional string or null`
 
@@ -1378,6 +1382,8 @@ the new request. The response contains only the redacted key, not its secret.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `expires_in_seconds: optional integer`
 
   Number of seconds from this request until the API key expires. Must comply with the organization and project expiry policies. Expired keys cannot be updated. Retrying resets the expiry relative to the new request. Omit to keep the current expiration.
@@ -1713,6 +1719,8 @@ You can atomically and idempotently activate up to 10 certificates at a time.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `certificate_ids: array of string`
 
   `minItems: 1`, `maxItems: 10`
@@ -1856,6 +1864,8 @@ idempotently deactivate up to 10 certificates at a time.
   The ID of the project.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `certificate_ids: array of string`
 
@@ -2353,6 +2363,8 @@ Updates project data retention controls.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `retention_type: "organization_default" or "none" or "zero_data_retention" or 3 more`
 
   The desired project data retention type.
@@ -2482,6 +2494,8 @@ Grants a group access to a project.
   The ID of the project to update.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `group_id: string`
 
@@ -2960,6 +2974,8 @@ Assigns a project role to a group within a project.
   The ID of the group that should receive the project role.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `role_id: string`
 
@@ -3868,6 +3884,8 @@ Updates hosted tool permissions for a project.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `code_interpreter: optional object { enabled }  or null`
 
   The code interpreter permission update.
@@ -4225,6 +4243,8 @@ Updates model permissions for a project.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `mode: "allow_list" or "deny_list"`
 
   The model permissions mode to apply.
@@ -4526,6 +4546,8 @@ Updates a project rate limit.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `batch_1_day_max_input_tokens: optional integer`
 
   The maximum batch input tokens per day. Only relevant for certain models.
@@ -4717,6 +4739,8 @@ Creates a custom role for a project.
   The ID of the project to update.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `permissions: array of string`
 
@@ -5159,6 +5183,8 @@ Updates an existing project role.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `description: optional string or null`
 
   New description for the role.
@@ -5302,6 +5328,8 @@ Creates a new service account in the project. By default, this also returns an u
   The ID of the project.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `name: string`
 
@@ -5719,6 +5747,8 @@ Updates a service account in the project.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `name: optional string`
 
   The updated service account name.
@@ -5930,6 +5960,8 @@ Creates an API key for a service account in the project.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `expires_in_seconds: optional integer or null`
 
   Number of seconds until the API key expires.
@@ -6072,6 +6104,8 @@ Creates a project spend alert.
   The ID of the project to update.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `currency: "USD"`
 
@@ -6610,6 +6644,8 @@ Updates a project spend alert.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `currency: "USD"`
 
   The currency for the threshold amount.
@@ -7032,6 +7068,8 @@ Create or replace a project's hard spend limit.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `currency: "USD"`
 
   The currency for the threshold amount. Currently, only `USD` is supported.
@@ -7253,6 +7291,8 @@ Adds a user to the project. Users must already be members of the organization to
   The ID of the project.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `role: string`
 
@@ -7641,6 +7681,8 @@ Modifies a user's role in the project.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `role: optional string or null`
 
   `owner` or `member`
@@ -7792,6 +7834,8 @@ Assigns a project role to a user within a project.
   The ID of the user that should receive the project role.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `role_id: string`
 

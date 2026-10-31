@@ -33,7 +33,7 @@ claude/platform.claude.com/docs/en/api/beta/memory_stores/memory_versions:{list.
 claude/platform.claude.com/docs/en/api/beta/messages:{batches.md,count_tokens.md,create.md}
 claude/platform.claude.com/docs/en/api/beta/messages/batches:{cancel.md,create.md,delete.md,list.md,results.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/beta/models:{list.md,retrieve.md}
-claude/platform.claude.com/docs/en/api/beta/organization:{analytics.md,api_keys.md,compliance_settings.md,cost_report.md,external_keys.md,federation.md,invites.md,mcp_tunnels.md,plugin_marketplaces.md,plugins.md,rate_limits.md,rbac_groups.md,rbac_roles.md,retrieve.md,service_accounts.md,spend_limits.md,telemetry_destinations.md,usage_report.md,users.md,webhooks.md,workspaces.md}
+claude/platform.claude.com/docs/en/api/beta/organization:{analytics.md,api_keys.md,claude_tag.md,compliance_settings.md,cost_report.md,external_keys.md,federation.md,invites.md,mcp_tunnels.md,plugin_marketplaces.md,plugins.md,rate_limits.md,rbac_groups.md,rbac_roles.md,retrieve.md,service_accounts.md,spend_limits.md,telemetry_destinations.md,usage_report.md,users.md,webhooks.md,workspaces.md}
 claude/platform.claude.com/docs/en/api/beta/organization/analytics:{apps.md,artifacts.md,connectors.md,cost.md,cost_report.md,plugins.md,skills.md,summaries.md,usage.md,usage_report.md,user_cost_report.md,user_usage_report.md,users.md}
 claude/platform.claude.com/docs/en/api/beta/organization/analytics/apps:{chat.md}
 claude/platform.claude.com/docs/en/api/beta/organization/analytics/apps/chat:{projects.md}
@@ -51,6 +51,11 @@ claude/platform.claude.com/docs/en/api/beta/organization/analytics/user_cost_rep
 claude/platform.claude.com/docs/en/api/beta/organization/analytics/user_usage_report:{list.md}
 claude/platform.claude.com/docs/en/api/beta/organization/analytics/users:{list.md}
 claude/platform.claude.com/docs/en/api/beta/organization/api_keys:{list.md,retrieve.md,update.md}
+claude/platform.claude.com/docs/en/api/beta/organization/claude_tag:{bundles.md,slack_channels.md,slack_workspaces.md}
+claude/platform.claude.com/docs/en/api/beta/organization/claude_tag/bundles:{list.md,retrieve.md,targets.md}
+claude/platform.claude.com/docs/en/api/beta/organization/claude_tag/bundles/targets:{create.md,delete.md,list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/beta/organization/claude_tag/slack_channels:{create.md,delete.md,list.md,retrieve.md,update.md}
+claude/platform.claude.com/docs/en/api/beta/organization/claude_tag/slack_workspaces:{list.md,retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/beta/organization/compliance_settings:{retrieve.md,update.md}
 claude/platform.claude.com/docs/en/api/beta/organization/cost_report:{retrieve.md}
 claude/platform.claude.com/docs/en/api/beta/organization/external_keys:{create.md,delete.md,list.md,retrieve.md,update.md,validate.md}

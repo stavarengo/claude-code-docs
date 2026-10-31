@@ -14,6 +14,8 @@ Updates an existing organization role.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `description: optional string or null`
 
   New description for the role.

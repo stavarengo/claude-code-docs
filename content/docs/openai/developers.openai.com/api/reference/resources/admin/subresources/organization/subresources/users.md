@@ -488,6 +488,8 @@ Modifies a user's role in the organization.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `developer_persona: optional string or null`
 
   Developer persona metadata.
@@ -827,6 +829,8 @@ Assigns an organization role to a user within the organization.
   The ID of the user that should receive the organization role.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `role_id: string`
 

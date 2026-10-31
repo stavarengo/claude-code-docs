@@ -270,7 +270,7 @@ ant beta:organization:api-keys list
       "id": "apikey_01Rj2N8SVvo6BePZj99NhmiT",
       "created_at": "2024-10-30T23:58:27.427722Z",
       "created_by": {
-        "id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+        "id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
         "type": "user"
       },
       "expires_at": "2024-10-30T23:58:27.427722Z",
@@ -278,7 +278,7 @@ ant beta:organization:api-keys list
       "partial_key_hint": "sk-ant-api03-R2D...igAA",
       "principal": {
         "type": "user_actor",
-        "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+        "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
       },
       "scope": {
         "type": "workspace",
@@ -430,7 +430,7 @@ ant beta:organization:api-keys retrieve \
   "id": "apikey_01Rj2N8SVvo6BePZj99NhmiT",
   "created_at": "2024-10-30T23:58:27.427722Z",
   "created_by": {
-    "id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+    "id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
     "type": "user"
   },
   "expires_at": "2024-10-30T23:58:27.427722Z",
@@ -438,7 +438,7 @@ ant beta:organization:api-keys retrieve \
   "partial_key_hint": "sk-ant-api03-R2D...igAA",
   "principal": {
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "scope": {
     "type": "workspace",
@@ -595,7 +595,7 @@ ant beta:organization:api-keys update \
   "id": "apikey_01Rj2N8SVvo6BePZj99NhmiT",
   "created_at": "2024-10-30T23:58:27.427722Z",
   "created_by": {
-    "id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+    "id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
     "type": "user"
   },
   "expires_at": "2024-10-30T23:58:27.427722Z",
@@ -603,7 +603,7 @@ ant beta:organization:api-keys update \
   "partial_key_hint": "sk-ant-api03-R2D...igAA",
   "principal": {
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "scope": {
     "type": "workspace",
@@ -640,6 +640,10 @@ Create an external key config owned by the caller's organization.
 
   Data residency geo. Only `us` is supported.
 
+- `--user-profile-id: optional string`
+
+  ID of a user profile to bind the key to. Omit this field for a key that isn't bound to a user profile. Such a key can be attached to a Workspace whatever its user profile. The binding cannot be changed later. A key bound to a user profile can only be attached to a Workspace that has the same user profile.
+
 #### Returns
 
 - `beta_external_key: object`
@@ -654,7 +658,7 @@ Create an external key config owned by the caller's organization.
 
   - `id: string`
 
-    Identifier of the external key config. A tagged ID prefixed `ekey_`, or — for organizations on the Claude Platform on AWS — the AWS KMS key ARN.
+    Identifier of the external key config: a tagged ID prefixed `ekey_`, or, on Claude Platform on AWS, an AWS KMS key's ARN.
 
   - `attachment: BetaExternalKeyAttachedAttachment or BetaExternalKeyUnattachedAttachment`
 
@@ -678,7 +682,7 @@ Create an external key config owned by the caller's organization.
 
   - `geo: string`
 
-    Data residency geo. Selects which regional validator handles this key's encrypt/decrypt roundtrips.
+    Data residency geo. Selects the region that handles this key's encrypt/decrypt roundtrips.
 
   - `provider_config: BetaAWSExternalKeyConfig or BetaGCPExternalKeyConfig or BetaAzureExternalKeyConfig`
 
@@ -690,7 +694,7 @@ Create an external key config owned by the caller's organization.
 
       - `kms_arn: string`
 
-        Full ARN of the AWS KMS key. On Claude Platform on AWS the key must be a single-Region key in your organization's own AWS account; cross-account keys, multi-Region keys, and alias ARNs are rejected.
+        Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key in your organization's AWS account.
 
         maxLength: 2048
 
@@ -702,7 +706,7 @@ Create an external key config owned by the caller's organization.
 
         **Deprecated**
 
-        IAM role ARN. Deprecated — Anthropic reaches the KMS key through its own intermediate role (or, on Claude Platform on AWS, with credentials AWS issues for the Workspace); this field is ignored.
+        IAM role ARN. Deprecated; this field is ignored.
 
     - `beta_gcp_external_key_config: object`
 
@@ -736,6 +740,10 @@ Create an external key config owned by the caller's organization.
 
     format: date-time
 
+  - `user_profile_id: string`
+
+    ID of the user profile the key is bound to, or null if the key is not bound to one. A key bound to a user profile can only be attached to a Workspace that has the same user profile. A key that isn't bound can be attached to a Workspace whatever its user profile.
+
 #### Example
 
 ```bash
@@ -761,7 +769,8 @@ ant beta:organization:external-keys create \
     "role_arn": "arn:aws:iam::111122223333:role/anthropic-cmek"
   },
   "type": "external_key",
-  "updated_at": "2024-10-30T23:58:27.427722Z"
+  "updated_at": "2024-10-30T23:58:27.427722Z",
+  "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
 }
 ```
 
@@ -800,7 +809,7 @@ Results are ordered by creation time (newest first). Use the
 
     - `id: string`
 
-      Identifier of the external key config. A tagged ID prefixed `ekey_`, or — for organizations on the Claude Platform on AWS — the AWS KMS key ARN.
+      Identifier of the external key config: a tagged ID prefixed `ekey_`, or, on Claude Platform on AWS, an AWS KMS key's ARN.
 
     - `attachment: BetaExternalKeyAttachedAttachment or BetaExternalKeyUnattachedAttachment`
 
@@ -824,7 +833,7 @@ Results are ordered by creation time (newest first). Use the
 
     - `geo: string`
 
-      Data residency geo. Selects which regional validator handles this key's encrypt/decrypt roundtrips.
+      Data residency geo. Selects the region that handles this key's encrypt/decrypt roundtrips.
 
     - `provider_config: BetaAWSExternalKeyConfig or BetaGCPExternalKeyConfig or BetaAzureExternalKeyConfig`
 
@@ -836,7 +845,7 @@ Results are ordered by creation time (newest first). Use the
 
         - `kms_arn: string`
 
-          Full ARN of the AWS KMS key. On Claude Platform on AWS the key must be a single-Region key in your organization's own AWS account; cross-account keys, multi-Region keys, and alias ARNs are rejected.
+          Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key in your organization's AWS account.
 
           maxLength: 2048
 
@@ -848,7 +857,7 @@ Results are ordered by creation time (newest first). Use the
 
           **Deprecated**
 
-          IAM role ARN. Deprecated — Anthropic reaches the KMS key through its own intermediate role (or, on Claude Platform on AWS, with credentials AWS issues for the Workspace); this field is ignored.
+          IAM role ARN. Deprecated; this field is ignored.
 
       - `beta_gcp_external_key_config: object`
 
@@ -882,6 +891,10 @@ Results are ordered by creation time (newest first). Use the
 
       format: date-time
 
+    - `user_profile_id: string`
+
+      ID of the user profile the key is bound to, or null if the key is not bound to one. A key bound to a user profile can only be attached to a Workspace that has the same user profile. A key that isn't bound can be attached to a Workspace whatever its user profile.
+
   - `next_page: string`
 
     Opaque cursor for the next page, or null if no more results. Pass as `?page=` to fetch the next page.
@@ -912,7 +925,8 @@ ant beta:organization:external-keys list
         "role_arn": "arn:aws:iam::111122223333:role/anthropic-cmek"
       },
       "type": "external_key",
-      "updated_at": "2024-10-30T23:58:27.427722Z"
+      "updated_at": "2024-10-30T23:58:27.427722Z",
+      "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
     }
   ],
   "next_page": "next_page"
@@ -949,7 +963,7 @@ Retrieve a single external key config in the caller's organization by ID.
 
   - `id: string`
 
-    Identifier of the external key config. A tagged ID prefixed `ekey_`, or — for organizations on the Claude Platform on AWS — the AWS KMS key ARN.
+    Identifier of the external key config: a tagged ID prefixed `ekey_`, or, on Claude Platform on AWS, an AWS KMS key's ARN.
 
   - `attachment: BetaExternalKeyAttachedAttachment or BetaExternalKeyUnattachedAttachment`
 
@@ -973,7 +987,7 @@ Retrieve a single external key config in the caller's organization by ID.
 
   - `geo: string`
 
-    Data residency geo. Selects which regional validator handles this key's encrypt/decrypt roundtrips.
+    Data residency geo. Selects the region that handles this key's encrypt/decrypt roundtrips.
 
   - `provider_config: BetaAWSExternalKeyConfig or BetaGCPExternalKeyConfig or BetaAzureExternalKeyConfig`
 
@@ -985,7 +999,7 @@ Retrieve a single external key config in the caller's organization by ID.
 
       - `kms_arn: string`
 
-        Full ARN of the AWS KMS key. On Claude Platform on AWS the key must be a single-Region key in your organization's own AWS account; cross-account keys, multi-Region keys, and alias ARNs are rejected.
+        Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key in your organization's AWS account.
 
         maxLength: 2048
 
@@ -997,7 +1011,7 @@ Retrieve a single external key config in the caller's organization by ID.
 
         **Deprecated**
 
-        IAM role ARN. Deprecated — Anthropic reaches the KMS key through its own intermediate role (or, on Claude Platform on AWS, with credentials AWS issues for the Workspace); this field is ignored.
+        IAM role ARN. Deprecated; this field is ignored.
 
     - `beta_gcp_external_key_config: object`
 
@@ -1031,6 +1045,10 @@ Retrieve a single external key config in the caller's organization by ID.
 
     format: date-time
 
+  - `user_profile_id: string`
+
+    ID of the user profile the key is bound to, or null if the key is not bound to one. A key bound to a user profile can only be attached to a Workspace that has the same user profile. A key that isn't bound can be attached to a Workspace whatever its user profile.
+
 #### Example
 
 ```bash
@@ -1056,7 +1074,8 @@ ant beta:organization:external-keys retrieve \
     "role_arn": "arn:aws:iam::111122223333:role/anthropic-cmek"
   },
   "type": "external_key",
-  "updated_at": "2024-10-30T23:58:27.427722Z"
+  "updated_at": "2024-10-30T23:58:27.427722Z",
+  "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
 }
 ```
 
@@ -1108,7 +1127,7 @@ encrypted data requires the original key identity to decrypt.
 
   - `id: string`
 
-    Identifier of the external key config. A tagged ID prefixed `ekey_`, or — for organizations on the Claude Platform on AWS — the AWS KMS key ARN.
+    Identifier of the external key config: a tagged ID prefixed `ekey_`, or, on Claude Platform on AWS, an AWS KMS key's ARN.
 
   - `attachment: BetaExternalKeyAttachedAttachment or BetaExternalKeyUnattachedAttachment`
 
@@ -1132,7 +1151,7 @@ encrypted data requires the original key identity to decrypt.
 
   - `geo: string`
 
-    Data residency geo. Selects which regional validator handles this key's encrypt/decrypt roundtrips.
+    Data residency geo. Selects the region that handles this key's encrypt/decrypt roundtrips.
 
   - `provider_config: BetaAWSExternalKeyConfig or BetaGCPExternalKeyConfig or BetaAzureExternalKeyConfig`
 
@@ -1144,7 +1163,7 @@ encrypted data requires the original key identity to decrypt.
 
       - `kms_arn: string`
 
-        Full ARN of the AWS KMS key. On Claude Platform on AWS the key must be a single-Region key in your organization's own AWS account; cross-account keys, multi-Region keys, and alias ARNs are rejected.
+        Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key in your organization's AWS account.
 
         maxLength: 2048
 
@@ -1156,7 +1175,7 @@ encrypted data requires the original key identity to decrypt.
 
         **Deprecated**
 
-        IAM role ARN. Deprecated — Anthropic reaches the KMS key through its own intermediate role (or, on Claude Platform on AWS, with credentials AWS issues for the Workspace); this field is ignored.
+        IAM role ARN. Deprecated; this field is ignored.
 
     - `beta_gcp_external_key_config: object`
 
@@ -1190,6 +1209,10 @@ encrypted data requires the original key identity to decrypt.
 
     format: date-time
 
+  - `user_profile_id: string`
+
+    ID of the user profile the key is bound to, or null if the key is not bound to one. A key bound to a user profile can only be attached to a Workspace that has the same user profile. A key that isn't bound can be attached to a Workspace whatever its user profile.
+
 #### Example
 
 ```bash
@@ -1215,7 +1238,8 @@ ant beta:organization:external-keys update \
     "role_arn": "arn:aws:iam::111122223333:role/anthropic-cmek"
   },
   "type": "external_key",
-  "updated_at": "2024-10-30T23:58:27.427722Z"
+  "updated_at": "2024-10-30T23:58:27.427722Z",
+  "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
 }
 ```
 
@@ -5203,7 +5227,7 @@ ant beta:organization:users list
 {
   "data": [
     {
-      "id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+      "id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
       "added_at": "2024-10-30T23:58:27.427722Z",
       "email": "user@emaildomain.com",
       "name": "Jane Doe",
@@ -5292,7 +5316,7 @@ ant beta:organization:users retrieve \
 
 ```json
 {
-  "id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+  "id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
   "added_at": "2024-10-30T23:58:27.427722Z",
   "email": "user@emaildomain.com",
   "name": "Jane Doe",
@@ -5383,7 +5407,7 @@ ant beta:organization:users update \
 
 ```json
 {
-  "id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+  "id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
   "added_at": "2024-10-30T23:58:27.427722Z",
   "email": "user@emaildomain.com",
   "name": "Jane Doe",
@@ -5431,7 +5455,7 @@ ant beta:organization:users remove \
 
 ```json
 {
-  "id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+  "id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
   "type": "user_deleted"
 }
 ```
@@ -5496,17 +5520,17 @@ List Workspaces
 
     - `compartment_id: string`
 
-      Identifier for this Workspace's encryption compartment. When you configure a
-      customer-managed encryption key (CMEK) on AWS, reference this value in your
-      KMS key-policy condition so the key is scoped to this compartment. On GCP and
-      Azure, Anthropic enforces the compartment binding automatically; you do not
-      need to reference this value in your key configuration. See the CMEK
-      integration guide for the required key configuration; unless your organization
-      is on Claude Platform on AWS, it includes a separate value used during key
-      validation. On Claude Platform on AWS there is no separate validation value:
-      the key is validated against this Workspace's own value when it is attached, so
-      if your key policy uses the compartment condition, add this value to it before
-      attaching the key.
+      Identifier for this Workspace's encryption compartment. When you configure an
+      AWS KMS customer-managed encryption key (CMEK) that isn't bound to a user
+      profile, reference this value in your KMS key-policy condition so the key is
+      scoped to this compartment. On GCP and Azure, Anthropic enforces the compartment
+      binding automatically; you do not need to reference this value in your key
+      configuration. See the CMEK integration guide for the required key
+      configuration; unless your organization is on Claude Platform on AWS, it
+      includes a separate value used during key validation. On Claude Platform on AWS
+      there is no separate validation value: your organization's own key is validated
+      against this Workspace's own value when it is attached, so if its key policy
+      uses the compartment condition, add this value to it before attaching the key.
 
     - `created_at: string`
 
@@ -5552,13 +5576,13 @@ List Workspaces
       Workspace. Setting this field requires CMEK to be enabled for your
       organization. When set, data stored for this Workspace is encrypted with the
       referenced key. Create key configurations with the External Keys API. On
-      Claude Platform on AWS the value is the AWS KMS key ARN, and the key must be a
-      single-Region key in the same AWS account and Region as the Workspace. On that
-      platform the key is validated against this Workspace when it is attached, so a
-      key-policy problem is reported as an error on this request. This field is write-once:
-      once a key is attached to a Workspace it cannot be detached or replaced. To
-      rotate key material, rotate the underlying key on your cloud KMS; the
-      `external_key_id` stays the same.
+      Claude Platform on AWS the value for an AWS KMS key is the key's ARN, and your
+      organization's own key must be a single-Region key in the same AWS account and
+      Region as the Workspace. On that platform the key is validated against this
+      Workspace when it is attached, so a key-policy problem is reported as an error
+      on this request. This field is write-once: once a key is attached to a Workspace
+      it cannot be detached or replaced. To rotate key material, rotate the underlying
+      key on your cloud KMS; the `external_key_id` stays the same.
 
     - `name: string`
 
@@ -5567,6 +5591,10 @@ List Workspaces
     - `tags: map[string]`
 
       User-defined tags as string key-value pairs. Keys may not begin with `anthropic`.
+
+    - `user_profile_id: string`
+
+      ID of the user profile attached to the Workspace, or null if it has none. Every inference request through a Workspace that has a user profile must name that profile.
 
   - `first_id: string`
 
@@ -5608,7 +5636,8 @@ ant beta:organization:workspaces list
         "env": "prod",
         "team": "platform"
       },
-      "type": "workspace"
+      "type": "workspace",
+      "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
     }
   ],
   "first_id": "first_id",
@@ -5649,17 +5678,21 @@ Create Workspace
   Workspace. Setting this field requires CMEK to be enabled for your
   organization. When set, data stored for this Workspace is encrypted with the
   referenced key. Create key configurations with the External Keys API. On
-  Claude Platform on AWS the value is the AWS KMS key ARN, and the key must be a
-  single-Region key in the same AWS account and Region as the Workspace. On that
-  platform the key is validated against this Workspace when it is attached, so a
-  key-policy problem is reported as an error on this request. This field is write-once:
-  once a key is attached to a Workspace it cannot be detached or replaced. To
-  rotate key material, rotate the underlying key on your cloud KMS; the
-  `external_key_id` stays the same.
+  Claude Platform on AWS the value for an AWS KMS key is the key's ARN, and your
+  organization's own key must be a single-Region key in the same AWS account and
+  Region as the Workspace. On that platform the key is validated against this
+  Workspace when it is attached, so a key-policy problem is reported as an error
+  on this request. This field is write-once: once a key is attached to a Workspace
+  it cannot be detached or replaced. To rotate key material, rotate the underlying
+  key on your cloud KMS; the `external_key_id` stays the same.
 
 - `--tags: optional map[string]`
 
   User-defined tags as string key-value pairs. Keys may not begin with `anthropic`.
+
+- `--user-profile-id: optional string`
+
+  ID of a user profile to attach to the Workspace. Every inference request through the Workspace must then name this user profile; the API rejects a request that names none or a different one. The user profile can't be replaced or removed later; only deleting the user profile clears it.
 
 - `--beta: optional array of AnthropicBeta` (header parameter)
 
@@ -5687,17 +5720,17 @@ Create Workspace
 
   - `compartment_id: string`
 
-    Identifier for this Workspace's encryption compartment. When you configure a
-    customer-managed encryption key (CMEK) on AWS, reference this value in your
-    KMS key-policy condition so the key is scoped to this compartment. On GCP and
-    Azure, Anthropic enforces the compartment binding automatically; you do not
-    need to reference this value in your key configuration. See the CMEK
-    integration guide for the required key configuration; unless your organization
-    is on Claude Platform on AWS, it includes a separate value used during key
-    validation. On Claude Platform on AWS there is no separate validation value:
-    the key is validated against this Workspace's own value when it is attached, so
-    if your key policy uses the compartment condition, add this value to it before
-    attaching the key.
+    Identifier for this Workspace's encryption compartment. When you configure an
+    AWS KMS customer-managed encryption key (CMEK) that isn't bound to a user
+    profile, reference this value in your KMS key-policy condition so the key is
+    scoped to this compartment. On GCP and Azure, Anthropic enforces the compartment
+    binding automatically; you do not need to reference this value in your key
+    configuration. See the CMEK integration guide for the required key
+    configuration; unless your organization is on Claude Platform on AWS, it
+    includes a separate value used during key validation. On Claude Platform on AWS
+    there is no separate validation value: your organization's own key is validated
+    against this Workspace's own value when it is attached, so if its key policy
+    uses the compartment condition, add this value to it before attaching the key.
 
   - `created_at: string`
 
@@ -5743,13 +5776,13 @@ Create Workspace
     Workspace. Setting this field requires CMEK to be enabled for your
     organization. When set, data stored for this Workspace is encrypted with the
     referenced key. Create key configurations with the External Keys API. On
-    Claude Platform on AWS the value is the AWS KMS key ARN, and the key must be a
-    single-Region key in the same AWS account and Region as the Workspace. On that
-    platform the key is validated against this Workspace when it is attached, so a
-    key-policy problem is reported as an error on this request. This field is write-once:
-    once a key is attached to a Workspace it cannot be detached or replaced. To
-    rotate key material, rotate the underlying key on your cloud KMS; the
-    `external_key_id` stays the same.
+    Claude Platform on AWS the value for an AWS KMS key is the key's ARN, and your
+    organization's own key must be a single-Region key in the same AWS account and
+    Region as the Workspace. On that platform the key is validated against this
+    Workspace when it is attached, so a key-policy problem is reported as an error
+    on this request. This field is write-once: once a key is attached to a Workspace
+    it cannot be detached or replaced. To rotate key material, rotate the underlying
+    key on your cloud KMS; the `external_key_id` stays the same.
 
   - `name: string`
 
@@ -5758,6 +5791,10 @@ Create Workspace
   - `tags: map[string]`
 
     User-defined tags as string key-value pairs. Keys may not begin with `anthropic`.
+
+  - `user_profile_id: string`
+
+    ID of the user profile attached to the Workspace, or null if it has none. Every inference request through a Workspace that has a user profile must name that profile.
 
 #### Example
 
@@ -5786,7 +5823,8 @@ ant beta:organization:workspaces create \
     "env": "prod",
     "team": "platform"
   },
-  "type": "workspace"
+  "type": "workspace",
+  "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
 }
 ```
 
@@ -5826,17 +5864,17 @@ Get Workspace
 
   - `compartment_id: string`
 
-    Identifier for this Workspace's encryption compartment. When you configure a
-    customer-managed encryption key (CMEK) on AWS, reference this value in your
-    KMS key-policy condition so the key is scoped to this compartment. On GCP and
-    Azure, Anthropic enforces the compartment binding automatically; you do not
-    need to reference this value in your key configuration. See the CMEK
-    integration guide for the required key configuration; unless your organization
-    is on Claude Platform on AWS, it includes a separate value used during key
-    validation. On Claude Platform on AWS there is no separate validation value:
-    the key is validated against this Workspace's own value when it is attached, so
-    if your key policy uses the compartment condition, add this value to it before
-    attaching the key.
+    Identifier for this Workspace's encryption compartment. When you configure an
+    AWS KMS customer-managed encryption key (CMEK) that isn't bound to a user
+    profile, reference this value in your KMS key-policy condition so the key is
+    scoped to this compartment. On GCP and Azure, Anthropic enforces the compartment
+    binding automatically; you do not need to reference this value in your key
+    configuration. See the CMEK integration guide for the required key
+    configuration; unless your organization is on Claude Platform on AWS, it
+    includes a separate value used during key validation. On Claude Platform on AWS
+    there is no separate validation value: your organization's own key is validated
+    against this Workspace's own value when it is attached, so if its key policy
+    uses the compartment condition, add this value to it before attaching the key.
 
   - `created_at: string`
 
@@ -5882,13 +5920,13 @@ Get Workspace
     Workspace. Setting this field requires CMEK to be enabled for your
     organization. When set, data stored for this Workspace is encrypted with the
     referenced key. Create key configurations with the External Keys API. On
-    Claude Platform on AWS the value is the AWS KMS key ARN, and the key must be a
-    single-Region key in the same AWS account and Region as the Workspace. On that
-    platform the key is validated against this Workspace when it is attached, so a
-    key-policy problem is reported as an error on this request. This field is write-once:
-    once a key is attached to a Workspace it cannot be detached or replaced. To
-    rotate key material, rotate the underlying key on your cloud KMS; the
-    `external_key_id` stays the same.
+    Claude Platform on AWS the value for an AWS KMS key is the key's ARN, and your
+    organization's own key must be a single-Region key in the same AWS account and
+    Region as the Workspace. On that platform the key is validated against this
+    Workspace when it is attached, so a key-policy problem is reported as an error
+    on this request. This field is write-once: once a key is attached to a Workspace
+    it cannot be detached or replaced. To rotate key material, rotate the underlying
+    key on your cloud KMS; the `external_key_id` stays the same.
 
   - `name: string`
 
@@ -5897,6 +5935,10 @@ Get Workspace
   - `tags: map[string]`
 
     User-defined tags as string key-value pairs. Keys may not begin with `anthropic`.
+
+  - `user_profile_id: string`
+
+    ID of the user profile attached to the Workspace, or null if it has none. Every inference request through a Workspace that has a user profile must name that profile.
 
 #### Example
 
@@ -5925,7 +5967,8 @@ ant beta:organization:workspaces retrieve \
     "env": "prod",
     "team": "platform"
   },
-  "type": "workspace"
+  "type": "workspace",
+  "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
 }
 ```
 
@@ -5957,13 +6000,13 @@ Update Workspace
   Workspace. Setting this field requires CMEK to be enabled for your
   organization. When set, data stored for this Workspace is encrypted with the
   referenced key. Create key configurations with the External Keys API. On
-  Claude Platform on AWS the value is the AWS KMS key ARN, and the key must be a
-  single-Region key in the same AWS account and Region as the Workspace. On that
-  platform the key is validated against this Workspace when it is attached, so a
-  key-policy problem is reported as an error on this request. This field is write-once:
-  once a key is attached to a Workspace it cannot be detached or replaced. To
-  rotate key material, rotate the underlying key on your cloud KMS; the
-  `external_key_id` stays the same.
+  Claude Platform on AWS the value for an AWS KMS key is the key's ARN, and your
+  organization's own key must be a single-Region key in the same AWS account and
+  Region as the Workspace. On that platform the key is validated against this
+  Workspace when it is attached, so a key-policy problem is reported as an error
+  on this request. This field is write-once: once a key is attached to a Workspace
+  it cannot be detached or replaced. To rotate key material, rotate the underlying
+  key on your cloud KMS; the `external_key_id` stays the same.
 
 - `--name: optional string`
 
@@ -5974,6 +6017,10 @@ Update Workspace
 - `--tags: optional map[string]`
 
   User-defined tags as string key-value pairs. Keys may not begin with `anthropic`.
+
+- `--user-profile-id: optional string`
+
+  ID of a user profile to attach to the Workspace. Every inference request through the Workspace must then name this user profile; the API rejects a request that names none or a different one. Once set, it can't be replaced or removed (sending the same ID again changes nothing); only deleting the user profile clears it. The default Workspace can't have a user profile.
 
 #### Returns
 
@@ -5997,17 +6044,17 @@ Update Workspace
 
   - `compartment_id: string`
 
-    Identifier for this Workspace's encryption compartment. When you configure a
-    customer-managed encryption key (CMEK) on AWS, reference this value in your
-    KMS key-policy condition so the key is scoped to this compartment. On GCP and
-    Azure, Anthropic enforces the compartment binding automatically; you do not
-    need to reference this value in your key configuration. See the CMEK
-    integration guide for the required key configuration; unless your organization
-    is on Claude Platform on AWS, it includes a separate value used during key
-    validation. On Claude Platform on AWS there is no separate validation value:
-    the key is validated against this Workspace's own value when it is attached, so
-    if your key policy uses the compartment condition, add this value to it before
-    attaching the key.
+    Identifier for this Workspace's encryption compartment. When you configure an
+    AWS KMS customer-managed encryption key (CMEK) that isn't bound to a user
+    profile, reference this value in your KMS key-policy condition so the key is
+    scoped to this compartment. On GCP and Azure, Anthropic enforces the compartment
+    binding automatically; you do not need to reference this value in your key
+    configuration. See the CMEK integration guide for the required key
+    configuration; unless your organization is on Claude Platform on AWS, it
+    includes a separate value used during key validation. On Claude Platform on AWS
+    there is no separate validation value: your organization's own key is validated
+    against this Workspace's own value when it is attached, so if its key policy
+    uses the compartment condition, add this value to it before attaching the key.
 
   - `created_at: string`
 
@@ -6053,13 +6100,13 @@ Update Workspace
     Workspace. Setting this field requires CMEK to be enabled for your
     organization. When set, data stored for this Workspace is encrypted with the
     referenced key. Create key configurations with the External Keys API. On
-    Claude Platform on AWS the value is the AWS KMS key ARN, and the key must be a
-    single-Region key in the same AWS account and Region as the Workspace. On that
-    platform the key is validated against this Workspace when it is attached, so a
-    key-policy problem is reported as an error on this request. This field is write-once:
-    once a key is attached to a Workspace it cannot be detached or replaced. To
-    rotate key material, rotate the underlying key on your cloud KMS; the
-    `external_key_id` stays the same.
+    Claude Platform on AWS the value for an AWS KMS key is the key's ARN, and your
+    organization's own key must be a single-Region key in the same AWS account and
+    Region as the Workspace. On that platform the key is validated against this
+    Workspace when it is attached, so a key-policy problem is reported as an error
+    on this request. This field is write-once: once a key is attached to a Workspace
+    it cannot be detached or replaced. To rotate key material, rotate the underlying
+    key on your cloud KMS; the `external_key_id` stays the same.
 
   - `name: string`
 
@@ -6068,6 +6115,10 @@ Update Workspace
   - `tags: map[string]`
 
     User-defined tags as string key-value pairs. Keys may not begin with `anthropic`.
+
+  - `user_profile_id: string`
+
+    ID of the user profile attached to the Workspace, or null if it has none. Every inference request through a Workspace that has a user profile must name that profile.
 
 #### Example
 
@@ -6096,7 +6147,8 @@ ant beta:organization:workspaces update \
     "env": "prod",
     "team": "platform"
   },
-  "type": "workspace"
+  "type": "workspace",
+  "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
 }
 ```
 
@@ -6134,17 +6186,17 @@ Archive Workspace
 
   - `compartment_id: string`
 
-    Identifier for this Workspace's encryption compartment. When you configure a
-    customer-managed encryption key (CMEK) on AWS, reference this value in your
-    KMS key-policy condition so the key is scoped to this compartment. On GCP and
-    Azure, Anthropic enforces the compartment binding automatically; you do not
-    need to reference this value in your key configuration. See the CMEK
-    integration guide for the required key configuration; unless your organization
-    is on Claude Platform on AWS, it includes a separate value used during key
-    validation. On Claude Platform on AWS there is no separate validation value:
-    the key is validated against this Workspace's own value when it is attached, so
-    if your key policy uses the compartment condition, add this value to it before
-    attaching the key.
+    Identifier for this Workspace's encryption compartment. When you configure an
+    AWS KMS customer-managed encryption key (CMEK) that isn't bound to a user
+    profile, reference this value in your KMS key-policy condition so the key is
+    scoped to this compartment. On GCP and Azure, Anthropic enforces the compartment
+    binding automatically; you do not need to reference this value in your key
+    configuration. See the CMEK integration guide for the required key
+    configuration; unless your organization is on Claude Platform on AWS, it
+    includes a separate value used during key validation. On Claude Platform on AWS
+    there is no separate validation value: your organization's own key is validated
+    against this Workspace's own value when it is attached, so if its key policy
+    uses the compartment condition, add this value to it before attaching the key.
 
   - `created_at: string`
 
@@ -6190,13 +6242,13 @@ Archive Workspace
     Workspace. Setting this field requires CMEK to be enabled for your
     organization. When set, data stored for this Workspace is encrypted with the
     referenced key. Create key configurations with the External Keys API. On
-    Claude Platform on AWS the value is the AWS KMS key ARN, and the key must be a
-    single-Region key in the same AWS account and Region as the Workspace. On that
-    platform the key is validated against this Workspace when it is attached, so a
-    key-policy problem is reported as an error on this request. This field is write-once:
-    once a key is attached to a Workspace it cannot be detached or replaced. To
-    rotate key material, rotate the underlying key on your cloud KMS; the
-    `external_key_id` stays the same.
+    Claude Platform on AWS the value for an AWS KMS key is the key's ARN, and your
+    organization's own key must be a single-Region key in the same AWS account and
+    Region as the Workspace. On that platform the key is validated against this
+    Workspace when it is attached, so a key-policy problem is reported as an error
+    on this request. This field is write-once: once a key is attached to a Workspace
+    it cannot be detached or replaced. To rotate key material, rotate the underlying
+    key on your cloud KMS; the `external_key_id` stays the same.
 
   - `name: string`
 
@@ -6205,6 +6257,10 @@ Archive Workspace
   - `tags: map[string]`
 
     User-defined tags as string key-value pairs. Keys may not begin with `anthropic`.
+
+  - `user_profile_id: string`
+
+    ID of the user profile attached to the Workspace, or null if it has none. Every inference request through a Workspace that has a user profile must name that profile.
 
 #### Example
 
@@ -6233,7 +6289,8 @@ ant beta:organization:workspaces archive \
     "env": "prod",
     "team": "platform"
   },
-  "type": "workspace"
+  "type": "workspace",
+  "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
 }
 ```
 
@@ -6734,7 +6791,7 @@ ant beta:organization:workspaces:members list \
   "data": [
     {
       "type": "workspace_member",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
       "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ",
       "workspace_role": "workspace_admin"
     }
@@ -6804,7 +6861,7 @@ Create Workspace Member
 ```bash
 ant beta:organization:workspaces:members add \
   --workspace-id workspace_id \
-  --user-id user_01WCz1FkmYMm4gnmykNKUu3Q \
+  --user-id user_01WxYzAbCdEfGhJkMnPqRsTu \
   --workspace-role workspace_admin
 ```
 
@@ -6813,7 +6870,7 @@ ant beta:organization:workspaces:members add \
 ```json
 {
   "type": "workspace_member",
-  "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+  "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
   "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ",
   "workspace_role": "workspace_admin"
 }
@@ -6882,7 +6939,7 @@ ant beta:organization:workspaces:members retrieve \
 ```json
 {
   "type": "workspace_member",
-  "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+  "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
   "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ",
   "workspace_role": "workspace_admin"
 }
@@ -6956,7 +7013,7 @@ ant beta:organization:workspaces:members update \
 ```json
 {
   "type": "workspace_member",
-  "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+  "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
   "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ",
   "workspace_role": "workspace_admin"
 }
@@ -7011,7 +7068,7 @@ ant beta:organization:workspaces:members remove \
 ```json
 {
   "type": "workspace_member_deleted",
-  "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q",
+  "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
   "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ"
 }
 ```
@@ -7698,7 +7755,10 @@ Update your organization's Compliance Settings.
 
 Setting `state` to `enabled` turns on the Compliance API and begins
 capturing organization activity events. Setting it to `disabled` turns
-both off. `state` reflects whether the Compliance API is enabled.
+both off. Access Transparency events are an exception: they are still
+captured while the Compliance API is disabled, and the Compliance API
+activity feed returns them once it is enabled again. `state` reflects
+whether the Compliance API is enabled.
 
 A request that sets `state` to its current value succeeds and leaves the
 resource unchanged. A `disabled` request stays in effect until a later
@@ -10311,7 +10371,7 @@ ant beta:organization:analytics:usage list \
           "email_address": "user@emaildomain.com",
           "name": "Jane Doe",
           "type": "user_actor",
-          "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+          "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
         },
         "actor_type": "user_actor",
         "agent_id": "agent_01VHd3EAGJ6PLkP9LM7DDu3f",
@@ -10344,12 +10404,12 @@ ant beta:organization:analytics:usage list \
         "server_tool_use": {
           "web_search_requests": 10
         },
-        "total_tokens": 5377000,
+        "total_tokens": 5375500,
         "uncached_input_tokens": 1284500
       }
     }
   ],
-  "data_refreshed_at": "2019-12-27T18:11:19.117Z",
+  "data_refreshed_at": "2026-10-01T04:02:11Z",
   "has_more": true,
   "next_page": "next_page"
 }
@@ -10851,7 +10911,7 @@ ant beta:organization:analytics:cost list \
           "email_address": "user@emaildomain.com",
           "name": "Jane Doe",
           "type": "user_actor",
-          "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+          "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
         },
         "actor_type": "user_actor",
         "agent_id": "agent_01VHd3EAGJ6PLkP9LM7DDu3f",
@@ -10877,7 +10937,7 @@ ant beta:organization:analytics:cost list \
       "starting_at": "2026-09-01T00:00:00Z"
     }
   ],
-  "data_refreshed_at": "2019-12-27T18:11:19.117Z",
+  "data_refreshed_at": "2026-10-01T04:02:11Z",
   "has_more": true,
   "next_page": "next_page"
 }
@@ -11189,7 +11249,7 @@ ant beta:organization:analytics:usage-report list \
 
 [Legacy] Get per-user token usage across a date range.
 
-Returns usage per user, ranked by the chosen token metric; `group_by[]` or `bucket_width` splits a user across several rows. Use this to see which users consume the most tokens. Only usage attributed to a user account is included; usage with no user attributed to it, such as requests attributed only to an API key, is left out. Available to organizations on a Claude Enterprise plan. Requires an API key with the `read:analytics` scope.
+Returns usage per user, ranked by the chosen token metric; `group_by[]` or `bucket_width` splits a user across several rows. Use this to see which users consume the most tokens. Only usage attributed to a user account is included; usage with no user attributed to it, such as Code Review usage and Claude Tag usage in Slack channels, is left out. Available to organizations on a Claude Enterprise plan. Requires an API key with the `read:analytics` scope.
 
 This endpoint is one of the legacy Claude Enterprise usage and cost reports. For new integrations, use [`GET /v1/organizations/analytics/usage`](https://platform.claude.com/docs/en/api/beta/organization/analytics/usage/list?sdk_languages=cli) in the Usage and Cost Analytics API instead. To move an existing integration, see [Migrate from the Claude Enterprise usage and cost reports](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli#migrate-from-enterprise-analytics-reports).
 
@@ -11816,7 +11876,7 @@ ant beta:organization:analytics:cost-report list \
 
 [Legacy] Get per-user cost in USD across a date range.
 
-Returns cost per user, ranked by spend; `group_by[]` or `bucket_width` splits a user across several rows. Use this to see which users account for the most cost. Only cost attributed to a user account is included; cost with no user attributed to it, such as requests attributed only to an API key, is left out. Available to organizations on a Claude Enterprise plan. Requires an API key with the `read:analytics` scope.
+Returns cost per user, ranked by spend; `group_by[]` or `bucket_width` splits a user across several rows. Use this to see which users account for the most cost. Only cost attributed to a user account is included; cost with no user attributed to it, such as Code Review usage and Claude Tag usage in Slack channels, is left out. Available to organizations on a Claude Enterprise plan. Requires an API key with the `read:analytics` scope.
 
 This endpoint is one of the legacy Claude Enterprise usage and cost reports. For new integrations, use [`GET /v1/organizations/analytics/cost`](https://platform.claude.com/docs/en/api/beta/organization/analytics/cost/list?sdk_languages=cli) in the Usage and Cost Analytics API instead. To move an existing integration, see [Migrate from the Claude Enterprise usage and cost reports](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli#migrate-from-enterprise-analytics-reports).
 
@@ -12281,7 +12341,7 @@ Anthropic account team.
 ```bash
 ant beta:organization:spend-limits set \
   --amount 50000 \
-  --scope '{type: user, user_id: user_01WCz1FkmYMm4gnmykNKUu3Q}'
+  --scope '{type: user, user_id: user_01WxYzAbCdEfGhJkMnPqRsTu}'
 ```
 
 ##### Response (200)
@@ -12296,7 +12356,7 @@ ant beta:organization:spend-limits set \
   "period": "daily",
   "scope": {
     "type": "user",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "type": "spend_limit",
   "updated_at": "2019-12-27T18:11:19.117Z"
@@ -12446,7 +12506,7 @@ ant beta:organization:spend-limits retrieve \
   "period": "daily",
   "scope": {
     "type": "user",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "type": "spend_limit",
   "updated_at": "2019-12-27T18:11:19.117Z"
@@ -12671,7 +12731,7 @@ ant beta:organization:spend-limits list
       "period": "daily",
       "scope": {
         "type": "user",
-        "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+        "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
       },
       "type": "spend_limit",
       "updated_at": "2019-12-27T18:11:19.117Z"
@@ -12892,7 +12952,7 @@ ant beta:organization:spend-limits:effective list
         "email_address": "email_address",
         "name": "name",
         "type": "user_actor",
-        "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+        "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
       },
       "amount": "50000",
       "currency": "USD",
@@ -12900,11 +12960,11 @@ ant beta:organization:spend-limits:effective list
       "period_to_date_spend": "12050.5",
       "scope": {
         "type": "user",
-        "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+        "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
       },
       "source": {
         "type": "user",
-        "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+        "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
       },
       "spend_limit_id": "spend_limit_id"
     }
@@ -13172,7 +13232,7 @@ ant beta:organization:spend-limits:increase-requests list
         "email_address": "email_address",
         "name": "name",
         "type": "user_actor",
-        "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+        "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
       },
       "created_at": "2019-12-27T18:11:19.117Z",
       "period": "daily",
@@ -13182,7 +13242,7 @@ ant beta:organization:spend-limits:increase-requests list
         "email_address": "email_address",
         "name": "name",
         "type": "user_actor",
-        "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+        "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
       },
       "spend_summary": {
         "actor": {
@@ -13190,7 +13250,7 @@ ant beta:organization:spend-limits:increase-requests list
           "email_address": "email_address",
           "name": "name",
           "type": "user_actor",
-          "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+          "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
         },
         "amount": "50000",
         "currency": "USD",
@@ -13198,11 +13258,11 @@ ant beta:organization:spend-limits:increase-requests list
         "period_to_date_spend": "12050.5",
         "scope": {
           "type": "user",
-          "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+          "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
         },
         "source": {
           "type": "user",
-          "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+          "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
         },
         "spend_limit_id": "spend_limit_id"
       },
@@ -13454,7 +13514,7 @@ ant beta:organization:spend-limits:increase-requests retrieve \
     "email_address": "email_address",
     "name": "name",
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "created_at": "2019-12-27T18:11:19.117Z",
   "period": "daily",
@@ -13464,7 +13524,7 @@ ant beta:organization:spend-limits:increase-requests retrieve \
     "email_address": "email_address",
     "name": "name",
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "spend_summary": {
     "actor": {
@@ -13472,7 +13532,7 @@ ant beta:organization:spend-limits:increase-requests retrieve \
       "email_address": "email_address",
       "name": "name",
       "type": "user_actor",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
     },
     "amount": "50000",
     "currency": "USD",
@@ -13480,11 +13540,11 @@ ant beta:organization:spend-limits:increase-requests retrieve \
     "period_to_date_spend": "12050.5",
     "scope": {
       "type": "user",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
     },
     "source": {
       "type": "user",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
     },
     "spend_limit_id": "spend_limit_id"
   },
@@ -13818,7 +13878,7 @@ ant beta:organization:spend-limits:increase-requests approve \
     "email_address": "email_address",
     "name": "name",
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "created_at": "2019-12-27T18:11:19.117Z",
   "period": "daily",
@@ -13828,7 +13888,7 @@ ant beta:organization:spend-limits:increase-requests approve \
     "email_address": "email_address",
     "name": "name",
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "spend_limit": {
     "id": "id",
@@ -13839,7 +13899,7 @@ ant beta:organization:spend-limits:increase-requests approve \
     "period": "daily",
     "scope": {
       "type": "user",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
     },
     "type": "spend_limit",
     "updated_at": "2019-12-27T18:11:19.117Z"
@@ -13850,7 +13910,7 @@ ant beta:organization:spend-limits:increase-requests approve \
       "email_address": "email_address",
       "name": "name",
       "type": "user_actor",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
     },
     "amount": "50000",
     "currency": "USD",
@@ -13858,11 +13918,11 @@ ant beta:organization:spend-limits:increase-requests approve \
     "period_to_date_spend": "12050.5",
     "scope": {
       "type": "user",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
     },
     "source": {
       "type": "user",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
     },
     "spend_limit_id": "spend_limit_id"
   },
@@ -14113,7 +14173,7 @@ ant beta:organization:spend-limits:increase-requests deny \
     "email_address": "email_address",
     "name": "name",
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "created_at": "2019-12-27T18:11:19.117Z",
   "period": "daily",
@@ -14123,7 +14183,7 @@ ant beta:organization:spend-limits:increase-requests deny \
     "email_address": "email_address",
     "name": "name",
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "spend_summary": {
     "actor": {
@@ -14131,7 +14191,7 @@ ant beta:organization:spend-limits:increase-requests deny \
       "email_address": "email_address",
       "name": "name",
       "type": "user_actor",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
     },
     "amount": "50000",
     "currency": "USD",
@@ -14139,11 +14199,11 @@ ant beta:organization:spend-limits:increase-requests deny \
     "period_to_date_spend": "12050.5",
     "scope": {
       "type": "user",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
     },
     "source": {
       "type": "user",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
     },
     "spend_limit_id": "spend_limit_id"
   },
@@ -14640,7 +14700,7 @@ ant beta:organization:rbac-groups:members list \
       "email": "user@emaildomain.com",
       "rbac_group_id": "rbac_group_012rppKaSVsmTo6NqRDXQXNF",
       "type": "rbac_group_member",
-      "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+      "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
     }
   ],
   "has_more": false,
@@ -14701,7 +14761,7 @@ The RBAC Groups API is available to Claude Enterprise organizations only.
 ```bash
 ant beta:organization:rbac-groups:members add \
   --rbac-group-id rbac_group_id \
-  --user-id user_01WCz1FkmYMm4gnmykNKUu3Q
+  --user-id user_01WxYzAbCdEfGhJkMnPqRsTu
 ```
 
 ##### Response (200)
@@ -14712,7 +14772,7 @@ ant beta:organization:rbac-groups:members add \
   "email": "user@emaildomain.com",
   "rbac_group_id": "rbac_group_012rppKaSVsmTo6NqRDXQXNF",
   "type": "rbac_group_member",
-  "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+  "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
 }
 ```
 
@@ -14766,7 +14826,7 @@ ant beta:organization:rbac-groups:members remove \
 {
   "rbac_group_id": "rbac_group_012rppKaSVsmTo6NqRDXQXNF",
   "type": "rbac_group_member_deleted",
-  "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+  "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
 }
 ```
 
@@ -14975,10 +15035,11 @@ The RBAC Roles API is available to Claude Enterprise organizations only.
       The vocabulary follows the resource: an `organization` grant carries a
       product-feature entitlement (for example `chat`), an admin-panel
       permission entitlement (`permission_*`), or a blanket capability-access
-      mode — `capability_access_all` grants every product-feature entitlement,
-      and `capability_access_all_ga` grants the generally-available subset as
-      it stands at permission-check time; neither mode grants model-access
-      entitlements. A consumer enumerating a role's per-feature grants should
+      mode — `capability_access_all` grants every product-feature entitlement
+      except `inference_hooks_inspection`, which a role holds only through its
+      own row, and `capability_access_all_ga` grants the generally-available
+      subset of those as it stands at permission-check time; neither mode grants
+      model-access entitlements. A consumer enumerating a role's per-feature grants should
       treat a blanket row as granting every product-feature entitlement it
       covers, or it will under-report the role's effective access. A `connector_tool` grant carries
       a tool-access action (`use` or `always_allow`); a `connector_scope` grant
@@ -15374,7 +15435,7 @@ ant beta:organization:plugins create \
   "created_by": {
     "email_address": "user@example.com",
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "description": "Reviews pull requests against your team's conventions.",
   "display_name": "Code Review Helper",
@@ -15641,7 +15702,7 @@ ant beta:organization:plugins retrieve \
   "created_by": {
     "email_address": "user@example.com",
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "description": "Reviews pull requests against your team's conventions.",
   "display_name": "Code Review Helper",
@@ -15932,7 +15993,7 @@ ant beta:organization:plugins update \
   "created_by": {
     "email_address": "user@example.com",
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "description": "Reviews pull requests against your team's conventions.",
   "display_name": "Code Review Helper",
@@ -16258,7 +16319,7 @@ ant beta:organization:plugins list
       "created_by": {
         "email_address": "user@example.com",
         "type": "user_actor",
-        "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+        "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
       },
       "description": "Reviews pull requests against your team's conventions.",
       "display_name": "Code Review Helper",
@@ -16559,7 +16620,7 @@ ant beta:organization:plugins:versions create \
   "created_by": {
     "email_address": "user@example.com",
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "description": "Reviews pull requests against your team's conventions.",
   "display_name": "Code Review Helper",
@@ -16784,7 +16845,7 @@ ant beta:organization:plugins:versions list \
       "created_by": {
         "email_address": "user@example.com",
         "type": "user_actor",
-        "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+        "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
       },
       "description": "Reviews pull requests against your team's conventions.",
       "display_name": "Code Review Helper",
@@ -16992,7 +17053,7 @@ ant beta:organization:plugins:versions retrieve \
   "created_by": {
     "email_address": "user@example.com",
     "type": "user_actor",
-    "user_id": "user_01WCz1FkmYMm4gnmykNKUu3Q"
+    "user_id": "user_01WxYzAbCdEfGhJkMnPqRsTu"
   },
   "description": "Reviews pull requests against your team's conventions.",
   "display_name": "Code Review Helper",
@@ -20312,5 +20373,2962 @@ ant beta:organization:webhooks regenerate-signing-secret \
 ```json
 {
   "signing_secret": "signing_secret"
+}
+```
+
+## Organization › Claude Tag › Slack Channels
+
+### Set Up Slack Channel
+
+`$ ant beta:organization:claude-tag:slack-channels create`
+
+**POST** `/v1/organizations/claude_tag/slack_channels`
+
+Set a Slack channel up for Claude Tag and return it with its identifier. If the channel is already set up, whether in claude.ai, by Claude's first use in it or by an earlier request, the existing channel is returned, so the request can be repeated. `settings`, when sent, is applied as an update applies it. Before a channel is set up, Claude's Slack app confirms with Slack that the channel is in the workspace, is not archived and is visible to the app; a channel that fails the confirmation returns 404. Setting the channel up and applying `settings` are two steps: when the second is refused, the response is the refusal, the channel stays set up with every setting unset, and the error's `details.slack_channel_id` holds the channel's identifier.
+
+#### Parameters
+
+- `--slack: object`
+
+  Slack's own identifiers for the channel to set up. The organization must own the workspace.
+
+- `--settings: optional object`
+
+  Settings to store on the channel, applied as Update Slack Channel applies them.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `beta_claude_tag_slack_channel: object`
+
+  A Slack channel set up for Claude Tag, with the settings it stores or, with `include_inherited`, the settings that apply in it.
+
+  - `type: "slack_channel"`
+
+  - `id: string`
+
+    The channel's identifier. Starts with `slch_`. It does not change for as long as the channel is set up, with one exception: a channel that is not configured gets a new one when claude.ai replaces its record, which happens only while the organization's read-only mode is off. A channel that is removed and set up again also has a new one. The old one keeps returning 404; look the channel up by its Slack identifiers for the new one.
+
+  - `created_at: string`
+
+    Time the channel was set up, by whichever route. It does not change for as long as `id` does not.
+
+    format: date-time
+
+  - `settings: object`
+
+    What the channel itself stores or, with `include_inherited`, what applies in it. `sources` says which.
+
+    - `enabled: boolean`
+
+      Whether Claude is on. The nearest settings level that sets it decides.
+
+    - `environment_id: string`
+
+      The environment Claude's sessions run in, starting with `env_`, or the identifier of a self-hosted runner pool, starting with `ccpool_`. The nearest settings level that sets it decides.
+
+    - `guest_policy: BetaClaudeTagGuestPolicyAllow or BetaClaudeTagGuestPolicyRestrict or BetaClaudeTagGuestPolicyChannelOnly`
+
+      What Claude does in a channel while a Slack guest is in it. The nearest settings level that sets it decides.
+
+      - `beta_claude_tag_guest_policy_allow: object`
+
+        Claude answers in the channel.
+
+        - `type: "allow"`
+
+      - `beta_claude_tag_guest_policy_restrict: object`
+
+        Claude does not answer in the channel.
+
+        - `type: "restrict"`
+
+      - `beta_claude_tag_guest_policy_channel_only: object`
+
+        Claude answers with only the Bundles attached to the channel itself.
+
+        - `type: "channel_only"`
+
+    - `instructions: string`
+
+      Instructions for Claude. Instructions add up: the text of every settings level that sets it is joined, broadest first.
+
+    - `model: string`
+
+      The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+  - `slack: object`
+
+    Slack's own identifiers for the channel.
+
+    - `channel_id: string`
+
+      Slack's identifier for the channel, starting with `C` or `G`, such as `C0456EFGH`.
+
+      minLength: 2, maxLength: 32
+
+    - `workspace_id: string`
+
+      Slack's identifier for the workspace the channel is in, starting with `T`, such as `T0123ABCD`.
+
+      minLength: 2, maxLength: 32
+
+  - `sources: object`
+
+    For each setting, the settings level its value in `settings` comes from.
+
+    - `enabled: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `enabled` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+        - `type: "slack_channel"`
+
+        - `slack_channel_id: string`
+
+          The channel's identifier, starting with `slch_`.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+        - `type: "slack_workspace"`
+
+        - `slack_workspace_id: string`
+
+          The workspace's identifier, starting with `slws_`.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `type: "slack_parent_channel"`
+
+        - `slack_channel_id: string`
+
+          The parent channel's identifier, starting with `slch_`.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `type: "slack_default"`
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+        - `type: "default"`
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+        - `type: "slack_grid_channel"`
+
+        - `slack: object`
+
+          Slack's own identifiers for the channel under that other workspace.
+
+          - `channel_id: string`
+
+            Slack's identifier for the channel, starting with `C` or `G`, such as `C0456EFGH`.
+
+            minLength: 2, maxLength: 32
+
+          - `workspace_id: string`
+
+            Slack's identifier for the workspace the channel is in, starting with `T`, such as `T0123ABCD`.
+
+            minLength: 2, maxLength: 32
+
+    - `environment_id: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `environment_id` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `guest_policy: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `guest_policy` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `instructions: array of BetaClaudeTagSettingSource`
+
+      Every settings level that contributes text to `instructions`, broadest first, in the order their text is joined. Empty when none does.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `model: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `model` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+  - `updated_at: string`
+
+    Time Claude Tag's record of the channel last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the channel again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
+
+    format: date-time
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:slack-channels create \
+  --slack '{channel_id: xx, workspace_id: xx}'
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "settings": {
+    "enabled": true,
+    "environment_id": "environment_id",
+    "guest_policy": {
+      "type": "allow"
+    },
+    "instructions": "instructions",
+    "model": "model"
+  },
+  "slack": {
+    "channel_id": "xx",
+    "workspace_id": "xx"
+  },
+  "sources": {
+    "enabled": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "environment_id": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "guest_policy": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "instructions": [
+      {
+        "slack_channel_id": "slack_channel_id",
+        "type": "slack_channel"
+      }
+    ],
+    "model": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    }
+  },
+  "type": "slack_channel",
+  "updated_at": "2019-12-27T18:11:19.117Z"
+}
+```
+
+### List Slack Channels
+
+`$ ant beta:organization:claude-tag:slack-channels list`
+
+**GET** `/v1/organizations/claude_tag/slack_channels`
+
+List the set-up Slack channels of one Slack workspace, newest first by `created_at`. A channel that is not set up is not listed: Slack holds the full list of a workspace's channels. Pass `slack_channel_id` as well to look one channel up by its Slack identifiers: `data` then holds that channel, or is empty when it is not set up, and `limit` and `page` are ignored. A workspace that the organization owns only through a Slack Enterprise Grid returns 404 until it is set up. With `include_inherited=true` each channel's `settings` holds what applies in it, and the request fails with 503 rather than resolve against a settings level that could not be read. A `page` cursor resumes only a request with the same `include_inherited`.
+
+#### Parameters
+
+- `--slack-workspace-id: string` (query parameter)
+
+  The Slack workspace whose channels to list: Slack's identifier for it, as in the channel object's `slack.workspace_id`, not the workspace object's `id`.
+
+- `--include-inherited: optional boolean` (query parameter)
+
+  When `true`, `settings` holds what applies in each channel once the settings levels above it are taken into account, and every member of `sources` names the level a value comes from. When `false` or left out, `settings` holds what each channel itself stores.
+
+- `--limit: optional number` (query parameter)
+
+  Number of items to return per page, between 1 and 100. Defaults to 20.
+
+  format: int32
+
+- `--page: optional string` (query parameter)
+
+  Opaque cursor from a previous response's `next_page`.
+
+- `--slack-channel-id: optional string` (query parameter)
+
+  Slack's identifier for one channel of that workspace, as in the channel object's `slack.channel_id`. It is not the channel object's `id`. With it `data` holds that channel alone, or nothing when the channel is not set up.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `BetaClaudeTagListSlackChannelsResponse: object`
+
+  - `data: array of BetaClaudeTagSlackChannel`
+
+    Channels on this page, newest first.
+
+    - `type: "slack_channel"`
+
+    - `id: string`
+
+      The channel's identifier. Starts with `slch_`. It does not change for as long as the channel is set up, with one exception: a channel that is not configured gets a new one when claude.ai replaces its record, which happens only while the organization's read-only mode is off. A channel that is removed and set up again also has a new one. The old one keeps returning 404; look the channel up by its Slack identifiers for the new one.
+
+    - `created_at: string`
+
+      Time the channel was set up, by whichever route. It does not change for as long as `id` does not.
+
+      format: date-time
+
+    - `settings: object`
+
+      What the channel itself stores or, with `include_inherited`, what applies in it. `sources` says which.
+
+      - `enabled: boolean`
+
+        Whether Claude is on. The nearest settings level that sets it decides.
+
+      - `environment_id: string`
+
+        The environment Claude's sessions run in, starting with `env_`, or the identifier of a self-hosted runner pool, starting with `ccpool_`. The nearest settings level that sets it decides.
+
+      - `guest_policy: BetaClaudeTagGuestPolicyAllow or BetaClaudeTagGuestPolicyRestrict or BetaClaudeTagGuestPolicyChannelOnly`
+
+        What Claude does in a channel while a Slack guest is in it. The nearest settings level that sets it decides.
+
+        - `beta_claude_tag_guest_policy_allow: object`
+
+          Claude answers in the channel.
+
+          - `type: "allow"`
+
+        - `beta_claude_tag_guest_policy_restrict: object`
+
+          Claude does not answer in the channel.
+
+          - `type: "restrict"`
+
+        - `beta_claude_tag_guest_policy_channel_only: object`
+
+          Claude answers with only the Bundles attached to the channel itself.
+
+          - `type: "channel_only"`
+
+      - `instructions: string`
+
+        Instructions for Claude. Instructions add up: the text of every settings level that sets it is joined, broadest first.
+
+      - `model: string`
+
+        The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+    - `slack: object`
+
+      Slack's own identifiers for the channel.
+
+      - `channel_id: string`
+
+        Slack's identifier for the channel, starting with `C` or `G`, such as `C0456EFGH`.
+
+        minLength: 2, maxLength: 32
+
+      - `workspace_id: string`
+
+        Slack's identifier for the workspace the channel is in, starting with `T`, such as `T0123ABCD`.
+
+        minLength: 2, maxLength: 32
+
+    - `sources: object`
+
+      For each setting, the settings level its value in `settings` comes from.
+
+      - `enabled: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+        The settings level `enabled` comes from.
+
+        - `beta_claude_tag_slack_channel_setting_source: object`
+
+          The value comes from the addressed Slack channel itself.
+
+          - `type: "slack_channel"`
+
+          - `slack_channel_id: string`
+
+            The channel's identifier, starting with `slch_`.
+
+        - `beta_claude_tag_slack_workspace_setting_source: object`
+
+          The value comes from a Slack workspace of the organization.
+
+          - `type: "slack_workspace"`
+
+          - `slack_workspace_id: string`
+
+            The workspace's identifier, starting with `slws_`.
+
+        - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+          The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+          - `type: "slack_parent_channel"`
+
+          - `slack_channel_id: string`
+
+            The parent channel's identifier, starting with `slch_`.
+
+        - `beta_claude_tag_slack_default_setting_source: object`
+
+          The value comes from the organization's Slack defaults, which have no identifier.
+
+          - `type: "slack_default"`
+
+        - `beta_claude_tag_default_setting_source: object`
+
+          No settings level sets a value, and the built-in default applies.
+
+          - `type: "default"`
+
+        - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+          The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+          - `type: "slack_grid_channel"`
+
+          - `slack: object`
+
+            Slack's own identifiers for the channel under that other workspace.
+
+            - `channel_id: string`
+
+              Slack's identifier for the channel, starting with `C` or `G`, such as `C0456EFGH`.
+
+              minLength: 2, maxLength: 32
+
+            - `workspace_id: string`
+
+              Slack's identifier for the workspace the channel is in, starting with `T`, such as `T0123ABCD`.
+
+              minLength: 2, maxLength: 32
+
+      - `environment_id: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+        The settings level `environment_id` comes from.
+
+        - `beta_claude_tag_slack_channel_setting_source: object`
+
+          The value comes from the addressed Slack channel itself.
+
+        - `beta_claude_tag_slack_workspace_setting_source: object`
+
+          The value comes from a Slack workspace of the organization.
+
+        - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+          The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `beta_claude_tag_slack_default_setting_source: object`
+
+          The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `beta_claude_tag_default_setting_source: object`
+
+          No settings level sets a value, and the built-in default applies.
+
+        - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+          The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+      - `guest_policy: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+        The settings level `guest_policy` comes from.
+
+        - `beta_claude_tag_slack_channel_setting_source: object`
+
+          The value comes from the addressed Slack channel itself.
+
+        - `beta_claude_tag_slack_workspace_setting_source: object`
+
+          The value comes from a Slack workspace of the organization.
+
+        - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+          The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `beta_claude_tag_slack_default_setting_source: object`
+
+          The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `beta_claude_tag_default_setting_source: object`
+
+          No settings level sets a value, and the built-in default applies.
+
+        - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+          The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+      - `instructions: array of BetaClaudeTagSettingSource`
+
+        Every settings level that contributes text to `instructions`, broadest first, in the order their text is joined. Empty when none does.
+
+        - `beta_claude_tag_slack_channel_setting_source: object`
+
+          The value comes from the addressed Slack channel itself.
+
+        - `beta_claude_tag_slack_workspace_setting_source: object`
+
+          The value comes from a Slack workspace of the organization.
+
+        - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+          The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `beta_claude_tag_slack_default_setting_source: object`
+
+          The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `beta_claude_tag_default_setting_source: object`
+
+          No settings level sets a value, and the built-in default applies.
+
+        - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+          The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+      - `model: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+        The settings level `model` comes from.
+
+        - `beta_claude_tag_slack_channel_setting_source: object`
+
+          The value comes from the addressed Slack channel itself.
+
+        - `beta_claude_tag_slack_workspace_setting_source: object`
+
+          The value comes from a Slack workspace of the organization.
+
+        - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+          The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `beta_claude_tag_slack_default_setting_source: object`
+
+          The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `beta_claude_tag_default_setting_source: object`
+
+          No settings level sets a value, and the built-in default applies.
+
+        - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+          The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `updated_at: string`
+
+      Time Claude Tag's record of the channel last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the channel again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
+
+      format: date-time
+
+  - `next_page: string`
+
+    Cursor for the next page. Null on the last page.
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:slack-channels list \
+  --slack-workspace-id slack_workspace_id
+```
+
+##### Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "id",
+      "created_at": "2019-12-27T18:11:19.117Z",
+      "settings": {
+        "enabled": true,
+        "environment_id": "environment_id",
+        "guest_policy": {
+          "type": "allow"
+        },
+        "instructions": "instructions",
+        "model": "model"
+      },
+      "slack": {
+        "channel_id": "xx",
+        "workspace_id": "xx"
+      },
+      "sources": {
+        "enabled": {
+          "slack_channel_id": "slack_channel_id",
+          "type": "slack_channel"
+        },
+        "environment_id": {
+          "slack_channel_id": "slack_channel_id",
+          "type": "slack_channel"
+        },
+        "guest_policy": {
+          "slack_channel_id": "slack_channel_id",
+          "type": "slack_channel"
+        },
+        "instructions": [
+          {
+            "slack_channel_id": "slack_channel_id",
+            "type": "slack_channel"
+          }
+        ],
+        "model": {
+          "slack_channel_id": "slack_channel_id",
+          "type": "slack_channel"
+        }
+      },
+      "type": "slack_channel",
+      "updated_at": "2019-12-27T18:11:19.117Z"
+    }
+  ],
+  "next_page": "next_page"
+}
+```
+
+### Get Slack Channel
+
+`$ ant beta:organization:claude-tag:slack-channels retrieve`
+
+**GET** `/v1/organizations/claude_tag/slack_channels/{id}`
+
+Get one Slack channel and its settings. By default `settings` holds what the channel itself stores: a setting that is null there is not set on the channel and is inherited. With `include_inherited=true`, `settings` holds what applies in the channel once the settings levels above it are taken into account, and the request fails with 503 rather than resolve against a settings level that could not be read. Either way `sources` names the settings level each value comes from, so a caller tells the channel's own value from an inherited one by its source, not by whether it is null.
+
+#### Parameters
+
+- `--id: string` (path parameter)
+
+  The channel's identifier, starting with `slch_`.
+
+- `--include-inherited: optional boolean` (query parameter)
+
+  When `true`, `settings` holds what applies in the channel once the settings levels above it are taken into account, and every member of `sources` names the level a value comes from. When `false` or left out, `settings` holds what the channel itself stores.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `beta_claude_tag_slack_channel: object`
+
+  A Slack channel set up for Claude Tag, with the settings it stores or, with `include_inherited`, the settings that apply in it.
+
+  - `type: "slack_channel"`
+
+  - `id: string`
+
+    The channel's identifier. Starts with `slch_`. It does not change for as long as the channel is set up, with one exception: a channel that is not configured gets a new one when claude.ai replaces its record, which happens only while the organization's read-only mode is off. A channel that is removed and set up again also has a new one. The old one keeps returning 404; look the channel up by its Slack identifiers for the new one.
+
+  - `created_at: string`
+
+    Time the channel was set up, by whichever route. It does not change for as long as `id` does not.
+
+    format: date-time
+
+  - `settings: object`
+
+    What the channel itself stores or, with `include_inherited`, what applies in it. `sources` says which.
+
+    - `enabled: boolean`
+
+      Whether Claude is on. The nearest settings level that sets it decides.
+
+    - `environment_id: string`
+
+      The environment Claude's sessions run in, starting with `env_`, or the identifier of a self-hosted runner pool, starting with `ccpool_`. The nearest settings level that sets it decides.
+
+    - `guest_policy: BetaClaudeTagGuestPolicyAllow or BetaClaudeTagGuestPolicyRestrict or BetaClaudeTagGuestPolicyChannelOnly`
+
+      What Claude does in a channel while a Slack guest is in it. The nearest settings level that sets it decides.
+
+      - `beta_claude_tag_guest_policy_allow: object`
+
+        Claude answers in the channel.
+
+        - `type: "allow"`
+
+      - `beta_claude_tag_guest_policy_restrict: object`
+
+        Claude does not answer in the channel.
+
+        - `type: "restrict"`
+
+      - `beta_claude_tag_guest_policy_channel_only: object`
+
+        Claude answers with only the Bundles attached to the channel itself.
+
+        - `type: "channel_only"`
+
+    - `instructions: string`
+
+      Instructions for Claude. Instructions add up: the text of every settings level that sets it is joined, broadest first.
+
+    - `model: string`
+
+      The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+  - `slack: object`
+
+    Slack's own identifiers for the channel.
+
+    - `channel_id: string`
+
+      Slack's identifier for the channel, starting with `C` or `G`, such as `C0456EFGH`.
+
+      minLength: 2, maxLength: 32
+
+    - `workspace_id: string`
+
+      Slack's identifier for the workspace the channel is in, starting with `T`, such as `T0123ABCD`.
+
+      minLength: 2, maxLength: 32
+
+  - `sources: object`
+
+    For each setting, the settings level its value in `settings` comes from.
+
+    - `enabled: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `enabled` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+        - `type: "slack_channel"`
+
+        - `slack_channel_id: string`
+
+          The channel's identifier, starting with `slch_`.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+        - `type: "slack_workspace"`
+
+        - `slack_workspace_id: string`
+
+          The workspace's identifier, starting with `slws_`.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `type: "slack_parent_channel"`
+
+        - `slack_channel_id: string`
+
+          The parent channel's identifier, starting with `slch_`.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `type: "slack_default"`
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+        - `type: "default"`
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+        - `type: "slack_grid_channel"`
+
+        - `slack: object`
+
+          Slack's own identifiers for the channel under that other workspace.
+
+          - `channel_id: string`
+
+            Slack's identifier for the channel, starting with `C` or `G`, such as `C0456EFGH`.
+
+            minLength: 2, maxLength: 32
+
+          - `workspace_id: string`
+
+            Slack's identifier for the workspace the channel is in, starting with `T`, such as `T0123ABCD`.
+
+            minLength: 2, maxLength: 32
+
+    - `environment_id: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `environment_id` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `guest_policy: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `guest_policy` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `instructions: array of BetaClaudeTagSettingSource`
+
+      Every settings level that contributes text to `instructions`, broadest first, in the order their text is joined. Empty when none does.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `model: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `model` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+  - `updated_at: string`
+
+    Time Claude Tag's record of the channel last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the channel again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
+
+    format: date-time
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:slack-channels retrieve \
+  --id slch_01SvpyRQK3nN6eH9uhRA7n1q
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "settings": {
+    "enabled": true,
+    "environment_id": "environment_id",
+    "guest_policy": {
+      "type": "allow"
+    },
+    "instructions": "instructions",
+    "model": "model"
+  },
+  "slack": {
+    "channel_id": "xx",
+    "workspace_id": "xx"
+  },
+  "sources": {
+    "enabled": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "environment_id": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "guest_policy": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "instructions": [
+      {
+        "slack_channel_id": "slack_channel_id",
+        "type": "slack_channel"
+      }
+    ],
+    "model": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    }
+  },
+  "type": "slack_channel",
+  "updated_at": "2019-12-27T18:11:19.117Z"
+}
+```
+
+### Update Slack Channel
+
+`$ ant beta:organization:claude-tag:slack-channels update`
+
+**POST** `/v1/organizations/claude_tag/slack_channels/{id}`
+
+Change the settings a Slack channel stores. The update is partial: a setting left out is unchanged, and a setting sent as null is cleared, so the channel inherits it. If any value is refused, no setting in the request is stored. A group direct message takes no settings and returns 400.
+
+#### Parameters
+
+- `--id: string` (path parameter)
+
+  The channel's identifier, starting with `slch_`.
+
+- `--settings: object`
+
+  The settings to change.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `beta_claude_tag_slack_channel: object`
+
+  A Slack channel set up for Claude Tag, with the settings it stores or, with `include_inherited`, the settings that apply in it.
+
+  - `type: "slack_channel"`
+
+  - `id: string`
+
+    The channel's identifier. Starts with `slch_`. It does not change for as long as the channel is set up, with one exception: a channel that is not configured gets a new one when claude.ai replaces its record, which happens only while the organization's read-only mode is off. A channel that is removed and set up again also has a new one. The old one keeps returning 404; look the channel up by its Slack identifiers for the new one.
+
+  - `created_at: string`
+
+    Time the channel was set up, by whichever route. It does not change for as long as `id` does not.
+
+    format: date-time
+
+  - `settings: object`
+
+    What the channel itself stores or, with `include_inherited`, what applies in it. `sources` says which.
+
+    - `enabled: boolean`
+
+      Whether Claude is on. The nearest settings level that sets it decides.
+
+    - `environment_id: string`
+
+      The environment Claude's sessions run in, starting with `env_`, or the identifier of a self-hosted runner pool, starting with `ccpool_`. The nearest settings level that sets it decides.
+
+    - `guest_policy: BetaClaudeTagGuestPolicyAllow or BetaClaudeTagGuestPolicyRestrict or BetaClaudeTagGuestPolicyChannelOnly`
+
+      What Claude does in a channel while a Slack guest is in it. The nearest settings level that sets it decides.
+
+      - `beta_claude_tag_guest_policy_allow: object`
+
+        Claude answers in the channel.
+
+        - `type: "allow"`
+
+      - `beta_claude_tag_guest_policy_restrict: object`
+
+        Claude does not answer in the channel.
+
+        - `type: "restrict"`
+
+      - `beta_claude_tag_guest_policy_channel_only: object`
+
+        Claude answers with only the Bundles attached to the channel itself.
+
+        - `type: "channel_only"`
+
+    - `instructions: string`
+
+      Instructions for Claude. Instructions add up: the text of every settings level that sets it is joined, broadest first.
+
+    - `model: string`
+
+      The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+  - `slack: object`
+
+    Slack's own identifiers for the channel.
+
+    - `channel_id: string`
+
+      Slack's identifier for the channel, starting with `C` or `G`, such as `C0456EFGH`.
+
+      minLength: 2, maxLength: 32
+
+    - `workspace_id: string`
+
+      Slack's identifier for the workspace the channel is in, starting with `T`, such as `T0123ABCD`.
+
+      minLength: 2, maxLength: 32
+
+  - `sources: object`
+
+    For each setting, the settings level its value in `settings` comes from.
+
+    - `enabled: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `enabled` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+        - `type: "slack_channel"`
+
+        - `slack_channel_id: string`
+
+          The channel's identifier, starting with `slch_`.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+        - `type: "slack_workspace"`
+
+        - `slack_workspace_id: string`
+
+          The workspace's identifier, starting with `slws_`.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `type: "slack_parent_channel"`
+
+        - `slack_channel_id: string`
+
+          The parent channel's identifier, starting with `slch_`.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `type: "slack_default"`
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+        - `type: "default"`
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+        - `type: "slack_grid_channel"`
+
+        - `slack: object`
+
+          Slack's own identifiers for the channel under that other workspace.
+
+          - `channel_id: string`
+
+            Slack's identifier for the channel, starting with `C` or `G`, such as `C0456EFGH`.
+
+            minLength: 2, maxLength: 32
+
+          - `workspace_id: string`
+
+            Slack's identifier for the workspace the channel is in, starting with `T`, such as `T0123ABCD`.
+
+            minLength: 2, maxLength: 32
+
+    - `environment_id: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `environment_id` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `guest_policy: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `guest_policy` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `instructions: array of BetaClaudeTagSettingSource`
+
+      Every settings level that contributes text to `instructions`, broadest first, in the order their text is joined. Empty when none does.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `model: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `model` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+  - `updated_at: string`
+
+    Time Claude Tag's record of the channel last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the channel again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
+
+    format: date-time
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:slack-channels update \
+  --id slch_01SvpyRQK3nN6eH9uhRA7n1q \
+  --settings '{}'
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "settings": {
+    "enabled": true,
+    "environment_id": "environment_id",
+    "guest_policy": {
+      "type": "allow"
+    },
+    "instructions": "instructions",
+    "model": "model"
+  },
+  "slack": {
+    "channel_id": "xx",
+    "workspace_id": "xx"
+  },
+  "sources": {
+    "enabled": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "environment_id": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "guest_policy": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "instructions": [
+      {
+        "slack_channel_id": "slack_channel_id",
+        "type": "slack_channel"
+      }
+    ],
+    "model": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    }
+  },
+  "type": "slack_channel",
+  "updated_at": "2019-12-27T18:11:19.117Z"
+}
+```
+
+### Remove Slack Channel
+
+`$ ant beta:organization:claude-tag:slack-channels delete`
+
+**DELETE** `/v1/organizations/claude_tag/slack_channels/{id}`
+
+Remove a Slack channel from Claude Tag. This deletes the channel's stored settings and its Bundle Targets at once, and then, in the background, the channel's sessions and their transcripts, its memory, its routines and the artifacts published from it. None of it can be restored. The channel in Slack and its messages are unchanged. The request is refused with 400 and `error.details.error_code` `slack_channel_enabled` while `enabled` resolves to `true` for the channel, as a read with `include_inherited=true` returns it: set `enabled` to `false` on the channel first. This guards against removing a channel in use by mistake; it is not a way to keep Claude out, because the removal deletes the channel's own `enabled: false` with its other settings, after which the channel inherits again and Claude's next use of it can set it up anew with a new identifier. The identifier returns 404 as soon as the request returns, so a repeated removal returns 404. A group direct message returns 400, and so does a channel that holds configuration this API does not manage.
+
+#### Parameters
+
+- `--id: string` (path parameter)
+
+  The channel's identifier, starting with `slch_`.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `beta_claude_tag_deleted_slack_channel: object`
+
+  Confirms that a Slack channel was removed from Claude Tag.
+
+  - `type: "slack_channel_deleted"`
+
+  - `id: string`
+
+    The removed channel's identifier.
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:slack-channels delete \
+  --id slch_01SvpyRQK3nN6eH9uhRA7n1q
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "type": "slack_channel_deleted"
+}
+```
+
+## Organization › Claude Tag › Slack Workspaces
+
+### List Slack Workspaces
+
+`$ ant beta:organization:claude-tag:slack-workspaces list`
+
+**GET** `/v1/organizations/claude_tag/slack_workspaces`
+
+List the set-up Slack workspaces the organization owns, newest first by `created_at`. Pass `slack_workspace_id` to look one workspace up by its Slack identifier: `data` then holds that workspace, or is empty when it is not set up. A workspace of a Slack Enterprise Grid the organization has connected returns 404 until it is set up. With `include_inherited=true` each workspace's `settings` holds what applies in it, and the request fails with 503 rather than resolve against a settings level that could not be read. A `page` cursor resumes only a request with the same `include_inherited`.
+
+#### Parameters
+
+- `--include-inherited: optional boolean` (query parameter)
+
+  When `true`, `settings` holds what applies in each workspace once the organization's Slack defaults are taken into account, and every member of `sources` names the level a value comes from. When `false` or left out, `settings` holds what each workspace itself stores.
+
+- `--limit: optional number` (query parameter)
+
+  Number of items to return per page, between 1 and 100. Defaults to 20.
+
+  format: int32
+
+- `--page: optional string` (query parameter)
+
+  Opaque cursor from a previous response's `next_page`.
+
+- `--slack-workspace-id: optional string` (query parameter)
+
+  Slack's identifier for one workspace, as in the workspace object's `slack.workspace_id`, not its `id`. With it `data` holds that workspace alone, or nothing when it is not set up.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `BetaClaudeTagListSlackWorkspacesResponse: object`
+
+  - `data: array of BetaClaudeTagSlackWorkspace`
+
+    Workspaces on this page, newest first.
+
+    - `type: "slack_workspace"`
+
+    - `id: string`
+
+      The workspace's identifier. Starts with `slws_`. It does not change for as long as the workspace is set up. A workspace that is removed and set up again has a new one, and the old one keeps returning 404; look the workspace up by its Slack identifier for the new one.
+
+    - `created_at: string`
+
+      Time the workspace was set up, by whichever route. It does not change for as long as `id` does not.
+
+      format: date-time
+
+    - `settings: object`
+
+      What the workspace itself stores or, with `include_inherited`, what applies in it. `sources` says which.
+
+      - `enabled: boolean`
+
+        Whether Claude is on. The nearest settings level that sets it decides.
+
+      - `environment_id: string`
+
+        The environment Claude's sessions run in, starting with `env_`, or the identifier of a self-hosted runner pool, starting with `ccpool_`. The nearest settings level that sets it decides.
+
+      - `guest_policy: BetaClaudeTagGuestPolicyAllow or BetaClaudeTagGuestPolicyRestrict or BetaClaudeTagGuestPolicyChannelOnly`
+
+        What Claude does in a channel while a Slack guest is in it. The nearest settings level that sets it decides.
+
+        - `beta_claude_tag_guest_policy_allow: object`
+
+          Claude answers in the channel.
+
+          - `type: "allow"`
+
+        - `beta_claude_tag_guest_policy_restrict: object`
+
+          Claude does not answer in the channel.
+
+          - `type: "restrict"`
+
+        - `beta_claude_tag_guest_policy_channel_only: object`
+
+          Claude answers with only the Bundles attached to the channel itself.
+
+          - `type: "channel_only"`
+
+      - `instructions: string`
+
+        Instructions for Claude. Instructions add up: the text of every settings level that sets it is joined, broadest first.
+
+      - `model: string`
+
+        The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+    - `slack: object`
+
+      Slack's own identifier for the workspace.
+
+      - `workspace_id: string`
+
+        Slack's identifier for the workspace, starting with `T`, such as `T0123ABCD`.
+
+    - `sources: object`
+
+      For each setting, the settings level its value in `settings` comes from.
+
+      - `enabled: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+        The settings level `enabled` comes from.
+
+        - `beta_claude_tag_slack_channel_setting_source: object`
+
+          The value comes from the addressed Slack channel itself.
+
+          - `type: "slack_channel"`
+
+          - `slack_channel_id: string`
+
+            The channel's identifier, starting with `slch_`.
+
+        - `beta_claude_tag_slack_workspace_setting_source: object`
+
+          The value comes from a Slack workspace of the organization.
+
+          - `type: "slack_workspace"`
+
+          - `slack_workspace_id: string`
+
+            The workspace's identifier, starting with `slws_`.
+
+        - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+          The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+          - `type: "slack_parent_channel"`
+
+          - `slack_channel_id: string`
+
+            The parent channel's identifier, starting with `slch_`.
+
+        - `beta_claude_tag_slack_default_setting_source: object`
+
+          The value comes from the organization's Slack defaults, which have no identifier.
+
+          - `type: "slack_default"`
+
+        - `beta_claude_tag_default_setting_source: object`
+
+          No settings level sets a value, and the built-in default applies.
+
+          - `type: "default"`
+
+        - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+          The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+          - `type: "slack_grid_channel"`
+
+          - `slack: object`
+
+            Slack's own identifiers for the channel under that other workspace.
+
+            - `channel_id: string`
+
+              Slack's identifier for the channel, starting with `C` or `G`, such as `C0456EFGH`.
+
+              minLength: 2, maxLength: 32
+
+            - `workspace_id: string`
+
+              Slack's identifier for the workspace the channel is in, starting with `T`, such as `T0123ABCD`.
+
+              minLength: 2, maxLength: 32
+
+      - `environment_id: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+        The settings level `environment_id` comes from.
+
+        - `beta_claude_tag_slack_channel_setting_source: object`
+
+          The value comes from the addressed Slack channel itself.
+
+        - `beta_claude_tag_slack_workspace_setting_source: object`
+
+          The value comes from a Slack workspace of the organization.
+
+        - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+          The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `beta_claude_tag_slack_default_setting_source: object`
+
+          The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `beta_claude_tag_default_setting_source: object`
+
+          No settings level sets a value, and the built-in default applies.
+
+        - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+          The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+      - `guest_policy: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+        The settings level `guest_policy` comes from.
+
+        - `beta_claude_tag_slack_channel_setting_source: object`
+
+          The value comes from the addressed Slack channel itself.
+
+        - `beta_claude_tag_slack_workspace_setting_source: object`
+
+          The value comes from a Slack workspace of the organization.
+
+        - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+          The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `beta_claude_tag_slack_default_setting_source: object`
+
+          The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `beta_claude_tag_default_setting_source: object`
+
+          No settings level sets a value, and the built-in default applies.
+
+        - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+          The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+      - `instructions: array of BetaClaudeTagSettingSource`
+
+        Every settings level that contributes text to `instructions`, broadest first, in the order their text is joined. Empty when none does.
+
+        - `beta_claude_tag_slack_channel_setting_source: object`
+
+          The value comes from the addressed Slack channel itself.
+
+        - `beta_claude_tag_slack_workspace_setting_source: object`
+
+          The value comes from a Slack workspace of the organization.
+
+        - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+          The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `beta_claude_tag_slack_default_setting_source: object`
+
+          The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `beta_claude_tag_default_setting_source: object`
+
+          No settings level sets a value, and the built-in default applies.
+
+        - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+          The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+      - `model: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+        The settings level `model` comes from.
+
+        - `beta_claude_tag_slack_channel_setting_source: object`
+
+          The value comes from the addressed Slack channel itself.
+
+        - `beta_claude_tag_slack_workspace_setting_source: object`
+
+          The value comes from a Slack workspace of the organization.
+
+        - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+          The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `beta_claude_tag_slack_default_setting_source: object`
+
+          The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `beta_claude_tag_default_setting_source: object`
+
+          No settings level sets a value, and the built-in default applies.
+
+        - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+          The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `updated_at: string`
+
+      Time Claude Tag's record of the workspace last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the workspace again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
+
+      format: date-time
+
+  - `next_page: string`
+
+    Cursor for the next page. Null on the last page.
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:slack-workspaces list
+```
+
+##### Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "id",
+      "created_at": "2019-12-27T18:11:19.117Z",
+      "settings": {
+        "enabled": true,
+        "environment_id": "environment_id",
+        "guest_policy": {
+          "type": "allow"
+        },
+        "instructions": "instructions",
+        "model": "model"
+      },
+      "slack": {
+        "workspace_id": "workspace_id"
+      },
+      "sources": {
+        "enabled": {
+          "slack_channel_id": "slack_channel_id",
+          "type": "slack_channel"
+        },
+        "environment_id": {
+          "slack_channel_id": "slack_channel_id",
+          "type": "slack_channel"
+        },
+        "guest_policy": {
+          "slack_channel_id": "slack_channel_id",
+          "type": "slack_channel"
+        },
+        "instructions": [
+          {
+            "slack_channel_id": "slack_channel_id",
+            "type": "slack_channel"
+          }
+        ],
+        "model": {
+          "slack_channel_id": "slack_channel_id",
+          "type": "slack_channel"
+        }
+      },
+      "type": "slack_workspace",
+      "updated_at": "2019-12-27T18:11:19.117Z"
+    }
+  ],
+  "next_page": "next_page"
+}
+```
+
+### Get Slack Workspace
+
+`$ ant beta:organization:claude-tag:slack-workspaces retrieve`
+
+**GET** `/v1/organizations/claude_tag/slack_workspaces/{id}`
+
+Get one Slack workspace and its settings. By default `settings` holds what the workspace itself stores: a setting that is null there is not set on the workspace and is inherited. With `include_inherited=true`, `settings` holds what applies in the workspace once the organization's Slack defaults are taken into account, and the request fails with 503 rather than resolve against a settings level that could not be read. Either way `sources` names the settings level each value comes from.
+
+#### Parameters
+
+- `--id: string` (path parameter)
+
+  The workspace's identifier, starting with `slws_`.
+
+- `--include-inherited: optional boolean` (query parameter)
+
+  When `true`, `settings` holds what applies in the workspace once the organization's Slack defaults are taken into account, and every member of `sources` names the level a value comes from. When `false` or left out, `settings` holds what the workspace itself stores.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `beta_claude_tag_slack_workspace: object`
+
+  A Slack workspace the organization has connected, itself or through its Slack Enterprise Grid, with the settings it stores or, with `include_inherited`, the settings that apply in it.
+
+  - `type: "slack_workspace"`
+
+  - `id: string`
+
+    The workspace's identifier. Starts with `slws_`. It does not change for as long as the workspace is set up. A workspace that is removed and set up again has a new one, and the old one keeps returning 404; look the workspace up by its Slack identifier for the new one.
+
+  - `created_at: string`
+
+    Time the workspace was set up, by whichever route. It does not change for as long as `id` does not.
+
+    format: date-time
+
+  - `settings: object`
+
+    What the workspace itself stores or, with `include_inherited`, what applies in it. `sources` says which.
+
+    - `enabled: boolean`
+
+      Whether Claude is on. The nearest settings level that sets it decides.
+
+    - `environment_id: string`
+
+      The environment Claude's sessions run in, starting with `env_`, or the identifier of a self-hosted runner pool, starting with `ccpool_`. The nearest settings level that sets it decides.
+
+    - `guest_policy: BetaClaudeTagGuestPolicyAllow or BetaClaudeTagGuestPolicyRestrict or BetaClaudeTagGuestPolicyChannelOnly`
+
+      What Claude does in a channel while a Slack guest is in it. The nearest settings level that sets it decides.
+
+      - `beta_claude_tag_guest_policy_allow: object`
+
+        Claude answers in the channel.
+
+        - `type: "allow"`
+
+      - `beta_claude_tag_guest_policy_restrict: object`
+
+        Claude does not answer in the channel.
+
+        - `type: "restrict"`
+
+      - `beta_claude_tag_guest_policy_channel_only: object`
+
+        Claude answers with only the Bundles attached to the channel itself.
+
+        - `type: "channel_only"`
+
+    - `instructions: string`
+
+      Instructions for Claude. Instructions add up: the text of every settings level that sets it is joined, broadest first.
+
+    - `model: string`
+
+      The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+  - `slack: object`
+
+    Slack's own identifier for the workspace.
+
+    - `workspace_id: string`
+
+      Slack's identifier for the workspace, starting with `T`, such as `T0123ABCD`.
+
+  - `sources: object`
+
+    For each setting, the settings level its value in `settings` comes from.
+
+    - `enabled: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `enabled` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+        - `type: "slack_channel"`
+
+        - `slack_channel_id: string`
+
+          The channel's identifier, starting with `slch_`.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+        - `type: "slack_workspace"`
+
+        - `slack_workspace_id: string`
+
+          The workspace's identifier, starting with `slws_`.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `type: "slack_parent_channel"`
+
+        - `slack_channel_id: string`
+
+          The parent channel's identifier, starting with `slch_`.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `type: "slack_default"`
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+        - `type: "default"`
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+        - `type: "slack_grid_channel"`
+
+        - `slack: object`
+
+          Slack's own identifiers for the channel under that other workspace.
+
+          - `channel_id: string`
+
+            Slack's identifier for the channel, starting with `C` or `G`, such as `C0456EFGH`.
+
+            minLength: 2, maxLength: 32
+
+          - `workspace_id: string`
+
+            Slack's identifier for the workspace the channel is in, starting with `T`, such as `T0123ABCD`.
+
+            minLength: 2, maxLength: 32
+
+    - `environment_id: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `environment_id` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `guest_policy: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `guest_policy` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `instructions: array of BetaClaudeTagSettingSource`
+
+      Every settings level that contributes text to `instructions`, broadest first, in the order their text is joined. Empty when none does.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `model: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `model` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+  - `updated_at: string`
+
+    Time Claude Tag's record of the workspace last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the workspace again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
+
+    format: date-time
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:slack-workspaces retrieve \
+  --id slws_01Hq8TzW5mKc2YbX7vNd4RfJ
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "settings": {
+    "enabled": true,
+    "environment_id": "environment_id",
+    "guest_policy": {
+      "type": "allow"
+    },
+    "instructions": "instructions",
+    "model": "model"
+  },
+  "slack": {
+    "workspace_id": "workspace_id"
+  },
+  "sources": {
+    "enabled": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "environment_id": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "guest_policy": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "instructions": [
+      {
+        "slack_channel_id": "slack_channel_id",
+        "type": "slack_channel"
+      }
+    ],
+    "model": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    }
+  },
+  "type": "slack_workspace",
+  "updated_at": "2019-12-27T18:11:19.117Z"
+}
+```
+
+### Update Slack Workspace
+
+`$ ant beta:organization:claude-tag:slack-workspaces update`
+
+**POST** `/v1/organizations/claude_tag/slack_workspaces/{id}`
+
+Change the settings a Slack workspace stores. The update is partial: a setting left out is unchanged, and a setting sent as null is cleared, so the workspace inherits it. If any value is refused, no setting in the request is stored.
+
+#### Parameters
+
+- `--id: string` (path parameter)
+
+  The workspace's identifier, starting with `slws_`.
+
+- `--settings: object`
+
+  The settings to change.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `beta_claude_tag_slack_workspace: object`
+
+  A Slack workspace the organization has connected, itself or through its Slack Enterprise Grid, with the settings it stores or, with `include_inherited`, the settings that apply in it.
+
+  - `type: "slack_workspace"`
+
+  - `id: string`
+
+    The workspace's identifier. Starts with `slws_`. It does not change for as long as the workspace is set up. A workspace that is removed and set up again has a new one, and the old one keeps returning 404; look the workspace up by its Slack identifier for the new one.
+
+  - `created_at: string`
+
+    Time the workspace was set up, by whichever route. It does not change for as long as `id` does not.
+
+    format: date-time
+
+  - `settings: object`
+
+    What the workspace itself stores or, with `include_inherited`, what applies in it. `sources` says which.
+
+    - `enabled: boolean`
+
+      Whether Claude is on. The nearest settings level that sets it decides.
+
+    - `environment_id: string`
+
+      The environment Claude's sessions run in, starting with `env_`, or the identifier of a self-hosted runner pool, starting with `ccpool_`. The nearest settings level that sets it decides.
+
+    - `guest_policy: BetaClaudeTagGuestPolicyAllow or BetaClaudeTagGuestPolicyRestrict or BetaClaudeTagGuestPolicyChannelOnly`
+
+      What Claude does in a channel while a Slack guest is in it. The nearest settings level that sets it decides.
+
+      - `beta_claude_tag_guest_policy_allow: object`
+
+        Claude answers in the channel.
+
+        - `type: "allow"`
+
+      - `beta_claude_tag_guest_policy_restrict: object`
+
+        Claude does not answer in the channel.
+
+        - `type: "restrict"`
+
+      - `beta_claude_tag_guest_policy_channel_only: object`
+
+        Claude answers with only the Bundles attached to the channel itself.
+
+        - `type: "channel_only"`
+
+    - `instructions: string`
+
+      Instructions for Claude. Instructions add up: the text of every settings level that sets it is joined, broadest first.
+
+    - `model: string`
+
+      The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+  - `slack: object`
+
+    Slack's own identifier for the workspace.
+
+    - `workspace_id: string`
+
+      Slack's identifier for the workspace, starting with `T`, such as `T0123ABCD`.
+
+  - `sources: object`
+
+    For each setting, the settings level its value in `settings` comes from.
+
+    - `enabled: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `enabled` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+        - `type: "slack_channel"`
+
+        - `slack_channel_id: string`
+
+          The channel's identifier, starting with `slch_`.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+        - `type: "slack_workspace"`
+
+        - `slack_workspace_id: string`
+
+          The workspace's identifier, starting with `slws_`.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+        - `type: "slack_parent_channel"`
+
+        - `slack_channel_id: string`
+
+          The parent channel's identifier, starting with `slch_`.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+        - `type: "slack_default"`
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+        - `type: "default"`
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+        - `type: "slack_grid_channel"`
+
+        - `slack: object`
+
+          Slack's own identifiers for the channel under that other workspace.
+
+          - `channel_id: string`
+
+            Slack's identifier for the channel, starting with `C` or `G`, such as `C0456EFGH`.
+
+            minLength: 2, maxLength: 32
+
+          - `workspace_id: string`
+
+            Slack's identifier for the workspace the channel is in, starting with `T`, such as `T0123ABCD`.
+
+            minLength: 2, maxLength: 32
+
+    - `environment_id: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `environment_id` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `guest_policy: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `guest_policy` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `instructions: array of BetaClaudeTagSettingSource`
+
+      Every settings level that contributes text to `instructions`, broadest first, in the order their text is joined. Empty when none does.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+    - `model: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `model` comes from.
+
+      - `beta_claude_tag_slack_channel_setting_source: object`
+
+        The value comes from the addressed Slack channel itself.
+
+      - `beta_claude_tag_slack_workspace_setting_source: object`
+
+        The value comes from a Slack workspace of the organization.
+
+      - `beta_claude_tag_slack_parent_channel_setting_source: object`
+
+        The value comes from the channel that a code channel was started from. A parent channel contributes `instructions` and `environment_id` only.
+
+      - `beta_claude_tag_slack_default_setting_source: object`
+
+        The value comes from the organization's Slack defaults, which have no identifier.
+
+      - `beta_claude_tag_default_setting_source: object`
+
+        No settings level sets a value, and the built-in default applies.
+
+      - `beta_claude_tag_slack_grid_channel_setting_source: object`
+
+        The value comes from the addressed channel as it is set up under another workspace of its Enterprise Grid: a channel shared across the Grid keeps one Slack channel identifier in every workspace that sees it.
+
+  - `updated_at: string`
+
+    Time Claude Tag's record of the workspace last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the workspace again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
+
+    format: date-time
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:slack-workspaces update \
+  --id slws_01Hq8TzW5mKc2YbX7vNd4RfJ \
+  --settings '{}'
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "settings": {
+    "enabled": true,
+    "environment_id": "environment_id",
+    "guest_policy": {
+      "type": "allow"
+    },
+    "instructions": "instructions",
+    "model": "model"
+  },
+  "slack": {
+    "workspace_id": "workspace_id"
+  },
+  "sources": {
+    "enabled": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "environment_id": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "guest_policy": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "instructions": [
+      {
+        "slack_channel_id": "slack_channel_id",
+        "type": "slack_channel"
+      }
+    ],
+    "model": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    }
+  },
+  "type": "slack_workspace",
+  "updated_at": "2019-12-27T18:11:19.117Z"
+}
+```
+
+## Organization › Claude Tag › Bundles
+
+### List Bundles
+
+`$ ant beta:organization:claude-tag:bundles list`
+
+**GET** `/v1/organizations/claude_tag/bundles`
+
+List the organization's Bundles, newest first by `created_at`. A Bundle that Claude Tag manages for itself is not listed.
+
+#### Parameters
+
+- `--limit: optional number` (query parameter)
+
+  Number of items to return per page, between 1 and 100. Defaults to 20.
+
+  format: int32
+
+- `--page: optional string` (query parameter)
+
+  Opaque cursor from a previous response's `next_page`.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `BetaClaudeTagListBundlesResponse: object`
+
+  - `data: array of BetaClaudeTagBundle`
+
+    Bundles on this page, newest first.
+
+    - `type: "bundle"`
+
+    - `id: string`
+
+      The Bundle's identifier. Starts with `capp_`.
+
+    - `created_at: string`
+
+      Time the Bundle was created.
+
+      format: date-time
+
+    - `description: string`
+
+      What the Bundle is for. Null when it has none. Read-only.
+
+    - `display_name: string`
+
+      The Bundle's name. Always set. Read-only.
+
+    - `updated_at: string`
+
+      Time of the last change to the Bundle.
+
+      format: date-time
+
+  - `next_page: string`
+
+    Cursor for the next page. Null on the last page.
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:bundles list
+```
+
+##### Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "id",
+      "created_at": "2019-12-27T18:11:19.117Z",
+      "description": "description",
+      "display_name": "display_name",
+      "type": "bundle",
+      "updated_at": "2019-12-27T18:11:19.117Z"
+    }
+  ],
+  "next_page": "next_page"
+}
+```
+
+### Get Bundle
+
+`$ ant beta:organization:claude-tag:bundles retrieve`
+
+**GET** `/v1/organizations/claude_tag/bundles/{bundle_id}`
+
+Get one Bundle. What the Bundle grants (connectors, repositories and credentials) is never returned.
+
+#### Parameters
+
+- `--bundle-id: string` (path parameter)
+
+  The Bundle's identifier, starting with `capp_`.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `beta_claude_tag_bundle: object`
+
+  A named set of access that Claude can use in a Slack channel or a Slack workspace: connectors, repositories and credentials. Created and edited in claude.ai.
+
+  - `type: "bundle"`
+
+  - `id: string`
+
+    The Bundle's identifier. Starts with `capp_`.
+
+  - `created_at: string`
+
+    Time the Bundle was created.
+
+    format: date-time
+
+  - `description: string`
+
+    What the Bundle is for. Null when it has none. Read-only.
+
+  - `display_name: string`
+
+    The Bundle's name. Always set. Read-only.
+
+  - `updated_at: string`
+
+    Time of the last change to the Bundle.
+
+    format: date-time
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:bundles retrieve \
+  --bundle-id capp_011CZkZjLP1cWxj5EtMmdgbq
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "description": "description",
+  "display_name": "display_name",
+  "type": "bundle",
+  "updated_at": "2019-12-27T18:11:19.117Z"
+}
+```
+
+## Organization › Claude Tag › Bundles › Targets
+
+### List Bundle Targets
+
+`$ ant beta:organization:claude-tag:bundles:targets list`
+
+**GET** `/v1/organizations/claude_tag/bundles/{bundle_id}/targets`
+
+List the Slack channels and Slack workspaces a Bundle is attached to, newest first by `created_at`. Only channels and workspaces the organization owns are listed; a Bundle that is attached to anything else has no Bundle Target for it.
+
+#### Parameters
+
+- `--bundle-id: string` (path parameter)
+
+  The Bundle's identifier, starting with `capp_`.
+
+- `--limit: optional number` (query parameter)
+
+  Number of items to return per page, between 1 and 100. Defaults to 20.
+
+  format: int32
+
+- `--page: optional string` (query parameter)
+
+  Opaque cursor from a previous response's `next_page`.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `BetaClaudeTagListBundleTargetsResponse: object`
+
+  - `data: array of BetaClaudeTagBundleTarget`
+
+    Bundle Targets on this page, newest first.
+
+    - `beta_claude_tag_slack_channel_bundle_target: object`
+
+      One Bundle attached to one Slack channel. The Bundle can be used in that channel only.
+
+      - `type: "slack_channel"`
+
+      - `id: string`
+
+        The Bundle Target's identifier. Starts with `btgt_`. No two Bundle Targets have the same one, and the same Bundle and target always give the same one, also after a detach and a new attach. It is opaque.
+
+      - `created_at: string`
+
+        Time the Bundle was attached.
+
+        format: date-time
+
+      - `slack_channel_id: string`
+
+        The identifier of the Slack channel the Bundle is attached to, starting with `slch_`. It is the channel object's `id`, not Slack's `channel_id`.
+
+    - `beta_claude_tag_slack_workspace_bundle_target: object`
+
+      One Bundle attached to one Slack workspace. The Bundle can be used in the workspace and in every channel in it.
+
+      - `type: "slack_workspace"`
+
+      - `id: string`
+
+        The Bundle Target's identifier. Starts with `btgt_`. No two Bundle Targets have the same one, and the same Bundle and target always give the same one, also after a detach and a new attach. It is opaque.
+
+      - `created_at: string`
+
+        Time the Bundle was attached.
+
+        format: date-time
+
+      - `slack_workspace_id: string`
+
+        The identifier of the Slack workspace the Bundle is attached to, starting with `slws_`.
+
+  - `next_page: string`
+
+    Cursor for the next page. Null on the last page.
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:bundles:targets list \
+  --bundle-id capp_011CZkZjLP1cWxj5EtMmdgbq
+```
+
+##### Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "id",
+      "created_at": "2019-12-27T18:11:19.117Z",
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    }
+  ],
+  "next_page": "next_page"
+}
+```
+
+### Attach Bundle
+
+`$ ant beta:organization:claude-tag:bundles:targets create`
+
+**POST** `/v1/organizations/claude_tag/bundles/{bundle_id}/targets`
+
+Attach a Bundle to a Slack channel or a Slack workspace. A Bundle attached to a workspace can be used in the workspace and in every channel in it. Attaching a Bundle to a channel or workspace it is already attached to returns the existing Bundle Target. The channel or workspace must be set up: attaching never sets a channel up. A group direct message takes no Bundle and returns 400.
+
+#### Parameters
+
+- `--bundle-id: string` (path parameter)
+
+  The Bundle's identifier, starting with `capp_`.
+
+- `--target: BetaClaudeTagSlackChannelBundleTargetCreate or BetaClaudeTagSlackWorkspaceBundleTargetCreate`
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `beta_claude_tag_bundle_target: BetaClaudeTagSlackChannelBundleTarget or BetaClaudeTagSlackWorkspaceBundleTarget`
+
+  One Bundle attached to one Slack channel or one Slack workspace. More types of target can be added.
+
+  - `beta_claude_tag_slack_channel_bundle_target: object`
+
+    One Bundle attached to one Slack channel. The Bundle can be used in that channel only.
+
+    - `type: "slack_channel"`
+
+    - `id: string`
+
+      The Bundle Target's identifier. Starts with `btgt_`. No two Bundle Targets have the same one, and the same Bundle and target always give the same one, also after a detach and a new attach. It is opaque.
+
+    - `created_at: string`
+
+      Time the Bundle was attached.
+
+      format: date-time
+
+    - `slack_channel_id: string`
+
+      The identifier of the Slack channel the Bundle is attached to, starting with `slch_`. It is the channel object's `id`, not Slack's `channel_id`.
+
+  - `beta_claude_tag_slack_workspace_bundle_target: object`
+
+    One Bundle attached to one Slack workspace. The Bundle can be used in the workspace and in every channel in it.
+
+    - `type: "slack_workspace"`
+
+    - `id: string`
+
+      The Bundle Target's identifier. Starts with `btgt_`. No two Bundle Targets have the same one, and the same Bundle and target always give the same one, also after a detach and a new attach. It is opaque.
+
+    - `created_at: string`
+
+      Time the Bundle was attached.
+
+      format: date-time
+
+    - `slack_workspace_id: string`
+
+      The identifier of the Slack workspace the Bundle is attached to, starting with `slws_`.
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:bundles:targets create \
+  --bundle-id capp_011CZkZjLP1cWxj5EtMmdgbq \
+  --target '{slack_channel_id: xxxxxxxx, type: slack_channel}'
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "slack_channel_id": "slack_channel_id",
+  "type": "slack_channel"
+}
+```
+
+### Get Bundle Target
+
+`$ ant beta:organization:claude-tag:bundles:targets retrieve`
+
+**GET** `/v1/organizations/claude_tag/bundles/{bundle_id}/targets/{target_id}`
+
+Get one Bundle Target. Returns 404 when `target_id` is the identifier of another Bundle's Bundle Target, or the Bundle Target was detached.
+
+#### Parameters
+
+- `--bundle-id: string` (path parameter)
+
+  The Bundle's identifier, starting with `capp_`.
+
+- `--target-id: string` (path parameter)
+
+  The Bundle Target's identifier, starting with `btgt_`. Attach Bundle and List Bundle Targets return it. It is never the identifier of the channel or workspace.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `beta_claude_tag_bundle_target: BetaClaudeTagSlackChannelBundleTarget or BetaClaudeTagSlackWorkspaceBundleTarget`
+
+  One Bundle attached to one Slack channel or one Slack workspace. More types of target can be added.
+
+  - `beta_claude_tag_slack_channel_bundle_target: object`
+
+    One Bundle attached to one Slack channel. The Bundle can be used in that channel only.
+
+    - `type: "slack_channel"`
+
+    - `id: string`
+
+      The Bundle Target's identifier. Starts with `btgt_`. No two Bundle Targets have the same one, and the same Bundle and target always give the same one, also after a detach and a new attach. It is opaque.
+
+    - `created_at: string`
+
+      Time the Bundle was attached.
+
+      format: date-time
+
+    - `slack_channel_id: string`
+
+      The identifier of the Slack channel the Bundle is attached to, starting with `slch_`. It is the channel object's `id`, not Slack's `channel_id`.
+
+  - `beta_claude_tag_slack_workspace_bundle_target: object`
+
+    One Bundle attached to one Slack workspace. The Bundle can be used in the workspace and in every channel in it.
+
+    - `type: "slack_workspace"`
+
+    - `id: string`
+
+      The Bundle Target's identifier. Starts with `btgt_`. No two Bundle Targets have the same one, and the same Bundle and target always give the same one, also after a detach and a new attach. It is opaque.
+
+    - `created_at: string`
+
+      Time the Bundle was attached.
+
+      format: date-time
+
+    - `slack_workspace_id: string`
+
+      The identifier of the Slack workspace the Bundle is attached to, starting with `slws_`.
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:bundles:targets retrieve \
+  --bundle-id capp_011CZkZjLP1cWxj5EtMmdgbq \
+  --target-id btgt_01SvpyRQK3nN6eH9uhRA7n1qHq8TzW5mKc2YbX7vNd4RfJ
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "created_at": "2019-12-27T18:11:19.117Z",
+  "slack_channel_id": "slack_channel_id",
+  "type": "slack_channel"
+}
+```
+
+### Detach Bundle
+
+`$ ant beta:organization:claude-tag:bundles:targets delete`
+
+**DELETE** `/v1/organizations/claude_tag/bundles/{bundle_id}/targets/{target_id}`
+
+Detach a Bundle from a Slack channel or a Slack workspace. A repeated detach returns 404.
+
+#### Parameters
+
+- `--bundle-id: string` (path parameter)
+
+  The Bundle's identifier, starting with `capp_`.
+
+- `--target-id: string` (path parameter)
+
+  The Bundle Target's identifier, starting with `btgt_`. Attach Bundle and List Bundle Targets return it. It is never the identifier of the channel or workspace.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `experimental-claude-tag-2026-10-21` in this header.
+
+#### Returns
+
+- `beta_claude_tag_deleted_bundle_target: object`
+
+  Confirms that a Bundle was detached.
+
+  - `type: "bundle_target_deleted"`
+
+  - `id: string`
+
+    The identifier the Bundle Target had.
+
+#### Example
+
+```bash
+ant beta:organization:claude-tag:bundles:targets delete \
+  --bundle-id capp_011CZkZjLP1cWxj5EtMmdgbq \
+  --target-id btgt_01SvpyRQK3nN6eH9uhRA7n1qHq8TzW5mKc2YbX7vNd4RfJ
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "id",
+  "type": "bundle_target_deleted"
 }
 ```

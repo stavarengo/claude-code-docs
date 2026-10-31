@@ -1480,6 +1480,14 @@ Schema name: `SessionEventAgentSessionCreated`
 
     `minItems: 0`, `maxItems: 2000`
 
+  - `review: optional "none" or "auto_review"`
+
+    Review applied to eligible actions in this session. Omitted when review is none and automatic review is not enabled. Omission means none.
+
+    - `"none"`
+
+    - `"auto_review"`
+
 - `type: "agent.session.created" (default: "agent.session.created")`
 
   The type of the object. Always `agent.session.created`.
@@ -1493,6 +1501,7 @@ Schema name: `SessionEventAgentSessionCreated`
   "type": "agent.session.created",
   "event_id": "event_id",
   "session": {
+    "review": "none",
     "metadata": {
       "foo": "string"
     },
@@ -3984,8 +3993,6 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `"create_subagent_call"`
 
-        The current public item type.
-
   - `AgentSendSubagentInputCallItem object { id, content, recipient_agent_id, 4 more }`
 
     A request to send input to another agent.
@@ -4038,8 +4045,6 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `"send_subagent_input_call"`
 
-        The current public item type.
-
   - `AgentResumeSubagentCallItem object { id, recipient_agent_id, sender_agent_id, 3 more }`
 
     A request to resume a subagent.
@@ -4077,8 +4082,6 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
       The item type. Always `resume_subagent_call`.
 
       - `"resume_subagent_call"`
-
-        The current public item type.
 
   - `AgentWaitForSubagentsCallItem object { id, recipient_agent_ids, sender_agent_id, 3 more }`
 
@@ -4118,8 +4121,6 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `"wait_for_subagents_call"`
 
-        The current public item type.
-
   - `AgentInterruptSubagentCallItem object { id, recipient_agent_id, sender_agent_id, 3 more }`
 
     A request to interrupt a subagent's current turn. The subagent remains available.
@@ -4158,8 +4159,6 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `"interrupt_subagent_call"`
 
-        The current public item type.
-
   - `AgentCloseSubagentCallItem object { id, recipient_agent_id, sender_agent_id, 3 more }`
 
     A request to close a subagent.
@@ -4197,8 +4196,6 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
       The item type. Always `close_subagent_call`.
 
       - `"close_subagent_call"`
-
-        The current public item type.
 
 - `output_index: integer or null`
 
@@ -5228,6 +5225,14 @@ Schema name: `SessionEventAgentSessionIdle`
 
     `minItems: 0`, `maxItems: 2000`
 
+  - `review: optional "none" or "auto_review"`
+
+    Review applied to eligible actions in this session. Omitted when review is none and automatic review is not enabled. Omission means none.
+
+    - `"none"`
+
+    - `"auto_review"`
+
 - `type: "agent.session.idle" (default: "agent.session.idle")`
 
   The type of the object. Always `agent.session.idle`.
@@ -5241,6 +5246,7 @@ Schema name: `SessionEventAgentSessionIdle`
   "type": "agent.session.idle",
   "event_id": "event_id",
   "session": {
+    "review": "none",
     "metadata": {
       "foo": "string"
     },
@@ -6316,6 +6322,14 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     `minItems: 0`, `maxItems: 2000`
 
+  - `review: optional "none" or "auto_review"`
+
+    Review applied to eligible actions in this session. Omitted when review is none and automatic review is not enabled. Omission means none.
+
+    - `"none"`
+
+    - `"auto_review"`
+
 - `type: "agent.session.in_progress" (default: "agent.session.in_progress")`
 
   The type of the object. Always `agent.session.in_progress`.
@@ -6329,6 +6343,7 @@ Schema name: `SessionEventAgentSessionInProgress`
   "type": "agent.session.in_progress",
   "event_id": "event_id",
   "session": {
+    "review": "none",
     "metadata": {
       "foo": "string"
     },
@@ -7404,6 +7419,14 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     `minItems: 0`, `maxItems: 2000`
 
+  - `review: optional "none" or "auto_review"`
+
+    Review applied to eligible actions in this session. Omitted when review is none and automatic review is not enabled. Omission means none.
+
+    - `"none"`
+
+    - `"auto_review"`
+
 - `type: "agent.session.requires_action" (default: "agent.session.requires_action")`
 
   The type of the object. Always `agent.session.requires_action`.
@@ -7417,6 +7440,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
   "type": "agent.session.requires_action",
   "event_id": "event_id",
   "session": {
+    "review": "none",
     "metadata": {
       "foo": "string"
     },
@@ -8492,6 +8516,14 @@ Schema name: `SessionEventAgentSessionFailed`
 
     `minItems: 0`, `maxItems: 2000`
 
+  - `review: optional "none" or "auto_review"`
+
+    Review applied to eligible actions in this session. Omitted when review is none and automatic review is not enabled. Omission means none.
+
+    - `"none"`
+
+    - `"auto_review"`
+
 - `type: "agent.session.failed" (default: "agent.session.failed")`
 
   The type of the object. Always `agent.session.failed`.
@@ -8505,6 +8537,7 @@ Schema name: `SessionEventAgentSessionFailed`
   "type": "agent.session.failed",
   "event_id": "event_id",
   "session": {
+    "review": "none",
     "metadata": {
       "foo": "string"
     },
@@ -10159,8 +10192,6 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       - `"create_subagent_call"`
 
-        The current public item type.
-
   - `AgentSendSubagentInputCallItem object { id, content, recipient_agent_id, 4 more }`
 
     A request to send input to another agent.
@@ -10213,8 +10244,6 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       - `"send_subagent_input_call"`
 
-        The current public item type.
-
   - `AgentResumeSubagentCallItem object { id, recipient_agent_id, sender_agent_id, 3 more }`
 
     A request to resume a subagent.
@@ -10252,8 +10281,6 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
       The item type. Always `resume_subagent_call`.
 
       - `"resume_subagent_call"`
-
-        The current public item type.
 
   - `AgentWaitForSubagentsCallItem object { id, recipient_agent_ids, sender_agent_id, 3 more }`
 
@@ -10293,8 +10320,6 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       - `"wait_for_subagents_call"`
 
-        The current public item type.
-
   - `AgentInterruptSubagentCallItem object { id, recipient_agent_id, sender_agent_id, 3 more }`
 
     A request to interrupt a subagent's current turn. The subagent remains available.
@@ -10333,8 +10358,6 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       - `"interrupt_subagent_call"`
 
-        The current public item type.
-
   - `AgentCloseSubagentCallItem object { id, recipient_agent_id, sender_agent_id, 3 more }`
 
     A request to close a subagent.
@@ -10372,8 +10395,6 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
       The item type. Always `close_subagent_call`.
 
       - `"close_subagent_call"`
-
-        The current public item type.
 
 - `output_index: integer`
 

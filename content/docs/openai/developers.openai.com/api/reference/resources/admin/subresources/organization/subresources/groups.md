@@ -10,6 +10,8 @@ Creates a new group in the organization.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `name: string`
 
   Human readable name for the group.
@@ -382,6 +384,8 @@ Updates a group's information.
 
 ### Body Parameters
 
+Content type: `application/json`
+
 - `name: string`
 
   New display name for the group.
@@ -545,6 +549,8 @@ Assigns an organization role to a group within the organization.
   The ID of the group that should receive the organization role.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `role_id: string`
 
@@ -1323,6 +1329,8 @@ Adds a user to a group.
   The ID of the group to update.
 
 ### Body Parameters
+
+Content type: `application/json`
 
 - `user_id: string`
 

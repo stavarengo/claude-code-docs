@@ -28,6 +28,7 @@ import { ResponsesWS } from "openai/resources/responses/ws";
 
 const client = new OpenAI();
 const ws = new ResponsesWS(client);
+
 let previousResponseId = null;
 
 try {
@@ -37,6 +38,7 @@ try {
   ]) {
     let completed = false;
     const events = ws.stream();
+
     ws.send({
       type: "response.create",
       model: "gpt-6-astra",
@@ -80,6 +82,7 @@ try {
 from openai import OpenAI
 
 client = OpenAI()
+
 previous_response_id: str | None = None
 prompts = [
     "Explain why the sky is blue in one sentence.",
@@ -94,6 +97,7 @@ with client.responses.connect() as connection:
             previous_response_id=previous_response_id,
             input=prompt,
         )
+
         for event in connection:
             if event.type == "response.output_text.delta":
                 print(event.delta, end="", flush=True)
@@ -108,42 +112,61 @@ with client.responses.connect() as connection:
 ```
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
-defer cancel()
-client := openai.NewClient()
-conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
-if err != nil {
-	panic(err)
-}
-defer conn.Close()
+package main
 
-previousResponseID := ""
-for _, prompt := range []string{
-	"Explain why the sky is blue in one sentence.",
-	"Now explain why sunsets look red.",
-} {
-	request := responses.ResponsesClientEventResponseCreateParam{
-		Model:       "gpt-6-astra",
-		ServiceTier: "ultrafast",
-		Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
-			OfString: openai.String(prompt),
-		},
-	}
-	if previousResponseID != "" {
-		request.PreviousResponseID = openai.String(previousResponseID)
-	}
-	if err := conn.Create(ctx, request); err != nil {
-		panic(err)
-	}
-	response, err := conn.FinalResponse(ctx)
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	defer cancel()
+
+	client := openai.NewClient()
+	conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
 	if err != nil {
 		panic(err)
 	}
-	if response.Status != responses.ResponseStatusCompleted {
-		panic(fmt.Sprintf("Response ended with status %s", response.Status))
+	defer conn.Close()
+
+	previousResponseID := ""
+
+	for _, prompt := range []string{
+		"Explain why the sky is blue in one sentence.",
+		"Now explain why sunsets look red.",
+	} {
+		request := responses.ResponsesClientEventResponseCreateParam{
+			Model:       "gpt-6-astra",
+			ServiceTier: "ultrafast",
+			Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+				OfString: openai.String(prompt),
+			},
+		}
+		if previousResponseID != "" {
+			request.PreviousResponseID = openai.String(previousResponseID)
+		}
+
+		if err := conn.Create(ctx, request); err != nil {
+			panic(err)
+		}
+
+		// FinalResponse reads events until the response finishes.
+		response, err := conn.FinalResponse(ctx)
+		if err != nil {
+			panic(err)
+		}
+		if response.Status != responses.ResponseStatusCompleted {
+			panic(fmt.Sprintf("Response ended with status %s", response.Status))
+		}
+
+		previousResponseID = response.ID
+		fmt.Println(response.OutputText())
 	}
-	previousResponseID = response.ID
-	fmt.Println(response.OutputText())
 }
 ```
 
@@ -154,8 +177,10 @@ import com.openai.models.responses.ResponsesClientEvent;
 import java.util.List;
 
 var client = OpenAIOkHttpClient.fromEnv();
+
 try (var connection = client.responses().connect()) {
   String previousResponseId = null;
+
   for (var prompt :
       List.of(
           "Explain why the sky is blue in one sentence.",
@@ -168,12 +193,15 @@ try (var connection = client.responses().connect()) {
     if (previousResponseId != null) {
       request.previousResponseId(previousResponseId);
     }
+
     connection.send(ResponsesClientEvent.ofResponseCreate(request.build()));
+
     var response = connection.finalResponse();
     if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty()) {
       throw new IllegalStateException(
           "Response ended with status " + response.status().orElse(null));
     }
+
     previousResponseId = response.id();
     response.output().stream()
         .flatMap(item -> item.message().stream())
@@ -189,10 +217,12 @@ try (var connection = client.responses().connect()) {
 ```ruby
 # Install: gem install openai async-websocket
 # Set OPENAI_API_KEY in your environment.
+
 require "async"
 require "openai"
 
 client = OpenAI::Client.new
+
 request = {
   model: "gpt-6-astra",
   service_tier: :ultrafast
@@ -207,6 +237,7 @@ Sync do |task|
     client.responses.connect(request_options: { timeout: 10 }) do |connection|
       prompts.each do |prompt|
         connection.response.create(**request, input: prompt)
+
         loop do
           event = connection.receive
           raise "Connection closed before the response finished" unless event
@@ -240,6 +271,7 @@ Create an Ultrafast response over HTTP
 import OpenAI from "openai";
 
 const client = new OpenAI();
+
 const response = await client.responses.create({
   model: "gpt-6-astra",
   service_tier: "ultrafast",
@@ -264,16 +296,30 @@ print(response.output_text)
 ```
 
 ```go
-client := openai.NewClient()
-response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-	Model:       "gpt-6-astra",
-	ServiceTier: responses.ResponseNewParamsServiceTierUltrafast,
-	Input:       responses.ResponseNewParamsInputUnion{OfString: openai.String("Explain why the sky is blue in one sentence.")},
-})
-if err != nil {
-	panic(err)
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+
+	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+		Model:       "gpt-6-astra",
+		ServiceTier: responses.ResponseNewParamsServiceTierUltrafast,
+		Input:       responses.ResponseNewParamsInputUnion{OfString: openai.String("Explain why the sky is blue in one sentence.")},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(response.OutputText())
 }
-fmt.Println(response.OutputText())
 ```
 
 ```java
