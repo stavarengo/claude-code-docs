@@ -1574,6 +1574,10 @@ conversations_by_session: dict[str, str] = {}
 
 @app.post("/messages")
 async def message(message: Message):
+    if not message.session_id.strip() or not message.content.strip():
+        raise HTTPException(
+            status_code=400, detail="session_id and content are required"
+        )
     conversation_id = conversations_by_session.get(message.session_id)
     if conversation_id is None:
         conversation_id = openai.conversations.create().id
@@ -2443,7 +2447,7 @@ class MyChatKitServer(ChatKitServer[RequestContext]):
             await self.store.add_thread_item(
                 thread.id,
                 HiddenContextItem(
-                    id="item_123",
+                    id=self.store.generate_item_id("message", thread, context),
                     thread_id=thread.id,
                     created_at=datetime.now(),
                     content="<USER_ACTION>The user did a thing</USER_ACTION>",
@@ -2564,7 +2568,6 @@ Form values are keyed in the `payload` by their `name` e.g.
 ```python
 form = Form(
     direction="col",
-    validation="native",
     onSubmitAction=ActionConfig(
         type="update_todo",
         payload={"id": todo.id},
@@ -2929,7 +2932,7 @@ spend_alert = client.admin.organization.projects.spend_alerts.create(
     notification_channel={
         "recipients": ["billing@example.com"],
         "type": "email",
-        "subject_prefix": "[OpenAI spend]",
+        "subject_prefix": "OpenAI spend",
     },
     threshold_amount=50000,
 )
@@ -6454,7 +6457,7 @@ first = client.responses.create(
     input=history,
 )
 
-history.extend(item.model_dump(exclude={"status"}) for item in first.output)
+history.extend(item.to_dict() for item in first.output)
 history.append(
     {
         "role": "user",
@@ -6904,8 +6907,8 @@ The Python sample uses `pip install "openai[realtime]>=3.8.0"`.
 The JavaScript sample uses `npm install openai@^7.10.0 ws`.
 The Ruby sample uses `gem install openai async-websocket`.
 
-For Go, run `go get github.com/openai/openai-go/v3@v3.85.1`.
-For Java, add the Maven dependency `com.openai:openai-java:4.90.0`.
+For Go, run `go get github.com/openai/openai-go/v3@v3.91.0`.
+For Java, add the Maven dependency `com.openai:openai-java:4.95.0`.
 These Go and Java SDK versions provide native Responses WebSocket support.
 
 Start a Responses API WebSocket session
@@ -7524,26 +7527,37 @@ for (const [path, content] of Object.entries(files)) {
 ```python
 from apply_patch_harness import apply_operation  # your implementation
 
-results = []
-for call in patch_calls:
-    op = call["operation"]
-    success, maybe_log_output = apply_operation(op)
+for turn in range(9):
+    if response.status != "completed":
+        raise RuntimeError(f"Patch response ended with status {response.status}")
+    if not patch_calls:
+        break
+    if turn == 8:
+        raise RuntimeError("Patch workflow exceeded eight tool turns")
 
-    results.append(
-        {
-            "type": "apply_patch_call_output",
-            "call_id": call["call_id"],
-            "status": "completed" if success else "failed",
-            "output": maybe_log_output,
-        }
+    results = []
+    for call in patch_calls:
+        success, log_output = apply_operation(call["operation"])
+        results.append(
+            {
+                "type": "apply_patch_call_output",
+                "call_id": call["call_id"],
+                "status": "completed" if success else "failed",
+                "output": log_output,
+            }
+        )
+
+    response = client.responses.create(
+        model="gpt-6-astra",
+        previous_response_id=response.id,
+        input=results,
+        tools=[{"type": "apply_patch"}],
     )
+    patch_calls = [
+        item.model_dump() for item in response.output if item.type == "apply_patch_call"
+    ]
 
-followup = client.responses.create(
-    model="gpt-6-astra",
-    previous_response_id=response.id,
-    input=results,
-    tools=[{"type": "apply_patch"}],
-)
+print(response.output_text)
 ```
 
 ```go
@@ -7757,26 +7771,39 @@ console.log(`\nFinal response:\n${result.finalOutput}`);
 ```
 
 ```python
+from pathlib import Path
+
 from agents import Agent, ApplyPatchTool, Runner, apply_diff
 
 
 class WorkspaceEditor:
+    def __init__(self, root="workspace"):
+        self.root = Path(root).resolve()
+        self.root.mkdir(parents=True, exist_ok=True)
+
+    def _path(self, name):
+        path = self.root / name
+        resolved = path.resolve()
+        if resolved == self.root or not resolved.is_relative_to(self.root):
+            raise ValueError("Patch paths must stay inside the workspace")
+        return path
+
     async def create_file(self, operation):
-        # convert the diff to the file content
         content = apply_diff("", operation.diff, mode="create")
-        # write the file content to the file system
+        path = self._path(operation.path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("x", encoding="utf-8") as file:
+            file.write(content)
         return {"status": "completed", "output": f"Created {operation.path}"}
 
     async def update_file(self, operation):
-        # read the file content from the file system
-        current = ""
-        # convert the diff to the new file content
-        new_content = apply_diff(current, operation.diff)
-        # write the updated file content to the file system
+        path = self._path(operation.path)
+        content = apply_diff(path.read_text(encoding="utf-8"), operation.diff)
+        path.write_text(content, encoding="utf-8")
         return {"status": "completed", "output": f"Updated {operation.path}"}
 
     async def delete_file(self, operation):
-        # delete the file from the file system
+        self._path(operation.path).unlink()
         return {"status": "completed", "output": f"Deleted {operation.path}"}
 
 
@@ -7785,7 +7812,7 @@ editor = WorkspaceEditor()
 agent = Agent(
     name="Patch Assistant",
     model="gpt-6-astra",
-    instructions="You can edit files inside the /tmp directory using the apply_patch tool.",
+    instructions="Use apply_patch to edit files in the workspace. Supply paths relative to that workspace.",
     tools=[
         ApplyPatchTool(
             editor=editor,
@@ -9026,6 +9053,7 @@ encoded_string = base64.b64encode(wav_data).decode("utf-8")
 
 completion = client.chat.completions.create(
     model="gpt-audio-1.5",
+    store=False,
     modalities=["text", "audio"],
     audio={"voice": "alloy", "format": "wav"},
     messages=[
@@ -9873,14 +9901,21 @@ stream = client.responses.create(
 )
 
 cursor = None
+response_id = None
 for event in stream:
     print(event)
-    cursor = event.sequence_number
+    if event.type == "response.created":
+        response_id = event.response.id
+    # Keepalives use connection counters, not stored-event resume positions.
+    if event.type != "keepalive":
+        cursor = event.sequence_number
 
-# If your connection drops, the response continues running and you can reconnect:
-# SDK support for resuming the stream is coming soon.
-# for event in client.responses.stream(resp.id, starting_after=cursor):
-#     print(event)
+    # If your connection drops, the response continues running and you can reconnect:
+    # with client.responses.stream(response_id=response_id, starting_after=cursor) as resumed:
+    #     for event in resumed:
+    #         print(event)
+    if event.type == "response.created":
+        response_id = event.response.id
 ```
 
 ```go
@@ -14053,11 +14088,15 @@ while keep_going:
 
     conversation.extend(response.output)
 
+    try:
+        next_input = get_next_user_input()
+    except EOFError:
+        break
     conversation.append(
         {
             "type": "message",
             "role": "user",
-            "content": get_next_user_input(),
+            "content": next_input,
         }
     )
 ```
@@ -20334,9 +20373,11 @@ class EditorDriver:
         )
 
     def keypress(self, action):
-        keys = tuple(action.keys)
+        keys = tuple(key.upper() for key in action.keys)
         if keys not in (("CTRL", "A"), ("CTRL", "S")):
-            raise ValueError("Only Select All and Save are allowed.")
+            raise ValueError(
+                f"Only Select All and Save are allowed; received {action.keys!r}."
+            )
         self.focus_editor()
         desktop("xdotool", "key", "--clearmodifiers", "ctrl+" + keys[1].lower())
 
@@ -20484,7 +20525,7 @@ from playwright.sync_api import sync_playwright
 
 with sync_playwright() as p:
     browser = p.chromium.launch(
-        headless=False,
+        headless=True,
         chromium_sandbox=True,
         env={},
         args=["--disable-extensions", "--disable-file-system"],
@@ -36483,8 +36524,10 @@ func main() {
 		},
 		Questions: []openai.DecisionNewParamsQuestionUnion{{
 			OfPredicate: &openai.DecisionNewParamsQuestionPredicate{
-				Name:         openai.String("visible_damage"),
-				Instructions: "Does the product have visible damage, such as a crack, tear, or dent? Ignore shadows and damage to the packaging.",
+				Name: openai.String("visible_damage"),
+				Instructions: openai.DecisionNewParamsQuestionPredicateInstructionsUnion{
+					OfString: openai.String("Does the product have visible damage, such as a crack, tear, or dent? Ignore shadows and damage to the packaging."),
+				},
 			},
 		}},
 	})
@@ -36505,6 +36548,7 @@ func main() {
 ```java
 import com.openai.models.decisions.DecisionCreateParams;
 import com.openai.models.decisions.DecisionInputImage;
+import com.openai.models.decisions.DecisionInputItem;
 import com.openai.models.decisions.DecisionInputMessage;
 import com.openai.models.decisions.DecisionInputPart;
 import com.openai.models.decisions.DecisionInputText;
@@ -36516,7 +36560,7 @@ import java.util.List;
 String imageBase64 =
     Base64.getEncoder().encodeToString(Files.readAllBytes(Path.of("product.png")));
 var message =
-    DecisionInputMessage.builder()
+    DecisionInputMessage.User.builder()
         .contentOfParts(
             List.of(
                 DecisionInputPart.ofInputText(
@@ -36534,7 +36578,10 @@ var decision =
         .create(
             DecisionCreateParams.builder()
                 .model("gpt-6-luna")
-                .inputOfDecisionInputMessages(List.of(message))
+                .inputOfDecisionInputItems(
+                    List.of(
+                        DecisionInputItem.ofDecisionInputMessage(
+                            DecisionInputMessage.ofUser(message))))
                 .addQuestion(
                     DecisionCreateParams.Question.Predicate.builder()
                         .name("visible_damage")
@@ -36773,8 +36820,10 @@ func main() {
 		Input: openai.DecisionNewParamsInputUnion{OfString: openai.String("I was charged twice for my order.")},
 		Questions: []openai.DecisionNewParamsQuestionUnion{{
 			OfChoice: &openai.DecisionNewParamsQuestionChoice{
-				Name:         openai.String("department"),
-				Instructions: "Which department should handle this complaint?",
+				Name: openai.String("department"),
+				Instructions: openai.DecisionNewParamsQuestionChoiceInstructionsUnion{
+					OfString: openai.String("Which department should handle this complaint?"),
+				},
 				Choices: []openai.DecisionNewParamsQuestionChoiceChoice{
 					{
 						Value:       openai.DecisionNewParamsQuestionChoiceChoiceValueUnion{OfString: openai.String("billing")},
@@ -37051,8 +37100,10 @@ func main() {
 		Input: openai.DecisionNewParamsInputUnion{OfString: openai.String("Export fails in Safari but works in Chrome.")},
 		Questions: []openai.DecisionNewParamsQuestionUnion{{
 			OfScore: &openai.DecisionNewParamsQuestionScore{
-				Name:         openai.String("severity"),
-				Instructions: "How severe is this issue?",
+				Name: openai.String("severity"),
+				Instructions: openai.DecisionNewParamsQuestionScoreInstructionsUnion{
+					OfString: openai.String("How severe is this issue?"),
+				},
 				Levels: []openai.DecisionNewParamsQuestionScoreLevel{
 					{Label: "Cosmetic", Description: openai.String("Appearance only; no lost functionality.")},
 					{Label: "Workaround available", Description: openai.String("A task fails, but another way works.")},
@@ -39284,10 +39335,11 @@ from openai.resources.live.sideband import AsyncSidebandConnection
 
 async def send_update(
     connection: AsyncLiveConnection | AsyncSidebandConnection,
+    delegation_id: str,
 ) -> None:
     await connection.session.commentary.append(
         event_id="result_123",
-        delegation_id="item_9tA2bF3h7K9m2P5q8R1s4",
+        delegation_id=delegation_id,
         content="The order shipped today and should arrive tomorrow.",
     )
 ```
@@ -39401,10 +39453,11 @@ from openai.resources.live.sideband import AsyncSidebandConnection
 
 async def send_update(
     connection: AsyncLiveConnection | AsyncSidebandConnection,
+    delegation_id: str,
 ) -> None:
     await connection.session.thinking.append(
         event_id="availability_progress",
-        delegation_id="item_123",
+        delegation_id=delegation_id,
         content="Checking Thursday availability. No appointment has been booked.",
     )
 ```
@@ -39468,10 +39521,11 @@ from openai.resources.live.sideband import AsyncSidebandConnection
 
 async def send_update(
     connection: AsyncLiveConnection | AsyncSidebandConnection,
+    delegation_id: str,
 ) -> None:
     await connection.session.commentary.append(
         event_id="appointment_result",
-        delegation_id="item_123",
+        delegation_id=delegation_id,
         content="Your appointment is confirmed for Thursday at 2:00 PM",
     )
 ```
@@ -43578,10 +43632,12 @@ await openai.vectorStores.files.create(vectorStore.id, {
 ```
 
 ```python
-result = client.vector_stores.files.create(
+result = client.vector_stores.files.create_and_poll(
     vector_store_id=vector_store.id,
     file_id=file_id,
 )
+if result.status != "completed":
+    raise RuntimeError(f"File indexing ended with status: {result.status}")
 print(result)
 ```
 
@@ -43647,7 +43703,17 @@ console.log(result.data);
 ```
 
 ```python
-result = client.vector_stores.files.list(vector_store_id=vector_store.id)
+import time
+
+# Listing visibility can lag behind completed indexing.
+deadline = time.monotonic() + 60
+while True:
+    result = client.vector_stores.files.list(vector_store_id=vector_store.id)
+    if any(file.id == file_id and file.status == "completed" for file in result.data):
+        break
+    if time.monotonic() >= deadline:
+        raise TimeoutError("The indexed file is not visible in the listing yet.")
+    time.sleep(1)
 print(result)
 ```
 
@@ -45359,7 +45425,7 @@ transcription = client.audio.transcriptions.create(
     prompt="ZyntriQix, Digique Plus, CynapseFive, VortiQore V8, EchoNix Array, OrbitalLink Seven, DigiFractal Matrix, PULSE, RAPT, B.R.I.C.K., Q.U.A.R.T.Z., F.L.I.N.T.",
 )
 
-print(transcription.text)
+print(transcription)
 ```
 
 ```go
@@ -46486,6 +46552,7 @@ tools = [
     {
         "type": "function",
         "name": "get_horoscope",
+        "strict": True,
         "description": "Get today's horoscope for an astrological sign.",
         "parameters": {
             "type": "object",
@@ -46496,6 +46563,7 @@ tools = [
                 },
             },
             "required": ["sign"],
+            "additionalProperties": False,
         },
     },
 ]
@@ -46534,9 +46602,6 @@ for item in response.output:
                 }
             )
 
-print("Final input:")
-print(input_list)
-
 response = client.responses.create(
     model="gpt-6-astra",
     instructions="Respond only with a horoscope generated by a tool.",
@@ -46545,9 +46610,7 @@ response = client.responses.create(
 )
 
 # 5. The model should be able to give a response!
-print("Final output:")
-print(response.model_dump_json(indent=2))
-print("\n" + response.output_text)
+print(response.output_text)
 ```
 
 ```go
@@ -47200,8 +47263,6 @@ response = client.responses.create(
     input=input_messages,
     tools=responses_tools,
 )
-
-print(response.output_text)
 ```
 
 ```go
@@ -47537,6 +47598,7 @@ tools = [
     {
         "type": "function",
         "name": "get_weather",
+        "strict": True,
         "description": "Get current temperature for a given location.",
         "parameters": {
             "type": "object",
@@ -47737,7 +47799,10 @@ for await (const event of stream) {
 final_tool_calls = {}
 
 for event in stream:
-    if event.type == "response.output_item.added":
+    if (
+        event.type == "response.output_item.added"
+        and event.item.type == "function_call"
+    ):
         final_tool_calls[event.output_index] = event.item
     elif event.type == "response.function_call_arguments.delta":
         index = event.output_index
@@ -49436,12 +49501,11 @@ grader = {
         },
     ],
     "pass_threshold": 0.5,
-    "model": "o4-mini-2025-04-16",
+    "model": "gpt-4.1-2025-04-14",
     "range": [0, 1],
     "sampling_params": {
         "max_completions_tokens": 32768,
         "top_p": 1,
-        "reasoning_effort": "medium",
     },
 }
 
@@ -49894,7 +49958,8 @@ guardrail_agent = Agent(
 )
 
 
-@input_guardrail
+# Validate input before starting the support agent.
+@input_guardrail(run_in_parallel=False)
 async def math_guardrail(
     ctx: RunContextWrapper[None],
     agent: Agent,
@@ -49980,7 +50045,7 @@ async def cancel_order(order_id: int) -> str:
 
 agent = Agent(
     name="Support agent",
-    instructions="Handle support requests and ask for approval when needed.",
+    instructions="Use cancel_order to handle cancellation requests.",
     tools=[cancel_order],
 )
 
@@ -49991,6 +50056,7 @@ async def main() -> None:
     if result.interruptions:
         state = result.to_state()
         for interruption in result.interruptions:
+            print("Approval required:", interruption.name)
             state.approve(interruption)
         result = await Runner.run(agent, state)
 
@@ -56299,7 +56365,7 @@ Fully transparent background. Deliver a single centered logo with generous paddi
 """
 
 result = client.images.generate(
-    model="gpt-image-2",
+    model="gpt-image-2.5-sunburst",
     prompt=prompt,
     size="1024x1536",
     quality="medium",
@@ -56310,7 +56376,7 @@ result = client.images.generate(
 
 # Preserve the returned PNG bytes, including the alpha channel.
 for index, item in enumerate(result.data, start=1):
-    Path(f"logo-generation-{index}-gpt-image-2.png").write_bytes(
+    Path(f"logo-generation-{index}-gpt-image-2.5-sunburst.png").write_bytes(
         base64.b64decode(item.b64_json)
     )
 
@@ -56324,9 +56390,9 @@ Do not restyle the product; remove the background and preserve clean alpha trans
 """
 
 result = client.images.edit(
-    model="gpt-image-2",
+    model="gpt-image-2.5-sunburst",
     image=[
-        Path("input_images/shampoo.webp"),
+        ("shampoo.webp", Path("input_images/shampoo.webp"), "image/webp"),
     ],
     prompt=prompt,
     size="1024x1536",
@@ -56335,7 +56401,7 @@ result = client.images.edit(
     output_format="png",
 )
 
-Path("extract-product-gpt-image-2.png").write_bytes(
+Path("extract-product-gpt-image-2.5-sunburst.png").write_bytes(
     base64.b64decode(result.data[0].b64_json)
 )
 ```
@@ -63964,6 +64030,7 @@ async def main():
     async with client.responses.connect() as connection:
         await connection.response.create(
             model="gpt-6-astra",
+            store=False,
             reasoning={"effort": "medium"},
             input="Draft a project plan for building a task-tracking app.",
         )
@@ -64417,7 +64484,7 @@ prompt_id = "pmpt_123"
 
 response = client.responses.create(
     prompt={
-        "prompt_id": prompt_id,
+        "id": prompt_id,
         "version": "1",
         "variables": {
             "customer_name": "Acme",
@@ -70191,7 +70258,10 @@ tools = [
 history = [
     {
         "role": "user",
-        "content": "Compare proposal alpha and proposal beta.",
+        "content": (
+            "Use two subagents, one for proposal alpha and one for proposal beta. "
+            "Have each call get_proposal, then compare their findings."
+        ),
     }
 ]
 
@@ -71448,14 +71518,29 @@ console.log(turn.subagent_id || "main agent");
 # Replace the illustrative IDs and URLs below with your own resource values.
 from openai import OpenAI
 
-client = OpenAI()
 
-session_id = "sess_123"
-turns = client.beta.agents.sessions.turns.list(session_id, limit=20, order="desc")
-print(turns.to_json())
-turn_id = "turn_123"
-turn = client.beta.agents.sessions.turns.retrieve(turn_id, session_id=session_id)
-print(turn.subagent_id)
+def find_turn(client, session_id, turn_id):
+    # Native SDK pagination searches every page for the owning agent.
+    for turn in client.beta.agents.sessions.turns.list(session_id, limit=100):
+        if turn.id == turn_id:
+            return client.beta.agents.sessions.turns.retrieve(
+                turn_id, session_id=session_id
+            )
+
+    for subagent in client.beta.agents.sessions.subagents.list(session_id, limit=100):
+        turns = client.beta.agents.sessions.subagents.turns.list(
+            subagent.id, session_id=session_id, limit=100
+        )
+        for turn in turns:
+            if turn.id == turn_id:
+                return client.beta.agents.sessions.subagents.turns.retrieve(
+                    turn_id, session_id=session_id, subagent_id=subagent.id
+                )
+    raise ValueError(f"Turn {turn_id} not found in session {session_id}")
+
+
+turn = find_turn(OpenAI(), "sess_123", "turn_123")
+print(turn.subagent_id or "main agent")
 ```
 
 ```go
@@ -76088,7 +76173,7 @@ Some changes, such as switching models or compacting a conversation, are intenti
 | `prompt_cache_key_changed` | The supplied key changed between requests. This can be reported as a cache miss in response `usage` without a physical cache miss.                  | Omit `prompt_cache_key` unless your application needs separate cache accounting for customers or users. If you use keys, keep a stable key within each group. See [Separate cache accounting with keys](https://developers.openai.com/api/docs/guides/prompt-caching#separate-prompts-with-cache-keys).                                                                                                                                                 |
 | `service_tier_changed`     | The service tier used to process the request changed.                                                                                               | Keep the service tier consistent for requests expected to share a prefix. Check the returned `service_tier`, which can differ from the requested value. See [`service_tier`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20service_tier%20%3E%20%28schema%29) for supported values and behavior. |
 | `tools_changed`            | Tools were added, removed, or reordered, or their descriptions, schemas, or configuration changed.                                                  | Keep tool definitions and ordering stable. Use `tool_choice: "none"` to disable tools or `allowed_tools` to restrict which tools can run without changing the supplied tool list. See [Manage tools with append-only updates](https://developers.openai.com/api/docs/guides/prompt-caching#manage-tools-with-append-only-updates).                                                                                                                      |
-| `text_format_changed`      | The output format or its schema changed.                                                                                                            | Keep `text.format` and the schema consistent when the required output structure is unchanged. See [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).                                                                                                                                                                                                                                                               |
+| `text_format_changed`      | The output format or its schema changed.                                                                                                            | On supported GPT-6 and later models, keep the top-level `text.format` stable and [append a format update](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses#change-the-response-format-mid-conversation) when you need a different schema.                                                                                                                                                                            |
 | `reasoning_effort_changed` | The reasoning effort changed.                                                                                                                       | On supported GPT-6 and later models, append a `configuration_update` input item to [change reasoning effort during a conversation](https://developers.openai.com/api/docs/guides/reasoning?api-mode=responses#change-reasoning-mid-conversation) while preserving the earlier cached prefix.<br />On older models, keep `reasoning.effort` consistent across requests intended to share a prefix.                                                       |
 | `verbosity_changed`        | The response verbosity changed.                                                                                                                     | Keep `text.verbosity` consistent across requests intended to share a prefix. See [cache-affecting settings](https://developers.openai.com/api/docs/guides/prompt-caching#which-settings-affect-the-cached-prefix).                                                                                                                                                                                                                                      |
 | `context_compacted`        | Compaction replaced earlier conversation content.                                                                                                   | Preserve stable instructions and let later turns build on the compacted context. Compare total input cost: fewer input tokens can still save money despite lower cache reuse. See [Compaction](https://developers.openai.com/api/docs/guides/compaction).                                                                                                                                                                                               |
@@ -76180,7 +76265,7 @@ Changing a request does not necessarily discard an existing cache entry. What ma
 | [`model`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20model%20%3E%20%28schema%29)                                                                       | A different model can use different weights and caching behavior.                                                                                                                                            |
 | [`tools`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20tools%20%3E%20%28schema%29)                                                                       | Changes tool names, descriptions, schemas, ordering, or tool-specific instructions.                                                                                                                          |
 | [`parallel_tool_calls`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20parallel_tool_calls%20%3E%20%28schema%29)                                           | Can change instructions about calling multiple tools in one turn.                                                                                                                                            |
-| [`text.format`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20text%20%3E%20%28schema%29) ([Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs))      | Adds output-format instructions and the requested schema.                                                                                                                                                    |
+| [`text.format`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20text%20%3E%20%28schema%29) ([Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs))      | On supported GPT-6 and later models, [append a format update](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses#change-the-response-format-mid-conversation) to keep the original schema in the prefix. |
 | [`reasoning.effort`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20reasoning%20%3E%20%28schema%29)                                                        | Can change model-side reasoning instructions. On supported models, use a [configuration update](#change-reasoning-effort-without-rewriting-the-prefix) to change effort while preserving the earlier prefix. |
 | [`text.verbosity`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20text%20%3E%20%28schema%29)                                                               | Can change instructions about response detail.                                                                                                                                                               |
 | [`context_management`](https://developers.openai.com/api/reference/resources/responses/methods/create#%28resource%29%20responses%20%3E%20%28method%29%20create%20%3E%20%28params%29%200.non_streaming%20%3E%20%28param%29%20context_management%20%3E%20%28schema%29) ([Compaction](https://developers.openai.com/api/docs/guides/compaction)) | Replaces earlier conversation content with a compacted context that can prevent reuse from the first changed token onward.                                                                                   |
@@ -76533,7 +76618,7 @@ Keep changing content after the breakpoint
 
 On supported GPT-6 and later models, append a `configuration_update` input item to [change reasoning effort during a conversation](https://developers.openai.com/api/docs/guides/reasoning?api-mode=responses#change-reasoning-mid-conversation) while preserving the earlier cached prefix. Keep the top-level `reasoning.effort` at its original value as changing that setting can rewrite instructions in the hidden system instructions.
 
-The latest configuration update controls the reasoning effort for subsequent responses. For example, append this item to the existing `input` array to switch to `high` reasoning for the subsequent requests:
+The latest update to `reasoning.effort` controls the effort for later responses. Append this item to `input` to switch to `high` effort.
 
 Item to append to the input array
 
@@ -80375,72 +80460,65 @@ console.log(
 
 ```python
 from openai import OpenAI
+from jsonschema import Draft202012Validator, ValidationError
 import json
 
 client = OpenAI()
 
+SCHEMA_DEFINITION = {
+    "type": "object",
+    "properties": {
+        "description": {"type": "string"},
+        "type": {
+            "type": "string",
+            "enum": ["object", "array", "string", "number", "boolean", "null"],
+        },
+        "properties": {
+            "type": "object",
+            "additionalProperties": {"$ref": "#/$defs/schema_definition"},
+        },
+        "items": {
+            "anyOf": [
+                {"$ref": "#/$defs/schema_definition"},
+                {"type": "array", "items": {"$ref": "#/$defs/schema_definition"}},
+            ]
+        },
+        "required": {"type": "array", "items": {"type": "string"}},
+        "additionalProperties": {"type": "boolean"},
+        "enum": {"type": "array", "minItems": 1, "uniqueItems": True},
+        "$ref": {"type": "string"},
+        "$defs": {
+            "type": "object",
+            "additionalProperties": {"$ref": "#/$defs/schema_definition"},
+        },
+        "anyOf": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"$ref": "#/$defs/schema_definition"},
+        },
+    },
+    "additionalProperties": False,
+    "if": {"required": ["type"], "properties": {"type": {"const": "object"}}},
+    "then": {"required": ["properties"]},
+}
+
 META_SCHEMA = {
     "name": "metaschema",
     "schema": {
-        "type": "object",
+        **SCHEMA_DEFINITION,
+        "required": ["type"],
         "properties": {
             "name": {"type": "string", "description": "The name of the schema"},
-            "type": {
-                "type": "string",
-                "enum": ["object", "array", "string", "number", "boolean", "null"],
-            },
-            "properties": {
-                "type": "object",
-                "additionalProperties": {"$ref": "#/$defs/schema_definition"},
-            },
-            "items": {
-                "anyOf": [
-                    {"$ref": "#/$defs/schema_definition"},
-                    {"type": "array", "items": {"$ref": "#/$defs/schema_definition"}},
-                ]
-            },
-            "required": {"type": "array", "items": {"type": "string"}},
-            "additionalProperties": {"type": "boolean"},
+            **SCHEMA_DEFINITION["properties"],
         },
-        "required": ["type"],
-        "additionalProperties": False,
-        "if": {"properties": {"type": {"const": "object"}}},
-        "then": {"required": ["properties"]},
         "$defs": {
             "schema_definition": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "string",
-                        "enum": [
-                            "object",
-                            "array",
-                            "string",
-                            "number",
-                            "boolean",
-                            "null",
-                        ],
-                    },
-                    "properties": {
-                        "type": "object",
-                        "additionalProperties": {"$ref": "#/$defs/schema_definition"},
-                    },
-                    "items": {
-                        "anyOf": [
-                            {"$ref": "#/$defs/schema_definition"},
-                            {
-                                "type": "array",
-                                "items": {"$ref": "#/$defs/schema_definition"},
-                            },
-                        ]
-                    },
-                    "required": {"type": "array", "items": {"type": "string"}},
-                    "additionalProperties": {"type": "boolean"},
-                },
-                "required": ["type"],
-                "additionalProperties": False,
-                "if": {"properties": {"type": {"const": "object"}}},
-                "then": {"required": ["properties"]},
+                **SCHEMA_DEFINITION,
+                "anyOf": [
+                    {"required": ["type"]},
+                    {"required": ["$ref"]},
+                    {"required": ["anyOf"]},
+                ],
             }
         },
     },
@@ -80614,22 +80692,43 @@ Output: {
 
 
 def generate_schema(description: str):
-    completion = client.chat.completions.create(
-        model="gpt-5.6-terra",
-        response_format={"type": "json_schema", "json_schema": META_SCHEMA},
-        messages=[
-            {
-                "role": "system",
-                "content": META_PROMPT,
-            },
-            {
-                "role": "user",
-                "content": "Description:\n" + description,
-            },
-        ],
-    )
-
-    return json.loads(completion.choices[0].message.content)
+    messages = [
+        {"role": "system", "content": META_PROMPT},
+        {"role": "user", "content": "Description:\n" + description},
+    ]
+    validator = Draft202012Validator(META_SCHEMA["schema"])
+    # Generation is non-strict. Validate locally and allow one correction.
+    for attempt in range(2):
+        completion = client.chat.completions.create(
+            model="gpt-5.6-terra",
+            response_format={"type": "json_schema", "json_schema": META_SCHEMA},
+            messages=messages,
+        )
+        choice = completion.choices[0]
+        if choice.finish_reason != "stop" or choice.message.refusal:
+            raise ValueError("Schema generation did not complete successfully")
+        content = choice.message.content
+        schema = json.loads(content)
+        try:
+            validator.validate(schema)
+        except ValidationError as error:
+            if attempt == 1:
+                raise
+            messages.extend(
+                [
+                    {"role": "assistant", "content": content},
+                    {
+                        "role": "user",
+                        "content": (
+                            "Correct the schema to satisfy the original meta-schema. "
+                            f"Validation error at {error.json_path}: {error.message}. "
+                            "Return only the corrected JSON."
+                        ),
+                    },
+                ]
+            )
+        else:
+            return schema
 ```
 
 ```go
@@ -80822,6 +80921,9 @@ func run() error {
       "type": "string",
       "description": "The name of the schema"
     },
+    "description": {
+      "type": "string"
+    },
     "type": {
       "type": "string",
       "enum": [
@@ -80860,13 +80962,34 @@ func run() error {
     },
     "additionalProperties": {
       "type": "boolean"
+    },
+    "enum": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "$ref": {
+      "type": "string"
+    },
+    "$defs": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/schema_definition"
+      }
+    },
+    "anyOf": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/schema_definition"
+      }
     }
   },
-  "required": [
-    "type"
-  ],
   "additionalProperties": false,
   "if": {
+    "required": [
+      "type"
+    ],
     "properties": {
       "type": {
         "const": "object"
@@ -80878,6 +81001,9 @@ func run() error {
       "properties"
     ]
   },
+  "required": [
+    "type"
+  ],
   "$defs": {
     "schema_definition": {
       "type": "object",
@@ -80923,13 +81049,34 @@ func run() error {
         },
         "additionalProperties": {
           "type": "boolean"
+        },
+        "enum": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "$ref": {
+          "type": "string"
+        },
+        "$defs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/schema_definition"
+          }
+        },
+        "anyOf": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/schema_definition"
+          }
         }
       },
-      "required": [
-        "type"
-      ],
       "additionalProperties": false,
       "if": {
+        "required": [
+          "type"
+        ],
         "properties": {
           "type": {
             "const": "object"
@@ -80940,7 +81087,24 @@ func run() error {
         "required": [
           "properties"
         ]
-      }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "type"
+          ]
+        },
+        {
+          "required": [
+            "$ref"
+          ]
+        },
+        {
+          "required": [
+            "anyOf"
+          ]
+        }
+      ]
     }
   }
 }`), &schema); err != nil {
@@ -81611,112 +81775,107 @@ Console.WriteLine(parsed.RootElement);
 require "openai"
 require "json"
 
+SCHEMA_DEFINITION = {
+  "type" => "object",
+  "properties" => {
+    "description" => {
+      "type" => "string"
+    },
+    "type" => {
+      "type" => "string",
+      "enum" => [
+        "object",
+        "array",
+        "string",
+        "number",
+        "boolean",
+        "null"
+      ]
+    },
+    "properties" => {
+      "type" => "object",
+      "additionalProperties" => {
+        "$ref" => "#/$defs/schema_definition"
+      }
+    },
+    "items" => {
+      "anyOf" => [
+        {
+          "$ref" => "#/$defs/schema_definition"
+        },
+        {
+          "type" => "array",
+          "items" => {
+            "$ref" => "#/$defs/schema_definition"
+          }
+        }
+      ]
+    },
+    "required" => {
+      "type" => "array",
+      "items" => {
+        "type" => "string"
+      }
+    },
+    "additionalProperties" => {
+      "type" => "boolean"
+    },
+    "enum" => {
+      "type" => "array",
+      "minItems" => 1,
+      "uniqueItems" => true
+    },
+    "$ref" => {
+      "type" => "string"
+    },
+    "$defs" => {
+      "type" => "object",
+      "additionalProperties" => {
+        "$ref" => "#/$defs/schema_definition"
+      }
+    },
+    "anyOf" => {
+      "type" => "array",
+      "minItems" => 1,
+      "items" => {
+        "$ref" => "#/$defs/schema_definition"
+      }
+    }
+  },
+  "additionalProperties" => false,
+  "if" => {
+    "required" => [
+      "type"
+    ],
+    "properties" => {
+      "type" => {
+        "const" => "object"
+      }
+    }
+  },
+  "then" => {
+    "required" => [
+      "properties"
+    ]
+  }
+}
+
 META_SCHEMA = {
   "name" => "metaschema",
-  "schema" => {
-    "type" => "object",
-    "properties" => {
-      "description" => { "type" => "string" },
+  "schema" => SCHEMA_DEFINITION.merge(
+    "required" => ["type"],
+    "properties" => SCHEMA_DEFINITION.fetch("properties").merge(
       "name" => {
         "type" => "string",
         "description" => "The name of the schema"
-      },
-      "type" => {
-        "type" => "string",
-        "enum" => ["object", "array", "string", "number", "boolean", "null"]
-      },
-      "properties" => {
-        "type" => "object",
-        "additionalProperties" => {
-          "$ref" => "#/$defs/schema_definition"
-        }
-      },
-      "items" => {
-        "anyOf" => [
-          {
-            "$ref" => "#/$defs/schema_definition"
-          }, {
-            "type" => "array",
-            "items" => {
-              "$ref" => "#/$defs/schema_definition"
-            }
-          }
-        ]
-      },
-      "required" => {
-        "type" => "array",
-        "items" => {
-          "type" => "string"
-        }
-      },
-      "additionalProperties" => {
-        "type" => "boolean"
       }
-    },
-    "required" => ["type"],
-    "additionalProperties" => false,
-    "if" => {
-      "properties" => {
-        "type" => {
-          "const" => "object"
-        }
-      }
-    },
-    "then" => {
-      "required" => ["properties"]
-    },
+    ),
     "$defs" => {
-      "schema_definition" => {
-        "type" => "object",
-        "properties" => {
-          "description" => { "type" => "string" },
-          "type" => {
-            "type" => "string",
-            "enum" => ["object", "array", "string", "number", "boolean", "null"]
-          },
-          "properties" => {
-            "type" => "object",
-            "additionalProperties" => {
-              "$ref" => "#/$defs/schema_definition"
-            }
-          },
-          "items" => {
-            "anyOf" => [
-              {
-                "$ref" => "#/$defs/schema_definition"
-              }, {
-                "type" => "array",
-                "items" => {
-                  "$ref" => "#/$defs/schema_definition"
-                }
-              }
-            ]
-          },
-          "required" => {
-            "type" => "array",
-            "items" => {
-              "type" => "string"
-            }
-          },
-          "additionalProperties" => {
-            "type" => "boolean"
-          }
-        },
-        "required" => ["type"],
-        "additionalProperties" => false,
-        "if" => {
-          "properties" => {
-            "type" => {
-              "const" => "object"
-            }
-          }
-        },
-        "then" => {
-          "required" => ["properties"]
-        }
-      }
+      "schema_definition" => SCHEMA_DEFINITION.merge(
+        "anyOf" => [{ "required" => ["type"] }, { "required" => ["$ref"] }, { "required" => ["anyOf"] }]
+      )
     }
-  }
+  )
 }
 
 META_PROMPT = <<~PROMPT.strip
@@ -82183,6 +82342,8 @@ META_SCHEMA = {
             "schema_definition": {
                 "type": "object",
                 "properties": {
+                    "description": {"type": "string"},
+                    "enum": {"type": "array", "minItems": 1, "uniqueItems": True},
                     "type": {
                         "type": "string",
                         "enum": [
@@ -82577,6 +82738,11 @@ func run() error {
         },
         "additionalProperties": {
           "type": "boolean"
+        },
+        "enum": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true
         }
       },
       "required": [
@@ -83088,6 +83254,11 @@ META_SCHEMA = {
         "type" => "object",
         "properties" => {
           "description" => { "type" => "string" },
+          "enum" => {
+            "type" => "array",
+            "minItems" => 1,
+            "uniqueItems" => true
+          },
           "type" => {
             "type" => "string",
             "enum" => ["object", "array", "string", "number", "boolean", "null"]
@@ -85779,6 +85950,7 @@ If you want to control more closely what type of phrases the model outputs at th
 ```python
 tools = [
     {
+        "type": "function",
         "name": "lookup_account",
         "description": """Retrieve a customer account using either an email or phone number to enable verification and account-specific actions.
 
@@ -85797,6 +85969,7 @@ Preamble sample phrases:
         },
     },
     {
+        "type": "function",
         "name": "check_outage",
         "description": """Check for network outages affecting a given service address and return status and ETA if applicable.
 
@@ -86393,6 +86566,7 @@ def build_session_update(state: State) -> dict:
     return {
         "type": "session.update",
         "session": {
+            "type": "realtime",
             "instructions": INSTRUCTIONS_BY_STATE[state],
             "tools": TOOLS_BY_STATE[state] + [build_state_change_tool(state)],
         },
@@ -87886,7 +88060,7 @@ internal static void HandleEvent(RealtimeServerUpdate update)
 ```
 
 ```ruby
-connection.each do |event|
+response_done = connection.find do |event|
   next unless event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
 
   puts("Response status: #{event.response.status}")
@@ -87897,8 +88071,9 @@ connection.each do |event|
       puts(content.text) if content.type == :output_text
     end
   end
-  break
+  true
 end
+raise "Connection closed before the response completed" unless response_done
 ```
 
 
@@ -88196,7 +88371,7 @@ from websocket import create_connection
 
 def float_to_16bit_pcm(float32_array):
     clipped = [max(-1.0, min(1.0, x)) for x in float32_array]
-    pcm16 = b"".join(struct.pack("<h", int(x * 32767)) for x in clipped)
+    pcm16 = b"".join(struct.pack("<h", min(32767, int(x * 32768))) for x in clipped)
     return pcm16
 
 
@@ -88901,7 +89076,7 @@ internal static bool HandleEvent(RealtimeServerUpdate update)
 ```
 
 ```ruby
-connection.each do |event|
+response_done = connection.find do |event|
   next unless event.is_a?(OpenAI::Realtime::ResponseDoneEvent)
   next unless event.response.metadata&.fetch(:topic, nil) == "classification"
 
@@ -88913,8 +89088,9 @@ connection.each do |event|
       puts("Classification: #{content.text}") if content.type == :output_text
     end
   end
-  break
+  true
 end
+raise "Connection closed before the response completed" unless response_done
 ```
 
 
@@ -89096,6 +89272,7 @@ This is my handle, this is my spout!
 event = {
     "type": "response.create",
     "response": {
+        "output_modalities": ["text"],
         # An empty input array removes all prior context
         "input": [],
         "instructions": prompt,
@@ -90724,7 +90901,14 @@ event = {
 }
 
 ws.send(json.dumps(event))
-ws.send(json.dumps({"type": "response.create"}))
+ws.send(
+    json.dumps(
+        {
+            "type": "response.create",
+            "response": {"output_modalities": ["text"], "tool_choice": "none"},
+        }
+    )
+)
 ```
 
 ```go
@@ -91492,7 +91676,6 @@ def approve_mcp_request(ws, approval_request_id):
     event = {
         "type": "conversation.item.create",
         "item": {
-            "id": f"mcp_approval_{approval_request_id}",
             "type": "mcp_approval_response",
             "approval_request_id": approval_request_id,
             "approve": True,
@@ -91637,6 +91820,8 @@ event = {
     "type": "response.create",
     "response": {
         "output_modalities": ["text"],
+        "tool_choice": "required",
+        "parallel_tool_calls": False,
         "input": [
             {
                 "type": "message",
@@ -92944,7 +93129,7 @@ first = client.responses.create(
 )
 
 # Keep every output item, including encrypted reasoning and assistant phase.
-history.extend(item.model_dump() for item in first.output)
+history.extend(item.to_dict() for item in first.output)
 history.append(
     {
         "role": "user",
@@ -93128,8 +93313,8 @@ Check out [this guide](https://developers.openai.com/api/docs/guides/conversatio
 
 Use `configuration_update` to increase reasoning effort for difficult work or reduce it for routine follow-ups. Add the update between responses while leaving the request-level `reasoning.effort` unchanged. This preserves the original prompt prefix for [prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-Configuration updates are supported by the GPT-6 model family in standard,
-  single-agent mode. They change only reasoning effort.
+On supported GPT-6 and later models, you can update reasoning effort and
+  response format in standard, single-agent mode.
 
 Add the following item before the next user message in the `input` array of an HTTP Responses request or a WebSocket `response.create` request:
 
@@ -93336,11 +93521,11 @@ puts(response.output_text)
 
 Preserve updates with `previous_response_id`, or replay them in their original positions when [managing conversation history manually](https://developers.openai.com/api/docs/guides/conversation-state#manually-manage-conversation-state). The response's `reasoning.effort` continues to report the request-level setting, not the effort selected by the update.
 
-Do not place two `configuration_update` items directly next to each other in the conversation history; the API rejects adjacent updates.
+You can set `reasoning.effort` and [`text.format`](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses#change-the-response-format-mid-conversation) in the same `configuration_update` item. An update to either setting alone preserves the other.
 
 Do not combine configuration updates with automatic compaction or automatic truncation. The standalone `/responses/compact` endpoint also rejects histories containing these updates.
 
-You can still explicitly compact history by including a `compaction_trigger` item in a `/responses` request. After compaction, add a fresh `configuration_update` with the desired effort before the next user message.
+You can still explicitly compact history by including a `compaction_trigger` item in a `/responses` request. After compaction, add a fresh `configuration_update` before the next user message. Restate each setting you changed, including the format if you changed it.
 
 Normal prompt caching requirements still apply. To send user instructions while a response is running, use [Mid-turn steering](https://developers.openai.com/api/docs/guides/steering).
 
@@ -97187,8 +97372,10 @@ client.vector_stores.file_batches.create_and_poll(
             "file_id": "file_456",
             "chunking_strategy": {
                 "type": "static",
-                "max_chunk_size_tokens": 1200,
-                "chunk_overlap_tokens": 200
+                "static": {
+                    "max_chunk_size_tokens": 1200,
+                    "chunk_overlap_tokens": 200
+                }
             }
         }
     ]
@@ -100024,7 +100211,10 @@ from agents.sandbox.sandboxes.docker import (
 docker_run_config = RunConfig(
     sandbox=SandboxRunConfig(
         client=DockerSandboxClient(docker_from_env()),
-        options=DockerSandboxClientOptions(image=DEFAULT_PYTHON_SANDBOX_IMAGE),
+        options=DockerSandboxClientOptions(
+            image=DEFAULT_PYTHON_SANDBOX_IMAGE,
+            network_mode="none",
+        ),
     ),
     workflow_name="Docker sandbox review",
 )
@@ -100034,6 +100224,8 @@ result = await Runner.run(
     "Summarize the renewal blockers and recommend the next two actions.",
     run_config=docker_run_config,
 )
+
+print(result.final_output)
 ```
 
 
@@ -100139,7 +100331,8 @@ try {
 async with session:
     first_result = await Runner.run(
         agent,
-        "Build the first version of the app.",
+        "Create app.py with an add(a, b) function that returns their sum. "
+        "Run it once to check that add(2, 3) equals 5.",
         max_turns=20,
         run_config=RunConfig(
             sandbox=SandboxRunConfig(session=session),
@@ -100155,7 +100348,11 @@ frozen_session_state = client.deserialize_session_state(
 conversation.append(
     {
         "role": "user",
-        "content": "Continue from the existing workspace and add tests.",
+        "content": (
+            "Read the existing app.py without replacing it. Add test_app.py with "
+            "two unittest tests: one for positive inputs and one for negative "
+            "inputs. Run both tests."
+        ),
     }
 )
 
@@ -100173,6 +100370,8 @@ try:
         )
 finally:
     await client.delete(resumed_session)
+
+print(second_result.final_output)
 ```
 
 
@@ -106170,9 +106369,9 @@ from openai import OpenAI
 client = OpenAI()
 container_id = "cntr_123"
 
-deleted = client.containers.delete(container_id)
+client.containers.delete(container_id)
 
-print(deleted)
+print("Container deleted")
 ```
 
 ```go
@@ -107519,7 +107718,8 @@ response = client.responses.create(
     input="Use the csv-insights skill and run locally to summarize today's CSV reports in this repo.",
 )
 
-print(response.output_text)
+# Execute returned shell calls locally and submit their shell_call_output to continue.
+print(response.output)
 ```
 
 ```go
@@ -110761,7 +110961,7 @@ try:
                 },
             },
         },
-        max_output_tokens=50,
+        max_output_tokens=1024,
     )
 
     if (
@@ -111092,6 +111292,300 @@ end
 ```
 
 
+
+
+
+Change the response format mid-conversation
+
+
+
+To switch to a new schema between responses, append a `configuration_update` item to `input` before the next user message. Keep the original top-level `text.format` on each request so the earlier prompt prefix stays eligible for [prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
+
+Response format updates are available on supported GPT-6 and later models in
+  standard, single-agent mode.
+
+Suppose the previous turn described a shipment with 17 red crates and 26 blue crates in plain text. Continue the conversation with `previous_response_id` and pass the following array as `input`.
+
+Switch from plain text to a structured crate count
+
+```javascript
+import OpenAI from "openai";
+import { zodTextFormat } from "openai/helpers/zod";
+import { z } from "zod";
+
+const client = new OpenAI();
+const model = "gpt-6-astra";
+const CrateCount = z.object({ total_crates: z.number().int() });
+
+const first = await client.responses.create({
+  model,
+  input:
+    "Summarize this shipment in one sentence: 17 red crates and 26 blue crates.",
+  store: true,
+});
+
+const format = zodTextFormat(CrateCount, "crate_count");
+const second = await client.responses.parse({
+  model,
+  previous_response_id: first.id,
+  input: [
+    { type: "configuration_update", text: { format } },
+    { role: "user", content: "How many crates are in the shipment?" },
+  ],
+});
+
+if (second.status === "completed" && second.output_parsed) {
+  console.log(second.output_parsed.total_crates);
+}
+```
+
+```python
+from openai import OpenAI
+from pydantic import BaseModel, ConfigDict
+
+
+class CrateCount(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    total_crates: int
+
+
+client = OpenAI()
+model = "gpt-6-astra"
+
+first = client.responses.create(
+    model=model,
+    input="Summarize this shipment in one sentence: 17 red crates and 26 blue crates.",
+    store=True,
+)
+
+second = client.responses.parse(
+    model=model,
+    previous_response_id=first.id,
+    input=[
+        {
+            "type": "configuration_update",
+            "text": {
+                "format": {
+                    "type": "json_schema",
+                    "name": "crate_count",
+                    "schema": CrateCount.model_json_schema(),
+                    "strict": True,
+                }
+            },
+        },
+        {"role": "user", "content": "How many crates are in the shipment?"},
+    ],
+    parse_as=CrateCount,
+)
+
+if second.status == "completed" and second.output_parsed is not None:
+    print(second.output_parsed.total_crates)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	ctx := context.Background()
+	const model = "gpt-6-astra"
+	first, err := client.Responses.New(ctx, responses.ResponseNewParams{
+		Model: model,
+		Input: responses.ResponseNewParamsInputUnion{
+			OfString: openai.String("Summarize this shipment in one sentence: 17 red crates and 26 blue crates."),
+		},
+		Store: openai.Bool(true),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	format := responses.ResponseFormatTextJSONSchemaConfigParam{
+		Name: "crate_count",
+		Schema: map[string]any{
+			"type":                 "object",
+			"properties":           map[string]any{"total_crates": map[string]any{"type": "integer"}},
+			"required":             []string{"total_crates"},
+			"additionalProperties": false,
+		},
+		Strict: openai.Bool(true),
+	}
+	second, err := client.Responses.New(ctx, responses.ResponseNewParams{
+		Model:              model,
+		PreviousResponseID: openai.String(first.ID),
+		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
+			{OfConfigurationUpdate: &responses.ResponseConfigurationUpdateItemParam{
+				Text: responses.ResponseConfigurationUpdateItemParamText{
+					Format: responses.ResponseConfigurationUpdateItemParamTextFormatUnion{OfJSONSchema: &format},
+				},
+			}},
+			responses.ResponseInputItemParamOfMessage("How many crates are in the shipment?", responses.EasyInputMessageRoleUser),
+		}},
+	})
+	if err != nil {
+		panic(err)
+	}
+	if second.Status != responses.ResponseStatusCompleted {
+		return
+	}
+	for _, item := range second.Output {
+		if item.Type != "message" || (item.Phase != "" && item.Phase != responses.ResponseOutputMessagePhaseFinalAnswer) {
+			continue
+		}
+		for _, part := range item.Content {
+			if part.Type == "output_text" {
+				fmt.Println(part.Text)
+			}
+		}
+	}
+}
+```
+
+```java
+import com.openai.core.JsonValue;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.ResponseConfigurationUpdateItemParam;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.ResponseOutputMessage;
+import com.openai.models.responses.ResponseStatus;
+import java.util.List;
+import java.util.Map;
+
+String model = "gpt-6-astra";
+
+var first =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model(model)
+                .input(
+                    "Summarize this shipment in one sentence: 17 red crates and 26 blue crates.")
+                .store(true)
+                .build());
+
+var schema =
+    Map.of(
+        "type",
+        "object",
+        "properties",
+        Map.of("total_crates", Map.of("type", "integer")),
+        "required",
+        List.of("total_crates"),
+        "additionalProperties",
+        false);
+var format =
+    ResponseFormatTextJsonSchemaConfig.builder()
+        .name("crate_count")
+        .schema(JsonValue.from(schema).convert(ResponseFormatTextJsonSchemaConfig.Schema.class))
+        .strict(true)
+        .build();
+var update =
+    ResponseConfigurationUpdateItemParam.builder()
+        .text(ResponseConfigurationUpdateItemParam.Text.builder().format(format).build())
+        .build();
+var question =
+    EasyInputMessage.builder()
+        .role(EasyInputMessage.Role.USER)
+        .content("How many crates are in the shipment?")
+        .build();
+
+var second =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model(model)
+                .previousResponseId(first.id())
+                .inputOfResponse(
+                    List.of(
+                        ResponseInputItem.ofConfigurationUpdate(update),
+                        ResponseInputItem.ofEasyInputMessage(question)))
+                .build());
+if (!ResponseStatus.COMPLETED.equals(second.status().orElse(null))) {
+  return;
+}
+second.output().stream()
+    .flatMap(item -> item.message().stream())
+    .filter(
+        message ->
+            message.phase().map(ResponseOutputMessage.Phase.FINAL_ANSWER::equals).orElse(true))
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
+```ruby
+# gem install openai sorbet-runtime
+require "openai"
+require "openai/helpers/sorbet"
+
+class CrateCount < T::Struct
+  const :total_crates, Integer
+end
+
+client = OpenAI::Client.new
+model = "gpt-6-astra"
+
+first = client.responses.create(
+  model: model,
+  input: "Summarize this shipment in one sentence: 17 red crates and 26 blue crates.",
+  store: true
+)
+
+second = client.responses.create(
+  model: model,
+  previous_response_id: first.id,
+  input: [
+    {
+      type: :configuration_update,
+      text: {
+        format: {
+          type: :json_schema,
+          name: "crate_count",
+          schema: OpenAI::StructuredOutput.from_sorbet(CrateCount),
+          strict: true
+        }
+      }
+    },
+    {
+      role: :user,
+      content: "How many crates are in the shipment?"
+    }
+  ]
+)
+
+if second.status == OpenAI::Responses::ResponseStatus::COMPLETED
+  second.output.grep(OpenAI::Responses::ResponseOutputMessage).each do |message|
+    next unless message.phase.nil? || message.phase == :final_answer
+
+    message.content.grep(OpenAI::Responses::ResponseOutputText).each do |part|
+      count = part.parsed
+      case count
+      when CrateCount
+        puts count.total_crates
+      end
+    end
+  end
+end
+```
+
+
+The expected answer is `{"total_crates":43}`. The response object's `text.format` still reports the original request-level format. After checking for refusals and incomplete responses, parse the answer with the schema from the latest format update.
+
+Each format update replaces the whole format. It stays in effect across turns, including when you update only `reasoning.effort`. To switch back to plain text, append `{"type":"configuration_update","text":{"format":{"type":"text"}}}`. Updates accept `json_schema` and `text` only.
+
+If you replay history manually, keep each update in its original position. After explicit compaction, restate each setting you changed. See [configuration update compatibility](https://developers.openai.com/api/docs/guides/reasoning?api-mode=responses#change-reasoning-mid-conversation).
 
 
 
@@ -115841,8 +116335,8 @@ loaded_tools = [
 
 second_response = client.responses.create(
     model="gpt-6-astra",
+    previous_response_id=first_response.id,
     input=[
-        *first_response.output,
         {
             # highlight-start:subtle
             "type": "tool_search_output",
@@ -116885,6 +117379,7 @@ with client.responses.connect() as connection:
         connection.response.create(
             model="gpt-6-astra",
             service_tier="ultrafast",
+            store=False,  # Keep this conversation on the current connection.
             previous_response_id=previous_response_id,
             input=prompt,
         )
@@ -118437,9 +118932,9 @@ python_bash_patch_tool = {
     "type": "function",
     "name": "python",
     "description": PYTHON_TOOL_DESCRIPTION,
+    "strict": True,
     "parameters": {
         "type": "object",
-        "strict": True,
         "properties": {
             "input": {
                 "type": "string",
@@ -118447,6 +118942,7 @@ python_bash_patch_tool = {
             }
         },
         "required": ["input"],
+        "additionalProperties": False,
     },
 }
 
@@ -118942,8 +119438,8 @@ get_policy_doc = {
     "type": "function",
     "name": "lookup_policy_document",
     "description": "Tool to look up internal documents and policies by topic or keyword.",
+    "strict": True,
     "parameters": {
-        "strict": True,
         "type": "object",
         "properties": {
             "topic": {
@@ -118960,8 +119456,8 @@ get_user_acct = {
     "type": "function",
     "name": "get_user_account_info",
     "description": "Tool to get user account information",
+    "strict": True,
     "parameters": {
-        "strict": True,
         "type": "object",
         "properties": {
             "phone_number": {
@@ -122043,7 +122539,7 @@ response = client.responses.create(
 )
 
 
-output_json = [msg.model_dump() for msg in response.output]
+output_json = [msg.to_dict() for msg in response.output]
 
 
 # Now compact, passing the original user prompt and the assistant text as inputs
@@ -122054,7 +122550,7 @@ compacted_response = client.responses.compact(
             "role": "user",
             "content": "write a very long poem about a dog.",
         },
-        output_json[0],
+        *output_json,
     ],
 )
 
@@ -122591,7 +123087,7 @@ from openai.types.responses import ResponseInputParam, ToolParam
 client = OpenAI()
 
 ## Shared tools and prompt
-user_request = """Add a cancel button that logs when clicked"""
+user_request = """In app/page.tsx, add a cancel button that logs when clicked."""
 file_excerpt = """\
 export default function Page() {
 return (
@@ -122609,7 +123105,7 @@ input_items: ResponseInputParam = [
         "type": "function_call",
         "call_id": "call_read_file_1",
         "name": "read_file",
-        "arguments": json.dumps({"path": ("/app/page.tsx")}),
+        "arguments": json.dumps({"path": "app/page.tsx"}),
     },
     {
         "type": "function_call_output",
@@ -122618,23 +123114,8 @@ input_items: ResponseInputParam = [
     },
 ]
 
-read_file_tool: ToolParam = cast(
-    ToolParam,
-    {
-        "type": "function",
-        "name": "read_file",
-        "description": "Reads a file from disk",
-        "parameters": {
-            "type": "object",
-            "properties": {"path": {"type": "string"}},
-            "required": ["path"],
-        },
-    },
-)
-
 ### Get patch with built-in responses tool
 tools: list[ToolParam] = [
-    read_file_tool,
     cast(ToolParam, {"type": "apply_patch"}),
 ]
 
@@ -122642,6 +123123,7 @@ response = client.responses.create(
     model="gpt-5.3-codex",
     input=input_items,
     tools=tools,
+    tool_choice="required",
     parallel_tool_calls=False,
 )
 
@@ -122659,7 +123141,7 @@ for item in response.output:
         #          '     </div>\n'
         #          '   );\n'
         #          ' }\n',
-        #  'path': '/app/page.tsx',
+        #  'path': 'app/page.tsx',
         #  'type': 'update_file'}
 
 ### Get patch with custom tool implementation, including freeform tool definition and context-free grammar
@@ -122686,7 +123168,6 @@ eof_line: "*** End of File" LF
 """
 
 tools_with_cfg: list[ToolParam] = [
-    read_file_tool,
     cast(
         ToolParam,
         {
@@ -122706,6 +123187,7 @@ response_cfg = client.responses.create(
     model="gpt-5.3-codex",
     input=input_items,
     tools=tools_with_cfg,
+    tool_choice="required",
     parallel_tool_calls=False,
 )
 
@@ -122715,7 +123197,7 @@ for item in response_cfg.output:
         print(item.input)
         #  Output
         # *** Begin Patch
-        # *** Update File: /app/page.tsx
+        # *** Update File: app/page.tsx
         # @@
         #      <div>
         #        <p>Page component not implemented</p>
@@ -127421,6 +127903,8 @@ await writeFile(
 ```
 
 ```python
+from pathlib import Path
+
 from openai import OpenAI
 
 client = OpenAI()
@@ -127434,6 +127918,7 @@ def get_embedding(text, model="text-embedding-3-small"):
 df["ada_embedding"] = df.combined.apply(
     lambda x: get_embedding(x, model="text-embedding-3-small")
 )
+Path("output").mkdir(exist_ok=True)
 df.to_csv("output/embedded_1k_reviews.csv", index=False)
 ```
 
@@ -127600,10 +128085,11 @@ end
 To load the data from a saved file, you can run the following:
 
 ```python
+from ast import literal_eval
 import pandas as pd
 
 df = pd.read_csv("output/embedded_1k_reviews.csv")
-df["ada_embedding"] = df.ada_embedding.apply(eval).apply(np.array)
+df["ada_embedding"] = df.ada_embedding.apply(literal_eval).apply(np.array)
 ```
 
 
@@ -128727,6 +129213,7 @@ We color the individual reviews based on the star rating which the reviewer has 
 The visualization seems to have produced roughly 3 clusters, one of which has mostly negative reviews.
 
 ```python
+from ast import literal_eval
 import numpy as np
 import pandas as pd
 from sklearn.manifold import TSNE
@@ -128734,7 +129221,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 
 df = pd.read_csv("output/embedded_1k_reviews.csv")
-matrix = np.array(df.ada_embedding.apply(eval).to_list())
+matrix = np.array(df.ada_embedding.apply(literal_eval).to_list())
 
 # Create a t-SNE model and transform the data
 tsne = TSNE(
@@ -132958,8 +133445,8 @@ Because the connection stays open and each turn sends only incremental input, We
 
 Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python, `npm install openai@^7.10.0 ws` for JavaScript, or `gem install openai async-websocket` for Ruby.
 
-For Go, run `go get github.com/openai/openai-go/v3@v3.85.1`.
-For Java, add the Maven dependency `com.openai:openai-java:4.90.0` and use Java 17 or later for these examples.
+For Go, run `go get github.com/openai/openai-go/v3@v3.91.0`.
+For Java, add the Maven dependency `com.openai:openai-java:4.95.0` and use Java 17 or later for these examples.
 These Go and Java SDK versions provide native Responses WebSocket support.
 
 In WebSocket mode, start each turn by sending a `response.create` event from the client. The payload mirrors the normal [Responses create body](https://developers.openai.com/api/reference/resources/responses/methods/create), except that transport-specific fields like `stream` and `background` are not used.
@@ -134941,10 +135428,9 @@ session_created = False
 def on_message(ws, message):
     global session_created
     data = json.loads(message)
-    print("Received event:", json.dumps(data, indent=2))
     if data["type"] == "session.created":
         session_created = True
-        print("Connected to the Realtime API.")
+        print("Connected to the Realtime API:", data["session"]["id"])
         ws.close()
     elif data["type"] == "error":
         ws.close()
@@ -137656,7 +138142,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.94.0</version>
+  <version>4.95.0</version>
 </dependency>
 ```
 
@@ -138876,7 +139362,7 @@ def create_server():
             file_content = "No content available"
 
         # Use filename as title and create proper URL for citations
-        filename = getattr(file_info, "filename", f"Document {id}")
+        filename = openai_client.files.retrieve(file_id=id).filename
 
         result = FetchOutput(
             id=id,
@@ -139286,7 +139772,7 @@ Short context: ≤272K input tokens. Long context: >272K input tokens.
   
 
 
-Regional processing (data residency) endpoints are charged a 10% uplift for models released on or after March 5, 2026. FedRAMP endpoints are also charged a 10% uplift. Priority processing was renamed Fast mode on July 30, 2026. GPT-5.6 Sol’s promotional pricing is available at least through November 21, 2026.
+Regional processing (data residency) endpoints are charged a 10% uplift for models released on or after March 5, 2026. Starting Nov 1, 2026, FedRAMP endpoints are also charged a 10% uplift. Priority processing was renamed Fast mode on July 30, 2026. GPT-5.6 Sol’s promotional pricing is available at least through November 21, 2026.
 
   
 
@@ -139344,6 +139830,30 @@ Our latest Rosalind models.
 | gpt-rosalind-discovery | $5.00 | $25.00 | $0.50 | - | - | - | - | - | - | - |
 
 Access is limited to approved internal research through the [trusted-access program](https://help.openai.com/en/articles/20001193-gpt-rosalind-for-life-sciences-research). All eligible organizations will continue to get access to the latest GPT-Rosalind models as they’re released. Regional processing (data residency) endpoints are charged a 10% uplift for models released on or after March 5, 2026, that are eligible for data residency. See our [Your data](https://developers.openai.com/api/docs/guides/your-data) guide for supported regions and processing details.
+
+
+
+  
+
+Legal model configurations
+
+
+  
+Our latest legal model configurations.
+
+  
+Prices per 1M tokens.
+
+
+
+
+### Grouped Pricing Table data
+
+| Model configuration | Input | Output | Cached input |
+| --- | --- | --- | --- |
+| gpt-6-astra-law | $10.00 | $50.00 | $1.00 |
+
+GPT-6 Astra for Law promotional pricing is available at least through December 31, 2026.
 
 
 
@@ -139893,7 +140403,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.94.0</version>
+  <version>4.95.0</version>
 </dependency>
 ```
 
@@ -142928,7 +143438,7 @@ import urllib.request
 from bs4 import BeautifulSoup
 from collections import deque
 from html.parser import HTMLParser
-from urllib.parse import urlparse
+from urllib.parse import urldefrag, urljoin, urlparse
 import os
 
 # Regex pattern to match a URL
@@ -142986,32 +143496,15 @@ The goal is to crawl through and index only the content that lives under the Ope
 ```python
 # Function to get the hyperlinks from a URL that are within the same domain
 def get_domain_hyperlinks(local_domain, url):
-    clean_links = []
-    for link in set(get_hyperlinks(url)):
-        clean_link = None
-
-        # If the link is a URL, check if it is within the same domain
-        if re.search(HTTP_URL_PATTERN, link):
-            # Parse the URL and check if the domain is the same
-            url_obj = urlparse(link)
-            if url_obj.netloc == local_domain:
-                clean_link = link
-
-        # If the link is not a URL, check if it is a relative link
-        else:
-            if link.startswith("/"):
-                link = link[1:]
-            elif link.startswith("#") or link.startswith("mailto:"):
-                continue
-            clean_link = "https://" + local_domain + "/" + link
-
-        if clean_link is not None:
-            if clean_link.endswith("/"):
-                clean_link = clean_link[:-1]
-            clean_links.append(clean_link)
-
-    # Return the list of hyperlinks that are within the same domain
-    return list(set(clean_links))
+    links = set()
+    for link in get_hyperlinks(url):
+        if not link or link.startswith("#"):
+            continue
+        candidate, _ = urldefrag(urljoin(url, link))
+        parsed = urlparse(candidate)
+        if parsed.scheme in {"http", "https"} and parsed.netloc == local_domain:
+            links.add(candidate)
+    return list(links)
 ```
 
 
@@ -143020,7 +143513,9 @@ The `crawl` function is the final step in the web scraping task setup. It keeps 
 ```python
 def crawl(url):
     # Parse the URL and get the domain
-    local_domain = urlparse(url).netloc
+    parsed = urlparse(url)
+    local_domain = parsed.netloc
+    url = parsed._replace(path=parsed.path or "/").geturl()
 
     # Create a queue to store the URLs to crawl
     queue = deque([url])
@@ -143209,36 +143704,30 @@ max_tokens = 500
 
 # Function to split the text into chunks of a maximum number of tokens
 def split_into_many(text, max_tokens=max_tokens):
+    if max_tokens < 1:
+        raise ValueError("max_tokens must be positive.")
+    if not text.strip():
+        return []
 
-    # Split the text into sentences
     sentences = text.split(". ")
-
-    # Get the number of tokens for each sentence
-    n_tokens = [len(tokenizer.encode(" " + sentence)) for sentence in sentences]
-
     chunks = []
-    tokens_so_far = 0
-    chunk = []
+    chunk = ""
+    for index, sentence in enumerate(sentences):
+        if index < len(sentences) - 1:
+            sentence += "."
+        # Do not silently discard a sentence that needs finer-grained splitting.
+        if len(tokenizer.encode(sentence)) > max_tokens:
+            raise ValueError("A sentence exceeds max_tokens; split it before chunking.")
 
-    # Loop through the sentences and tokens joined together in a tuple
-    for sentence, token in zip(sentences, n_tokens):
-        # If the number of tokens so far plus the number of tokens in the current sentence is greater
-        # than the max number of tokens, then add the chunk to the list of chunks and reset
-        # the chunk and tokens so far
-        if tokens_so_far + token > max_tokens:
-            chunks.append(". ".join(chunk) + ".")
-            chunk = []
-            tokens_so_far = 0
+        candidate = f"{chunk} {sentence}" if chunk else sentence
+        if len(tokenizer.encode(candidate)) > max_tokens:
+            chunks.append(chunk)
+            chunk = sentence
+        else:
+            chunk = candidate
 
-        # If the number of tokens in the current sentence is greater than the max number of
-        # tokens, go to the next sentence
-        if token > max_tokens:
-            continue
-
-        # Otherwise, add the sentence to the chunk and add the number of tokens to the total
-        chunk.append(sentence)
-        tokens_so_far += token + 1
-
+    if chunk:
+        chunks.append(chunk)
     return chunks
 
 
@@ -143327,10 +143816,11 @@ This should take about 3-5 minutes but after you will have your embeddings ready
 Turning the embeddings into a NumPy array is the first step, which will provide more flexibility in how to use it given the many functions available that operate on NumPy arrays. It will also flatten the dimension to 1-D, which is the required format for many subsequent operations.
 
 ```python
+from ast import literal_eval
 import numpy as np
 
 df = pd.read_csv("processed/embeddings.csv", index_col=0)
-df["embeddings"] = df["embeddings"].apply(eval).apply(np.array)
+df["embeddings"] = df["embeddings"].apply(literal_eval).apply(np.array)
 
 df.head()
 ```

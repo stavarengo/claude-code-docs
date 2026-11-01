@@ -90,7 +90,8 @@ guardrail_agent = Agent(
 )
 
 
-@input_guardrail
+# Validate input before starting the support agent.
+@input_guardrail(run_in_parallel=False)
 async def math_guardrail(
     ctx: RunContextWrapper[None],
     agent: Agent,
@@ -176,7 +177,7 @@ async def cancel_order(order_id: int) -> str:
 
 agent = Agent(
     name="Support agent",
-    instructions="Handle support requests and ask for approval when needed.",
+    instructions="Use cancel_order to handle cancellation requests.",
     tools=[cancel_order],
 )
 
@@ -187,6 +188,7 @@ async def main() -> None:
     if result.interruptions:
         state = result.to_state()
         for interruption in result.interruptions:
+            print("Approval required:", interruption.name)
             state.approve(interruption)
         result = await Runner.run(agent, state)
 

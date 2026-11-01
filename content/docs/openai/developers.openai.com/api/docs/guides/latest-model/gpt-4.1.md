@@ -260,9 +260,9 @@ python_bash_patch_tool = {
     "type": "function",
     "name": "python",
     "description": PYTHON_TOOL_DESCRIPTION,
+    "strict": True,
     "parameters": {
         "type": "object",
-        "strict": True,
         "properties": {
             "input": {
                 "type": "string",
@@ -270,6 +270,7 @@ python_bash_patch_tool = {
             }
         },
         "required": ["input"],
+        "additionalProperties": False,
     },
 }
 
@@ -765,8 +766,8 @@ get_policy_doc = {
     "type": "function",
     "name": "lookup_policy_document",
     "description": "Tool to look up internal documents and policies by topic or keyword.",
+    "strict": True,
     "parameters": {
-        "strict": True,
         "type": "object",
         "properties": {
             "topic": {
@@ -783,8 +784,8 @@ get_user_acct = {
     "type": "function",
     "name": "get_user_account_info",
     "description": "Tool to get user account information",
+    "strict": True,
     "parameters": {
-        "strict": True,
         "type": "object",
         "properties": {
             "phone_number": {

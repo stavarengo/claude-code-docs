@@ -255,7 +255,7 @@ from openai.types.responses import ResponseInputParam, ToolParam
 client = OpenAI()
 
 ## Shared tools and prompt
-user_request = """Add a cancel button that logs when clicked"""
+user_request = """In app/page.tsx, add a cancel button that logs when clicked."""
 file_excerpt = """\
 export default function Page() {
 return (
@@ -273,7 +273,7 @@ input_items: ResponseInputParam = [
         "type": "function_call",
         "call_id": "call_read_file_1",
         "name": "read_file",
-        "arguments": json.dumps({"path": ("/app/page.tsx")}),
+        "arguments": json.dumps({"path": "app/page.tsx"}),
     },
     {
         "type": "function_call_output",
@@ -282,23 +282,8 @@ input_items: ResponseInputParam = [
     },
 ]
 
-read_file_tool: ToolParam = cast(
-    ToolParam,
-    {
-        "type": "function",
-        "name": "read_file",
-        "description": "Reads a file from disk",
-        "parameters": {
-            "type": "object",
-            "properties": {"path": {"type": "string"}},
-            "required": ["path"],
-        },
-    },
-)
-
 ### Get patch with built-in responses tool
 tools: list[ToolParam] = [
-    read_file_tool,
     cast(ToolParam, {"type": "apply_patch"}),
 ]
 
@@ -306,6 +291,7 @@ response = client.responses.create(
     model="gpt-5.3-codex",
     input=input_items,
     tools=tools,
+    tool_choice="required",
     parallel_tool_calls=False,
 )
 
@@ -323,7 +309,7 @@ for item in response.output:
         #          '     </div>\n'
         #          '   );\n'
         #          ' }\n',
-        #  'path': '/app/page.tsx',
+        #  'path': 'app/page.tsx',
         #  'type': 'update_file'}
 
 ### Get patch with custom tool implementation, including freeform tool definition and context-free grammar
@@ -350,7 +336,6 @@ eof_line: "*** End of File" LF
 """
 
 tools_with_cfg: list[ToolParam] = [
-    read_file_tool,
     cast(
         ToolParam,
         {
@@ -370,6 +355,7 @@ response_cfg = client.responses.create(
     model="gpt-5.3-codex",
     input=input_items,
     tools=tools_with_cfg,
+    tool_choice="required",
     parallel_tool_calls=False,
 )
 
@@ -379,7 +365,7 @@ for item in response_cfg.output:
         print(item.input)
         #  Output
         # *** Begin Patch
-        # *** Update File: /app/page.tsx
+        # *** Update File: app/page.tsx
         # @@
         #      <div>
         #        <p>Page component not implemented</p>

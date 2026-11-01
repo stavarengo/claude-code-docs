@@ -765,7 +765,7 @@ response = client.responses.create(
 )
 
 
-output_json = [msg.model_dump() for msg in response.output]
+output_json = [msg.to_dict() for msg in response.output]
 
 
 # Now compact, passing the original user prompt and the assistant text as inputs
@@ -776,7 +776,7 @@ compacted_response = client.responses.compact(
             "role": "user",
             "content": "write a very long poem about a dog.",
         },
-        output_json[0],
+        *output_json,
     ],
 )
 
