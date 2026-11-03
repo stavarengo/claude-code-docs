@@ -54,6 +54,9 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Async tool calling](https://developers.openai.com/api/docs/guides/async-tool-calling.md): Start asynchronous tool calls, deliver results later, and let the model wait for specific results when needed.
 - [Audio and voice](https://developers.openai.com/api/docs/guides/audio.md): Start with GPT-Live for conversational voice, or choose an API for another audio task.
 - [Audio in Chat Completions](https://developers.openai.com/api/docs/guides/audio-chat-completions.md): Add audio input and output to an existing Chat Completions application.
+- [Automatic review](https://developers.openai.com/api/docs/guides/agents-api/sessions/approvals.md): Configure automatic action review for an agent session to let your agents 
+work more autonomously.
+
 - [AWS Lambda MicroVMs](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/aws.md): Connect an AWS Lambda MicroVM to an Agents API session with runtime credentials from AWS Secrets Manager.
 - [Background mode](https://developers.openai.com/api/docs/guides/background.md): Run long running tasks asynchronously in the background.
 - [Batch API](https://developers.openai.com/api/docs/guides/batch.md): Learn how to use OpenAI's Batch API for processing jobs with asynchronous requests, increased rate limits, and cost efficiency.

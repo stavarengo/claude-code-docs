@@ -382,7 +382,7 @@ Avoid:
 
 For coding or agentic migrations, add concrete preservation and verification rules:
 
-```
+```text
 Preserve existing functionality, routes, outputs, and user-visible behavior.
 Do not delete or disable required behavior merely to make the build pass.
 Before finishing, run the relevant build, tests, type checks, render or smoke

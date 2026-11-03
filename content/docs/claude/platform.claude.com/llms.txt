@@ -20,18 +20,18 @@ The latest version of each Claude Platform SDK and of the ant CLI is at https://
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 845 pages - /docs - Content included below
-- German (Deutsch) (de) - 306 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 306 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 306 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 306 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 306 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 306 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 306 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 306 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 306 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 306 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 306 pages - /docs/id - Visit website for content
+- English (en) - 846 pages - /docs - Content included below
+- German (Deutsch) (de) - 307 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 307 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 307 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 307 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 307 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 307 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 307 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 307 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 307 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 307 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 307 pages - /docs/id - Visit website for content
 
 ---
 
@@ -99,6 +99,7 @@ The full documentation is available in the following languages on https://platfo
 - [Reference](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/reference.md) - MCP tunnels reference
 - [Security](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/security.md) - MCP tunnels security
 - [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool.md)
+- [Message threads](https://platform.claude.com/docs/en/build-with-claude/message-threads.md)
 - [Mid-conversation system messages and tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages.md)
 - [Multilingual support](https://platform.claude.com/docs/en/build-with-claude/multilingual-support.md)
 - [Parallel tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md)

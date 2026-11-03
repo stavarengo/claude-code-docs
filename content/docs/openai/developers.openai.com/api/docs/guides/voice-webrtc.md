@@ -38,7 +38,7 @@ Creating a WebRTC session with `POST /v1/live/sessions` bills 15 seconds of voic
 
 Save the server example in a new directory and set `OPENAI_API_KEY` in its environment. For Node.js, use `server.mjs` and install `openai` and `express` with `npm install openai express`. For Python, install `openai`. This example binds to `127.0.0.1`, accepts session requests from `http://localhost:3000`, and serves `index.html` from the directory where you run it.
 
-For Go, save the example as `main.go`, initialize a module with `go mod init live-demo`, and install `github.com/openai/openai-go/v3@v3.85.1` with `go get`. Run `go run .` with Go 1.26 or later. For Java, use Java 17 or later, add the Maven dependency `com.openai:openai-java:4.90.0`, and run the `LiveConnectionWebrtcExample` class. For Ruby 3.3 or later, install `openai` 0.110.0 and `webrick` with `gem install openai -v 0.110.0` and `gem install webrick`, save the example as `server.rb`, and run `ruby server.rb`.
+For Go, save the example as `main.go`, initialize a module with `go mod init live-demo`, and install `github.com/openai/openai-go/v3@v3.85.1` with `go get`. Run `go run .` with Go 1.26 or later. For Java, use Java 17 or later, add the Maven dependency `com.openai:openai-java:4.95.0`, and run the `LiveConnectionWebrtcExample` class. For Ruby 3.3 or later, install `openai` 0.110.0 and `webrick` with `gem install openai -v 0.110.0` and `gem install webrick`, save the example as `server.rb`, and run `ruby server.rb`.
 
 Choose a server language below; each variant serves `index.html` and the same `/api/session` endpoint on port 3000. Use an SDK version with Live support. Run only one variant at a time.
 

@@ -175,20 +175,20 @@ Install the package that provides the client:
 
   <Tab title="Java">
     ```kotlin Gradle
-    implementation("com.anthropic:anthropic-java:3.3.0")
-    implementation("com.anthropic:anthropic-java-google-cloud:3.3.0")
+    implementation("com.anthropic:anthropic-java:3.4.0")
+    implementation("com.anthropic:anthropic-java-google-cloud:3.4.0")
     ```
 
     ```xml Maven
     <dependency>
       <groupId>com.anthropic</groupId>
       <artifactId>anthropic-java</artifactId>
-      <version>3.3.0</version>
+      <version>3.4.0</version>
     </dependency>
     <dependency>
       <groupId>com.anthropic</groupId>
       <artifactId>anthropic-java-google-cloud</artifactId>
-      <version>3.3.0</version>
+      <version>3.4.0</version>
     </dependency>
     ```
   </Tab>
@@ -380,6 +380,8 @@ The following features work on Claude Models on Google Cloud (Anthropic managed)
 
   * [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli)
   * [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli)
+  * [Adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#configuring-thinking)
+  * [Effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli)
   * [Server-side fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#server-side-fallback)
   * [Streaming](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli)
   * [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli)

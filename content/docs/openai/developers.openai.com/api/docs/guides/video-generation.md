@@ -350,7 +350,7 @@ Webhooks can be configured in your [webhook settings page](https://platform.open
 
 Example webhook payload:
 
-```
+```text
 {
   "id": "evt_abc123",
   "object": "event",

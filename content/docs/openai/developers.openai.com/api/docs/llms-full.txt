@@ -291,7 +291,7 @@ Typically, there are three sections:
 
 Here’s an example of the instructions for the Weather GPT. Notice how the instructions refer to the API action name and json parameters from the Open API schema.
 
-```
+```text
 **Context**: A user needs information related to a weather forecast of a specific location.
 
 **Instructions**:
@@ -791,7 +791,7 @@ Here’s an example of an `openaiFileResponse` array with two elements:
 
 Here’s an example of the required headers for each URL:
 
-```
+```text
 Content-Type: application/pdf
 Content-Disposition: attachment; filename="example_document.pdf"
 ```
@@ -2712,13 +2712,13 @@ Only connect to MCP servers you trust. An untrusted server may access or steal i
 
   Examples:
 
-```
+```text
   Schedule a 30‑minute meeting tomorrow at 3pm PT with
   alice@example.com and bob@example.com using "Calendar.create_event".
   Do not use any other scheduling tools.
 ```
 
-```
+```text
   Create a pull request using "GitHub.open_pull_request" from branch
   "feat-retry" into "main" with title "Add retry logic" and body "…".
   Do not push directly to main.
@@ -2982,7 +2982,7 @@ ProjectSpendAlert spendAlert =
                 .notificationChannel(
                     SpendAlertCreateParams.NotificationChannel.builder()
                         .addRecipient("billing@example.com")
-                        .subjectPrefix("[OpenAI spend]")
+                        .subjectPrefix("OpenAI spend")
                         .build())
                 .thresholdAmount(50000L)
                 .build());
@@ -4624,9 +4624,9 @@ Save the example as `src/main/java/AgentsApiSessionsStreamConversationExample.ja
 Create and run tree.py
 
 ```java
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.ObjectMappers;
 import com.openai.core.http.StreamResponse;
 import com.openai.models.beta.agents.AgentSessionEvent;
 import com.openai.models.beta.agents.EnvironmentParam;
@@ -4634,7 +4634,7 @@ import com.openai.models.beta.agents.sessions.SessionCreateParams;
 import com.openai.services.beta.agents.AgentTurnResults;
 
 OpenAIClient client = OpenAIOkHttpClient.fromEnv();
-var json = new JsonMapper();
+var json = ObjectMappers.jsonMapper();
 try (StreamResponse<AgentSessionEvent> events =
     client
         .beta()
@@ -8916,7 +8916,7 @@ ChatCompletionCreateParams params =
                 .voice("alloy")
                 .format(ChatCompletionAudioParam.Format.WAV)
                 .build())
-        .store(true)
+        .store(false)
         .build();
 
 var message = client.chat().completions().create(params).choices().get(0).message();
@@ -9162,7 +9162,7 @@ ChatCompletionCreateParams params =
                 .voice("alloy")
                 .format(ChatCompletionAudioParam.Format.WAV)
                 .build())
-        .store(true)
+        .store(false)
         .build();
 
 client.chat().completions().create(params).choices().stream()
@@ -9269,6 +9269,394 @@ curl "https://api.openai.com/v1/chat/completions" \
       ]
     }'
 ```
+
+---
+
+# Automatic review
+
+Automatic review approves or denies supported approval requests as an agent works, much like the automatic approval function in ChatGPT and Codex. Configure it using the `review` field when you create a session for your agent. The setting applies to root turns and any subagents they create.
+
+
+
+**Review actions**
+
+Automatically approve or deny supported requests from the agent and its subagents.
+
+
+
+
+
+
+**Change review between tasks**
+
+Choose the review mode for the next root turn.
+
+
+
+
+
+
+**Keep network restrictions**
+
+Review does not override the environment's outbound network restrictions.
+
+
+
+
+
+
+
+
+## API resources
+
+
+
+
+
+
+[Sessions](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions)
+
+`/v1/agents/sessions`
+
+
+
+
+Set the review mode and inspect pending actions.
+
+
+
+
+
+
+
+
+[Agents](https://developers.openai.com/api/reference/resources/beta/subresources/agents)
+
+`/v1/agents`
+
+
+
+
+Reuse the instructions and tools for the task.
+
+
+
+
+
+
+
+
+[Environment templates](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/environments/subresources/templates)
+
+`/v1/agents/environments/templates`
+
+
+
+
+Reuse the execution environment's configuration.
+
+
+
+
+
+
+
+
+[Session events](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/events)
+
+`/v1/agents/sessions/{session_id}/events`
+
+
+
+
+Follow progress and check how the turn ended.
+
+
+
+
+
+
+
+
+
+
+
+## How it works
+
+Automatic review brings the "Approve for me" functionality of the Codex harness to your agents. During a session, approval requests can arise when an agent's intended action requests additional permissions. Some example actions that could raise approval requests:
+
+- Shell commands and terminal input that require approval, such as permission escalation or potentially dangerous commands.
+- File changes that require approval.
+- Additional permission requests, such as broader filesystem or network access.
+- Network access requests that trigger approval, subject to the environment’s network restrictions.
+- MCP tool calls whose approval rules require confirmation.
+
+An OpenAI-managed reviewer model uses the conversation context to assess what the action would do, what risks it poses, and whether the action aligns with the user's intent. The model then approves or denies the request.
+
+Tokens used for review are billed in addition to your agent’s model usage.
+
+Your application still handles browser origin-access and sign-in requests. MCP
+forms that require input and requests that direct the user to a URL follow their
+existing flows. Automatic review does not require new approval event handlers.
+See [Events and items](https://developers.openai.com/api/docs/guides/agents-api/sessions/events) to follow the
+agent's progress and check the turn's outcome.
+
+## Choose a review mode
+
+Set the session's `review` field to choose the behavior:
+
+| Value           | Behavior                                                                                                                      |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `"auto_review"` | Automatically approve or deny supported requests based on the action's risks and the user's instructions in the conversation. |
+| `"none"`        | Automatic review is not applied. Most actions execute directly, subject to the environment's permissions and restrictions.    |
+
+Omitting `review` defaults to `"none"`. The setting persists when the session
+resumes. To change it, send `"auto_review"` or `"none"`; `null` is not accepted.
+Setting `review` to `"none"` does not send those actions to your application for
+manual approval.
+
+## Prepare the execution environment
+
+For OpenAI-hosted execution, create the session with a new environment, optionally
+from an [environment template](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/environments/subresources/templates).
+Automatic review is not supported when reusing an existing hosted environment
+through `environment_id`.
+
+For self-hosted execution, follow the
+[self-hosted environment setup](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#prepare-your-environment)
+and the [sandbox prerequisites for your operating system](https://learn.chatgpt.com/docs/sandboxing?surface=app#app-prerequisites)
+before enabling automatic review. Setting `review` alone does not configure
+sandboxing in your environment.
+
+
+
+
+Automatic review does not change the environment's network restrictions.
+Configure outbound access through the environment's
+[network settings](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted#control-network-access).
+Browser origin approval does not override those restrictions.
+
+
+
+
+## Create a session with automatic review
+
+Set `review` to `"auto_review"` when you create a session. This example asks the
+agent to run `npm install` in `/workspace`.
+
+With your [API key and SDK configured](https://developers.openai.com/api/docs/guides/agents-api/quickstart#prerequisites),
+use an existing agent and an environment template that provides Node.js and a
+project containing `/workspace/package.json`. Replace the example agent and
+template IDs with your own.
+
+Run npm install with automatic review
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const session = await client.beta.agents.sessions.create({
+  agent_id: "agt_123",
+  environment: {
+    type: "openai_hosted",
+    environment_template_id: "envtmpl_123",
+  },
+  review: "auto_review",
+  input: "Run npm install in /workspace.",
+});
+console.log(session.id);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+session = client.beta.agents.sessions.create(
+    agent_id="agt_123",
+    environment={
+        "type": "openai_hosted",
+        "environment_template_id": "envtmpl_123",
+    },
+    review="auto_review",
+    input="Run npm install in /workspace.",
+)
+print(session.id)
+```
+
+```go
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+)
+
+client := openai.NewClient()
+session, err := client.Beta.Agents.Sessions.New(context.Background(), openai.BetaAgentSessionNewParams{
+	AgentID: openai.String("agt_123"),
+	Environment: openai.EnvironmentParamUnion{
+		OfParamOpenAIHosted: &openai.EnvironmentParamOpenAIHosted{
+			EnvironmentTemplateID: openai.String("envtmpl_123"),
+		},
+	},
+	Review: openai.BetaAgentSessionNewParamsReviewAutoReview,
+	Input:  openai.BetaAgentSessionNewParamsInputUnion{OfString: openai.String("Run npm install in /workspace.")},
+})
+if err != nil {
+	panic(err)
+}
+fmt.Println(session.ID)
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.agents.EnvironmentParam;
+import com.openai.models.beta.agents.sessions.SessionCreateParams;
+
+OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+var session =
+    client
+        .beta()
+        .agents()
+        .sessions()
+        .create(
+            SessionCreateParams.builder()
+                .agentId("agt_123")
+                .environment(
+                    EnvironmentParam.OpenAIHosted.builder()
+                        .environmentTemplateId("envtmpl_123")
+                        .build())
+                .review(SessionCreateParams.Review.AUTO_REVIEW)
+                .input("Run npm install in /workspace.")
+                .build());
+System.out.println(session.id());
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+session = client.beta.agents.sessions.create(
+  agent_id: "agt_123",
+  environment: {
+    type: :openai_hosted,
+    environment_template_id: "envtmpl_123"
+  },
+  review: :auto_review,
+  input: "Run npm install in /workspace."
+)
+puts session.id
+```
+
+```bash
+curl --fail-with-body https://api.openai.com/v1/agents/sessions \
+  -H "OpenAI-Beta: agents=v1" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_id": "agt_123",
+    "environment": {
+      "type": "openai_hosted",
+      "environment_template_id": "envtmpl_123"
+    },
+    "review": "auto_review",
+    "input": "Run npm install in /workspace."
+  }'
+```
+
+
+Use the returned session `id` to [change the review mode](#change-the-review-mode)
+between tasks. See the [Create session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create)
+for the request fields.
+
+Your project must have access to automatic review. If it is unavailable, the API
+rejects requests to enable it and identifies `review` as the affected parameter.
+
+
+
+
+## Change the review mode
+
+Update the session's `review` field between tasks. The main task must be idle and
+input submission must have settled before you change the mode. This example
+turns off automatic review. Replace `sess_123` with the session ID returned above:
+
+Turn off automatic review
+
+```javascript
+const updatedSession = await client.beta.agents.sessions.update("sess_123", {
+  review: "none",
+});
+console.log(updatedSession.id);
+```
+
+```python
+updated_session = client.beta.agents.sessions.update("sess_123", review="none")
+print(updated_session.id)
+```
+
+```go
+updatedSession, err := client.Beta.Agents.Sessions.Update(context.Background(), "sess_123", openai.BetaAgentSessionUpdateParams{
+	Review: openai.BetaAgentSessionUpdateParamsReviewNone,
+})
+if err != nil {
+	panic(err)
+}
+fmt.Println(updatedSession.ID)
+```
+
+```java
+import com.openai.models.beta.agents.sessions.SessionUpdateParams;
+
+var updatedSession =
+    client
+        .beta()
+        .agents()
+        .sessions()
+        .update(
+            SessionUpdateParams.builder()
+                .sessionId("sess_123")
+                .review(SessionUpdateParams.Review.NONE)
+                .build());
+System.out.println(updatedSession.id());
+```
+
+```ruby
+updated_session = client.beta.agents.sessions.update("sess_123", review: :none)
+puts updated_session.id
+```
+
+```bash
+curl --fail-with-body https://api.openai.com/v1/agents/sessions/sess_123 \
+  -X POST \
+  -H "OpenAI-Beta: agents=v1" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "review": "none"
+  }'
+```
+
+
+The update returns `200 OK` and the updated session. Omit `review` from other
+session updates to leave it unchanged. To enable automatic review again, send
+`"review": "auto_review"`. See the [Update session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/update)
+for the request fields.
+
+A request to change the mode while the main task is active or input submission
+has not settled returns `409 Conflict`. None of the updates in that request are
+applied. Retry after the task is idle and input submission has settled. Handle
+`409` even after checking the session's status, because new input can arrive
+before the update. Sending the current review value is allowed while work is
+active.
+
+
+
+
+[Retrieve](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#inspect-a-session) or
+[list sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#list-sessions) to inspect
+the saved `review` value. If the response omits the field, treat it as `"none"`.
 
 ---
 
@@ -9974,10 +10362,13 @@ func main() {
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.RequestOptions;
 import com.openai.core.http.StreamResponse;
+import com.openai.errors.OpenAIIoException;
 import com.openai.models.responses.ResponseCreateParams;
 import com.openai.models.responses.ResponseRetrieveParams;
 import com.openai.models.responses.ResponseStreamEvent;
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -9993,11 +10384,24 @@ AtomicLong lastSequenceNumber = new AtomicLong(-1);
 AtomicReference<String> responseId = new AtomicReference<>("");
 AtomicBoolean streamCompleted = new AtomicBoolean(false);
 JsonMapper json = new JsonMapper();
-try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStreaming(params)) {
+// This long-running response can exceed the SDK's default request deadline.
+RequestOptions streamOptions = RequestOptions.builder().timeout(Duration.ofMinutes(30)).build();
+try (StreamResponse<ResponseStreamEvent> stream =
+    client.responses().createStreaming(params, streamOptions)) {
   stream.stream()
       .forEach(
           event -> {
-            lastSequenceNumber.set(json.valueToTree(event).path("sequence_number").asLong());
+            if (event.failed().isPresent()
+                || event.incomplete().isPresent()
+                || event.error().isPresent()) {
+              throw new IllegalStateException("Background response did not complete");
+            }
+            var data = json.valueToTree(event);
+            // Keepalives count connection traffic, not stored response events.
+            if (data.path("type").asText().startsWith("response.")
+                && data.path("sequence_number").isIntegralNumber()) {
+              lastSequenceNumber.set(data.path("sequence_number").asLong());
+            }
             event
                 .created()
                 .ifPresent(
@@ -10019,10 +10423,23 @@ try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStrea
                       System.out.println("response.completed");
                     });
           });
+} catch (OpenAIIoException error) {
+  // Resume an interrupted stream once, from its stored-event checkpoint.
+  if (Thread.currentThread().isInterrupted()
+      || streamCompleted.get()
+      || responseId.get().isBlank()
+      || lastSequenceNumber.get() < 0) {
+    throw error;
+  }
 }
 System.out.println(
     "Response " + responseId.get() + "; last sequence number " + lastSequenceNumber.get());
 if (!streamCompleted.get()) {
+  if (Thread.currentThread().isInterrupted()
+      || responseId.get().isBlank()
+      || lastSequenceNumber.get() < 0) {
+    throw new IllegalStateException("Stream ended without a resumable checkpoint");
+  }
   try (StreamResponse<ResponseStreamEvent> resumed =
       client
           .responses()
@@ -10030,11 +10447,22 @@ if (!streamCompleted.get()) {
               ResponseRetrieveParams.builder()
                   .responseId(responseId.get())
                   .startingAfter(lastSequenceNumber.get())
-                  .build())) {
+                  .build(),
+              streamOptions)) {
     resumed.stream()
         .forEach(
-            event ->
-                event.outputTextDelta().ifPresent(delta -> System.out.println(delta.delta())));
+            event -> {
+              if (event.failed().isPresent()
+                  || event.incomplete().isPresent()
+                  || event.error().isPresent()) {
+                throw new IllegalStateException("Resumed response did not complete");
+              }
+              event.outputTextDelta().ifPresent(delta -> System.out.println(delta.delta()));
+              event.completed().ifPresent(completed -> streamCompleted.set(true));
+            });
+  }
+  if (!streamCompleted.get()) {
+    throw new IllegalStateException("Resumed response did not complete");
   }
 }
 ```
@@ -14608,7 +15036,7 @@ Note: if all the returned samples have `finish_reason` == "length", it's likely 
 
 An example completions API response looks as follows:
 
-```
+```text
 {
   "choices": [
     {
@@ -14677,13 +15105,13 @@ Note: if all the returned samples have `finish_reason` == "length", it's likely 
 
 The Chat Completions format can be made similar to the completions format by constructing a request using a single user message. For example, one can translate from English to French with the following completions prompt:
 
-```
+```text
 Translate the following English text to French: "{text}"
 ```
 
 And an equivalent chat prompt would be:
 
-```
+```text
 [{"role": "user", "content": 'Translate the following English text to French: "{text}"'}]
 ```
 
@@ -14835,16 +15263,21 @@ fmt.Println("Session ID:", session.ID)
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.agents.AgentBrowserAuthenticationCancelParam;
+import com.openai.models.beta.agents.AgentBrowserOriginAccessParam;
 import com.openai.models.beta.agents.AgentSession;
 import com.openai.models.beta.agents.AgentSessionInputMessageParam;
 import com.openai.models.beta.agents.AgentSessionInputParam;
 import com.openai.models.beta.agents.AgentSessionInputParam.AgentSessionInputComputerUseApprovalRequestResult;
-import com.openai.models.beta.agents.AgentSessionInputParam.AgentSessionInputComputerUseApprovalRequestResult.Response;
 import com.openai.models.beta.agents.AgentToolParam;
 import com.openai.models.beta.agents.EnvironmentParam;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
 import com.openai.models.beta.agents.sessions.events.EventCreateParams;
 import com.openai.models.beta.agents.sessions.items.ItemListParams;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.HashSet;
@@ -14945,6 +15378,10 @@ puts "Session ID: #{session.id}"
 The browser requires the user's approval before accessing each new website
 origin, including public websites. Enabling network access does not approve
 these requests.
+
+Enabling [automatic review](https://developers.openai.com/api/docs/guides/agents-api/sessions/approvals)
+also preserves browser origin approvals and [sign-in](#handle-sign-in)
+requests. Continue handling them in your application.
 
 To handle an origin approval:
 
@@ -15134,35 +15571,33 @@ func respondToOriginApproval(ctx context.Context, client *openai.Client, session
 static void respondToOriginApproval(
     OpenAIClient client,
     String sessionId,
-    AgentSession.RequiredAction.ComputerUseApprovalRequest approval) {
-  var console = System.console();
-  if (console == null)
-    throw new IllegalStateException("Run this example in an interactive terminal.");
+    AgentSession.RequiredAction.ComputerUseApprovalRequest approval,
+    BufferedReader approvals)
+    throws IOException {
   var result =
       AgentSessionInputComputerUseApprovalRequestResult.builder().requestId(approval.requestId());
   if (approval.request().browserOriginAccess().isPresent()) {
     var request = approval.request().browserOriginAccess().get();
-    console.printf("Origin: %s%n", request.origin());
-    console.printf("Reason: %s%n", request.reason().orElse("Not supplied"));
+    System.out.printf("Origin: %s%n", request.origin());
+    System.out.printf("Reason: %s%n", request.reason().orElse("Not supplied"));
     String decision;
     while (true) {
-      String input =
-          console.readLine("Allow browser access? [approve/deny/cancel; default deny] ");
+      System.out.print("Allow browser access? [approve/deny/cancel; default deny] ");
+      System.out.flush();
+      String input = approvals.readLine();
       if (input == null) throw new IllegalStateException("Approval input closed.");
       decision = input.strip().toLowerCase(java.util.Locale.ROOT);
       if (decision.isEmpty()) decision = "deny";
       if (List.of("approve", "deny", "cancel").contains(decision)) break;
-      console.printf("Enter approve, deny, or cancel.%n");
+      System.out.printf("Enter approve, deny, or cancel.%n");
     }
     result.response(
-        Response.BrowserOriginAccess.builder()
-            .decision(Response.BrowserOriginAccess.Decision.of(decision))
+        AgentBrowserOriginAccessParam.builder()
+            .decision(AgentBrowserOriginAccessParam.Decision.of(decision))
             .build());
   } else if (approval.request().browserAuthentication().isPresent()) {
-    console.printf("Sign-in is outside this public-page task; cancelling the request.%n");
-    result.response(
-        Response.BrowserAuthentication.ofCancel(
-            Response.BrowserAuthentication.Cancel.builder().build()));
+    System.out.printf("Sign-in is outside this public-page task; cancelling the request.%n");
+    result.response(AgentBrowserAuthenticationCancelParam.builder().build());
   } else {
     throw new IllegalStateException("Unsupported computer-use approval request.");
   }
@@ -15583,6 +16018,7 @@ eventLoop:
 ```
 
 ```java
+var approvals = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
 byte[] lastScreenshot = null;
 var handledRequests = new HashSet<String>();
 try (var events = client.beta().agents().sessions().events().streamStreaming(session.id())) {
@@ -15615,7 +16051,7 @@ try (var events = client.beta().agents().sessions().events().streamStreaming(ses
         if (action.computerUseApprovalRequest().isEmpty()) continue;
         var approval = action.computerUseApprovalRequest().get();
         if (!handledRequests.contains(approval.requestId())) {
-          respondToOriginApproval(client, session.id(), approval);
+          respondToOriginApproval(client, session.id(), approval, approvals);
           handledRequests.add(approval.requestId());
         }
       }
@@ -16702,11 +17138,13 @@ collectFields:
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.agents.AgentBrowserAuthenticationCancelParam;
+import com.openai.models.beta.agents.AgentBrowserAuthenticationSubmitParam;
+import com.openai.models.beta.agents.AgentBrowserOriginAccessParam;
 import com.openai.models.beta.agents.AgentSession;
 import com.openai.models.beta.agents.AgentSessionInputMessageParam;
 import com.openai.models.beta.agents.AgentSessionInputParam;
 import com.openai.models.beta.agents.AgentSessionInputParam.AgentSessionInputComputerUseApprovalRequestResult;
-import com.openai.models.beta.agents.AgentSessionInputParam.AgentSessionInputComputerUseApprovalRequestResult.Response;
 import com.openai.models.beta.agents.AgentToolParam;
 import com.openai.models.beta.agents.EnvironmentParam;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
@@ -16719,9 +17157,7 @@ static void cancelAuthentication(OpenAIClient client, String sessionId, String r
   var cancellation =
       AgentSessionInputComputerUseApprovalRequestResult.builder()
           .requestId(requestId)
-          .response(
-              Response.BrowserAuthentication.ofCancel(
-                  Response.BrowserAuthentication.Cancel.builder().build()))
+          .response(AgentBrowserAuthenticationCancelParam.builder().build())
           .build();
   client
       .withOptions(options -> options.maxRetries(0))
@@ -16756,8 +17192,8 @@ static void respondToComputerUseApproval(
       console.printf("Enter approve, deny, or cancel.%n");
     }
     result.response(
-        Response.BrowserOriginAccess.builder()
-            .decision(Response.BrowserOriginAccess.Decision.of(decision))
+        AgentBrowserOriginAccessParam.builder()
+            .decision(AgentBrowserOriginAccessParam.Decision.of(decision))
             .build());
   } else if (approval.request().browserAuthentication().isPresent()) {
     var challenge = approval.request().browserAuthentication().get();
@@ -16770,7 +17206,7 @@ static void respondToComputerUseApproval(
       cancelAuthentication(client, sessionId, approval.requestId());
       return;
     }
-    var response = Response.BrowserAuthentication.Submit.builder().fields(List.of());
+    var response = AgentBrowserAuthenticationSubmitParam.builder().fields(List.of());
     var activeFields = challenge.fields();
     if (!challenge.options().isEmpty()) {
       for (int i = 0; i < challenge.options().size(); i++) {
@@ -16836,7 +17272,7 @@ static void respondToComputerUseApproval(
             continue;
           }
           response.addField(
-              Response.BrowserAuthentication.Submit.Field.builder()
+              AgentBrowserAuthenticationSubmitParam.Field.builder()
                   .fieldId(field.id())
                   .value(value)
                   .build());
@@ -16847,7 +17283,7 @@ static void respondToComputerUseApproval(
       if (!challenge.options().isEmpty() || activeFields.isEmpty() || fieldsSubmitted > 0) break;
       console.printf("Enter at least one field to submit this form, or cancel.%n");
     }
-    result.response(Response.BrowserAuthentication.ofSubmit(response.build()));
+    result.response(response.build());
   } else {
     throw new IllegalStateException("Unsupported computer-use approval request.");
   }
@@ -23986,6 +24422,14 @@ For example, this request changes reasoning effort and lets the API select the s
 Updating a session does not change the saved agent or other sessions. Later saved-agent updates do not change the session.
 
 You cannot update `reasoning.summary`, `text`, `tools`, `instructions`, or `multi_agent` through this endpoint. Create a new session to change those settings.
+
+## Automatic action review
+
+Set the session-level `review` field to `"auto_review"` to automatically review supported approval requests. Set it alongside `agent` or `agent_id`, rather than inside the agent configuration. If you omit `review` when creating a session, the value defaults to `"none"`.
+
+Automatic review also changes execution permissions. Check the [environment prerequisites](https://developers.openai.com/api/docs/guides/agents-api/sessions/approvals#prepare-the-execution-environment) before enabling it.
+
+You can update `review` when the main task is idle and input submission has settled. Subsequent execution and recovery use the new setting. A request to change the mode before those conditions are met returns `409 Conflict` and applies no changes. Use a project with automatic review enabled and a session that supports it. See [Automatic review](https://developers.openai.com/api/docs/guides/agents-api/sessions/approvals) for configuration and approval handling.
 
 ## Environment settings
 
@@ -35178,7 +35622,7 @@ The `max_output_tokens` and `max_completion_tokens` parameters limit all tokens 
 
 For full parameters and response shape, see the [Count input tokens API reference](https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens/methods/count). The endpoint is:
 
-```
+```text
 POST /v1/responses/input_tokens
 ```
 
@@ -46417,7 +46861,7 @@ To complete our weather example:
 
 We then send all of the tool definition, the original prompt, the model's tool call, and the tool call output back to the model to finally receive a text response like:
 
-```
+```text
 The weather in Paris today is 25C.
 ```
 
@@ -47051,6 +47495,7 @@ for _, output := range response.Output {
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.JsonValue;
+import com.openai.core.ObjectMappers;
 import com.openai.models.responses.EasyInputMessage;
 import com.openai.models.responses.FunctionTool;
 import com.openai.models.responses.ResponseCreateParams;
@@ -47062,39 +47507,40 @@ import java.util.Map;
 response.output().stream()
     .map(item -> JsonValue.from(item).convert(ResponseInputItem.class))
     .forEach(input::add);
-response.output().stream()
-    .flatMap(item -> item.functionCall().stream())
-    .forEach(
-        call -> {
-          String result;
-          if (call.name().equals("get_weather")) {
-            record Coordinates(double latitude, double longitude) {}
+for (var item : response.output()) {
+  if (item.functionCall().isEmpty()) continue;
+  var call = item.functionCall().get();
+  String result;
+  if (call.name().equals("get_weather")) {
+    record Coordinates(double latitude, double longitude) {}
 
-            Coordinates coordinates = call.arguments(Coordinates.class);
-            result =
-                JsonValue.from(
-                        Map.of(
-                            "latitude", coordinates.latitude(),
-                            "longitude", coordinates.longitude(),
-                            "temperature_c", 18))
-                    .toString();
-          } else if (call.name().equals("send_email")) {
-            record Email(String to, String body) {}
+    Coordinates coordinates = call.arguments(Coordinates.class);
+    result =
+        ObjectMappers.jsonMapper()
+            .writeValueAsString(
+                Map.of(
+                    "latitude", coordinates.latitude(),
+                    "longitude", coordinates.longitude(),
+                    "temperature_c", 18));
+  } else if (call.name().equals("send_email")) {
+    record Email(String to, String body) {}
 
-            Email message = call.arguments(Email.class);
-            result = JsonValue.from(Map.of("to", message.to(), "status", "sent")).toString();
-          } else {
-            throw new IllegalArgumentException("Unknown function: " + call.name());
-          }
-          var output =
-              ResponseInputItem.ofFunctionCallOutput(
-                  ResponseInputItem.FunctionCallOutput.builder()
-                      .callId(call.callId())
-                      .output(result)
-                      .build());
-          input.add(output);
-          System.out.println(call.callId() + " " + result);
-        });
+    Email message = call.arguments(Email.class);
+    result =
+        ObjectMappers.jsonMapper()
+            .writeValueAsString(Map.of("to", message.to(), "status", "sent"));
+  } else {
+    throw new IllegalArgumentException("Unknown function: " + call.name());
+  }
+  var output =
+      ResponseInputItem.ofFunctionCallOutput(
+          ResponseInputItem.FunctionCallOutput.builder()
+              .callId(call.callId())
+              .output(result)
+              .build());
+  input.add(output);
+}
+System.out.println(ObjectMappers.jsonMapper().writeValueAsString(input));
 ```
 
 ```ruby
@@ -47694,19 +48140,7 @@ ResponseCreateParams params =
         .build();
 
 try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStreaming(params)) {
-  stream.stream()
-      .forEach(
-          event -> {
-            System.out.println(event);
-            event
-                .outputItemAdded()
-                .ifPresent(added -> System.out.println("response.output_item.added: " + added));
-            event
-                .functionCallArgumentsDelta()
-                .ifPresent(
-                    delta ->
-                        System.out.println("response.function_call_arguments.delta: " + delta));
-          });
+  stream.stream().forEach(System.out::println);
 }
 ```
 
@@ -48360,14 +48794,14 @@ Lark grammars can be tricky to perfect. While less complex grammars perform most
 
 Correct (single, bounded terminal):
 
-```
+```text
 start: SENTENCE
 SENTENCE: /[A-Za-z, ]*(the hero|a dragon|an old man|the princess)[A-Za-z, ]*(fought|saved|found|lost)[A-Za-z, ]*(a treasure|the kingdom|a secret|his way)[A-Za-z, ]*\./
 ```
 
 Do NOT do this (splitting across rules/terminals). This attempts to let rules partition free text between terminals. The lexer will greedily match the free-text pieces and you'll lose control:
 
-```
+```text
 start: sentence
 sentence: /[A-Za-z, ]+/ subject /[A-Za-z, ]+/ verb /[A-Za-z, ]+/ object /[A-Za-z, ]+/
 ```
@@ -48402,7 +48836,7 @@ Favor explicit character classes and bounded quantifiers (`{0,10}`, not unbounde
 
 Good rule usage example:
 
-```
+```text
 start: expr
 NUMBER: /[0-9]+/
 PLUS: "+"
@@ -49609,13 +50043,13 @@ Then you can automatically evaluate how effectively the model grader distinguish
 
 For example, say you know from your human experts which answers are best:
 
-```
+```text
 answer_1 > answer_2 > answer_3
 ```
 
 Verify that the model grader's answers match that:
 
-```
+```text
 model_grader(answer_1, reference_answer) > model_grader(answer_2, reference_answer) > model_grader(answer_3, reference_answer)
 ```
 
@@ -49756,7 +50190,7 @@ This will automatically use the entire source code of your `grader.py` file as t
 
 The following third-party packages are available at execution time for the image tag `2025-05-08`
 
-```
+```text
 numpy==2.2.4
 scipy==1.15.2
 sympy==1.13.3
@@ -49777,7 +50211,7 @@ ast-grep-py==0.36.2
 
 Additionally, the following NLTK corpora are available:
 
-```
+```text
 punkt
 stopwords
 wordnet
@@ -57719,13 +58153,13 @@ Some models tokenize images by covering them with 32px x 32px patches. Many mode
 
 A. Compute how many 32px x 32px patches are needed to cover the image after applying the pixel-dimension limit. A patch may extend beyond the image boundary.
 
-```
+```text
 patch_count = ceil(width/32)×ceil(height/32)
 ```
 
 B. When the selected model and detail level specify a resizing patch budget, scale the image down proportionally if it exceeds that budget. Otherwise, skip this step. Adjust the scale to stay within budget after converting to integer pixel dimensions and computing patch coverage. Keep full precision until calculating the final dimensions.
 
-```
+```text
 shrink_factor = sqrt((32^2 * patch_budget) / (width * height))
 adjusted_shrink_factor = shrink_factor * min(
   floor(width * shrink_factor / 32) / (width * shrink_factor / 32),
@@ -57735,7 +58169,7 @@ adjusted_shrink_factor = shrink_factor * min(
 
 C. If step B resized the image, round down the final scaled width and height to integer pixels. Compute the patches needed to cover the resulting image. This is the image-token count before applying the model multiplier. When a patch budget applies, this count stays within that budget.
 
-```
+```text
 resized_patch_count = ceil(resized_width/32)×ceil(resized_height/32)
 ```
 
@@ -63224,7 +63658,7 @@ For testing purposes, you can use Google's [OAuth 2.0 Playground](https://develo
 
 To use the playground to test the connectors API functionality, start by entering:
 
-```
+```text
 https://www.googleapis.com/auth/calendar.events
 ```
 
@@ -71311,14 +71745,14 @@ if err := events.Err(); err != nil {
 
 ```java
 // Replace the illustrative IDs and URLs below with your own resource values.
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.ObjectMappers;
 import com.openai.core.http.StreamResponse;
 import com.openai.models.beta.agents.AgentSessionEvent;
 
 OpenAIClient client = OpenAIOkHttpClient.fromEnv();
-var json = new JsonMapper();
+var json = ObjectMappers.jsonMapper();
 try (StreamResponse<AgentSessionEvent> events =
     client.beta().agents().sessions().events().streamStreaming("sess_123")) {
   var iterator = events.stream().iterator();
@@ -71602,35 +72036,62 @@ func findTurn(ctx context.Context, client *openai.Client, sessionID, turnID stri
 ```
 
 ```java
-// Replace the illustrative IDs and URLs below with your own resource values.
+// Replace the illustrative session and turn IDs with values from your command item.
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.agents.sessions.subagents.SubagentListParams;
+import com.openai.models.beta.agents.sessions.turns.Turn;
 import com.openai.models.beta.agents.sessions.turns.TurnListParams;
 import com.openai.models.beta.agents.sessions.turns.TurnRetrieveParams;
 
 OpenAIClient client = OpenAIOkHttpClient.fromEnv();
-var result =
-    client
-        .beta()
-        .agents()
-        .sessions()
-        .turns()
-        .list(
-            TurnListParams.builder()
-                .sessionId("sess_123")
-                .limit(20L)
-                .order(TurnListParams.Order.of("desc"))
-                .build());
-System.out.println(result.items());
-var turn =
-    client
-        .beta()
-        .agents()
-        .sessions()
-        .turns()
-        .retrieve(
-            TurnRetrieveParams.builder().turnId("turn_123").sessionId("sess_123").build());
-System.out.println(turn.subagentId());
+var turn = findTurn(client, "sess_123", "turn_123");
+System.out.println(turn.subagentId().orElse("main agent"));
+
+// Discover the owning agent using native SDK pagination before retrieving the turn.
+static Turn findTurn(OpenAIClient client, String sessionId, String turnId) {
+  var sessions = client.beta().agents().sessions();
+  var turns =
+      sessions.turns().list(TurnListParams.builder().sessionId(sessionId).limit(100L).build());
+  for (var turn : turns.autoPager()) {
+    if (turn.id().equals(turnId)) {
+      return sessions
+          .turns()
+          .retrieve(TurnRetrieveParams.builder().sessionId(sessionId).turnId(turnId).build());
+    }
+  }
+  var subagents =
+      sessions
+          .subagents()
+          .list(SubagentListParams.builder().sessionId(sessionId).limit(100L).build());
+  for (var subagent : subagents.autoPager()) {
+    var childTurns =
+        sessions
+            .subagents()
+            .turns()
+            .list(
+                com.openai.models.beta.agents.sessions.subagents.turns.TurnListParams.builder()
+                    .sessionId(sessionId)
+                    .subagentId(subagent.id())
+                    .limit(100L)
+                    .build());
+    for (var turn : childTurns.autoPager()) {
+      if (turn.id().equals(turnId)) {
+        return sessions
+            .subagents()
+            .turns()
+            .retrieve(
+                com.openai.models.beta.agents.sessions.subagents.turns.TurnRetrieveParams
+                    .builder()
+                    .sessionId(sessionId)
+                    .subagentId(subagent.id())
+                    .turnId(turnId)
+                    .build());
+      }
+    }
+  }
+  throw new IllegalArgumentException("Turn " + turnId + " not found in session " + sessionId);
+}
 ```
 
 ```ruby
@@ -73947,7 +74408,7 @@ var environments =
                 .limit(20L)
                 .order(EnvironmentListParams.Order.DESC)
                 .build());
-System.out.println(environments);
+System.out.println(environments.items());
 ```
 
 ```ruby
@@ -74586,7 +75047,7 @@ serve({
 
 You could prompt the model to regenerate the file with a prompt like:
 
-```
+```text
 Add a get route to this application that responds with
 the text "hello world". Generate the entire application
 file again with this route added, and with no other
@@ -78112,7 +78573,7 @@ Few-shot learning lets you steer a large language model toward a new task by inc
 
 Typically, you will provide examples as part of a `developer` message in your API request. Here's an example `developer` message containing examples that show a model how to classify positive or negative customer service reviews.
 
-```
+```text
 # Identity
 
 You are a helpful assistant that labels short product reviews as
@@ -78270,7 +78731,7 @@ For agentic and long-running rollouts with `gpt-6-astra`, focus your prompts on 
 **Planning and persistence**
 Instruct the model to resolve the full query before yielding control, decomposing it into sub-tasks and reflecting after each tool call to confirm completeness.
 
-```
+```text
 Remember, you are an agent - please keep going until the user's
 query is completely resolved, before ending your turn and yielding
 back to the user. Decompose the user's query into all required
@@ -78291,7 +78752,7 @@ are completely resolved.
 
 Ask the model to explain why it is calling a tool, but only at notable steps.
 
-```
+```text
 Before you call a tool explain why you are calling it
 ```
 
@@ -81139,6 +81600,7 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.core.JsonValue;
 import com.openai.models.chat.completions.ChatCompletionCreateParams;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81309,148 +81771,71 @@ String metaPrompt =
     }
     """
         .strip();
-Map<String, Object> metaSchema =
+// The same recursive grammar governs properties, arrays, references, and unions.
+Map<String, Object> schemaRef = Map.of("$ref", "#/$defs/schema_definition");
+Map<String, Object> schemaProperties =
     Map.ofEntries(
-        Map.entry("name", "metaschema"),
+        Map.entry("description", Map.of("type", "string")),
         Map.entry(
-            "schema",
-            Map.ofEntries(
-                Map.entry("type", "object"),
-                Map.entry(
-                    "properties",
-                    Map.ofEntries(
-                        Map.entry(
-                            "name",
-                            Map.ofEntries(
-                                Map.entry("type", "string"),
-                                Map.entry("description", "The name of the schema"))),
-                        Map.entry(
-                            "type",
-                            Map.ofEntries(
-                                Map.entry("type", "string"),
-                                Map.entry(
-                                    "enum",
-                                    List.of(
-                                        "object", "array", "string", "number", "boolean",
-                                        "null")))),
-                        Map.entry(
-                            "properties",
-                            Map.ofEntries(
-                                Map.entry("type", "object"),
-                                Map.entry(
-                                    "additionalProperties",
-                                    Map.ofEntries(
-                                        Map.entry("$ref", "#/$defs/schema_definition"))))),
-                        Map.entry(
-                            "items",
-                            Map.ofEntries(
-                                Map.entry(
-                                    "anyOf",
-                                    List.of(
-                                        Map.ofEntries(
-                                            Map.entry("$ref", "#/$defs/schema_definition")),
-                                        Map.ofEntries(
-                                            Map.entry("type", "array"),
-                                            Map.entry(
-                                                "items",
-                                                Map.ofEntries(
-                                                    Map.entry(
-                                                        "$ref",
-                                                        "#/$defs/schema_definition")))))))),
-                        Map.entry(
-                            "required",
-                            Map.ofEntries(
-                                Map.entry("type", "array"),
-                                Map.entry(
-                                    "items", Map.ofEntries(Map.entry("type", "string"))))),
-                        Map.entry(
-                            "additionalProperties",
-                            Map.ofEntries(Map.entry("type", "boolean"))))),
-                Map.entry("required", List.of("type")),
-                Map.entry("additionalProperties", false),
-                Map.entry(
-                    "if",
-                    Map.ofEntries(
-                        Map.entry(
-                            "properties",
-                            Map.ofEntries(
-                                Map.entry(
-                                    "type", Map.ofEntries(Map.entry("const", "object"))))))),
-                Map.entry("then", Map.ofEntries(Map.entry("required", List.of("properties")))),
-                Map.entry(
-                    "$defs",
-                    Map.ofEntries(
-                        Map.entry(
-                            "schema_definition",
-                            Map.ofEntries(
-                                Map.entry("type", "object"),
-                                Map.entry(
-                                    "properties",
-                                    Map.ofEntries(
-                                        Map.entry(
-                                            "type",
-                                            Map.ofEntries(
-                                                Map.entry("type", "string"),
-                                                Map.entry(
-                                                    "enum",
-                                                    List.of(
-                                                        "object", "array", "string", "number",
-                                                        "boolean", "null")))),
-                                        Map.entry(
-                                            "properties",
-                                            Map.ofEntries(
-                                                Map.entry("type", "object"),
-                                                Map.entry(
-                                                    "additionalProperties",
-                                                    Map.ofEntries(
-                                                        Map.entry(
-                                                            "$ref",
-                                                            "#/$defs/schema_definition"))))),
-                                        Map.entry(
-                                            "items",
-                                            Map.ofEntries(
-                                                Map.entry(
-                                                    "anyOf",
-                                                    List.of(
-                                                        Map.ofEntries(
-                                                            Map.entry(
-                                                                "$ref",
-                                                                "#/$defs/schema_definition")),
-                                                        Map.ofEntries(
-                                                            Map.entry("type", "array"),
-                                                            Map.entry(
-                                                                "items",
-                                                                Map.ofEntries(
-                                                                    Map.entry(
-                                                                        "$ref",
-                                                                        "#/$defs/schema_definition")))))))),
-                                        Map.entry(
-                                            "required",
-                                            Map.ofEntries(
-                                                Map.entry("type", "array"),
-                                                Map.entry(
-                                                    "items",
-                                                    Map.ofEntries(
-                                                        Map.entry("type", "string"))))),
-                                        Map.entry(
-                                            "additionalProperties",
-                                            Map.ofEntries(Map.entry("type", "boolean"))))),
-                                Map.entry("required", List.of("type")),
-                                Map.entry("additionalProperties", false),
-                                Map.entry(
-                                    "if",
-                                    Map.ofEntries(
-                                        Map.entry(
-                                            "properties",
-                                            Map.ofEntries(
-                                                Map.entry(
-                                                    "type",
-                                                    Map.ofEntries(
-                                                        Map.entry("const", "object"))))))),
-                                Map.entry(
-                                    "then",
-                                    Map.ofEntries(
-                                        Map.entry("required", List.of("properties")))))))))));
+            "type",
+            Map.of(
+                "type",
+                "string",
+                "enum",
+                List.of("object", "array", "string", "number", "boolean", "null"))),
+        Map.entry("properties", Map.of("type", "object", "additionalProperties", schemaRef)),
+        Map.entry(
+            "items",
+            Map.of("anyOf", List.of(schemaRef, Map.of("type", "array", "items", schemaRef)))),
+        Map.entry("required", Map.of("type", "array", "items", Map.of("type", "string"))),
+        Map.entry("additionalProperties", Map.of("type", "boolean")),
+        Map.entry("enum", Map.of("type", "array", "minItems", 1, "uniqueItems", true)),
+        Map.entry("$ref", Map.of("type", "string")),
+        Map.entry("$defs", Map.of("type", "object", "additionalProperties", schemaRef)),
+        Map.entry("anyOf", Map.of("type", "array", "minItems", 1, "items", schemaRef)));
+Map<String, Object> objectCondition =
+    Map.of(
+        "required", List.of("type"), "properties", Map.of("type", Map.of("const", "object")));
+Map<String, Object> objectRequirements = Map.of("required", List.of("properties"));
+Map<String, Object> schemaDefinition =
+    Map.of(
+        "type",
+        "object",
+        "properties",
+        schemaProperties,
+        "additionalProperties",
+        false,
+        "if",
+        objectCondition,
+        "then",
+        objectRequirements,
+        "anyOf",
+        List.of(
+            Map.of("required", List.of("type")),
+            Map.of("required", List.of("$ref")),
+            Map.of("required", List.of("anyOf"))));
+var rootProperties = new LinkedHashMap<>(schemaProperties);
+rootProperties.put("name", Map.of("type", "string", "description", "The name of the schema"));
+Map<String, Object> metaSchema =
+    Map.of(
+        "name",
+        "metaschema",
+        "schema",
+        Map.of(
+            "type",
+            "object",
+            "properties",
+            rootProperties,
+            "required",
+            List.of("type"),
+            "additionalProperties",
+            false,
+            "if",
+            objectCondition,
+            "then",
+            objectRequirements,
+            "$defs",
+            Map.of("schema_definition", schemaDefinition)));
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
@@ -82931,30 +83316,36 @@ Map<String, Object> schemaDefinition =
         "type", "object",
         "properties",
             Map.of(
+                "enum",
+                Map.of("type", "array", "minItems", 1, "uniqueItems", true),
+                "description",
+                Map.of("type", "string"),
                 "type",
-                    Map.of(
-                        "type",
-                        "string",
-                        "enum",
-                        List.of("object", "array", "string", "number", "boolean", "null")),
+                Map.of(
+                    "type",
+                    "string",
+                    "enum",
+                    List.of("object", "array", "string", "number", "boolean", "null")),
                 "properties",
-                    Map.of(
-                        "type",
-                        "object",
-                        "additionalProperties",
-                        Map.of("$ref", "#/$defs/schema_definition")),
+                Map.of(
+                    "type",
+                    "object",
+                    "additionalProperties",
+                    Map.of("$ref", "#/$defs/schema_definition")),
                 "items",
-                    Map.of(
-                        "anyOf",
-                        List.of(
-                            Map.of("$ref", "#/$defs/schema_definition"),
-                            Map.of(
-                                "type",
-                                "array",
-                                "items",
-                                Map.of("$ref", "#/$defs/schema_definition")))),
-                "required", Map.of("type", "array", "items", Map.of("type", "string")),
-                "additionalProperties", Map.of("type", "boolean")),
+                Map.of(
+                    "anyOf",
+                    List.of(
+                        Map.of("$ref", "#/$defs/schema_definition"),
+                        Map.of(
+                            "type",
+                            "array",
+                            "items",
+                            Map.of("$ref", "#/$defs/schema_definition")))),
+                "required",
+                Map.of("type", "array", "items", Map.of("type", "string")),
+                "additionalProperties",
+                Map.of("type", "boolean")),
         "required", List.of("type"),
         "additionalProperties", false,
         "if", Map.of("properties", Map.of("type", Map.of("const", "object"))),
@@ -84285,13 +84676,15 @@ Preserve explicit user values. When the correct value is implicit, provide decis
 
 Add stopping conditions:
 
-    Resolve the request in the fewest useful tool loops, but do not let loop
-    minimization outrank correctness, required evidence, calculations, or
-    required citations.
+```text
+Resolve the request in the fewest useful tool loops, but do not let loop
+minimization outrank correctness, required evidence, calculations, or
+required citations.
 
-    After each result, ask whether the core request can now be answered with
-    useful evidence. If yes, answer. If required evidence is still missing,
-    name the missing fact and use the smallest useful fallback.
+After each result, ask whether the core request can now be answered with
+useful evidence. If yes, answer. If required evidence is still missing,
+name the missing fact and use the smallest useful fallback.
+```
 
 ## Personality, collaboration, and response length
 
@@ -84308,27 +84701,33 @@ Keep both short. Personality should shape the user experience; collaboration ins
 
 When a task calls for a shorter answer, identify the information the model must preserve and the detail it can omit. For example:
 
-    Lead with the conclusion. Include the evidence needed to support it, any material
-    caveat, and the next action. Omit secondary detail and repetition.
+```text
+Lead with the conclusion. Include the evidence needed to support it, any material
+caveat, and the next action. Omit secondary detail and repetition.
 
-    Keep all required facts, decisions, caveats, and next steps. Trim introductions,
-    repetition, generic reassurance, and optional background first.
+Keep all required facts, decisions, caveats, and next steps. Trim introductions,
+repetition, generic reassurance, and optional background first.
+```
 
 This gives the model a clear priority order: preserve the content needed to complete the task, then remove lower-value detail.
 
 Broad labels such as “friendly” or “empathetic” can be ambiguous. Describe the writing choices that define your product's tone, such as how directly to state the answer, when to acknowledge a problem, and whether reassurance or a sign-off is appropriate.
 
-    State the answer directly. If the user reports a problem, acknowledge the
-    specific issue before giving the next step. Use reassurance only when it is
-    relevant. Omit generic praise and unnecessary sign-offs.
+```text
+State the answer directly. If the user reports a problem, acknowledge the
+specific issue before giving the next step. Use reassurance only when it is
+relevant. Omit generic praise and unnecessary sign-offs.
+```
 
 Avoid blanket language rules such as “always respond in the user's language” unless that is truly the product requirement. Specify the intended output language and when it should change.
 
 For editing, rewriting, summaries, and customer-facing drafts, tell the model what to preserve:
 
-    Preserve the requested artifact, length, structure, genre, and factual claims
-    first. Improve clarity, flow, and correctness without adding new claims,
-    sections, or a more promotional tone unless requested.
+```text
+Preserve the requested artifact, length, structure, genre, and factual claims
+first. Improve clarity, flow, and correctness without adding new claims,
+sections, or a more promotional tone unless requested.
+```
 
 ## Define autonomy and approval boundaries
 
@@ -84336,15 +84735,17 @@ GPT-5.6 can be proactive and persistent when carrying out multi-step tasks. Defi
 
 A compact policy is usually sufficient:
 
-    For requests to answer, explain, review, diagnose, or plan, inspect the
-    relevant materials and report the result. Do not implement changes unless
-    the request also asks for them.
+```text
+For requests to answer, explain, review, diagnose, or plan, inspect the
+relevant materials and report the result. Do not implement changes unless
+the request also asks for them.
 
-    For requests to change, build, or fix, make the requested in-scope local
-    changes and run relevant non-destructive validation without asking first.
+For requests to change, build, or fix, make the requested in-scope local
+changes and run relevant non-destructive validation without asking first.
 
-    Require confirmation for external writes, destructive actions, purchases,
-    or a material expansion of scope.
+Require confirmation for external writes, destructive actions, purchases,
+or a material expansion of scope.
+```
 
 Name safe local actions explicitly, such as reading files, inspecting logs, editing in-scope code, and running tests. Keep the policy in one place and state each rule once. Repeating instructions such as “ask first,” “do not mutate,” or “wait for approval” can cause unnecessary approval requests for safe, expected actions.
 
@@ -84356,9 +84757,11 @@ Expose only task-relevant tools. Tool descriptions should state what the tool do
 
 When correctness depends on prerequisite retrieval or lookup, say so:
 
-    Before taking an action, resolve required discovery, retrieval, and
-    validation steps. Do not skip a prerequisite because the intended final
-    state seems obvious.
+```text
+Before taking an action, resolve required discovery, retrieval, and
+validation steps. Do not skip a prerequisite because the intended final
+state seems obvious.
+```
 
 When several reads are independent, parallelize them. When one result determines the next action, keep the work sequential. After parallel retrieval, synthesize before acting.
 
@@ -84388,11 +84791,13 @@ Prefer direct tool calls when:
 
 Do not rely on generic instructions such as “use Programmatic Tool Calling efficiently.” State the bounded stage, eligible tools, output schema, retry limit, stop condition, and handoff back to direct model judgment.
 
-    Use Programmatic Tool Calling only for the bounded record-reduction stage.
-    Call only the documented read-only tools. Filter and deduplicate the
-    intermediate results, then emit exactly the required compact schema with
-    evidence fields. Retry transient failures at most twice. Use direct tool
-    calls for approval, semantic judgment, citations, and final validation.
+```text
+Use Programmatic Tool Calling only for the bounded record-reduction stage.
+Call only the documented read-only tools. Filter and deduplicate the
+intermediate results, then emit exactly the required compact schema with
+evidence fields. Retry transient failures at most twice. Use direct tool
+calls for approval, semantic judgment, citations, and final validation.
+```
 
 If both routes are needed, define one clear handoff and tell the model not to switch routes or repeat completed work.
 
@@ -84404,17 +84809,19 @@ Compare direct and programmatic calling on the same representative tasks. Check 
 
 For grounded answers, citation behavior should be part of the prompt. Define what needs support, what counts as enough evidence, and how to behave when evidence is missing. Absence of evidence should not automatically become a factual “no.”
 
-    For ordinary Q&A, start with one broad search using short, discriminative
-    keywords. If the top results contain enough support for the core request,
-    answer from those results.
+```text
+For ordinary Q&A, start with one broad search using short, discriminative
+keywords. If the top results contain enough support for the core request,
+answer from those results.
 
-    Make another retrieval call only when a required fact, owner, date, ID, or
-    source is missing; the user asked for exhaustive coverage or comparison; a
-    specific artifact must be read; or an important claim would otherwise be
-    unsupported.
+Make another retrieval call only when a required fact, owner, date, ID, or
+source is missing; the user asked for exhaustive coverage or comparison; a
+specific artifact must be read; or an important claim would otherwise be
+unsupported.
 
-    Do not search again only to improve phrasing, add examples, or support
-    nonessential detail.
+Do not search again only to improve phrasing, add examples, or support
+nonessential detail.
+```
 
 For research and synthesis:
 
@@ -84430,10 +84837,12 @@ For creative drafting, distinguish source-backed facts from creative wording. Do
 
 For multi-step or tool-heavy tasks, prompt for a short visible preamble before the first tool call, then sparse outcome-based updates at major phase changes. Do not ask the model to narrate routine tool calls.
 
-    Before tool calls for a multi-step task, send a one- or two-sentence
-    user-visible update that states the first step. During the task, update only
-    when a major phase begins or a finding changes the plan. Each update should
-    state one concrete outcome and the next step.
+```text
+Before tool calls for a multi-step task, send a one- or two-sentence
+user-visible update that states the first step. During the task, update only
+when a major phase begins or a finding changes the plan. Each update should
+state one concrete outcome and the next step.
+```
 
 Preserve assistant phase values when replaying history so the model can distinguish commentary from the final answer. If using previous_response_id, prior assistant state is preserved automatically. If replaying history manually, preserve each original phase value unchanged.
 
@@ -84487,9 +84896,11 @@ If validation cannot be run, explain why and describe the next best check.
 
 For visual artifacts:
 
-    Render the artifact before finalizing. Inspect layout, clipping, spacing,
-    missing content, and visual consistency. Revise until the rendered output
-    matches the requirements.
+```text
+Render the artifact before finalizing. Inspect layout, clipping, spacing,
+missing content, and visual consistency. Revise until the rendered output
+matches the requirements.
+```
 
 For implementation plans, include requirements, named resources or files, state transitions or data flow, validation checks, failure behavior, privacy or security considerations, and open questions that materially affect implementation.
 
@@ -84497,21 +84908,23 @@ For implementation plans, include requirements, named resources or files, state 
 
 Use this structure as a starting point for complex prompts. Keep each section short. Add detail only where it changes behavior.
 
-    Role: [the model's function and context]
+```text
+Role: [the model's function and context]
 
-    Personality: [tone and collaboration style]
+Personality: [tone and collaboration style]
 
-    Goal: [user-visible outcome]
+Goal: [user-visible outcome]
 
-    Success criteria: [what must be true before the final answer]
+Success criteria: [what must be true before the final answer]
 
-    Constraints: [policy, safety, business, evidence, and side-effect limits]
+Constraints: [policy, safety, business, evidence, and side-effect limits]
 
-    Tools: [which tools to use, when, and what not to use]
+Tools: [which tools to use, when, and what not to use]
 
-    Output: [sections, length, format, and tone]
+Output: [sections, length, format, and tone]
 
-    Stop rules: [when to retry, fallback, abstain, ask, or stop]
+Stop rules: [when to retry, fallback, abstain, ask, or stop]
+```
 
 ## Prompt migration workflow
 
@@ -85466,7 +85879,7 @@ Organizing your prompt makes it easier for the model to understand context and s
 
 Example
 
-```
+```text
 # Role & Objective        — who you are and what “success” means
 # Personality & Tone      — the voice and style to maintain
 # Context                 — retrieved context, relevant info
@@ -85487,7 +85900,7 @@ This section defines who the agent is and what “done” means. The examples sh
 
 #### Example (model takes on a specific accent)
 
-```
+```text
 # Role & Objective
 You are a Quebecois French-speaking customer service bot. Your task is to answer the user's question.
 ```
@@ -85502,7 +85915,7 @@ Earlier realtime preview:
 
   #### Example (model takes on a character)
 
-```
+```text
 # Role & Objective
 You are a high-energy game-show host guiding the caller to guess a secret number from 1 to 100 to win 1,000,000$.
 ```
@@ -85527,7 +85940,7 @@ Earlier realtime preview:
 
 #### Example
 
-```
+```text
 # Personality & Tone
 ## Personality
 - Friendly, calm and approachable expert customer service assistant.
@@ -85541,7 +85954,7 @@ Earlier realtime preview:
 
 #### Example (multi-emotion)
 
-```
+```text
 # Personality & Tone
 - Start your response very happy
 - Midway, change to sad
@@ -85564,7 +85977,7 @@ In the Realtime API, the `speed` parameter changes playback rate, not how the mo
 
 #### Example
 
-```
+```text
 # Personality & Tone
 ## Personality
 - Friendly, calm and approachable expert customer service assistant.
@@ -85600,7 +86013,7 @@ Language constraints ensure the model consistently responds in the intended lang
 
 #### Example (pinning to one language)
 
-```
+```text
 # Personality & Tone
 ## Personality
 - Friendly, calm and approachable expert customer service assistant.
@@ -85623,7 +86036,7 @@ These are the responses after applying the instruction using `gpt-realtime-1.5`.
 
 #### Example (model teaches a language)
 
-```
+```text
 # Role & Objective
 - You are a friendly, knowledgeable voice tutor for French learners.
 - Your goal is to help the user improve their French speaking and listening skills through engaging conversation and clear explanations.
@@ -85663,7 +86076,7 @@ The realtime model can follow sample phrases closely to stay on-brand, but it ma
 
 #### Example
 
-```
+```text
 # Personality & Tone
 ## Personality
 - Friendly, calm and approachable expert customer service assistant.
@@ -85704,7 +86117,7 @@ This section covers how to ensure the model pronounces important words, numbers,
 
 #### Example
 
-```
+```text
 # Reference Pronunciations
 When voicing these words, use the respective pronunciations:
 - Pronounce “SQL” as “sequel.”
@@ -85732,7 +86145,7 @@ Realtime S2S can blur or merge digits/letters when reading back key info (phone,
 
 #### Example (general instruction section)
 
-```
+```text
 # Instructions/Rules
 - When reading numbers or codes, speak each character separately, separated by hyphens (e.g., 4-1-5).
 - Repeat EXACTLY the provided number; do not omit any digits.
@@ -85790,7 +86203,7 @@ Like GPT-4.1 and GPT-5, if the instructions are conflicting, ambiguous, or uncle
 
 Use the following prompt with GPT-5 to identify problematic areas in your prompt that you can fix.
 
-```
+```text
 ## Role & Objective
 You are a **Prompt-Critique Expert**.
 Examine a user-supplied LLM prompt and surface any weaknesses following the instructions below.
@@ -85826,7 +86239,7 @@ Review the prompt that is meant for an LLM to follow and identify the following 
 
 This meta-prompt helps you improve your base system prompt by targeting a specific failure mode. Provide the current prompt and describe the issue you’re seeing, the model (GPT-5) will suggest refined variants that tighten constraints and reduce the problem.
 
-```
+```text
 Here's my current prompt to an LLM:
 [BEGIN OF CURRENT PROMPT]
 {CURRENT_PROMPT}
@@ -85849,7 +86262,7 @@ Sometimes the model thinks it hears something and tries to respond. You can add 
 
 #### Example (coughing and unclear audio)
 
-```
+```text
 # Instructions/Rules
 ...
 
@@ -85876,7 +86289,7 @@ Occasionally, the model may generate unintended background music, humming, rhyth
 
 #### Example
 
-```
+```text
 # Instructions/Rules
 ...
 - Do not include any sound effects or onomatopoeic expressions in your responses.
@@ -85895,7 +86308,7 @@ Use this section to tell the model how to use your functions and tools. Spell ou
 
 #### Example
 
-```
+```text
 # Tools
 ## lookup_account(email_or_phone)
 ...
@@ -85933,7 +86346,7 @@ Some use cases could benefit from the Realtime model providing an audio response
 
 #### Example
 
-```
+```text
 # Tools
 - Before any tool call, say one short line like “I’m checking that now.” Then call the tool immediately.
 ```
@@ -86003,7 +86416,7 @@ Sometimes the model might ask for confirmation before a tool call. For some use 
 
 #### Example
 
-```
+```text
 # Tools
 - When calling a tool, do not ask for any user confirmation. Be proactive
 ```
@@ -86025,7 +86438,7 @@ As use cases grow more complex and the number of available tools increases, it b
 
 #### Example
 
-```
+```text
 # Tools
 - When you call any tools, you must output at the same time a response letting the user know that you are calling the tool.
 
@@ -86064,7 +86477,7 @@ You can fine-tune how the model behaves for specific tools instead of applying o
 
 #### Example
 
-```
+```text
 # TOOLS
 - For the tools marked PROACTIVE: do not ask for confirmation from the user and do not output a preamble.
 - For the tools marked as CONFIRMATION FIRST: always ask for confirmation to the user.
@@ -86158,7 +86571,7 @@ In many voice setups, the realtime model acts as the responder (speaks to the us
 
 #### Example
 
-```
+```text
 # Tools
 ## Supervisor Tool
 Name: getNextResponseFromSupervisor(relevantContextFromLastUserMessage: string)
@@ -86209,7 +86622,7 @@ Below are some of the important common tools that the model has been trained on:
 
 #### Example
 
-```
+```text
 # answer(question: string)
 Description: Call this when the customer asks a question that you don't have an answer to or asks to perform an action.
 
@@ -86234,7 +86647,7 @@ As well, by organizing your prompt into various conversation states, it becomes 
 
 #### Example
 
-```
+```text
 # Conversation Flow
 ## 1) Greeting
 Goal: Set tone and invite the reason for calling.
@@ -86298,7 +86711,7 @@ Sample phrases act as “anchor examples” for the model. They show the style, 
 
 #### Example
 
-```
+```text
 # Sample Phrases
 - Below are sample examples that you should use for inspiration. DO NOT ALWAYS USE THESE EXAMPLES, VARY YOUR RESPONSES.
 
@@ -86317,7 +86730,7 @@ It is a useful pattern to add sample phrases in the different conversation flow 
 
 #### Example
 
-```
+```text
 # Conversation Flow
 ## 1) Greeting
 Goal: Set tone and invite the reason for calling.
@@ -86587,7 +87000,7 @@ Often with Realtime voice agents, having a reliable way to escalate to a human i
 
 #### Example
 
-```
+```text
 # Safety & Escalation
 When to escalate (no extra troubleshooting):
 - Safety risk (self-harm, threats, harassment)
@@ -87823,6 +88236,7 @@ if err := conn.Send(ctx, realtime.RealtimeClientEventParamOfConversationItemCrea
 ```java
 import com.openai.client.okhttp.OkHttpClient;
 import com.openai.core.ClientOptions;
+import com.openai.core.JsonMissing;
 import com.openai.helpers.RealtimeConnection;
 import com.openai.helpers.RealtimeWebSocketOptions;
 import com.openai.models.realtime.*;
@@ -87832,6 +88246,7 @@ connection.send(
         ConversationItemCreateEvent.builder()
             .item(
                 RealtimeConversationItemUserMessage.builder()
+                    .object_(JsonMissing.of())
                     .addContent(
                         RealtimeConversationItemUserMessage.Content.builder()
                             .type(RealtimeConversationItemUserMessage.Content.Type.INPUT_TEXT)
@@ -88524,6 +88939,7 @@ if err := conn.Send(ctx, realtime.RealtimeClientEventParamOfConversationItemCrea
 ```java
 import com.openai.client.okhttp.OkHttpClient;
 import com.openai.core.ClientOptions;
+import com.openai.core.JsonMissing;
 import com.openai.helpers.RealtimeConnection;
 import com.openai.helpers.RealtimeWebSocketOptions;
 import com.openai.models.realtime.*;
@@ -88537,6 +88953,7 @@ static void sendAudioItem(RealtimeConnection connection, byte[] pcmAudio) throws
           ConversationItemCreateEvent.builder()
               .item(
                   RealtimeConversationItemUserMessage.builder()
+                      .object_(JsonMissing.of())
                       .addContent(
                           RealtimeConversationItemUserMessage.Content.builder()
                               .type(RealtimeConversationItemUserMessage.Content.Type.INPUT_AUDIO)
@@ -89312,6 +89729,7 @@ connection.send(
         ResponseCreateEvent.builder()
             .response(
                 RealtimeResponseCreateParams.builder()
+                    .addOutputModality(RealtimeResponseCreateParams.OutputModality.TEXT)
                     .input(List.of())
                     .instructions(
                         "Say exactly the following: I'm a little teapot, short and stout! This is my handle, this is my spout!")
@@ -90940,6 +91358,7 @@ if err := conn.Send(ctx, realtime.RealtimeClientEventUnionParam{
 ```java
 import com.openai.client.okhttp.OkHttpClient;
 import com.openai.core.ClientOptions;
+import com.openai.core.JsonMissing;
 import com.openai.core.JsonValue;
 import com.openai.helpers.RealtimeConnection;
 import com.openai.helpers.RealtimeWebSocketOptions;
@@ -90956,6 +91375,7 @@ static void sendFunctionCallOutput(RealtimeConnection connection, String callId)
           ConversationItemCreateEvent.builder()
               .item(
                   RealtimeConversationItemFunctionCallOutput.builder()
+                      .object_(JsonMissing.of())
                       .callId(callId)
                       .output("{\"status\":\"shipped\",\"delivery_date\":\"2026-05-09\"}")
                       .build())
@@ -90971,6 +91391,7 @@ static void sendFunctionCallOutput(RealtimeConnection connection, String callId)
                               .putAdditionalProperty(
                                   "topic", JsonValue.from("lookup_order_followup"))
                               .build())
+                      .addOutputModality(RealtimeResponseCreateParams.OutputModality.TEXT)
                       .toolChoice(ToolChoiceOptions.NONE)
                       .build())
               .build()));
@@ -91712,6 +92133,7 @@ func approveDocumentationSearch(
 ```java
 import com.openai.client.okhttp.OkHttpClient;
 import com.openai.core.ClientOptions;
+import com.openai.core.JsonMissing;
 import com.openai.helpers.RealtimeConnection;
 import com.openai.helpers.RealtimeWebSocketOptions;
 import com.openai.models.realtime.*;
@@ -91727,7 +92149,7 @@ static void approveMcpRequest(RealtimeConnection connection, String approvalRequ
           ConversationItemCreateEvent.builder()
               .item(
                   RealtimeMcpApprovalResponse.builder()
-                      .id("mcp_approval_" + approvalRequestId)
+                      .id(java.util.UUID.randomUUID().toString().replace("-", ""))
                       .approvalRequestId(approvalRequestId)
                       .approve(true)
                       .build())
@@ -91887,6 +92309,7 @@ if err := conn.Send(ctx, realtime.RealtimeClientEventUnionParam{
 ```java
 import com.openai.client.okhttp.OkHttpClient;
 import com.openai.core.ClientOptions;
+import com.openai.core.JsonMissing;
 import com.openai.helpers.RealtimeConnection;
 import com.openai.helpers.RealtimeWebSocketOptions;
 import com.openai.models.realtime.*;
@@ -91907,6 +92330,7 @@ connection.send(
                     .addOutputModality(RealtimeResponseCreateParams.OutputModality.TEXT)
                     .addInput(
                         RealtimeConversationItemUserMessage.builder()
+                            .object_(JsonMissing.of())
                             .addContent(
                                 RealtimeConversationItemUserMessage.Content.builder()
                                     .type(
@@ -94613,7 +95037,7 @@ To demonstrate reinforcement fine-tuning below, we'll fine-tune an [o4-mini](htt
 
 Example input question:
 
-```
+```text
 Do you have a dedicated security team?
 ```
 
@@ -94809,7 +95233,7 @@ Below, find some JSONL data you can use for both training and testing when you c
 
 **Training set**
 
-```
+```text
 {"messages":[{"role":"user","content":"Do you have a dedicated security team?"}],"compliant":"yes","explanation":"A dedicated security team follows strict protocols for handling incidents."}
 {"messages":[{"role":"user","content":"Have you undergone third-party security audits or penetration testing in the last 12 months?"}],"compliant":"needs review","explanation":"The policy does not explicitly mention undergoing third-party security audits or penetration testing. It only mentions SOC 2 and GDPR compliance."}
 {"messages":[{"role":"user","content":"Is your software SOC 2, ISO 27001, or similarly certified?"}],"compliant":"yes","explanation":"The policy explicitly mentions SOC 2 compliance."}
@@ -94817,7 +95241,7 @@ Below, find some JSONL data you can use for both training and testing when you c
 
 **Test set**
 
-```
+```text
 {"messages":[{"role":"user","content":"Will our data be encrypted at rest?"}],"compliant":"yes","explanation":"Copernicus utilizes cloud-based storage with strong encryption (AES-256) and strict access controls."}
 {"messages":[{"role":"user","content":"Will data transmitted to/from your services be encrypted in transit?"}],"compliant":"needs review","explanation":"The policy does not explicitly mention encryption of data in transit. It focuses on encryption in cloud storage."}
 {"messages":[{"role":"user","content":"Do you enforce multi-factor authentication (MFA) internally?"}],"compliant":"yes","explanation":"The policy explicitly mentions role-based authentication with multi-factor security."}
@@ -95501,7 +95925,7 @@ Prompt
 
 > Below is a piece of example data provided.
 
-```
+```text
 [
     {“name”: “BLOCK_SIZE”, “value”: “8”},
     {“name”: “ADDR_WIDTH”, “value”: “4”}
@@ -95670,7 +96094,7 @@ Prompt
 
     
 
-```
+```text
 ## Instructions
 You will be provided with a question and a text excerpt. Identify any passages in the text that are directly relevant to answering the question.
 - If there are no relevant passages, return an empty list.
@@ -95795,7 +96219,7 @@ Grader code
 
     
 
-```
+```text
 [+0.05] For correctly identifying Alex (33.33%), Barbara (33.33% → 20%), Chris (33.33%), and Dana (13.33%) ownership percentages
 [+0.1] For correctly calculating Barbara's annual allocation as 26.67% and Dana's as 6.67% without closing of books
 [+0.15] For properly allocating Alex ($300,000), Barbara ($240,030), Chris ($300,000), and Dana ($60,030) ordinary income
@@ -98444,9 +98868,9 @@ fmt.Println("Session:", sessionID)
 ```
 
 ```java
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.ObjectMappers;
 import com.openai.core.http.StreamResponse;
 import com.openai.models.beta.agents.AgentSessionEvent;
 import com.openai.models.beta.agents.EnvironmentParam;
@@ -98454,7 +98878,7 @@ import com.openai.models.beta.agents.sessions.SessionCreateParams;
 import com.openai.services.beta.agents.AgentTurnResults;
 
 OpenAIClient client = OpenAIOkHttpClient.fromEnv();
-var json = new JsonMapper();
+var json = ObjectMappers.jsonMapper();
 try (StreamResponse<AgentSessionEvent> events =
     client
         .beta()
@@ -98518,6 +98942,8 @@ curl --no-buffer --fail-with-body https://api.openai.com/v1/agents/sessions \\\n
 
 
 Store the `session_id` with your application's conversation state. Use it to send follow-up messages and retrieve saved work for that conversation.
+
+To enable automatic action review, set `review` to `"auto_review"` when creating an eligible session in a project with automatic review enabled. You can change the setting when the main task is idle and input submission has settled. See [Automatic review](https://developers.openai.com/api/docs/guides/agents-api/sessions/approvals) for the review modes, environment prerequisites, and approval behavior.
 
 See [Configuring Agents](https://developers.openai.com/api/docs/guides/agents-api/configuration) for reusable agent settings and [Architecture](https://developers.openai.com/api/docs/guides/agents-api/architecture) for environment choices. Sessions with `environment.type: "none"` require initial input. The [Create session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) lists the request fields.
 
@@ -100683,6 +101109,14 @@ Configure network access based on where each tool connection runs:
 - **Remote MCPs** connect from OpenAI's service. Their endpoints must be reachable from that service.
 
 See [MCP tools](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp) for connection options.
+
+## Review agent actions
+
+Enable [automatic review](https://developers.openai.com/api/docs/guides/agents-api/sessions/approvals) with the session-level `review: "auto_review"` setting to automatically approve or deny supported approval requests. Keep the environment's network restrictions and credential controls in place; automatic review does not replace them.
+
+Automatic review applies a permission profile with a workspace-write baseline and restricted network access. If you run the standard executor, your container must support sandboxing and permit Codex to create a sandbox. See [execution environment prerequisites](https://developers.openai.com/api/docs/guides/agents-api/sessions/approvals#prepare-the-execution-environment).
+
+Browser origin approvals and sign-in still require your application's existing handlers. See [Computer use](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use#handle-origin-access) for those workflows.
 
 
 
@@ -103831,6 +104265,8 @@ The executor registers with the API using an environment ID and a restricted API
 
 Prepare the files and dependencies your agent needs. Isolate environments by user or workload. Agents that share an environment can access the same files, credentials, and other resources.
 
+To enable automatic review with `review: "auto_review"`, run the standard executor in a container that supports sandboxing and permits Codex to create a sandbox. Automatic review applies a permission profile with a workspace-write baseline and restricted network access. Check the [automatic review prerequisites](https://developers.openai.com/api/docs/guides/agents-api/sessions/approvals#prepare-the-execution-environment) before enabling it.
+
 Create the working directory and install the Codex CLI inside the environment. This example uses `/workspace`:
 
 ```bash
@@ -106250,7 +106686,7 @@ var container =
                 .addSkill(
                     InlineSkill.builder()
                         .name("csv-insights")
-                        .description("Summarize CSV files and produce a markdown report.")
+                        .description("Summarize CSV files.")
                         .source(InlineSkillSource.builder().data(inlineZip).build())
                         .build())
                 .build());
@@ -106600,9 +107036,11 @@ ResponseCreateParams params =
     ResponseCreateParams.builder()
         .model("gpt-6-astra")
         .input(
-            "Use curl to call https://httpbin.org/status/204 with an "
-                + "Authorization: Bearer $API_KEY header. Print only the HTTP status code; "
-                + "never print request headers or secret values.")
+            "Run exactly this one shell command, without additional commands:\n"
+                + "curl -q -sS -o /dev/null -w '%{http_code}' "
+                + "-H 'Authorization: Bearer $API_KEY' https://httpbin.org/status/204\n"
+                + "Keep the header single-quoted so $API_KEY remains literal. "
+                + "Return only the HTTP status code. Never print request headers or secret values.")
         .toolChoice(ToolChoiceOptions.REQUIRED)
         .addTool(
             FunctionShellTool.builder()
@@ -108368,7 +108806,7 @@ If you're using our SDK, every event is a typed instance. You can also identity 
 
 Some key lifecycle events are emitted only once, while others are emitted multiple times as the response is generated. Common events to listen for when streaming text are:
 
-```
+```text
 - `response.created`
 - `response.output_text.delta`
 - `response.completed`
@@ -109697,8 +110135,40 @@ import com.openai.models.responses.ResponseCreateParams;
 import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
 import com.openai.models.responses.ResponseInputItem;
 import com.openai.models.responses.ResponseTextConfig;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+Map<String, Object> attributeProperties = new LinkedHashMap<>();
+attributeProperties.put("name", Map.of("type", "string"));
+attributeProperties.put("value", Map.of("type", "string"));
+
+// Structured Outputs preserves the order of the schema's properties.
+Map<String, Object> properties = new LinkedHashMap<>();
+properties.put(
+    "type",
+    Map.of(
+        "type",
+        "string",
+        "enum",
+        List.of("div", "button", "header", "section", "field", "form")));
+properties.put("label", Map.of("type", "string"));
+properties.put("children", Map.of("type", "array", "items", Map.of("$ref", "#")));
+properties.put(
+    "attributes",
+    Map.of(
+        "type",
+        "array",
+        "items",
+        Map.of(
+            "type",
+            "object",
+            "properties",
+            attributeProperties,
+            "required",
+            List.of("name", "value"),
+            "additionalProperties",
+            false)));
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
@@ -109725,41 +110195,7 @@ ResponseCreateParams params =
                         .schema(
                             ResponseFormatTextJsonSchemaConfig.Schema.builder()
                                 .putAdditionalProperty("type", JsonValue.from("object"))
-                                .putAdditionalProperty(
-                                    "properties",
-                                    JsonValue.from(
-                                        Map.of(
-                                            "type",
-                                                Map.of(
-                                                    "type",
-                                                    "string",
-                                                    "enum",
-                                                    List.of(
-                                                        "div", "button", "header", "section",
-                                                        "field", "form")),
-                                            "label", Map.of("type", "string"),
-                                            "children",
-                                                Map.of(
-                                                    "type",
-                                                    "array",
-                                                    "items",
-                                                    Map.of("$ref", "#")),
-                                            "attributes",
-                                                Map.of(
-                                                    "type",
-                                                    "array",
-                                                    "items",
-                                                    Map.of(
-                                                        "type",
-                                                        "object",
-                                                        "properties",
-                                                        Map.of(
-                                                            "name", Map.of("type", "string"),
-                                                            "value", Map.of("type", "string")),
-                                                        "required",
-                                                        List.of("name", "value"),
-                                                        "additionalProperties",
-                                                        false)))))
+                                .putAdditionalProperty("properties", JsonValue.from(properties))
                                 .putAdditionalProperty(
                                     "required",
                                     JsonValue.from(
@@ -113230,7 +113666,7 @@ JSONL format example file
 
 An example of JSONL training data, where the model calls a `get_weather` function:
 
-```
+```text
 {"messages":[{"role":"user","content":"What is the weather in San Francisco?"},{"role":"assistant","tool_calls":[{"id":"call_id","type":"function","function":{"name":"get_current_weather","arguments":"{\"location\": \"San Francisco, USA\", \"format\": \"celsius\"}"}}]}],"parallel_tool_calls":false,"tools":[{"type":"function","function":{"name":"get_current_weather","description":"Get the current weather","parameters":{"type":"object","properties":{"location":{"type":"string","description":"The city and country, eg. San Francisco, USA"},"format":{"type":"string","enum":["celsius","fahrenheit"]}},"required":["location","format"]}}}]}
 {"messages":[{"role":"user","content":"What is the weather in Minneapolis?"},{"role":"assistant","tool_calls":[{"id":"call_id","type":"function","function":{"name":"get_current_weather","arguments":"{\"location\": \"Minneapolis, USA\", \"format\": \"celsius\"}"}}]}],"parallel_tool_calls":false,"tools":[{"type":"function","function":{"name":"get_current_weather","description":"Get the current weather","parameters":{"type":"object","properties":{"location":{"type":"string","description":"The city and country, eg. Minneapolis, USA"},"format":{"type":"string","enum":["celsius","fahrenheit"]}},"required":["location","format"]}}}]}
 {"messages":[{"role":"user","content":"What is the weather in San Diego?"},{"role":"assistant","tool_calls":[{"id":"call_id","type":"function","function":{"name":"get_current_weather","arguments":"{\"location\": \"San Diego, USA\", \"format\": \"celsius\"}"}}]}],"parallel_tool_calls":false,"tools":[{"type":"function","function":{"name":"get_current_weather","description":"Get the current weather","parameters":{"type":"object","properties":{"location":{"type":"string","description":"The city and country, eg. San Diego, USA"},"format":{"type":"string","enum":["celsius","fahrenheit"]}},"required":["location","format"]}}}]}
@@ -113959,7 +114395,7 @@ your webhook will be fired. The event fired will be a
 [`realtime.call.incoming`](https://developers.openai.com/api/reference/resources/webhooks) event,
 like the example below:
 
-```
+```text
 POST https://my_website.com/webhook_endpoint
 user-agent: OpenAI/1.0 (+https://platform.openai.com/docs/webhooks)
 content-type: application/json
@@ -118439,7 +118875,7 @@ Avoid:
 
 For coding or agentic migrations, add concrete preservation and verification rules:
 
-```
+```text
 Preserve existing functionality, routes, outputs, and user-visible behavior.
 Do not delete or disable required behavior merely to make the build pass.
 Before finishing, run the relevant build, tests, type checks, render or smoke
@@ -128164,7 +128600,8 @@ import com.openai.models.embeddings.EmbeddingCreateParams;
 import java.util.List;
 
 private static List<Double> normalizeL2(List<Float> embedding) {
-  double norm = Math.sqrt(embedding.stream().mapToDouble(value -> value * value).sum());
+  double norm =
+      Math.sqrt(embedding.stream().mapToDouble(value -> value.doubleValue() * value).sum());
   return embedding.stream().map(value -> norm == 0 ? 0.0 : value / norm).toList();
 }
 
@@ -129103,9 +129540,11 @@ var nearestNeighbors =
                   double queryMagnitude = 0;
                   double candidateMagnitude = 0;
                   for (int dimension = 0; dimension < query.size(); dimension++) {
-                    dotProduct += query.get(dimension) * candidate.get(dimension);
-                    queryMagnitude += query.get(dimension) * query.get(dimension);
-                    candidateMagnitude += candidate.get(dimension) * candidate.get(dimension);
+                    double queryValue = query.get(dimension);
+                    double candidateValue = candidate.get(dimension);
+                    dotProduct += queryValue * candidateValue;
+                    queryMagnitude += queryValue * queryValue;
+                    candidateMagnitude += candidateValue * candidateValue;
                   }
                   return 1 - dotProduct / Math.sqrt(queryMagnitude * candidateMagnitude);
                 }))
@@ -131932,7 +132371,7 @@ With your webhook endpoint created, you'll next set up a server-side endpoint to
 
 When an event happens that you're subscribed to, your webhook URL will receive an HTTP POST request like this:
 
-```
+```text
 POST https://yourserver.com/webhook
 user-agent: OpenAI/1.0 (+https://platform.openai.com/docs/webhooks)
 content-type: application/json
@@ -131966,7 +132405,7 @@ While you can receive webhook events from OpenAI and process the results without
 
 When you create a webhook endpoint in the OpenAI dashboard, you'll be given a signing secret that you should make available on your server as an environment variable:
 
-```
+```bash
 export OPENAI_WEBHOOK_SECRET="<your secret here>"
 ```
 
@@ -132142,7 +132581,7 @@ Creating a WebRTC session with `POST /v1/live/sessions` bills 15 seconds of voic
 
 Save the server example in a new directory and set `OPENAI_API_KEY` in its environment. For Node.js, use `server.mjs` and install `openai` and `express` with `npm install openai express`. For Python, install `openai`. This example binds to `127.0.0.1`, accepts session requests from `http://localhost:3000`, and serves `index.html` from the directory where you run it.
 
-For Go, save the example as `main.go`, initialize a module with `go mod init live-demo`, and install `github.com/openai/openai-go/v3@v3.85.1` with `go get`. Run `go run .` with Go 1.26 or later. For Java, use Java 17 or later, add the Maven dependency `com.openai:openai-java:4.90.0`, and run the `LiveConnectionWebrtcExample` class. For Ruby 3.3 or later, install `openai` 0.110.0 and `webrick` with `gem install openai -v 0.110.0` and `gem install webrick`, save the example as `server.rb`, and run `ruby server.rb`.
+For Go, save the example as `main.go`, initialize a module with `go mod init live-demo`, and install `github.com/openai/openai-go/v3@v3.85.1` with `go get`. Run `go run .` with Go 1.26 or later. For Java, use Java 17 or later, add the Maven dependency `com.openai:openai-java:4.95.0`, and run the `LiveConnectionWebrtcExample` class. For Ruby 3.3 or later, install `openai` 0.110.0 and `webrick` with `gem install openai -v 0.110.0` and `gem install webrick`, save the example as `server.rb`, and run `ruby server.rb`.
 
 Choose a server language below; each variant serves `index.html` and the same `/api/session` endpoint on port 3000. Use an SDK version with Live support. Run only one variant at a time.
 
@@ -133156,19 +133595,24 @@ Some integrations require one combined field-trial string:
 WebRTC-ForceDtls13/Enabled/WebRTC-Sctp-Snap/Enabled/WebRTC-IceHandshakeDtls/Enabled/
 ```
 
-Initialize the field trials before creating the peer connection factory. For example, a Rust integration can enable all three trials together:
+Initialize field trials before creating the peer connection factory. Wrappers can expose narrower options. For example, `webrtc-sys` 0.3.51 enables SPED on the factory and SNAP through the connection configuration:
 
 ```rust
-const WARP_FIELD_TRIALS: &str = concat!(
-    "WebRTC-ForceDtls13/Enabled/",
-    "WebRTC-Sctp-Snap/Enabled/",
-    "WebRTC-IceHandshakeDtls/Enabled/",
-);
+use webrtc_sys::peer_connection::ffi::{
+    ContinualGatheringPolicy, IceTransportsType, RtcConfiguration,
+};
+use webrtc_sys::peer_connection_factory::ffi::create_peer_connection_factory_with_options;
 
-webrtc_sys::peer_connection_factory::ffi::initialize_field_trials(
-    WARP_FIELD_TRIALS.to_string(),
-);
+// The wrapper enables SPED on the factory; SNAP is an immutable connection option.
+let factory = create_peer_connection_factory_with_options(false, true);
+let configuration = RtcConfiguration {
+    ice_servers: vec![],
+    continual_gathering_policy: ContinualGatheringPolicy::GatherOnce,
+    ice_transport_type: IceTransportsType::All,
+    enable_sctp_snap: true,
+};
 ```
+
 
 If you use an SDK that wraps `libwebrtc`, such as a native LiveKit SDK, pass the same field-trial string through its WebRTC configuration or initialization options. If the SDK doesn't expose field trials, initialize the underlying `libwebrtc` instance before the SDK creates its peer connection factory, or update to a wrapper that provides this configuration.
 
@@ -134674,7 +135118,7 @@ The example below uses Marin, PCM16 audio at 24 kHz, and a Responses backend wit
 
 For Node.js, install `openai` and `ws` with `npm install openai ws` and save the JavaScript example as `client.mjs`. For Python on macOS or Linux, install `openai[realtime]` and save the Python example as `client.py`. Set `OPENAI_API_KEY` in the server environment. These examples require an SDK version with Live support. The example reads raw, mono PCM16 audio at 24 kHz from standard input and writes returned audio in the same format to standard output. Connect these streams to your application's audio capture and playback. Logs and transcript events go to standard error so they do not corrupt the audio stream.
 
-For Go, use Go 1.26 or later, save the example as `main.go`, initialize a module with `go mod init live-demo`, and install `github.com/openai/openai-go/v3@v3.85.1` with `go get`. For Java, use Java 17 or later, add the Maven dependency `com.openai:openai-java:4.90.0`, and use the `LiveConnectionWebsocketExample` class. For Ruby 3.3 or later, install the SDK with `gem install openai -v 0.110.0`, install its WebSocket dependency with `gem install async-websocket`, and save the example as `client.rb`.
+For Go, use Go 1.26 or later, save the example as `main.go`, initialize a module with `go mod init live-demo`, and install `github.com/openai/openai-go/v3@v3.85.1` with `go get`. For Java, use Java 17 or later, add the Maven dependency `com.openai:openai-java:4.95.0`, and use the `LiveConnectionWebsocketExample` class. For Ruby 3.3 or later, install the SDK with `gem install openai -v 0.110.0`, install its WebSocket dependency with `gem install async-websocket`, and save the example as `client.rb`.
 
 ```javascript
 import OpenAI from "openai";
@@ -136353,6 +136797,7 @@ print(run)
 
 ```java
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.ReasoningEffort;
 import com.openai.models.evals.runs.*;
 
 // Replace these illustrative IDs with your eval and uploaded dataset file.
@@ -136370,6 +136815,11 @@ var run =
                             RunCreateParams.DataSource.CreateEvalResponsesRunDataSource.Type
                                 .RESPONSES)
                         .model("gpt-6-astra")
+                        .samplingParams(
+                            RunCreateParams.DataSource.CreateEvalResponsesRunDataSource
+                                .SamplingParams.builder()
+                                .reasoningEffort(ReasoningEffort.LOW)
+                                .build())
                         .inputMessages(
                             RunCreateParams.DataSource.CreateEvalResponsesRunDataSource
                                 .InputMessages.Template.builder()
@@ -138130,7 +138580,7 @@ Execute the code with `python example.py`. In a few moments, you should see the 
 
 In collaboration with Microsoft, OpenAI provides an officially supported API client for C#. You can install it with the .NET CLI from [NuGet](https://www.nuget.org/).
 
-```
+```bash
 dotnet add package OpenAI
 ```
 
@@ -139458,7 +139908,7 @@ On free Replit accounts, server URLs are active for as long as the editor is act
 
 In the long dev URL, ensure it ends with `/sse/`, which is the server-sent events (streaming) interface to the MCP server. This is the URL you will use to connect your app in ChatGPT and call it via API. An example Replit URL looks like:
 
-```
+```text
 https://777xxx.janeway.replit.dev/sse/
 ```
 
@@ -139639,20 +140089,10 @@ Standard
 | gpt-5-pro | $15.00 | $120.00 | - |
 | gpt-4.1 | $2.00 | $8.00 | $0.50 |
 | gpt-4.1-mini | $0.40 | $1.60 | $0.10 |
-| gpt-4.1-nano | $0.10 | $0.40 | $0.025 |
 | gpt-4o | $2.50 | $10.00 | $1.25 |
-| gpt-4o-2024-05-13 | $5.00 | $15.00 | - |
 | gpt-4o-mini | $0.15 | $0.60 | $0.075 |
-| o1 | $15.00 | $60.00 | $7.50 |
-| o1-pro | $150.00 | $600.00 | - |
 | o3-pro | $20.00 | $80.00 | - |
 | o3 | $2.00 | $8.00 | $0.50 |
-| o4-mini | $1.10 | $4.40 | $0.275 |
-| o3-mini | $1.10 | $4.40 | $0.55 |
-| gpt-4-turbo-2024-04-09 | $10.00 | $30.00 | - |
-| gpt-4-0613 | $30.00 | $60.00 | - |
-| gpt-3.5-turbo | $0.50 | $1.50 | - |
-| gpt-3.5-turbo-0125 | $0.50 | $1.50 | - |
 
     
 
@@ -139695,19 +140135,10 @@ Batch
 | gpt-5-pro | $7.50 | $60.00 | - |
 | gpt-4.1 | $1.00 | $4.00 | - |
 | gpt-4.1-mini | $0.20 | $0.80 | - |
-| gpt-4.1-nano | $0.05 | $0.20 | - |
 | gpt-4o | $1.25 | $5.00 | - |
-| gpt-4o-2024-05-13 | $2.50 | $7.50 | - |
 | gpt-4o-mini | $0.075 | $0.30 | - |
-| o1 | $7.50 | $30.00 | - |
-| o1-pro | $75.00 | $300.00 | - |
 | o3-pro | $10.00 | $40.00 | - |
 | o3 | $1.00 | $4.00 | - |
-| o4-mini | $0.55 | $2.20 | - |
-| o3-mini | $0.55 | $2.20 | - |
-| gpt-4-turbo-2024-04-09 | $5.00 | $15.00 | - |
-| gpt-4-0613 | $15.00 | $30.00 | - |
-| gpt-3.5-turbo-0125 | $0.25 | $0.75 | - |
 
 #### Flex
 
@@ -139736,7 +140167,6 @@ Batch
 | gpt-5-mini | $0.125 | $1.00 | $0.0125 |
 | gpt-5-nano | $0.025 | $0.20 | $0.0025 |
 | o3 | $1.00 | $4.00 | $0.25 |
-| o4-mini | $0.55 | $2.20 | $0.138 |
 
     
 
@@ -139771,12 +140201,9 @@ Fast
 | gpt-5-mini | $0.45 | $3.60 | $0.045 |
 | gpt-4.1 | $3.50 | $14.00 | $0.875 |
 | gpt-4.1-mini | $0.70 | $2.80 | $0.175 |
-| gpt-4.1-nano | $0.20 | $0.80 | $0.05 |
 | gpt-4o | $4.25 | $17.00 | $2.125 |
-| gpt-4o-2024-05-13 | $8.75 | $26.25 | - |
 | gpt-4o-mini | $0.25 | $1.00 | $0.125 |
 | o3 | $3.50 | $14.00 | $0.875 |
-| o4-mini | $2.00 | $8.00 | $0.50 |
 
     
 
@@ -140183,16 +140610,10 @@ Standard
 
 | Model | Training | Input | Output | Cached input |
 | --- | --- | --- | --- | --- |
-| o4-mini-2025-04-16 | $100.00 / hour | $4.00 | $16.00 | $1.00 |
-| o4-mini-2025-04-16 (data sharing) | $100.00 / hour | $2.00 | $8.00 | $0.50 |
 | gpt-4.1-2025-04-14 | $25.00 | $3.00 | $12.00 | $0.75 |
 | gpt-4.1-mini-2025-04-14 | $5.00 | $0.80 | $3.20 | $0.20 |
-| gpt-4.1-nano-2025-04-14 | $1.50 | $0.20 | $0.80 | $0.05 |
 | gpt-4o-2024-08-06 | $25.00 | $3.75 | $15.00 | $1.875 |
 | gpt-4o-mini-2024-07-18 | $3.00 | $0.30 | $1.20 | $0.15 |
-| gpt-3.5-turbo (legacy) | $8.00 | $3.00 | $6.00 | - |
-| davinci-002 (legacy) | $6.00 | $12.00 | $12.00 | - |
-| babbage-002 (legacy) | $0.40 | $1.60 | $1.60 | - |
 
     
 
@@ -140207,16 +140628,10 @@ Batch
 
 | Model | Training | Input | Output | Cached input |
 | --- | --- | --- | --- | --- |
-| o4-mini-2025-04-16 | $100.00 / hour | $2.00 | $8.00 | $0.50 |
-| o4-mini-2025-04-16 (data sharing) | $100.00 / hour | $1.00 | $4.00 | $0.25 |
 | gpt-4.1-2025-04-14 | $25.00 | $1.50 | $6.00 | $0.50 |
 | gpt-4.1-mini-2025-04-14 | $5.00 | $0.40 | $1.60 | $0.10 |
-| gpt-4.1-nano-2025-04-14 | $1.50 | $0.10 | $0.40 | $0.025 |
 | gpt-4o-2024-08-06 | $25.00 | $2.225 | $12.50 | $0.90 |
 | gpt-4o-mini-2024-07-18 | $3.00 | $0.15 | $0.60 | $0.075 |
-| gpt-3.5-turbo (legacy) | $8.00 | $1.50 | $3.00 | - |
-| davinci-002 (legacy) | $6.00 | $6.00 | $6.00 | - |
-| babbage-002 (legacy) | $0.40 | $0.80 | $0.90 | - |
 
 
 
@@ -140391,7 +140806,7 @@ Execute the code with `python example.py`. In a few moments, you should see the 
 
 In collaboration with Microsoft, OpenAI provides an officially supported API client for C#. You can install it with the .NET CLI from [NuGet](https://www.nuget.org/).
 
-```
+```bash
 dotnet add package OpenAI
 ```
 
