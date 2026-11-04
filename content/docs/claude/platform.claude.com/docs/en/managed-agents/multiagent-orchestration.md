@@ -299,6 +299,8 @@ When [defining your agent](https://platform.claude.com/docs/en/managed-agents/ag
 
 Before you change an existing agent’s `multiagent.type`, see [how to move an agent to this type](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#move-from-the-coordinator-type).
 
+This example also disables web search and web fetch, because reviewing contracts doesn’t use the web:
+
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
     ```bash CLI
@@ -312,6 +314,11 @@ Before you change an existing agent’s `multiagent.type`, see [how to move an a
       model: claude-opus-5-5
       tools:
         - type: agent_toolset_20260401
+          configs:
+            - name: web_search
+              enabled: false
+            - name: web_fetch
+              enabled: false
       multiagent:
         type: multiagent_20261001
         workflows:

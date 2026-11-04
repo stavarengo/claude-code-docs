@@ -34,6 +34,12 @@ Requests whose requester is no longer a member are excluded.
 
   Filter by status. Omit to return all.
 
+  - `"approved"`
+
+  - `"denied"`
+
+  - `"pending"`
+
 ### Returns
 
 - `BetaSpendLimitIncreaseRequestListResponse: object`
@@ -135,12 +141,6 @@ Requests whose requester is no longer a member are excluded.
       - `period: "daily" or "monthly" or "weekly"`
 
         Period this row's effective limit and spend are reported for.
-
-        - `"daily"`
-
-        - `"monthly"`
-
-        - `"weekly"`
 
       - `period_to_date_spend: string`
 
@@ -421,12 +421,6 @@ requester at the request's period.
 
       Period this row's effective limit and spend are reported for.
 
-      - `"daily"`
-
-      - `"monthly"`
-
-      - `"weekly"`
-
     - `period_to_date_spend: string`
 
       The member's spend so far in the current period, as a non-negative decimal string in the minor unit of `currency` (cents for USD). May carry fractional minor units up to three decimal places (e.g. `"12050.5"`) — metered usage is not rounded to whole cents. Reads as `"0"` when the spend reading is temporarily unavailable.
@@ -606,7 +600,13 @@ the member was blocked on. Anthropic emails the requester unless
 
   New per-user spend limit as a non-negative integer decimal string (minor units).
 
-- `--period: optional "daily" or "monthly" or "weekly"`
+- `--period: optional BetaSpendLimitPeriod`
+
+  - `"daily"`
+
+  - `"monthly"`
+
+  - `"weekly"`
 
 - `--suppress-notification: optional boolean`
 
@@ -716,12 +716,6 @@ the member was blocked on. Anthropic emails the requester unless
 
       Length of the window the limit resets over. `amount` caps spend within each period.
 
-      - `"daily"`
-
-      - `"monthly"`
-
-      - `"weekly"`
-
     - `scope: BetaSpendLimitUserScope or BetaSpendLimitSeatTierScope or BetaSpendLimitRBACGroupScope or 4 more`
 
       What the limit applies to. A tagged union on `type`; each variant carries the identifier for its scope.
@@ -817,12 +811,6 @@ the member was blocked on. Anthropic emails the requester unless
     - `period: "daily" or "monthly" or "weekly"`
 
       Period this row's effective limit and spend are reported for.
-
-      - `"daily"`
-
-      - `"monthly"`
-
-      - `"weekly"`
 
     - `period_to_date_spend: string`
 
@@ -1079,12 +1067,6 @@ Idempotent on `denied`; denying an already-`approved` request returns
     - `period: "daily" or "monthly" or "weekly"`
 
       Period this row's effective limit and spend are reported for.
-
-      - `"daily"`
-
-      - `"monthly"`
-
-      - `"weekly"`
 
     - `period_to_date_spend: string`
 
@@ -1343,12 +1325,6 @@ ant beta:organization:spend-limits:increase-requests deny \
     - `period: "daily" or "monthly" or "weekly"`
 
       Period this row's effective limit and spend are reported for.
-
-      - `"daily"`
-
-      - `"monthly"`
-
-      - `"weekly"`
 
     - `period_to_date_spend: string`
 

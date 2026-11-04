@@ -27,11 +27,27 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
   Time-bucket granularity. When set, each row's `starting_at` and `ending_at` are populated and one actor may span several rows (one per time bucket with usage). The time bucket counts toward `limit`, so one page can return multiple rows for the same actor. `ending_at` is required when `bucket_width` is set, and with `bucket_width="1m"` the range may span at most 24 hours. When omitted, each row aggregates the full `[starting_at, ending_at)` range.
 
+  - `"1d"`
+
+  - `"1h"`
+
+  - `"1m"`
+
 - `--claude-tag-category: optional array of BetaAnalyticsClaudeTagCategory` (query parameter)
 
   Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. `dm` usage is reported under the user's product rather than `claude-tag`, so combining this filter with `products[]=claude-tag` excludes it. Use `group_by[]=claude_tag_category` to break out per-category values.
 
   maxItems: 100
+
+  - `"dm"`
+
+  - `"engaged"`
+
+  - `"monitoring"`
+
+  - `"proactive"`
+
+  - `"scheduled"`
 
 - `--claude-tag-user-id: optional array of string` (query parameter)
 
@@ -44,6 +60,10 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
   Filter to specific context-window pricing tiers. Use `group_by[]=context_window` to break out per-tier values.
 
   maxItems: 100
+
+  - `"0-200k"`
+
+  - `"200k-1M"`
 
 - `--ending-at: optional string` (query parameter)
 
@@ -61,11 +81,35 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
   maxItems: 100
 
+  - `"claude_tag_category"`
+
+  - `"claude_tag_user_id"`
+
+  - `"context_window"`
+
+  - `"inference_geo"`
+
+  - `"model"`
+
+  - `"product"`
+
+  - `"rbac_group_id"`
+
+  - `"slack_channel_id"`
+
+  - `"speed"`
+
 - `--inference-geo: optional array of BetaAnalyticsInferenceGeoFilter` (query parameter)
 
   Filter to specific inference regions. `not_available` matches rows where the region is unset. Use `group_by[]=inference_geo` to break out per-region values.
 
   maxItems: 100
+
+  - `"global"`
+
+  - `"not_available"`
+
+  - `"us"`
 
 - `--limit: optional number` (query parameter)
 
@@ -83,9 +127,21 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
   Sort direction. Defaults to `desc`.
 
+  - `"asc"`
+
+  - `"desc"`
+
 - `--order-by: optional "output_tokens" or "requests" or "total_tokens" or "uncached_input_tokens"` (query parameter)
 
   Metric to rank actors by. Defaults to `total_tokens`.
+
+  - `"output_tokens"`
+
+  - `"requests"`
+
+  - `"total_tokens"`
+
+  - `"uncached_input_tokens"`
 
 - `--page: optional string` (query parameter)
 
@@ -96,6 +152,22 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
   Product surfaces to include. Defaults to all products.
 
   maxItems: 100
+
+  - `"chat"`
+
+  - `"chat_cowork_unified"`
+
+  - `"claude-tag"`
+
+  - `"claude_code"`
+
+  - `"claude_design"`
+
+  - `"claude_in_chrome"`
+
+  - `"cowork"`
+
+  - `"office_agent"`
 
 - `--rbac-group-id: optional array of string` (query parameter)
 
@@ -114,6 +186,10 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
   Filter to fast or standard inference mode. Use `group_by[]=speed` to break out per-mode values.
 
   maxItems: 100
+
+  - `"fast"`
+
+  - `"standard"`
 
 - `--user-id: optional array of string` (query parameter)
 

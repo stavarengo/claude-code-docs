@@ -17,9 +17,11 @@ Create Action URL
 
   The ID of the user profile the action is for (`uprof_...`).
 
-- `--action: object`
+- `--action: UserProfileEnrollEndUserAction`
 
   The action that the person who opens the URL takes.
+
+  - `type: "enroll_end_user"`
 
 - `--workspace-id: optional string` (header parameter)
 

@@ -41,6 +41,10 @@ accounts.
 
   Org-level role. Defaults to `developer`.
 
+  - `"admin"`
+
+  - `"developer"`
+
 ### Returns
 
 - `service_account: object`
@@ -381,6 +385,10 @@ interactive credential (a user OAuth token or a Console session).
 
   Replaces the org-level role. Omit or send `null` to leave unchanged.
 
+  - `"admin"`
+
+  - `"developer"`
+
 ### Returns
 
 - `service_account: object`
@@ -702,9 +710,17 @@ rejected.
 
   Tagged workspace ID to add the service account to.
 
-- `--workspace-role: "workspace_admin" or "workspace_developer" or "workspace_restricted_developer" or "workspace_user"`
+- `--workspace-role: NoBillingWorkspaceRole`
 
   Role to assign to the service account in this workspace.
+
+  - `"workspace_admin"`
+
+  - `"workspace_developer"`
+
+  - `"workspace_restricted_developer"`
+
+  - `"workspace_user"`
 
 #### Returns
 

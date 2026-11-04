@@ -578,7 +578,7 @@ For streaming responses, citations arrive as a `citations_delta` delta type insi
 
 <CardGroup cols={2}>
   <Card title="Streaming messages" icon="wifi-high" href="https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli">
-    Handle the `citations_delta` delta type alongside text deltas to render cited responses as they stream.
+    Learn the event flow and the other content block delta types that arrive alongside `citations_delta`.
   </Card>
 
   <Card title="Search results" icon="book-bookmark" href="https://platform.claude.com/docs/en/build-with-claude/search-results?sdk_languages=cli">

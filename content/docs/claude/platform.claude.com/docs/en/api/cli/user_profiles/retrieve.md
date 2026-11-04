@@ -133,18 +133,6 @@ Get User Profile
 
         Why Anthropic placed the limit: `unsupported_region`, `fraud_or_abuse`, `high_harm`, `usage_policy_violation`, `account_compromise` or `unspecified`.
 
-        - `"unsupported_region"`
-
-        - `"fraud_or_abuse"`
-
-        - `"high_harm"`
-
-        - `"usage_policy_violation"`
-
-        - `"account_compromise"`
-
-        - `"unspecified"`
-
   - `enforcement_status: "unrestricted" or "pending" or "restricted" or "banned"`
 
     Anthropic's enforcement status of this profile, from its open enforcement actions and any identity check under review, by the first rule that applies: `banned` while any open action is a `ban`; `pending` while a restriction that an identity check can clear is open, the end user has submitted that check, Anthropic's review of it has not ended, and no open action's `reason` is `account_compromise`; `restricted` while any action is open; `unrestricted` while none is. Absent under the `user-profiles-2026-09-04` and earlier beta headers.
@@ -286,18 +274,6 @@ Get User Profile
       - `status: "active" or "pending" or "rejected"`
 
         Anthropic's decision on the entity the profile represents: `pending` while it is awaited, `active` once Anthropic has approved the entity for the program, or `rejected` once Anthropic has declined or has removed the entity from the program. `active` does not mean that any one feature is approved: read the feature you need in `features`.
-
-        - `"active"`
-
-          The profile is in the program.
-
-        - `"pending"`
-
-          The profile is not in the program yet, and something is still awaited.
-
-        - `"rejected"`
-
-          The profile is not in the program and nothing is awaited: Anthropic has declined, or has withdrawn an earlier approval.
 
   - `updated_at: string`
 

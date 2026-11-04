@@ -122,12 +122,6 @@ Idempotent on `denied`; denying an already-`approved` request returns
 
       Period this row's effective limit and spend are reported for.
 
-      - `"daily"`
-
-      - `"monthly"`
-
-      - `"weekly"`
-
     - `period_to_date_spend: string`
 
       The member's spend so far in the current period, as a non-negative decimal string in the minor unit of `currency` (cents for USD). May carry fractional minor units up to three decimal places (e.g. `"12050.5"`) — metered usage is not rounded to whole cents. Reads as `"0"` when the spend reading is temporarily unavailable.

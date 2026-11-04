@@ -37,6 +37,34 @@ Changes take effect within about an hour.
 
   minItems: 1, maxItems: 16
 
+  - `type: "fast_itpmca" or "fast_otpm" or "input_tokens_per_minute" or 6 more`
+
+    Rate limiter type.
+
+    - `"fast_itpmca"`
+
+    - `"fast_otpm"`
+
+    - `"input_tokens_per_minute"`
+
+    - `"input_tokens_per_minute_cache_aware"`
+
+    - `"output_tokens_per_minute"`
+
+    - `"requests_per_minute"`
+
+    - `"tokens_per_day"`
+
+    - `"tokens_per_minute"`
+
+    - `"tool_uses_per_second"`
+
+  - `value: number`
+
+    New limit value. Set to null to clear the workspace override and fall back to the organization limit.
+
+    minimum: 0, maximum: 9007199254740991
+
 ## Returns
 
 - `workspace_rate_limit: object`

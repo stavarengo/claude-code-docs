@@ -47,6 +47,52 @@ matched as the JWT's `iss` claim and is not fetched.
 
   How signing keys are obtained. Defaults to OIDC discovery.
 
+  - `jwks_discovery: object`
+
+    JWKS via the issuer's OIDC discovery document.
+
+    - `type: "discovery"`
+
+    - `ca_cert_pem: optional string`
+
+      Optional custom CA (PEM) for TLS verification of the JWKS fetch.
+
+      maxLength: 8192
+
+    - `discovery_base: optional string`
+
+      Set when the discovery URL differs from `issuer_url`.
+
+  - `jwks_explicit_url: object`
+
+    JWKS fetched from a fixed endpoint.
+
+    - `type: "explicit_url"`
+
+    - `url: string`
+
+      JWKS endpoint.
+
+      minLength: 1
+
+    - `ca_cert_pem: optional string`
+
+      Optional custom CA (PEM) for TLS verification of the JWKS fetch.
+
+      maxLength: 8192
+
+  - `jwks_inline: object`
+
+    JWKS supplied directly; no network fetch.
+
+    - `type: "inline"`
+
+    - `keys: array of map[unknown]`
+
+      Inline JWK objects.
+
+      minItems: 1
+
 - `--max-jwt-lifetime-seconds: optional number`
 
   Maximum allowed iat→exp spread for assertions from this issuer (1-176400 seconds, i.e. up to 49h). Defaults to 3600 (1h). Assertions must carry both `iat` and `exp`; a missing `iat` is rejected.
@@ -661,6 +707,52 @@ session.
 - `--jwks: optional JWKSDiscovery or JWKSExplicitURL or JWKSInline`
 
   Replaces the entire JWKS configuration.
+
+  - `jwks_discovery: object`
+
+    JWKS via the issuer's OIDC discovery document.
+
+    - `type: "discovery"`
+
+    - `ca_cert_pem: optional string`
+
+      Optional custom CA (PEM) for TLS verification of the JWKS fetch.
+
+      maxLength: 8192
+
+    - `discovery_base: optional string`
+
+      Set when the discovery URL differs from `issuer_url`.
+
+  - `jwks_explicit_url: object`
+
+    JWKS fetched from a fixed endpoint.
+
+    - `type: "explicit_url"`
+
+    - `url: string`
+
+      JWKS endpoint.
+
+      minLength: 1
+
+    - `ca_cert_pem: optional string`
+
+      Optional custom CA (PEM) for TLS verification of the JWKS fetch.
+
+      maxLength: 8192
+
+  - `jwks_inline: object`
+
+    JWKS supplied directly; no network fetch.
+
+    - `type: "inline"`
+
+    - `keys: array of map[unknown]`
+
+      Inline JWK objects.
+
+      minItems: 1
 
 - `--jwks-polling-disabled: optional boolean`
 

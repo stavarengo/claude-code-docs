@@ -17,19 +17,43 @@ List User Profiles
 
   Return only the user profiles whose `enforcement_status` is one of these values: `unrestricted`, `pending`, `restricted` or `banned`. Repeat the parameter to match any of several. With it set, a page may hold fewer than `limit` profiles, or none, and still carry a `next_page`: the service examines a bounded number of profiles per request, and only a null `next_page` means the listing is complete. Rejected with `invalid_request_error` under the `user-profiles-2026-09-04` and earlier beta headers. Fails with `overloaded_error` when a profile's enforcement actions cannot be read for the moment.
 
+  - `"unrestricted"`
+
+  - `"pending"`
+
+  - `"restricted"`
+
+  - `"banned"`
+
 - `--limit: optional number` (query parameter)
 
   The maximum number of user profiles to return, from 1 to 100. Defaults to 20.
 
   format: int32
 
-- `--order: optional "asc" or "desc"` (query parameter)
+- `--order: optional UserProfileListOrder` (query parameter)
 
   The sort direction, applied to the field that `order_by` selects. Defaults to `desc`.
 
-- `--order-by: optional "created_at" or "name"` (query parameter)
+  - `"asc"`
+
+    Oldest first when `order_by` is `created_at`, or names in ascending order when `order_by` is `name`.
+
+  - `"desc"`
+
+    Newest first when `order_by` is `created_at`, or names in descending order when `order_by` is `name`. This is the default.
+
+- `--order-by: optional UserProfileListOrderBy` (query parameter)
 
   The field to sort user profiles by, in the direction that `order` sets. Defaults to `created_at`.
+
+  - `"created_at"`
+
+    Sort by when each user profile was created. This is the default.
+
+  - `"name"`
+
+    Sort by `name`, ignoring the case of ASCII letters. Profiles without a name come last in either direction.
 
 - `--page: optional string` (query parameter)
 
@@ -154,18 +178,6 @@ List User Profiles
         - `reason: "unsupported_region" or "fraud_or_abuse" or "high_harm" or 3 more`
 
           Why Anthropic placed the limit: `unsupported_region`, `fraud_or_abuse`, `high_harm`, `usage_policy_violation`, `account_compromise` or `unspecified`.
-
-          - `"unsupported_region"`
-
-          - `"fraud_or_abuse"`
-
-          - `"high_harm"`
-
-          - `"usage_policy_violation"`
-
-          - `"account_compromise"`
-
-          - `"unspecified"`
 
     - `enforcement_status: "unrestricted" or "pending" or "restricted" or "banned"`
 
@@ -308,18 +320,6 @@ List User Profiles
         - `status: "active" or "pending" or "rejected"`
 
           Anthropic's decision on the entity the profile represents: `pending` while it is awaited, `active` once Anthropic has approved the entity for the program, or `rejected` once Anthropic has declined or has removed the entity from the program. `active` does not mean that any one feature is approved: read the feature you need in `features`.
-
-          - `"active"`
-
-            The profile is in the program.
-
-          - `"pending"`
-
-            The profile is not in the program yet, and something is still awaited.
-
-          - `"rejected"`
-
-            The profile is not in the program and nothing is awaited: Anthropic has declined, or has withdrawn an earlier approval.
 
     - `updated_at: string`
 

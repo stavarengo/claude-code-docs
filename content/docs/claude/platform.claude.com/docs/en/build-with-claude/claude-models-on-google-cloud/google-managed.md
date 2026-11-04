@@ -194,7 +194,7 @@ Features supported on Claude Models on Google Cloud (Google managed) include the
 
 * [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli)
 
-[Features overview](https://platform.claude.com/docs/en/build-with-claude/overview?sdk_languages=cli) lists every feature and whether Claude Models on Google Cloud (Google managed) supports it.
+[Features overview](https://platform.claude.com/docs/en/build-with-claude/overview?sdk_languages=cli) lists every feature. Each feature’s page shows whether Claude Models on Google Cloud (Google managed) supports it.
 
 ### Features not supported
 

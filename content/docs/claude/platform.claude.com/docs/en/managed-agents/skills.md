@@ -157,7 +157,7 @@ A `.claude/skills` directory elsewhere in the repository, such as inside a packa
 
 Repository skills use the same `SKILL.md` format as the custom skills you upload. For the format and authoring guidance, see [Agent Skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview?sdk_languages=cli) and [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices?sdk_languages=cli).
 
-To load skills from a repository, create a session that mounts it. This is the same request shown in [Accessing GitHub](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli#token-permissions); `mount_path` is optional and defaults to `/workspace/<repo-name>`:
+To load skills from a repository, create a session that mounts it. This is the same request shown in [Accessing GitHub](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli); `mount_path` is optional and defaults to `/workspace/<repo-name>`:
 
 <CodeGroup>
   ```bash CLI
@@ -173,7 +173,7 @@ To load skills from a repository, create a session that mounts it. This is the s
   ```
 </CodeGroup>
 
-For private repositories, the resource’s `authorization_token` must have access to the repository. This is the same personal access token flow used for any repository mount; see [Accessing GitHub](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli#token-permissions).
+For private repositories, the resource’s `authorization_token` must have access to the repository. This is the same personal access token flow used for any repository mount; see [Token permissions](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli#token-permissions).
 
 Discovered skills follow the checked-out state of the repository: the `checkout` branch or commit when the resource sets one, otherwise the repository’s default branch. The scan runs once, when the session starts. Commits pushed mid-session are not picked up; to load updated skills, start a new session.
 

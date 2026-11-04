@@ -48,6 +48,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Agents SDK](https://developers.openai.com/api/docs/guides/agents/sdk.md): Learn how the OpenAI Agents SDK fits together and which docs to read next.
 - [API credits for ChatGPT subscribers](https://developers.openai.com/api/docs/guides/chatgpt-api-credits.md): Learn how eligible ChatGPT Pro and Business subscribers can claim free API credits, what the credits cover, and how to keep using the API after they run out.
 - [API deployment checklist](https://developers.openai.com/api/docs/guides/deployment-checklist.md): Review commonly underused Responses API design choices that improve deployment quality, speed, cost, and reliability.
+- [API keys and service accounts](https://developers.openai.com/api/docs/guides/api-keys.md): Understand user-owned API keys, project service accounts, and Admin API keys, including how to provision credentials for automated workloads.
 - [API organization blocking](https://developers.openai.com/api/docs/guides/organization-blocking.md): Configure an allowlist of API organizations through your proxy or Secure Access Service Edge (SASE) service.
 - [Apply Patch](https://developers.openai.com/api/docs/guides/tools-apply-patch.md): Allow models to propose structured diffs that your integration applies.
 - [Architecture](https://developers.openai.com/api/docs/guides/agents-api/architecture.md): Understand the harness, environment, and application server, from agents without an environment to agents that use your own compute.
@@ -137,7 +138,6 @@ work more autonomously.
 - [IP allowlist](https://developers.openai.com/api/docs/guides/ip-allowlist.md): Configure organization- or project-level IP allowlists for OpenAI API requests.
 - [IP egress ranges](https://developers.openai.com/api/docs/guides/ip-addresses.md): Find the published IP egress ranges used by OpenAI products.
 - [Latency optimization](https://developers.openai.com/api/docs/guides/latency-optimization.md): Improve latency across a wide variety of LLM-related use cases.
-- [Local shell](https://developers.openai.com/api/docs/guides/tools-local-shell.md): Enable agents to run commands in a local shell.
 - [Manage permissions in the OpenAI platform](https://developers.openai.com/api/docs/guides/rbac.md): Learn how to use role-based access control to assign permissions, create custom roles, group users, and scope access across both the OpenAI API and dashboard.
 - [Manage projects and access with Terraform](https://developers.openai.com/api/docs/guides/terraform/projects-and-access.md): Create an OpenAI project, define least-privilege roles, and manage group and user access with Terraform.
 - [Manage service accounts with Terraform](https://developers.openai.com/api/docs/guides/terraform/service-accounts.md): Create OpenAI project service accounts, assign least-privilege roles, and manage API keys outside Terraform state.

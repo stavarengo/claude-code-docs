@@ -283,7 +283,7 @@ If your organization has the [Compliance API](https://platform.claude.com/docs/e
 
 ## Migrate from `files-api-2025-04-14`
 
-The Files API is out of beta and needs no beta header. Migrating off `files-api-2025-04-14` is optional: requests that still send it keep working and keep returning the beta response shapes, so an existing integration keeps working until you change it. Removing the header switches those requests to the shapes documented on this page:
+The Files API is out of beta and needs no beta header. Migrating off `files-api-2025-04-14` is optional: requests that send it keep working and keep returning the beta response shapes, so an existing integration keeps working until you change it. Removing the header switches those requests to the shapes documented on this page:
 
 |                                          | With `files-api-2025-04-14`             | Without the header                                                           |
 | ---------------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------- |

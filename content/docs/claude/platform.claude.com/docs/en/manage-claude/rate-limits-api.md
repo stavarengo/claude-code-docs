@@ -13,7 +13,7 @@ The Rate Limits API provides programmatic access to the rate limits configured f
 Use this API to:
 
 * **Keep gateways and proxies in sync:** Read your current limits at startup and on a schedule instead of hardcoding values that drift when Anthropic adjusts them.
-* **Power internal alerting:** Compare usage data from the [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli) against your configured limits.
+* **Review headroom:** Compare past usage from the [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli) against your configured limits.
 * **Audit workspace configuration:** Verify that workspace overrides match what your provisioning automation expects.
 * **Manage workspace limits from code:** Set and clear each workspace’s limits from your provisioning automation instead of editing them in the Console.
 
@@ -63,7 +63,6 @@ For complete parameter details and response schemas, see the [Organization Rate 
     {
       "id": "rlt_01NwFawrTvAijwqn8AjKVBPS",
       "type": "rate_limit",
-      "group_type": "model_group",
       "group": {
         "type": "model_group",
         "id": "rlg_01Hq7YkP3mZ9dTwRx4cVbN2s",
@@ -79,7 +78,6 @@ For complete parameter details and response schemas, see the [Organization Rate 
     {
       "id": "rlt_016qriyigbdebqkzhMujdHkX",
       "type": "rate_limit",
-      "group_type": "model_group",
       "group": {
         "type": "model_group",
         "id": "rlg_01Kd5wMv8nSq2LcXy6tRfJ4b",
@@ -101,7 +99,6 @@ For complete parameter details and response schemas, see the [Organization Rate 
     {
       "id": "rlt_01EyY8kq14eviKJPgepbgBH4",
       "type": "rate_limit",
-      "group_type": "batch",
       "group": { "type": "batch", "id": "rlg_01Wn3pBz6kCg9vHtQ7mLxD5a" },
       "models": null,
       "limits": [{ "type": "enqueued_batch_requests", "value": 500000 }]
@@ -153,7 +150,6 @@ For complete parameter details and response schemas, see the [Workspace Rate Lim
       "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ",
       "rate_limit_id": "rlt_01NwFawrTvAijwqn8AjKVBPS",
       "type": "workspace_rate_limit",
-      "group_type": "model_group",
       "group": {
         "type": "model_group",
         "id": "rlg_01Hq7YkP3mZ9dTwRx4cVbN2s",
@@ -179,7 +175,6 @@ For complete parameter details and response schemas, see the [Workspace Rate Lim
       "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ",
       "rate_limit_id": "rlt_016qriyigbdebqkzhMujdHkX",
       "type": "workspace_rate_limit",
-      "group_type": "model_group",
       "group": {
         "type": "model_group",
         "id": "rlg_01Kd5wMv8nSq2LcXy6tRfJ4b",
@@ -235,7 +230,6 @@ To read a workspace’s applicable limits in one request, add the optional `incl
       "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ",
       "rate_limit_id": "rlt_01NwFawrTvAijwqn8AjKVBPS",
       "type": "workspace_rate_limit",
-      "group_type": "model_group",
       "group": {
         "type": "model_group",
         "id": "rlg_01Hq7YkP3mZ9dTwRx4cVbN2s",
@@ -267,7 +261,6 @@ To read a workspace’s applicable limits in one request, add the optional `incl
       "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ",
       "rate_limit_id": "rlt_016qriyigbdebqkzhMujdHkX",
       "type": "workspace_rate_limit",
-      "group_type": "model_group",
       "group": {
         "type": "model_group",
         "id": "rlg_01Kd5wMv8nSq2LcXy6tRfJ4b",
@@ -305,7 +298,6 @@ To read a workspace’s applicable limits in one request, add the optional `incl
       "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ",
       "rate_limit_id": "rlt_01EyY8kq14eviKJPgepbgBH4",
       "type": "workspace_rate_limit",
-      "group_type": "batch",
       "group": { "type": "batch", "id": "rlg_01Wn3pBz6kCg9vHtQ7mLxD5a" },
       "models": null,
       "limits": [
@@ -373,7 +365,6 @@ The response is the group’s entry, in the shape of one entry in the workspace 
   "workspace_id": "wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ",
   "rate_limit_id": "rlt_01NwFawrTvAijwqn8AjKVBPS",
   "type": "workspace_rate_limit",
-  "group_type": "model_group",
   "group": {
     "type": "model_group",
     "id": "rlg_01Hq7YkP3mZ9dTwRx4cVbN2s",

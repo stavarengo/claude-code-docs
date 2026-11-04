@@ -25,6 +25,18 @@ the remaining entries.
 
   Filter by group type.
 
+  - `"batch"`
+
+  - `"files"`
+
+  - `"model_group"`
+
+  - `"skills"`
+
+  - `"token_count"`
+
+  - `"web_search"`
+
 - `--limit: optional number` (query parameter)
 
   Maximum number of items to return per page. Ranges from `1` to `1000`.

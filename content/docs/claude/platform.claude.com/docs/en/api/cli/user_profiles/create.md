@@ -13,13 +13,77 @@ Create User Profile
 
 ## Parameters
 
-- `--access-type: optional "application" or "passthrough"`
+- `--access-type: optional UserProfileAccessType`
 
   How the platform uses the API for this entity. `application` (default): the profile represents an individual end-user of the platform's product. `passthrough`: the profile identifies a company the platform resells Claude access to.
 
-- `--external-user-details: optional object`
+  - `"application"`
+
+    The user profile represents an individual end-user of a product that the platform builds on the API. New profiles get this value by default.
+
+  - `"passthrough"`
+
+    The user profile represents a company that the platform resells Claude access to.
+
+- `--external-user-details: optional UserProfileExternalUserDetailsParams`
 
   Details about the entity this profile represents, as the platform states them. Every field is optional. Not accepted under the legacy `user-profiles-2026-03-24` and `user-profiles-2026-08-18` beta headers, which take the top-level `external_id` (and, under `user-profiles-2026-08-18`, `external_user_onboarded_at`) instead.
+
+  - `account_status: optional "active" or "suspended" or "blocked"`
+
+    The status of the entity's account on the platform: `active`, `suspended` or `blocked`.
+
+    - `"active"`
+
+      The platform has neither restricted nor barred the account of the entity that the user profile represents.
+
+    - `"suspended"`
+
+      The platform has restricted the account of the entity that the user profile represents and may restore it.
+
+    - `"blocked"`
+
+      The platform has barred the account of the entity that the user profile represents.
+
+  - `country: optional string`
+
+    The country of the entity (not of the platform), as the platform determines it: an ISO 3166-1 alpha-2 code in upper case, for example `US`. Only the form, two uppercase ASCII letters, is checked.
+
+  - `email_hash: optional string`
+
+    A hash of the entity's email address, computed by the platform. Anthropic treats it as an opaque string and does not prescribe the hash function. 1 to 255 characters.
+
+    minLength: 1, maxLength: 255
+
+  - `entity_type: optional "individual" or "business" or "non_profit" or "government"`
+
+    What kind of entity the profile represents: `individual`, `business`, `non_profit` or `government`.
+
+    - `"individual"`
+
+    - `"business"`
+
+    - `"non_profit"`
+
+    - `"government"`
+
+  - `name_hash: optional string`
+
+    A hash of the entity's name, computed by the platform. Anthropic treats it as an opaque string and does not prescribe the hash function. 1 to 255 characters.
+
+    minLength: 1, maxLength: 255
+
+  - `onboarded_at: optional string`
+
+    When the entity opened its account with the platform, in RFC 3339 format: for an `application` profile, when the end-user signed up; for a `passthrough` profile, when the company became the platform's customer. Must be a complete timestamp no more than 1 minute in the future.
+
+    format: date-time
+
+  - `reference_id: optional string`
+
+    The platform's own reference for the entity, for example the key of the end-user's row in the platform's database. Not interpreted by Anthropic and not enforced unique. 1 to 255 characters.
+
+    minLength: 1, maxLength: 255
 
 - `--metadata: optional map[string]`
 
@@ -146,18 +210,6 @@ Create User Profile
       - `reason: "unsupported_region" or "fraud_or_abuse" or "high_harm" or 3 more`
 
         Why Anthropic placed the limit: `unsupported_region`, `fraud_or_abuse`, `high_harm`, `usage_policy_violation`, `account_compromise` or `unspecified`.
-
-        - `"unsupported_region"`
-
-        - `"fraud_or_abuse"`
-
-        - `"high_harm"`
-
-        - `"usage_policy_violation"`
-
-        - `"account_compromise"`
-
-        - `"unspecified"`
 
   - `enforcement_status: "unrestricted" or "pending" or "restricted" or "banned"`
 
@@ -300,18 +352,6 @@ Create User Profile
       - `status: "active" or "pending" or "rejected"`
 
         Anthropic's decision on the entity the profile represents: `pending` while it is awaited, `active` once Anthropic has approved the entity for the program, or `rejected` once Anthropic has declined or has removed the entity from the program. `active` does not mean that any one feature is approved: read the feature you need in `features`.
-
-        - `"active"`
-
-          The profile is in the program.
-
-        - `"pending"`
-
-          The profile is not in the program yet, and something is still awaited.
-
-        - `"rejected"`
-
-          The profile is not in the program and nothing is awaited: Anthropic has declined, or has withdrawn an earlier approval.
 
   - `updated_at: string`
 

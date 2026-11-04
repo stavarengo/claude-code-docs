@@ -133,7 +133,7 @@ Custom tools are analogous to [user-defined client tools](https://platform.claud
 
 Claude does not run a custom tool itself. It emits a structured request, your code runs the operation, and you return the result to the session.
 
-The following example creates an agent with the built-in toolset and one custom tool, `get_weather`:
+The following example creates an agent with one custom tool, `get_weather`, and no built-in tools:
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
@@ -147,7 +147,6 @@ The following example creates an agent with the built-in toolset and one custom 
       name: Weather Agent
       model: claude-opus-5-5
       tools:
-        - type: agent_toolset_20260401
         - type: custom
           name: get_weather
           description: Get current weather for a location

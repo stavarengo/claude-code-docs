@@ -352,12 +352,12 @@ Replace each prefill according to what it was for:
 
 ### Migrating from Claude Sonnet 4 or earlier
 
-Claude Sonnet 4 is retired on the Claude API and still available on Amazon Bedrock and Claude Models on Google Cloud (Google managed). Claude 3.7 Sonnet is retired. From either model, first apply every preceding section, then these changes:
+Claude Sonnet 4 is retired on the Claude API but available on Claude Models on Google Cloud (Google managed) and Amazon Bedrock. Claude 3.7 Sonnet is retired. From either model, first apply every preceding section, then these changes:
 
 * **Tool versions:** Use `text_editor_20250728`, with the tool name `str_replace_based_edit_tool` and no `undo_edit` command. Use `code_execution_20260521`. See the [text editor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool?sdk_languages=cli) and the [code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli#upgrade-to-latest-tool-version).
 * **Stop reasons:** Handle `refusal`. Claude 4.5 and later models also stop with `model_context_window_exceeded` at the context window limit. See [Handling stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons?sdk_languages=cli).
 * **Trailing newlines:** Claude 4.5 and later models keep them in tool call string parameters.
-* **Legacy beta headers:** Remove `token-efficient-tools-2025-02-19` and `output-128k-2025-02-19`.
+* **Beta headers:** Remove `token-efficient-tools-2025-02-19` and `output-128k-2025-02-19`.
 * **Prompts:** Review them against [prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=cli).
 
 ## Migrating to Claude Sonnet 5.5 from Claude Haiku 4.5

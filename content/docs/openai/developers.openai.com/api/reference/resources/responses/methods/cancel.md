@@ -16,7 +16,7 @@ the `background` parameter set to `true` can be cancelled.
 
 ### Returns
 
-- `Response object { id, access_programs, created_at, 35 more }`
+- `Response object { id, access_programs, created_at, 36 more }`
 
   - `id: string`
 
@@ -5000,7 +5000,7 @@ the `background` parameter set to `true` can be cancelled.
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 17 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 18 more`
 
       - `"o1-pro"`
 
@@ -5041,6 +5041,8 @@ the `background` parameter set to `true` can be cancelled.
       - `"gpt-5.6-cyber"`
 
       - `"gpt-rosalind-research"`
+
+      - `"gpt-6-rosalind"`
 
   - `object: "response"`
 
@@ -9626,6 +9628,16 @@ the `background` parameter set to `true` can be cancelled.
 
       The unique ID of the conversation that this response was associated with.
 
+  - `image: optional object { context_compression }`
+
+    - `context_compression: "enabled" or "disabled"`
+
+      Effective image context optimization policy.
+
+      - `"enabled"`
+
+      - `"disabled"`
+
   - `max_output_tokens: optional integer or null`
 
     An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](/api/docs/guides/reasoning).
@@ -9869,11 +9881,13 @@ the `background` parameter set to `true` can be cancelled.
 
       - `"explicit"`
 
-    - `ttl: "30m"`
+    - `ttl: "30m" or "12h"`
 
       The minimum lifetime applied to each cache breakpoint.
 
       - `"30m"`
+
+      - `"12h"`
 
     - `comparison_response_id: optional string or null`
 
@@ -10188,7 +10202,7 @@ the `background` parameter set to `true` can be cancelled.
 
       The number of input tokens.
 
-    - `input_tokens_details: object { cache_write_tokens, cached_tokens }`
+    - `input_tokens_details: object { cache_write_tokens, cached_tokens, cache_write_tokens_details }`
 
       A detailed breakdown of the input tokens.
 
@@ -10200,6 +10214,16 @@ the `background` parameter set to `true` can be cancelled.
 
         The number of tokens that were retrieved from the cache.
         [More on prompt caching](/api/docs/guides/prompt-caching).
+
+      - `cache_write_tokens_details: optional object { ttl_12h_tokens, ttl_30m_tokens }`
+
+        - `ttl_12h_tokens: integer`
+
+          The number of input tokens written with 12-hour retention.
+
+        - `ttl_30m_tokens: integer`
+
+          The number of input tokens written with 30-minute retention.
 
     - `output_tokens: integer`
 
@@ -10314,6 +10338,9 @@ curl https://api.openai.com/v1/responses/$RESPONSE_ID/cancel \
   "metadata": {},
   "conversation": {
     "id": "id"
+  },
+  "image": {
+    "context_compression": "enabled"
   },
   "moderation": {
     "input": {

@@ -15,9 +15,29 @@ Update Workspace
 
 - `--workspace-id: string` (path parameter)
 
-- `--data-residency: optional object`
+- `--data-residency: optional DataResidencyUpdateConfig`
 
   Data residency configuration for the workspace.
+
+  - `allowed_inference_geos: optional array of AllowedInferenceGeo or "unrestricted"`
+
+    Permitted inference geo values. Use 'unrestricted' to allow all geos, or a list of specific geos.
+
+    - `geos: array of AllowedInferenceGeo`
+
+      - `"global"`
+
+      - `"us"`
+
+    - `unrestricted: "unrestricted"`
+
+  - `default_inference_geo: optional "global" or "us"`
+
+    Default inference geo applied when requests omit the parameter. Must be a member of `allowed_inference_geos` unless `allowed_inference_geos` is `"unrestricted"`.
+
+    - `"global"`
+
+    - `"us"`
 
 - `--display-color: optional string`
 

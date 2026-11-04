@@ -35,9 +35,31 @@ manage rules whose `oauth_scope` is `workspace:developer` or
 
   Tagged ID of the federation issuer.
 
-- `--match: object`
+- `--match: FederationRuleMatch`
 
   Conditions the verified JWT must satisfy for this rule to apply. At least one of `subject_prefix` (other than a wildcard-only value like `*`), `claims`, or `condition` is required; `audience` alone is not sufficient.
+
+  - `audience: optional string`
+
+    Exact match against the `aud` claim (any element if array). When omitted, the JWT's `aud` must still equal Anthropic's expected audience for the issuer; setting this field overrides that default.
+
+    maxLength: 1024
+
+  - `claims: optional map[string]`
+
+    Exact-match `{claim: value}` pairs against top-level claims. Only string-valued claims can be matched; use `condition` for non-string claims.
+
+  - `condition: optional string`
+
+    CEL expression over claims for logic the structural fields can't express. Must evaluate to a boolean and may reference only the `claims` variable; a constant-true expression (such as `true`) is rejected with 400.
+
+    maxLength: 4096
+
+  - `subject_prefix: optional string`
+
+    Match the verified JWT `sub` claim. Exact match unless the value ends with `*`, in which case it is a prefix match. Example: `repo:my-org/my-repo:ref:refs/heads/main`.
+
+    maxLength: 1024
 
 - `--name: string`
 
@@ -51,9 +73,19 @@ manage rules whose `oauth_scope` is `workspace:developer` or
 
   minLength: 1
 
-- `--target: object`
+- `--target: ServiceAccountTarget`
 
   Identity that tokens minted via this rule act as. Currently always a `service_account` target.
+
+  - `type: "service_account"`
+
+  - `service_account_id: string`
+
+    Tagged ID of the service account to mint tokens for.
+
+  - `service_account_name: optional string`
+
+    Service account's display name at read time. Ignored on writes.
 
 - `--applies-to-all-workspaces: optional boolean`
 
@@ -685,9 +717,31 @@ Console session.
 
   maxLength: 2000
 
-- `--match: optional object`
+- `--match: optional FederationRuleMatch`
 
   Replaces the entire match object. All populated matcher fields must pass.
+
+  - `audience: optional string`
+
+    Exact match against the `aud` claim (any element if array). When omitted, the JWT's `aud` must still equal Anthropic's expected audience for the issuer; setting this field overrides that default.
+
+    maxLength: 1024
+
+  - `claims: optional map[string]`
+
+    Exact-match `{claim: value}` pairs against top-level claims. Only string-valued claims can be matched; use `condition` for non-string claims.
+
+  - `condition: optional string`
+
+    CEL expression over claims for logic the structural fields can't express. Must evaluate to a boolean and may reference only the `claims` variable; a constant-true expression (such as `true`) is rejected with 400.
+
+    maxLength: 4096
+
+  - `subject_prefix: optional string`
+
+    Match the verified JWT `sub` claim. Exact match unless the value ends with `*`, in which case it is a prefix match. Example: `repo:my-org/my-repo:ref:refs/heads/main`.
+
+    maxLength: 1024
 
 - `--name: optional string`
 
@@ -701,9 +755,19 @@ Console session.
 
   minLength: 1
 
-- `--target: optional object`
+- `--target: optional ServiceAccountTarget`
 
   Replaces the entire target object. Currently always a `service_account` target.
+
+  - `type: "service_account"`
+
+  - `service_account_id: string`
+
+    Tagged ID of the service account to mint tokens for.
+
+  - `service_account_name: optional string`
+
+    Service account's display name at read time. Ignored on writes.
 
 - `--token-lifetime-seconds: optional number`
 

@@ -45,6 +45,12 @@ List the organization's invites.
 
   Filter by Invite status. Repeatable; values are OR'ed together. Omit to return `pending`, `accepted`, and `expired` Invites alike.
 
+  - `"accepted"`
+
+  - `"expired"`
+
+  - `"pending"`
+
 ## Returns
 
 - `ListResponse_InviteSchema_: object`

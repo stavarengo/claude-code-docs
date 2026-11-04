@@ -40,7 +40,7 @@ A `self_hosted` environment acts as a work queue. You run an **environment worke
 2. Your worker claims the work item and downloads the agent’s [skills](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli) and the session’s [memory stores](https://platform.claude.com/docs/en/managed-agents/memory?sdk_languages=cli).
 3. Claude runs on Anthropic’s side and requests tool calls. Your worker runs each call locally and posts the result back.
 
-Tool inputs and outputs still flow to Anthropic’s control plane, so the model can receive results and determine what to do next. Anthropic stores skills and memory stores. Your sandbox holds a copy for the session. See [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security?sdk_languages=cli) for the full data-flow boundary.
+Tool inputs and outputs still flow to Managed Agents on Anthropic’s side, so the model can receive results and determine what to do next. Anthropic stores skills and memory stores. Your sandbox holds a copy for the session. To learn where each part of a session runs, see [What the sandbox can and cannot do](https://platform.claude.com/docs/en/managed-agents/secure-deployment-risks?sdk_languages=cli#what-the-sandbox-can-and-cannot-do).
 
 Self-hosted sandboxes support every Claude model available in Managed Agents. The model is configured on the agent, not the environment.
 

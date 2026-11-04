@@ -32,6 +32,12 @@ Requests whose requester is no longer a member are excluded.
 
   Filter by status. Omit to return all.
 
+  - `"approved"`
+
+  - `"denied"`
+
+  - `"pending"`
+
 ## Returns
 
 - `BetaSpendLimitIncreaseRequestListResponse: object`
@@ -133,12 +139,6 @@ Requests whose requester is no longer a member are excluded.
       - `period: "daily" or "monthly" or "weekly"`
 
         Period this row's effective limit and spend are reported for.
-
-        - `"daily"`
-
-        - `"monthly"`
-
-        - `"weekly"`
 
       - `period_to_date_spend: string`
 

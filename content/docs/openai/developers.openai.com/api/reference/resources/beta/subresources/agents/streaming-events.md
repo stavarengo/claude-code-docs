@@ -1653,13 +1653,17 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 20 more`
+    - `code: "context_length_exceeded" or "max_output_tokens" or "session_budget_exceeded" or 21 more`
 
       A stable, machine-readable failure category.
 
       - `"context_length_exceeded"`
 
         The request exceeds the model's context window.
+
+      - `"max_output_tokens"`
+
+        The model reached its output token limit before finishing the response.
 
       - `"session_budget_exceeded"`
 
@@ -1952,13 +1956,17 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 20 more`
+    - `code: "context_length_exceeded" or "max_output_tokens" or "session_budget_exceeded" or 21 more`
 
       A stable, machine-readable failure category.
 
       - `"context_length_exceeded"`
 
         The request exceeds the model's context window.
+
+      - `"max_output_tokens"`
+
+        The model reached its output token limit before finishing the response.
 
       - `"session_budget_exceeded"`
 
@@ -2251,13 +2259,17 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 20 more`
+    - `code: "context_length_exceeded" or "max_output_tokens" or "session_budget_exceeded" or 21 more`
 
       A stable, machine-readable failure category.
 
       - `"context_length_exceeded"`
 
         The request exceeds the model's context window.
+
+      - `"max_output_tokens"`
+
+        The model reached its output token limit before finishing the response.
 
       - `"session_budget_exceeded"`
 
@@ -2565,13 +2577,17 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 20 more`
+    - `code: "context_length_exceeded" or "max_output_tokens" or "session_budget_exceeded" or 21 more`
 
       A stable, machine-readable failure category.
 
       - `"context_length_exceeded"`
 
         The request exceeds the model's context window.
+
+      - `"max_output_tokens"`
+
+        The model reached its output token limit before finishing the response.
 
       - `"session_budget_exceeded"`
 
@@ -2879,13 +2895,17 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 20 more`
+    - `code: "context_length_exceeded" or "max_output_tokens" or "session_budget_exceeded" or 21 more`
 
       A stable, machine-readable failure category.
 
       - `"context_length_exceeded"`
 
         The request exceeds the model's context window.
+
+      - `"max_output_tokens"`
+
+        The model reached its output token limit before finishing the response.
 
       - `"session_budget_exceeded"`
 

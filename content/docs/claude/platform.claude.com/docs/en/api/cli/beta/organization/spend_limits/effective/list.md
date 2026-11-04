@@ -35,6 +35,12 @@ organizations.
 
   maxItems: 3
 
+  - `"daily"`
+
+  - `"monthly"`
+
+  - `"weekly"`
+
 - `--user-id: optional array of string` (query parameter)
 
   Restrict the report to these members, by tagged user ID (`user_...`). At most 100 entries.

@@ -175,6 +175,11 @@ export ANTHROPIC_API_KEY="your-api-key-here"
           model: claude-opus-5-5
           tools:
             - type: agent_toolset_20260401
+              configs:
+                - name: web_search
+                  enabled: false
+                - name: web_fetch
+                  enabled: false
           ---
 
           You are a helpful coding assistant. Write clean, well-documented code.
@@ -185,11 +190,11 @@ export ANTHROPIC_API_KEY="your-api-key-here"
       </CodeGroupItem>
     </CodeGroup>
 
-    The `agent_toolset_20260401` tool type enables the full set of pre-built agent tools (bash, file operations, web search, and more). See [Tools](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli) for the complete list and per-tool configuration options.
+    The `agent_toolset_20260401` tool type enables the prebuilt agent tools (bash, file operations, web search, and more). This example disables web search and web fetch because the task in this guide, writing a short Python script, doesn’t use the web. Give an agent [only the tools it needs](https://platform.claude.com/docs/en/managed-agents/secure-deployment?sdk_languages=cli#give-the-agent-the-smallest-tool-set). See [Tools](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli) for the complete list and per-tool configuration options.
   </Step>
 
   <Step title="Create an environment">
-    An environment defines the sandbox where your agent runs. This one uses `limited` [networking](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking) with package managers allowed, so code running in the sandbox can reach public [package registries and code hosts](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#package-manager-hosts). Web search and web fetch run outside the sandbox, and this quickstart does not need them. With `limited` networking, the [`allowed_hosts` list](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking) applies to them too. They return no pages or search results in this environment, because it lists no hosts. For your own agent, list the hosts it needs in `allowed_hosts`.
+    An environment defines the sandbox where your agent runs. This one uses `limited` [networking](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking) with package managers allowed, so code running in the sandbox can reach public [package registries and code hosts](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#package-manager-hosts). With `limited` networking, the [`allowed_hosts` list](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking) also applies to web search and web fetch, even though they run outside the sandbox. With no hosts listed, as in this environment, they return no pages or search results. If your own agent uses these tools, add the hosts it needs to that list.
 
     <CodeGroup defaultLanguage="CLI">
       <CodeGroupItem>

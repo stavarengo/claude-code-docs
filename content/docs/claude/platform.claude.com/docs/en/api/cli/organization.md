@@ -129,6 +129,14 @@ List API Keys
 
   Filter by API key status.
 
+  - `"active"`
+
+  - `"archived"`
+
+  - `"expired"`
+
+  - `"inactive"`
+
 - `--workspace-id: optional string` (query parameter)
 
   Filter by Workspace ID.
@@ -473,6 +481,12 @@ Update API Key
 
   Status of the API key.
 
+  - `"active"`
+
+  - `"archived"`
+
+  - `"inactive"`
+
 #### Returns
 
 - `api_key: object`
@@ -629,6 +643,50 @@ Create an external key config owned by the caller's organization.
 - `--provider-config: AWSExternalKeyConfig or GCPExternalKeyConfig or AzureExternalKeyConfigParam`
 
   KMS provider identity and auth coordinates.
+
+  - `aws_external_key_config: object`
+
+    - `type: "aws"`
+
+    - `kms_arn: string`
+
+      Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key in your organization's AWS account.
+
+      maxLength: 2048
+
+    - `region: optional string`
+
+      AWS region. Derived from `kms_arn` if omitted.
+
+  - `gcp_external_key_config: object`
+
+    - `type: "gcp"`
+
+    - `key_name: string`
+
+      Full resource name of the Cloud KMS key.
+
+  - `azure_external_key_config_param: object`
+
+    Azure Key Vault provider configuration.
+
+    - `type: "azure"`
+
+    - `key_name: string`
+
+      Name of the key within the vault.
+
+    - `tenant_id: string`
+
+      Azure AD tenant ID.
+
+    - `vault_uri: string`
+
+      Key Vault data-plane URI — `https://{vault-name}.vault.azure.net` or `https://{hsm-name}.managedhsm.azure.net`.
+
+    - `client_id: optional string`
+
+      Azure AD application (client) ID. Omit to use Anthropic's multitenant app. Provide only if using a single-tenant app registration in the customer's directory.
 
 - `--display-name: optional string`
 
@@ -1095,6 +1153,50 @@ encrypted data requires the original key identity to decrypt.
 
   KMS provider identity and auth coordinates.
 
+  - `aws_external_key_config: object`
+
+    - `type: "aws"`
+
+    - `kms_arn: string`
+
+      Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key in your organization's AWS account.
+
+      maxLength: 2048
+
+    - `region: optional string`
+
+      AWS region. Derived from `kms_arn` if omitted.
+
+  - `gcp_external_key_config: object`
+
+    - `type: "gcp"`
+
+    - `key_name: string`
+
+      Full resource name of the Cloud KMS key.
+
+  - `azure_external_key_config_param: object`
+
+    Azure Key Vault provider configuration.
+
+    - `type: "azure"`
+
+    - `key_name: string`
+
+      Name of the key within the vault.
+
+    - `tenant_id: string`
+
+      Azure AD tenant ID.
+
+    - `vault_uri: string`
+
+      Key Vault data-plane URI — `https://{vault-name}.vault.azure.net` or `https://{hsm-name}.managedhsm.azure.net`.
+
+    - `client_id: optional string`
+
+      Azure AD application (client) ID. Omit to use Anthropic's multitenant app. Provide only if using a single-tenant app registration in the customer's directory.
+
 #### Returns
 
 - `external_key: object`
@@ -1367,6 +1469,52 @@ matched as the JWT's `iss` claim and is not fetched.
 - `--jwks: optional JWKSDiscovery or JWKSExplicitURL or JWKSInline`
 
   How signing keys are obtained. Defaults to OIDC discovery.
+
+  - `jwks_discovery: object`
+
+    JWKS via the issuer's OIDC discovery document.
+
+    - `type: "discovery"`
+
+    - `ca_cert_pem: optional string`
+
+      Optional custom CA (PEM) for TLS verification of the JWKS fetch.
+
+      maxLength: 8192
+
+    - `discovery_base: optional string`
+
+      Set when the discovery URL differs from `issuer_url`.
+
+  - `jwks_explicit_url: object`
+
+    JWKS fetched from a fixed endpoint.
+
+    - `type: "explicit_url"`
+
+    - `url: string`
+
+      JWKS endpoint.
+
+      minLength: 1
+
+    - `ca_cert_pem: optional string`
+
+      Optional custom CA (PEM) for TLS verification of the JWKS fetch.
+
+      maxLength: 8192
+
+  - `jwks_inline: object`
+
+    JWKS supplied directly; no network fetch.
+
+    - `type: "inline"`
+
+    - `keys: array of map[unknown]`
+
+      Inline JWK objects.
+
+      minItems: 1
 
 - `--max-jwt-lifetime-seconds: optional number`
 
@@ -1983,6 +2131,52 @@ session.
 
   Replaces the entire JWKS configuration.
 
+  - `jwks_discovery: object`
+
+    JWKS via the issuer's OIDC discovery document.
+
+    - `type: "discovery"`
+
+    - `ca_cert_pem: optional string`
+
+      Optional custom CA (PEM) for TLS verification of the JWKS fetch.
+
+      maxLength: 8192
+
+    - `discovery_base: optional string`
+
+      Set when the discovery URL differs from `issuer_url`.
+
+  - `jwks_explicit_url: object`
+
+    JWKS fetched from a fixed endpoint.
+
+    - `type: "explicit_url"`
+
+    - `url: string`
+
+      JWKS endpoint.
+
+      minLength: 1
+
+    - `ca_cert_pem: optional string`
+
+      Optional custom CA (PEM) for TLS verification of the JWKS fetch.
+
+      maxLength: 8192
+
+  - `jwks_inline: object`
+
+    JWKS supplied directly; no network fetch.
+
+    - `type: "inline"`
+
+    - `keys: array of map[unknown]`
+
+      Inline JWK objects.
+
+      minItems: 1
+
 - `--jwks-polling-disabled: optional boolean`
 
   Only `false` is accepted, to re-enable polling after the system pauses it. Polling is paused automatically; sending `true` is rejected.
@@ -2400,9 +2594,31 @@ manage rules whose `oauth_scope` is `workspace:developer` or
 
   Tagged ID of the federation issuer.
 
-- `--match: object`
+- `--match: FederationRuleMatch`
 
   Conditions the verified JWT must satisfy for this rule to apply. At least one of `subject_prefix` (other than a wildcard-only value like `*`), `claims`, or `condition` is required; `audience` alone is not sufficient.
+
+  - `audience: optional string`
+
+    Exact match against the `aud` claim (any element if array). When omitted, the JWT's `aud` must still equal Anthropic's expected audience for the issuer; setting this field overrides that default.
+
+    maxLength: 1024
+
+  - `claims: optional map[string]`
+
+    Exact-match `{claim: value}` pairs against top-level claims. Only string-valued claims can be matched; use `condition` for non-string claims.
+
+  - `condition: optional string`
+
+    CEL expression over claims for logic the structural fields can't express. Must evaluate to a boolean and may reference only the `claims` variable; a constant-true expression (such as `true`) is rejected with 400.
+
+    maxLength: 4096
+
+  - `subject_prefix: optional string`
+
+    Match the verified JWT `sub` claim. Exact match unless the value ends with `*`, in which case it is a prefix match. Example: `repo:my-org/my-repo:ref:refs/heads/main`.
+
+    maxLength: 1024
 
 - `--name: string`
 
@@ -2416,9 +2632,19 @@ manage rules whose `oauth_scope` is `workspace:developer` or
 
   minLength: 1
 
-- `--target: object`
+- `--target: ServiceAccountTarget`
 
   Identity that tokens minted via this rule act as. Currently always a `service_account` target.
+
+  - `type: "service_account"`
+
+  - `service_account_id: string`
+
+    Tagged ID of the service account to mint tokens for.
+
+  - `service_account_name: optional string`
+
+    Service account's display name at read time. Ignored on writes.
 
 - `--applies-to-all-workspaces: optional boolean`
 
@@ -3050,9 +3276,31 @@ Console session.
 
   maxLength: 2000
 
-- `--match: optional object`
+- `--match: optional FederationRuleMatch`
 
   Replaces the entire match object. All populated matcher fields must pass.
+
+  - `audience: optional string`
+
+    Exact match against the `aud` claim (any element if array). When omitted, the JWT's `aud` must still equal Anthropic's expected audience for the issuer; setting this field overrides that default.
+
+    maxLength: 1024
+
+  - `claims: optional map[string]`
+
+    Exact-match `{claim: value}` pairs against top-level claims. Only string-valued claims can be matched; use `condition` for non-string claims.
+
+  - `condition: optional string`
+
+    CEL expression over claims for logic the structural fields can't express. Must evaluate to a boolean and may reference only the `claims` variable; a constant-true expression (such as `true`) is rejected with 400.
+
+    maxLength: 4096
+
+  - `subject_prefix: optional string`
+
+    Match the verified JWT `sub` claim. Exact match unless the value ends with `*`, in which case it is a prefix match. Example: `repo:my-org/my-repo:ref:refs/heads/main`.
+
+    maxLength: 1024
 
 - `--name: optional string`
 
@@ -3066,9 +3314,19 @@ Console session.
 
   minLength: 1
 
-- `--target: optional object`
+- `--target: optional ServiceAccountTarget`
 
   Replaces the entire target object. Currently always a `service_account` target.
+
+  - `type: "service_account"`
+
+  - `service_account_id: string`
+
+    Tagged ID of the service account to mint tokens for.
+
+  - `service_account_name: optional string`
+
+    Service account's display name at read time. Ignored on writes.
 
 - `--token-lifetime-seconds: optional number`
 
@@ -3702,6 +3960,16 @@ On plans that draw members from a finite pool of purchased seats, the invite aut
 
   The accepted values depend on the organization type. Console and API organizations accept `user`, `developer`, `billing`, and `claude_code_user`; `admin` cannot be assigned through the API. Claude Enterprise organizations accept `user` and `managed`; inviting with the `managed` role requires the `write:rbac_groups` scope in addition to `write:members`.
 
+  - `"billing"`
+
+  - `"claude_code_user"`
+
+  - `"developer"`
+
+  - `"managed"`
+
+  - `"user"`
+
 - `--rbac-group-id: optional array of string`
 
   RBAC group IDs to assign to the User when the Invite is accepted. A non-empty array is accepted only for a Claude Enterprise organization with RBAC groups, and requires the key to carry the `write:rbac_groups` scope.
@@ -3849,6 +4117,12 @@ List the organization's invites.
 - `--status: optional array of "accepted" or "expired" or "pending"` (query parameter)
 
   Filter by Invite status. Repeatable; values are OR'ed together. Omit to return `pending`, `accepted`, and `expired` Invites alike.
+
+  - `"accepted"`
+
+  - `"expired"`
+
+  - `"pending"`
 
 #### Returns
 
@@ -4163,6 +4437,10 @@ accounts.
 - `--organization-role: optional "admin" or "developer"`
 
   Org-level role. Defaults to `developer`.
+
+  - `"admin"`
+
+  - `"developer"`
 
 #### Returns
 
@@ -4504,6 +4782,10 @@ interactive credential (a user OAuth token or a Console session).
 
   Replaces the org-level role. Omit or send `null` to leave unchanged.
 
+  - `"admin"`
+
+  - `"developer"`
+
 #### Returns
 
 - `service_account: object`
@@ -4726,9 +5008,17 @@ rejected.
 
   Tagged workspace ID to add the service account to.
 
-- `--workspace-role: "workspace_admin" or "workspace_developer" or "workspace_restricted_developer" or "workspace_user"`
+- `--workspace-role: NoBillingWorkspaceRole`
 
   Role to assign to the service account in this workspace.
+
+  - `"workspace_admin"`
+
+  - `"workspace_developer"`
+
+  - `"workspace_restricted_developer"`
+
+  - `"workspace_user"`
 
 #### Returns
 
@@ -5189,6 +5479,16 @@ Update a member's organization role.
 
   The accepted values depend on the organization type. Console and API organizations accept `user`, `developer`, `billing`, and `claude_code_user`; `admin` cannot be assigned through the API. Claude Enterprise organizations accept `user` and `managed`; changing a User's role to `managed` requires the `write:rbac_groups` scope in addition to `write:members`.
 
+  - `"billing"`
+
+  - `"claude_code_user"`
+
+  - `"developer"`
+
+  - `"managed"`
+
+  - `"user"`
+
 #### Returns
 
 - `organization_user: object`
@@ -5506,9 +5806,33 @@ Create Workspace
 
   minLength: 1, maxLength: 255
 
-- `--data-residency: optional object`
+- `--data-residency: optional DataResidencyCreateConfig`
 
   Data residency configuration for the workspace. If omitted, defaults to `workspace_geo: "us"`, `allowed_inference_geos: "unrestricted"`, and `default_inference_geo: "global"`.
+
+  - `allowed_inference_geos: optional array of AllowedInferenceGeo or "unrestricted"`
+
+    Permitted inference geo values. Defaults to 'unrestricted' if omitted, which allows all geos. Use the string 'unrestricted' to allow all geos, or a list of specific geos.
+
+    - `geos: array of AllowedInferenceGeo`
+
+      - `"global"`
+
+      - `"us"`
+
+    - `unrestricted: "unrestricted"`
+
+  - `default_inference_geo: optional "global" or "us"`
+
+    Default inference geo applied when requests omit the parameter. Defaults to 'global' if omitted. Must be a member of `allowed_inference_geos` unless `allowed_inference_geos` is `"unrestricted"`.
+
+    - `"global"`
+
+    - `"us"`
+
+  - `workspace_geo: optional "us"`
+
+    Geographic region for workspace data storage. Immutable after creation. Defaults to 'us' if omitted.
 
 - `--display-color: optional string`
 
@@ -5824,9 +6148,29 @@ Update Workspace
 
 - `--workspace-id: string` (path parameter)
 
-- `--data-residency: optional object`
+- `--data-residency: optional DataResidencyUpdateConfig`
 
   Data residency configuration for the workspace.
+
+  - `allowed_inference_geos: optional array of AllowedInferenceGeo or "unrestricted"`
+
+    Permitted inference geo values. Use 'unrestricted' to allow all geos, or a list of specific geos.
+
+    - `geos: array of AllowedInferenceGeo`
+
+      - `"global"`
+
+      - `"us"`
+
+    - `unrestricted: "unrestricted"`
+
+  - `default_inference_geo: optional "global" or "us"`
+
+    Default inference geo applied when requests omit the parameter. Must be a member of `allowed_inference_geos` unless `allowed_inference_geos` is `"unrestricted"`.
+
+    - `"global"`
+
+    - `"us"`
 
 - `--display-color: optional string`
 
@@ -6164,6 +6508,18 @@ the remaining entries.
 
   Filter by group type.
 
+  - `"batch"`
+
+  - `"files"`
+
+  - `"model_group"`
+
+  - `"skills"`
+
+  - `"token_count"`
+
+  - `"web_search"`
+
 - `--include-inherited: optional boolean` (query parameter)
 
   Also list the limiter values the workspace inherits from the organization, including groups with no workspace-level override.
@@ -6381,6 +6737,34 @@ Changes take effect within about an hour.
   Limits to set or clear. Unspecified limit types are unchanged.
 
   minItems: 1, maxItems: 16
+
+  - `type: "fast_itpmca" or "fast_otpm" or "input_tokens_per_minute" or 6 more`
+
+    Rate limiter type.
+
+    - `"fast_itpmca"`
+
+    - `"fast_otpm"`
+
+    - `"input_tokens_per_minute"`
+
+    - `"input_tokens_per_minute_cache_aware"`
+
+    - `"output_tokens_per_minute"`
+
+    - `"requests_per_minute"`
+
+    - `"tokens_per_day"`
+
+    - `"tokens_per_minute"`
+
+    - `"tool_uses_per_second"`
+
+  - `value: number`
+
+    New limit value. Set to null to clear the workspace override and fall back to the organization limit.
+
+    minimum: 0, maximum: 9007199254740991
 
 #### Returns
 
@@ -6660,9 +7044,17 @@ Create Workspace Member
 
   ID of the User.
 
-- `--workspace-role: "workspace_admin" or "workspace_developer" or "workspace_restricted_developer" or "workspace_user"`
+- `--workspace-role: NoBillingWorkspaceRole`
 
   Role of the new Workspace Member. Cannot be `workspace_billing`.
+
+  - `"workspace_admin"`
+
+  - `"workspace_developer"`
+
+  - `"workspace_restricted_developer"`
+
+  - `"workspace_user"`
 
 #### Returns
 
@@ -6803,9 +7195,19 @@ Update Workspace Member
 
   ID of the User.
 
-- `--workspace-role: "workspace_admin" or "workspace_billing" or "workspace_developer" or 2 more`
+- `--workspace-role: WorkspaceRole`
 
   New workspace role for the User.
+
+  - `"workspace_admin"`
+
+  - `"workspace_billing"`
+
+  - `"workspace_developer"`
+
+  - `"workspace_restricted_developer"`
+
+  - `"workspace_user"`
 
 #### Returns
 
@@ -7044,9 +7446,17 @@ accounts cannot be added and are rejected.
 
   Tagged service account ID to add.
 
-- `--workspace-role: "workspace_admin" or "workspace_developer" or "workspace_restricted_developer" or "workspace_user"`
+- `--workspace-role: NoBillingWorkspaceRole`
 
   Role to assign to the service account in this workspace.
+
+  - `"workspace_admin"`
+
+  - `"workspace_developer"`
+
+  - `"workspace_restricted_developer"`
+
+  - `"workspace_user"`
 
 #### Returns
 
@@ -7217,9 +7627,17 @@ rejected.
 
   ID of the service account.
 
-- `--workspace-role: "workspace_admin" or "workspace_developer" or "workspace_restricted_developer" or "workspace_user"`
+- `--workspace-role: NoBillingWorkspaceRole`
 
   New role for the service account in this workspace.
+
+  - `"workspace_admin"`
+
+  - `"workspace_developer"`
+
+  - `"workspace_restricted_developer"`
+
+  - `"workspace_user"`
 
 #### Returns
 
@@ -7360,6 +7778,18 @@ the remaining entries.
 - `--group-type: optional "batch" or "files" or "model_group" or 3 more` (query parameter)
 
   Filter by group type.
+
+  - `"batch"`
+
+  - `"files"`
+
+  - `"model_group"`
+
+  - `"skills"`
+
+  - `"token_count"`
+
+  - `"web_search"`
 
 - `--limit: optional number` (query parameter)
 
@@ -7591,9 +8021,17 @@ compliance settings.
 
 #### Parameters
 
-- `--state: ComplianceSettingsStateEnabledParam or ComplianceSettingsStateDisabledParam`
+- `--state: ComplianceSettingsStateParam`
 
   Desired state. Accepts the string shorthand "enabled" or "disabled" in place of the object form; the response always returns the canonical object form.
+
+  - `compliance_settings_state_enabled_param: object`
+
+    - `type: "enabled"`
+
+  - `compliance_settings_state_disabled_param: object`
+
+    - `type: "disabled"`
 
 #### Returns
 

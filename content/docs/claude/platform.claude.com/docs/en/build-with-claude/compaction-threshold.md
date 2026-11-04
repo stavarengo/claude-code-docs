@@ -171,6 +171,8 @@ When enabled, the API returns a message with the `compaction` stop reason after 
   ```
 </CodeGroup>
 
+The API pauses even if no summary is generated. The `compaction` block’s `content` is then `null`, so keep the original messages when you continue. If safeguards block the summary, `content` is also `null` and the stop reason is `refusal` instead of `compaction`. [`stop_details`](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons?sdk_languages=cli#refusal) gives the policy category, if there is one. Continue the same way in both cases: look for the `compaction` block instead of testing `stop_reason`, as the [example that preserves recent messages](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold?sdk_languages=cli#examples) does.
+
 #### Enforcing a total token budget
 
 When a model works on long tasks with many tool-use iterations, total token consumption can grow significantly. You can combine `pause_after_compaction` with a compaction counter to estimate cumulative usage and gracefully conclude the task once a budget is reached.
@@ -499,6 +501,8 @@ When the API receives a `compaction` block, all content blocks before it are ign
 
 * Keep the original messages in your list and let the API handle removing the compacted content
 * Manually drop the compacted messages and only include the compaction block onward
+
+If no summary is generated, the block’s `content` is `null` and the API ignores the block. Nothing is compacted, so keep the original messages.
 
 On Claude 5.1 and later models, thinking blocks from before a `compaction` block aren’t carried forward, so the summary is all the model has of that earlier work. If you write your own `instructions`, tell the model what the summary must retain; see [Tell the model what to preserve in compaction summaries](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=cli#tell-the-model-what-to-preserve-in-compaction-summaries).
 

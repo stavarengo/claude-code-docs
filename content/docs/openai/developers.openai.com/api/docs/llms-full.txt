@@ -2736,6 +2736,8 @@ Only connect to MCP servers you trust. An untrusted server may access or steal i
 
 Admin APIs let you automate organization management workflows such as user invitations, audit log review, project administration, API key management, spend limits and alerts, data retention, and rate limit operations. Use them for back-office automation, security workflows, and operational tooling that should run outside the dashboard.
 
+For the distinction between an administrative credential, a user-owned project key, and a workload's service account, see [API keys and service accounts](https://developers.openai.com/api/docs/guides/api-keys).
+
 For endpoint details, see the [Administration API reference](https://developers.openai.com/api/reference/administration/overview), including [Admin API keys](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys), [Invites](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/invites), [Users](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/users), [Projects](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/projects), [Spend limits](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/spend_limit), and [Audit logs](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/audit_logs).
 
 ## Use an Admin API key with the SDK
@@ -2809,7 +2811,7 @@ openai = OpenAI::Client.new(
 
 ## Restrict model access for projects
 
-Use project model permissions to set an allowlist or denylist for a project. Set `mode` to `allow_list` to allow only the listed models, or set `mode` to `deny_list` to block the listed models while allowing other available models. Model IDs must be visible to the organization, including visible fine-tuned model snapshots.
+Use project model permissions to set an allowlist or deny list for a project. Set `mode` to `allow_list` to allow only the listed models, or set `mode` to `deny_list` to block the listed models while allowing other available models. Model IDs must be visible to the organization, including visible fine-tuned model snapshots.
 
 Set a project model allowlist/denylist
 
@@ -7241,6 +7243,60 @@ deployments.
 
 ---
 
+# API keys and service accounts
+
+An API key is a secret credential that authenticates requests. A service account is a nonhuman identity that an application or automated workload can use. A service account can own API keys, so these are different parts of the same authentication setup.
+
+Use a user-owned project key for your own development work. Use a service account for an application or automation that should have its own permissions and lifecycle. Use an Admin API key for organization management through the [Admin APIs](https://developers.openai.com/api/docs/guides/admin-apis).
+
+## Choose the right identity
+
+| Workload                                                                    | Identity and credential                                                                                      | Why                                                                             |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| Your own local development or exploration                                   | Your user account and a project API key                                                                      | Requests use your access to the project.                                        |
+| A deployed application, scheduled job, or CI workflow                       | A project service account and its API key                                                                    | The workload has an identity separate from an individual developer.             |
+| A workload with an identity provider that OpenAI supports                   | A project service account with [workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation) | The workload can authenticate without storing a long-lived OpenAI API key.      |
+| Automation that creates projects or manages their service accounts and keys | An Admin API key                                                                                             | Organization management uses separate administrative endpoints and permissions. |
+
+A user-owned key acts with its owner's access. Don't share one developer's key across a team or use that person's identity as the permanent identity of a production application.
+
+A service account belongs to a project. Give each workload the identity and access it needs within that project. Separate projects can isolate resources, membership, and usage for different applications or environments; separate service accounts within a project can distinguish workloads without creating another project.
+
+## Understand permissions and scope
+
+An API key's permissions and its owner's permissions both matter. Key scopes can restrict what the key can do, but they don't grant permissions that the user or service account doesn't have. An unrestricted key still operates within its owner's effective permissions.
+
+Assign a service account only the roles its workload needs, then restrict its keys where appropriate. See [permissions and roles](https://developers.openai.com/api/docs/guides/rbac) for the authorization model and [service accounts with Terraform](https://developers.openai.com/api/docs/guides/terraform/service-accounts) for a configuration that creates an identity, assigns a custom role, and issues a scoped key.
+
+An Admin API key serves a different purpose from a project workload key. Keep the administrative credential in the trusted service that provisions and manages resources. Use the project's service-account credential for the application's model requests.
+
+## Automate project and key management
+
+For an application that provisions projects for its customers, a project service account gives each workload an identity that doesn't depend on the developer running the provisioning process. Your provisioning service uses the Admin APIs to manage the project and its service accounts; the provisioned application uses its own project credential.
+
+The relevant administrative operations are:
+
+| Operation                                                                                                                                                                             | Purpose                                                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [Create a project](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/projects/methods/create)                                                                     | Establish the project that owns the workload's resources and service account.                                                                    |
+| [Create a service account](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/projects/subresources/service_accounts/methods/create)                               | Create the workload's identity in that project. The `create_service_account_only` option creates it without default roles or an initial API key. |
+| [Create a service account API key](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/projects/subresources/service_accounts/subresources/api_keys/methods/create) | Issue a key for an existing service account, with key scopes and an expiration where needed.                                                     |
+| [Manage project API keys](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/projects/subresources/api_keys)                                                       | List, retrieve, update, or revoke existing project keys, including service-account keys.                                                         |
+
+The project API key management endpoints don't create user-owned project keys on behalf of another person. For programmatic key creation, use a service account and its key creation endpoint.
+
+Creating a service account without default roles doesn't grant it access to make model requests. Assign the required permissions before using its credentials. Organization and project key policies also apply to key creation; a service account doesn't bypass those policies.
+
+## Manage credentials through their lifecycle
+
+The API returns the full value of a service-account key only when you create the key. Store it in your secret manager and provide it to the workload on the server. Keep secret keys out of browser code, mobile apps, source control, logs, and customer-facing responses.
+
+Set an expiration that complies with your organization's and project's policies. To rotate a key, issue a replacement, update the workload, verify that it works, and revoke the previous key. A service account's identity can remain the same while its keys change.
+
+Review the workload's access when its responsibilities change, and revoke credentials when you retire it. See [production API key guidance](https://developers.openai.com/api/docs/guides/production-best-practices#api-keys) for key governance and expiration policies, and [workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation) for authentication without a stored API key.
+
+---
+
 # API organization blocking
 
 API organization blocking lets you restrict which API organizations users can access from your network. Configure an allowlist of organization IDs through your proxy or Secure Access Service Edge (SASE) service.
@@ -7291,18 +7347,18 @@ If the results differ from what you expect, check that your proxy or SASE rule a
 
 # Apply Patch
 
-The `apply_patch` tool lets GPT-5.1 create, update, and delete files in your codebase using structured diffs. Instead of just suggesting edits, the model emits patch operations that your application applies and then reports back on, enabling iterative, multi-step code editing workflows.
+Use `apply_patch` with the Responses API to propose file creations, updates, and deletions as structured diffs. Your application applies each operation and returns its result. The examples use `gpt-6-astra`.
 
 ## When to use
 
-Some common scenarios where you would use apply_patch:
+You can use `apply_patch` for the following tasks.
 
-- **Multi-file refactors** – Rename symbols, extract helpers, or reorganize modules across many files at once.
-- **Bug fixes** – Have the model both diagnose issues and emit precise patches.
-- **Tests & docs generation** – Create new test files, fixtures, and documentation alongside code changes.
-- **Migrations & mechanical edits** – Apply repetitive, structured updates (API migrations, type annotations, formatting fixes, etc.).
+- **Multi-file refactors.** Rename symbols, extract helpers, or reorganize modules across many files at once.
+- **Bug fixes.** Have the model both diagnose issues and emit precise patches.
+- **Tests & docs generation.** Create new test files, fixtures, and documentation alongside code changes.
+- **Migrations & mechanical edits.** Apply repetitive, structured updates (API migrations, type annotations, formatting fixes, etc.).
 
-If you can describe your repo and desired change in text, apply_patch can usually generate the corresponding diffs.
+If you can describe your repo and desired change in text, `apply_patch` can usually generate the corresponding diffs.
 
 ## Use apply patch tool with Responses API
 
@@ -7936,16 +7992,20 @@ The model can then adjust future diffs (for example, by re-reading a file in you
 
   </td>
   <td style={{ maxWidth: "150px" }}>
-    [GPT-5.5](https://developers.openai.com/api/docs/models/gpt-5.5)
-    
-
-    [GPT-5.4](https://developers.openai.com/api/docs/models/gpt-5.4)
-    
-
-    [GPT-5.2](https://developers.openai.com/api/docs/models/gpt-5.2)
-    
-
-    [GPT-5.1](https://developers.openai.com/api/docs/models/gpt-5.1)
+    - [`gpt-5.2`](https://developers.openai.com/api/docs/models/gpt-5.2)
+- [`gpt-5.4`](https://developers.openai.com/api/docs/models/gpt-5.4)
+- [`gpt-5.4-mini`](https://developers.openai.com/api/docs/models/gpt-5.4-mini)
+- [`gpt-5.4-pro`](https://developers.openai.com/api/docs/models/gpt-5.4-pro)
+- [`gpt-5.5`](https://developers.openai.com/api/docs/models/gpt-5.5)
+- [`gpt-5.6-cyber`](https://developers.openai.com/api/docs/models/gpt-5.6-cyber)
+- [`gpt-5.6-luna`](https://developers.openai.com/api/docs/models/gpt-5.6-luna)
+- [`gpt-5.6-sol`](https://developers.openai.com/api/docs/models/gpt-5.6-sol)
+- [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra)
+- [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra)
+- [`gpt-6-luna`](https://developers.openai.com/api/docs/models/gpt-6-luna)
+- [`gpt-6-sol`](https://developers.openai.com/api/docs/models/gpt-6-sol)
+- [`gpt-6.1-sol`](https://developers.openai.com/api/docs/models/gpt-6.1-sol)
+- [`gpt-6.1-terra`](https://developers.openai.com/api/docs/models/gpt-6.1-terra)
   </td>
 </tr>
 
@@ -8937,7 +8997,7 @@ ChatCompletionOptions options = new()
 {
     ResponseModalities = ChatResponseModalities.Text | ChatResponseModalities.Audio,
     AudioOptions = new(ChatOutputAudioVoice.Alloy, ChatOutputAudioFormat.Wav),
-    StoredOutputEnabled = true,
+    StoredOutputEnabled = false,
 };
 
 ChatCompletion completion = await client.CompleteChatAsync(
@@ -9193,7 +9253,7 @@ ChatCompletionOptions options = new()
 {
     ResponseModalities = ChatResponseModalities.Text | ChatResponseModalities.Audio,
     AudioOptions = new(ChatOutputAudioVoice.Alloy, ChatOutputAudioFormat.Wav),
-    StoredOutputEnabled = true,
+    StoredOutputEnabled = false,
 };
 
 ChatCompletion completion = await client.CompleteChatAsync([message], options);
@@ -10091,8 +10151,7 @@ options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("Write a very long novel about otters in space.")
 );
 
-ResponseResult created = await client.CreateResponseAsync(options);
-ResponseResult response = await client.GetResponseAsync(created.Id);
+ResponseResult response = await client.CreateResponseAsync(options);
 while (response.Status is ResponseStatus.Queued or ResponseStatus.InProgress)
 {
     await Task.Delay(TimeSpan.FromSeconds(1));
@@ -13532,7 +13591,7 @@ Writing, reviewing, editing, and answering questions about code is one of the pr
 
 [**Codex**](https://developers.openai.com/codex) is OpenAI's coding agent for software development. It helps you write, review and debug code. Interact with Codex in a variety of interfaces: in your IDE, through the CLI, on web and mobile sites, or in your CI/CD pipelines with the SDK. Codex is the best way to get agentic software engineering on your projects.
 
-Codex works best with the latest general-purpose models, such as [`gpt-6.1-sol`](https://developers.openai.com/api/docs/models/gpt-6.1-sol). The older [`gpt-5.3-codex`](https://developers.openai.com/api/docs/models/gpt-5.3-codex) model is [deprecated](https://developers.openai.com/api/docs/deprecations#2026-10-01-gpt-53-codex-gpt-51-gpt-54-nano) and will shut down on April 1, 2027.
+Codex works best with the latest general-purpose models, such as [`gpt-6.1-sol`](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
 
 See the [ChatGPT docs](https://developers.openai.com/codex) for setup guides, reference material, pricing, and more information.
 
@@ -13709,9 +13768,9 @@ curl https://api.openai.com/v1/responses \
 
 ## Frontend development
 
-Our models from the GPT-5 family are especially strong at frontend development, especially when combined with a coding agent harness such as Codex.
+For frontend work, start with `gpt-6.1-sol` or `gpt-6-astra` in Codex or the Responses API.
 
-The demo applications below were generated from a single prompt without hand-written code. Use them to evaluate frontend generation quality and prompt patterns for UI-heavy code generation workflows.
+The historical GPT-5 gallery shows applications generated from a single prompt. Use the prompts as starting points and evaluate the results with the model you plan to deploy.
 
 ## Next steps
 
@@ -13728,7 +13787,7 @@ The Code Interpreter tool allows models to write and run Python code in a sandbo
 - Processing files with diverse data and formatting
 - Generating files with data and images of graphs
 - Writing and running code iteratively to solve problems—for example, a model that writes code that fails to run can keep rewriting and running that code until it succeeds
-- Boosting visual intelligence in our latest reasoning models (like [o3](https://developers.openai.com/api/docs/models/o3) and [o4-mini](https://developers.openai.com/api/docs/models/o4-mini)). The model can use this tool to crop, zoom, rotate, and otherwise process and transform images.
+- Inspecting images with [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra). Code Interpreter can crop, zoom, rotate, or read individual pixels using Python.
 
 Here's an example of calling the [Responses API](https://developers.openai.com/api/reference/resources/responses) with a tool call to Code Interpreter:
 
@@ -13880,7 +13939,7 @@ While we call this tool Code Interpreter, the model knows it as the "python
 
 The Code Interpreter tool requires a [container object](https://developers.openai.com/api/reference/resources/containers). A container is a fully sandboxed virtual machine that the model can run Python code in. This container can contain files that you upload, or that it generates.
 
-There are two ways to create containers:
+You can create containers automatically or explicitly.
 
 1. Auto mode: as seen in the example above, you can do this by passing the `"container": { "type": "auto", "memory_limit": "4g", "file_ids": ["file-1", "file-2"] }` property in the tool configuration while creating a new Response object. This automatically creates a new container, or reuses an active container that was used by a previous `code_interpreter_call` item in the model's context. Leaving out `memory_limit` keeps the default 1 GB tier for the container. Look for the `code_interpreter_call` item in the output of this API request to find the `container_id` that was generated or used.
 2. Explicit mode: here, you explicitly [create a container](https://developers.openai.com/api/reference/resources/containers/methods/create) using the `v1/containers` endpoint, including the `memory_limit` you need (for example `"memory_limit": "4g"`), and assign its `id` as the `container` value in the tool configuration in the Response object. For example:
@@ -59231,883 +59290,6 @@ Let's review the optimizations we implemented for the customer service bot examp
 
 ---
 
-# Local shell
-
-The [deprecation
-  notice](https://developers.openai.com/api/docs/deprecations#2025-11-17-codex-mini-latest-model-snapshot)
-  lists February 12, 2026 as the end-of-support date for `codex-mini-latest` and
-  the legacy local shell tool. For new use cases, use the current
-  [`shell`](https://developers.openai.com/api/docs/guides/tools-shell) tool. Its request and execution
-  workflow differs from the legacy examples retained below.
-
-Local shell is a tool that allows agents to run shell commands locally on a machine you or the user provides. It's designed to work with [Codex CLI](https://github.com/openai/codex) and [`codex-mini-latest`](https://developers.openai.com/api/docs/models/codex-mini-latest). Commands are executed inside your own runtime, so **you are fully in control of which commands actually run**. The API only returns instructions; it does not execute them on OpenAI infrastructure.
-
-Local shell is available through the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) for use with [`codex-mini-latest`](https://developers.openai.com/api/docs/models/codex-mini-latest). It is not available on other models or via the Chat Completions API.
-
-Running arbitrary shell commands can be dangerous. Always sandbox execution
-or add strict allowlists or deny lists before forwarding a command to the system
-shell.
-
-
-
-See [Codex CLI](https://github.com/openai/codex) for reference implementation.
-
-## How it works
-
-The local shell tool enables agents to run in a continuous loop with access to a terminal.
-
-The model sends shell commands, which your code executes on a local machine before returning the output to the model. This loop allows the model to complete the build-test-run loop without additional user intervention.
-
-Your code must implement a loop that listens for `local_shell_call` output items and executes the commands they contain. We strongly recommend sandboxing execution to prevent unexpected commands from running.
-
-
-
-Integrating the local shell tool
-
-
-
-These are the high-level steps you need to follow to integrate the local shell tool in your application:
-
-1. **Send a request to the model**:
-   Include the `local_shell` tool as part of the available tools.
-
-2. **Receive a response from the model**:
-   Check if the response has any `local_shell_call` items.
-   This tool call contains an action like `exec` with a command to execute.
-
-3. **Execute the requested action**:
-   Run the command in the local environment you control.
-
-4. **Return the action output**:
-   After executing the action, return the command output to the model.
-
-5. **Repeat**:
-   Send a new request with the updated state as a `local_shell_call_output`, and repeat this loop until the model stops requesting actions or you decide to stop.
-
-## Example workflow
-
-Below is a minimal example showing the request/response loop. Choose a language
-to see the equivalent workflow for its SDK. For brevity, production-grade
-sandboxing and security checks are omitted—**do not execute untrusted commands
-in production without additional safeguards**.
-
-```javascript
-import { spawn } from "node:child_process";
-import process from "node:process";
-import OpenAI from "openai";
-
-const client = new OpenAI();
-const MAX_TIMEOUT_MS = 10_000;
-
-function runCommand(command, options) {
-  return new Promise((resolve) => {
-    let stdout = "";
-    let stderr = "";
-    let settled = false;
-    let groupPoll;
-    const child = spawn(command[0], command.slice(1), {
-      ...options,
-      detached: process.platform !== "win32",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    const finish = (suffix = "") => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timer);
-      clearTimeout(groupPoll);
-      resolve(stdout + stderr + suffix);
-    };
-    const processGroupIsRunning = () => {
-      if (process.platform === "win32" || !child.pid) return false;
-      try {
-        process.kill(-child.pid, 0);
-        return true;
-      } catch {
-        return false;
-      }
-    };
-    const finishAfterProcessGroup = (suffix) => {
-      if (settled) return;
-      if (processGroupIsRunning()) {
-        groupPoll = setTimeout(() => finishAfterProcessGroup(suffix), 10);
-      } else {
-        finish(suffix);
-      }
-    };
-    const killProcessTree = () => {
-      try {
-        if (process.platform !== "win32" && child.pid) {
-          process.kill(-child.pid, "SIGKILL");
-        } else {
-          child.kill("SIGKILL");
-        }
-      } catch {
-        child.kill("SIGKILL");
-      }
-      child.stdout?.destroy();
-      child.stderr?.destroy();
-    };
-    const timer = setTimeout(() => {
-      killProcessTree();
-      finish("Command timed out.\n");
-    }, options.timeout);
-
-    child.stdout?.on("data", (chunk) => {
-      stdout += chunk;
-    });
-    child.stderr?.on("data", (chunk) => {
-      stderr += chunk;
-    });
-    child.on("error", (error) => {
-      finish(`Command failed: ${error.message}.\n`);
-    });
-    child.on("close", (code, signal) => {
-      if (signal) {
-        finishAfterProcessGroup(`Command failed with signal ${signal}.\n`);
-      } else if (code !== 0) {
-        finishAfterProcessGroup(`Command failed with exit code ${code}.\n`);
-      } else {
-        finishAfterProcessGroup("");
-      }
-    });
-  });
-}
-
-let response = await client.responses.create({
-  model: "codex-mini-latest",
-  tools: [{ type: "local_shell" }],
-  parallel_tool_calls: false,
-  input: "List files in the current directory.",
-});
-
-while (true) {
-  const shellCall = response.output.find(
-    (item) => item.type === "local_shell_call"
-  );
-  if (!shellCall) break;
-
-  const { command, env, timeout_ms, user, working_directory } =
-    shellCall.action;
-  let output;
-  if (user) {
-    output = `Unsupported execution user: ${user}.\n`;
-  } else if (command.length === 0) {
-    output = "Command is empty.\n";
-  } else {
-    const timeout =
-      timeout_ms && timeout_ms > 0
-        ? Math.min(timeout_ms, MAX_TIMEOUT_MS)
-        : MAX_TIMEOUT_MS;
-    try {
-      output = await runCommand(command, {
-        cwd: working_directory ?? process.cwd(),
-        env: { PATH: process.env.PATH ?? "", ...env },
-        timeout,
-      });
-    } catch (error) {
-      output = `Command failed: ${error instanceof Error ? error.message : String(error)}.\n`;
-    }
-  }
-
-  response = await client.responses.create({
-    model: "codex-mini-latest",
-    tools: [{ type: "local_shell" }],
-    parallel_tool_calls: false,
-    previous_response_id: response.id,
-    input: [
-      {
-        type: "local_shell_call_output",
-        id: shellCall.call_id,
-        output,
-      },
-    ],
-  });
-}
-
-console.log(response.output_text);
-```
-
-```python
-import os
-import signal
-import subprocess
-import time
-from contextlib import suppress
-from openai import OpenAI
-
-client = OpenAI()
-MAX_TIMEOUT_MS = 10_000
-
-
-def output_text(value):
-    if isinstance(value, bytes):
-        return value.decode(errors="replace")
-    return value or ""
-
-
-def process_group_is_running(pid):
-    if os.name == "nt":
-        return False
-    try:
-        os.killpg(pid, 0)
-        return True
-    except ProcessLookupError:
-        return False
-    except PermissionError:
-        return True
-
-
-response = client.responses.create(
-    model="codex-mini-latest",
-    tools=[{"type": "local_shell"}],
-    parallel_tool_calls=False,
-    input="List files in the current directory.",
-)
-
-while True:
-    shell_call = next(
-        (item for item in response.output if item.type == "local_shell_call"),
-        None,
-    )
-    if shell_call is None:
-        break
-
-    action = shell_call.action
-    if action.user:
-        output = f"Unsupported execution user: {action.user}.\n"
-    elif not action.command:
-        output = "Command is empty.\n"
-    else:
-        timeout_ms = (
-            min(action.timeout_ms, MAX_TIMEOUT_MS)
-            if action.timeout_ms and action.timeout_ms > 0
-            else MAX_TIMEOUT_MS
-        )
-        deadline = time.monotonic() + timeout_ms / 1000
-        try:
-            process = subprocess.Popen(
-                action.command,
-                cwd=action.working_directory or os.getcwd(),
-                env={"PATH": os.environ.get("PATH", ""), **action.env},
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                errors="replace",
-                start_new_session=True,
-            )
-            stdout, stderr = process.communicate(
-                timeout=max(deadline - time.monotonic(), 0)
-            )
-            while process_group_is_running(process.pid):
-                remaining = deadline - time.monotonic()
-                if remaining <= 0:
-                    raise subprocess.TimeoutExpired(action.command, timeout_ms / 1000)
-                time.sleep(min(remaining, 0.01))
-            output = stdout + stderr
-            if process.returncode:
-                output += f"Command failed with exit code {process.returncode}.\n"
-        except subprocess.TimeoutExpired as error:
-            if os.name == "nt":
-                process.kill()
-            else:
-                with suppress(ProcessLookupError):
-                    os.killpg(process.pid, signal.SIGKILL)
-            try:
-                stdout, stderr = process.communicate(
-                    timeout=max(deadline - time.monotonic(), 0)
-                )
-            except subprocess.TimeoutExpired as drain_error:
-                if process.stdout:
-                    process.stdout.close()
-                if process.stderr:
-                    process.stderr.close()
-                stdout = output_text(
-                    drain_error.stdout
-                    if drain_error.stdout is not None
-                    else error.stdout
-                )
-                stderr = output_text(
-                    drain_error.stderr
-                    if drain_error.stderr is not None
-                    else error.stderr
-                )
-            output = output_text(stdout) + output_text(stderr) + "Command timed out.\n"
-        except (OSError, TypeError, ValueError) as error:
-            output = f"Command failed: {error}.\n"
-
-    output_item = {
-        "type": "local_shell_call_output",
-        "id": shell_call.call_id,
-        "output": output,
-    }
-
-    response = client.responses.create(
-        model="codex-mini-latest",
-        tools=[{"type": "local_shell"}],
-        parallel_tool_calls=False,
-        previous_response_id=response.id,
-        input=[output_item],
-    )
-
-print(response.output_text)
-```
-
-```go
-package main
-
-import (
-	"bytes"
-	"context"
-	"errors"
-	"fmt"
-	"io"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"sync"
-	"sync/atomic"
-	"syscall"
-	"time"
-
-	"github.com/openai/openai-go/v3"
-	"github.com/openai/openai-go/v3/responses"
-)
-
-const maxCommandTimeout = 10 * time.Second
-
-func main() {
-	client := openai.NewClient()
-	tool := responses.ToolUnionParam{OfLocalShell: &responses.ToolLocalShellParam{}}
-	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:             "codex-mini-latest",
-		Tools:             []responses.ToolUnionParam{tool},
-		ParallelToolCalls: openai.Bool(false),
-		Input: responses.ResponseNewParamsInputUnion{
-			OfString: openai.String("List files in the current directory."),
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	for {
-		var shellCall *responses.ResponseOutputItemLocalShellCall
-		for _, item := range response.Output {
-			if item.Type == "local_shell_call" {
-				call := item.AsLocalShellCall()
-				shellCall = &call
-				break
-			}
-		}
-		if shellCall == nil {
-			break
-		}
-
-		action := shellCall.Action
-		var output []byte
-		if action.User != "" {
-			output = []byte(fmt.Sprintf("Unsupported execution user: %s.\n", action.User))
-		} else if len(action.Command) == 0 {
-			output = []byte("Command is empty.\n")
-		} else {
-			path := os.Getenv("PATH")
-			if actionPath, ok := action.Env["PATH"]; ok {
-				path = actionPath
-			}
-			executable, pathErr := commandPath(action.Command[0], path, action.WorkingDirectory)
-			if pathErr != nil {
-				output = []byte(fmt.Sprintf("Command failed: %v\n", pathErr))
-			} else {
-				timeout := maxCommandTimeout
-				if action.TimeoutMs > 0 && action.TimeoutMs < maxCommandTimeout.Milliseconds() {
-					timeout = time.Duration(action.TimeoutMs) * time.Millisecond
-				}
-				deadline := time.Now().Add(timeout)
-				ctx, cancel := context.WithTimeout(context.Background(), timeout)
-				command := exec.CommandContext(ctx, executable, action.Command[1:]...)
-				command.Args[0] = action.Command[0]
-				command.Dir = action.WorkingDirectory
-				command.Env = []string{"PATH=" + path}
-				command.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
-				for key, value := range action.Env {
-					if key == "PATH" {
-						continue
-					}
-					command.Env = append(command.Env, key+"="+value)
-				}
-				killProcessGroup := func() {
-					if command.Process != nil {
-						_ = syscall.Kill(-command.Process.Pid, syscall.SIGKILL)
-					}
-				}
-				processGroupIsRunning := func() bool {
-					return command.Process != nil && syscall.Kill(-command.Process.Pid, 0) == nil
-				}
-				stdout, stdoutWriter, stdoutErr := os.Pipe()
-				stderr, stderrWriter, stderrErr := os.Pipe()
-				if stdoutErr != nil || stderrErr != nil {
-					if stdout != nil {
-						_ = stdout.Close()
-					}
-					if stdoutWriter != nil {
-						_ = stdoutWriter.Close()
-					}
-					if stderr != nil {
-						_ = stderr.Close()
-					}
-					if stderrWriter != nil {
-						_ = stderrWriter.Close()
-					}
-					output = []byte(fmt.Sprintf("Command failed: %v%v\n", stdoutErr, stderrErr))
-				} else {
-					command.Stdout = stdoutWriter
-					command.Stderr = stderrWriter
-					var combinedOutput bytes.Buffer
-					var outputLock sync.Mutex
-					var readers sync.WaitGroup
-					readOutput := func(reader io.ReadCloser) {
-						defer readers.Done()
-						data, _ := io.ReadAll(reader)
-						outputLock.Lock()
-						_, _ = combinedOutput.Write(data)
-						outputLock.Unlock()
-					}
-					var commandErr error
-					commandErr = command.Start()
-					if commandErr == nil {
-						_ = stdoutWriter.Close()
-						_ = stderrWriter.Close()
-						readers.Add(2)
-						go readOutput(stdout)
-						go readOutput(stderr)
-						var timedOut atomic.Bool
-						remaining := time.Until(deadline)
-						if remaining < 0 {
-							remaining = 0
-						}
-						markTimedOut := func() {
-							if timedOut.Swap(true) {
-								return
-							}
-							killProcessGroup()
-							_ = stdout.Close()
-							_ = stderr.Close()
-						}
-						timer := time.AfterFunc(remaining, markTimedOut)
-						commandErr = command.Wait()
-						if !time.Now().Before(deadline) ||
-							errors.Is(commandErr, context.DeadlineExceeded) ||
-							errors.Is(ctx.Err(), context.DeadlineExceeded) {
-							markTimedOut()
-						}
-						for processGroupIsRunning() && !timedOut.Load() {
-							time.Sleep(10 * time.Millisecond)
-						}
-						readers.Wait()
-						if !timer.Stop() || !time.Now().Before(deadline) {
-							markTimedOut()
-						}
-						output = combinedOutput.Bytes()
-						if timedOut.Load() || errors.Is(ctx.Err(), context.DeadlineExceeded) {
-							killProcessGroup()
-							output = append(output, "Command timed out.\n"...)
-						} else if commandErr != nil {
-							output = append(output, fmt.Sprintf("Command failed: %v\n", commandErr)...)
-						}
-					} else {
-						_ = stdout.Close()
-						_ = stderr.Close()
-						_ = stdoutWriter.Close()
-						_ = stderrWriter.Close()
-						output = append(output, fmt.Sprintf("Command failed: %v\n", commandErr)...)
-					}
-				}
-				cancel()
-			}
-		}
-
-		response, err = client.Responses.New(context.Background(), responses.ResponseNewParams{
-			Model:              "codex-mini-latest",
-			Tools:              []responses.ToolUnionParam{tool},
-			ParallelToolCalls:  openai.Bool(false),
-			PreviousResponseID: openai.String(response.ID),
-			Input: responses.ResponseNewParamsInputUnion{
-				OfInputItemList: []responses.ResponseInputItemUnionParam{{
-					OfLocalShellCallOutput: &responses.ResponseInputItemLocalShellCallOutputParam{
-						ID:     shellCall.CallID,
-						Output: string(output),
-					},
-				}},
-			},
-		})
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	fmt.Println(response.OutputText())
-}
-
-func commandPath(command string, path string, workingDirectory string) (string, error) {
-	if filepath.Base(command) != command {
-		return command, nil
-	}
-	baseDirectory, err := filepath.Abs(workingDirectory)
-	if err != nil {
-		return "", err
-	}
-	directories := filepath.SplitList(path)
-	if len(directories) == 0 {
-		directories = []string{""}
-	}
-	for _, directory := range directories {
-		if directory == "" {
-			directory = "."
-		}
-		if !filepath.IsAbs(directory) {
-			directory = filepath.Join(baseDirectory, directory)
-		}
-		candidate := filepath.Join(directory, command)
-		info, err := os.Stat(candidate)
-		if err == nil && !info.IsDir() && info.Mode()&0o111 != 0 {
-			return candidate, nil
-		}
-	}
-	return "", fmt.Errorf("command %q not found in PATH", command)
-}
-```
-
-```java
-import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.core.JsonValue;
-import com.openai.models.responses.ResponseCreateParams;
-import com.openai.models.responses.ResponseInputItem;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-ResponseCreateParams.Builder request =
-    ResponseCreateParams.builder()
-        .model("codex-mini-latest")
-        .input("List files in the current directory.")
-        .parallelToolCalls(false)
-        .putAdditionalBodyProperty(
-            "tools", JsonValue.from(List.of(Map.of("type", "local_shell"))));
-var response = client.responses().create(request.build());
-
-while (true) {
-  var shellCall =
-      response.output().stream()
-          .flatMap(item -> item.localShellCall().stream())
-          .findFirst()
-          .orElse(null);
-  if (shellCall == null) {
-    break;
-  }
-
-  var action = shellCall.action();
-  String output;
-  if (action.user().isPresent()) {
-    output = "Unsupported execution user: " + action.user().get() + ".\n";
-  } else if (action.command().isEmpty()) {
-    output = "Command is empty.\n";
-  } else {
-    try {
-      boolean usesShellSupervisor =
-          !System.getProperty("os.name").toLowerCase(Locale.ROOT).startsWith("win");
-      String hostPath = System.getenv("PATH");
-      String childPath = hostPath;
-      Map<String, String> actionEnvironment = new LinkedHashMap<>();
-      for (Map.Entry<String, com.openai.core.JsonValue> variable :
-          action.env()._additionalProperties().entrySet()) {
-        String value = (String) variable.getValue().asString().orElseThrow();
-        actionEnvironment.put(variable.getKey(), value);
-        if (variable.getKey().equals("PATH")) {
-          childPath = value;
-        }
-      }
-      List<String> command;
-      if (usesShellSupervisor) {
-        String supervisorShell =
-            Files.isExecutable(Path.of("/bin/bash")) ? "/bin/bash" : "/bin/sh";
-        command =
-            new ArrayList<>(
-                List.of(
-                    supervisorShell,
-                    "-c",
-                    "set -m; child=; "
-                        + "cleanup() { test -z \"$child\" || "
-                        + "kill -KILL -- \"-$child\" 2>/dev/null; }; "
-                        + "trap cleanup TERM INT HUP; \"$@\" & child=$!; set +m; "
-                        + "wait \"$child\" 2>/dev/null; status=$?; "
-                        + "while kill -0 -- \"-$child\" 2>/dev/null; do sleep 0.01; done; "
-                        + "exit \"$status\"",
-                    "local-shell",
-                    "/usr/bin/env",
-                    "-i"));
-        if (childPath != null) {
-          command.add("PATH=" + childPath);
-        }
-        for (Map.Entry<String, String> variable : actionEnvironment.entrySet()) {
-          if (!variable.getKey().equals("PATH")) {
-            command.add(variable.getKey() + "=" + variable.getValue());
-          }
-        }
-        command.addAll(action.command());
-      } else {
-        command = new ArrayList<>(action.command());
-      }
-      ProcessBuilder processBuilder = new ProcessBuilder(command);
-      processBuilder.directory(action.workingDirectory().map(java.io.File::new).orElse(null));
-      processBuilder.environment().clear();
-      if (hostPath != null) {
-        processBuilder.environment().put("PATH", hostPath);
-      }
-      if (!usesShellSupervisor) {
-        processBuilder.environment().putAll(actionEnvironment);
-      }
-      Process process = processBuilder.redirectErrorStream(true).start();
-      process.getOutputStream().close();
-      var outputFuture =
-          CompletableFuture.supplyAsync(
-              () -> {
-                try {
-                  return new String(
-                      process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-                } catch (IOException error) {
-                  throw new UncheckedIOException(error);
-                }
-              });
-      long timeoutMillis =
-          action
-              .timeoutMs()
-              .filter(timeout -> timeout > 0)
-              .map(timeout -> Math.min(timeout, MAX_TIMEOUT_MILLIS))
-              .orElse(MAX_TIMEOUT_MILLIS);
-      long deadlineNanos = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeoutMillis);
-      boolean finished = process.waitFor(timeoutMillis, TimeUnit.MILLISECONDS);
-      if (!finished) {
-        destroyProcessTree(process, usesShellSupervisor);
-      }
-      try {
-        long remainingNanos = Math.max(1, deadlineNanos - System.nanoTime());
-        output = outputFuture.get(remainingNanos, TimeUnit.NANOSECONDS);
-        if (!finished) {
-          output = "Command timed out.\n" + output;
-        } else if (process.exitValue() != 0) {
-          output += "Command failed with exit code " + process.exitValue() + ".\n";
-        }
-      } catch (TimeoutException error) {
-        destroyProcessTree(process, usesShellSupervisor);
-        process.getInputStream().close();
-        output = "Command timed out.\n";
-      } catch (java.util.concurrent.ExecutionException error) {
-        output = "Command failed: " + error.getCause().getMessage() + ".\n";
-      }
-    } catch (IOException | IllegalArgumentException error) {
-      output = "Command failed: " + error.getMessage() + ".\n";
-    }
-  }
-
-  response =
-      client
-          .responses()
-          .create(
-              request
-                  .previousResponseId(response.id())
-                  .inputOfResponse(
-                      List.of(
-                          ResponseInputItem.ofLocalShellCallOutput(
-                              ResponseInputItem.LocalShellCallOutput.builder()
-                                  .id(shellCall.callId())
-                                  .output(output)
-                                  .build())))
-                  .build());
-}
-
-response.output().stream()
-    .flatMap(item -> item.message().stream())
-    .flatMap(message -> message.content().stream())
-    .flatMap(content -> content.outputText().stream())
-    .forEach(text -> System.out.println(text.text()));
-
-private static void destroyProcessTree(Process process, boolean usesShellSupervisor) {
-  process.descendants().forEach(ProcessHandle::destroyForcibly);
-  if (usesShellSupervisor) {
-    process.destroy();
-  } else {
-    process.destroyForcibly();
-  }
-}
-```
-
-```ruby
-require "open3"
-require "openai"
-require "timeout"
-
-client = OpenAI::Client.new
-MAX_TIMEOUT_MS = 10_000
-response = client.responses.create(
-  model: "codex-mini-latest",
-  tools: [{ type: :local_shell }],
-  parallel_tool_calls: false,
-  input: "List files in the current directory."
-)
-
-loop do
-  shell_call = response.output.find do |item|
-    item.is_a?(OpenAI::Models::Responses::ResponseOutputItem::LocalShellCall)
-  end
-  break unless shell_call.is_a?(
-    OpenAI::Models::Responses::ResponseOutputItem::LocalShellCall
-  )
-
-  action = shell_call.action
-  stdout = +""
-  stderr = +""
-  if action.user
-    stderr << "Unsupported execution user: #{action.user}.\n"
-  elsif action.command.empty?
-    stderr << "Command is empty.\n"
-  else
-    begin
-      executable = action.command.fetch(0)
-      environment = { "PATH" => ENV.fetch("PATH", "") }.merge(action.env.transform_keys(&:to_s))
-      status, timed_out = Open3.popen3(
-        environment,
-        [executable, executable],
-        *action.command.drop(1),
-        chdir: action.working_directory || Dir.pwd,
-        pgroup: true,
-        unsetenv_others: true
-      ) do |stdin, child_stdout, child_stderr, wait_thread|
-        stdin.close
-        stdout_reader = Thread.new {
-          begin
-            child_stdout.read
-          rescue
-            ""
-          end
-        }
-        stderr_reader = Thread.new {
-          begin
-            child_stderr.read
-          rescue
-            ""
-          end
-        }
-        timeout_ms = action.timeout_ms
-        timeout = if timeout_ms&.positive?
-                    [timeout_ms, MAX_TIMEOUT_MS].min / 1000.0
-                  else
-                    MAX_TIMEOUT_MS / 1000.0
-                  end
-        deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout
-
-        command_timed_out = false
-        wait_status = begin
-          status = Timeout.timeout(timeout) { wait_thread.value }
-          remaining = deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC)
-          raise Timeout::Error if remaining <= 0
-
-          stdout << Timeout.timeout(remaining) { stdout_reader.value }
-          remaining = deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC)
-          raise Timeout::Error if remaining <= 0
-
-          stderr << Timeout.timeout(remaining) { stderr_reader.value }
-          group_running = proc do
-            Process.kill(0, -wait_thread.pid)
-            true
-          rescue Errno::ESRCH
-            false
-          rescue Errno::EPERM
-            true
-          end
-          while group_running.call
-            remaining = deadline - Process.clock_gettime(Process::CLOCK_MONOTONIC)
-            raise Timeout::Error if remaining <= 0
-
-            sleep [remaining, 0.01].min
-          end
-          status
-        rescue Timeout::Error
-          command_timed_out = true
-          begin
-            Process.kill("TERM", -wait_thread.pid)
-            Process.kill("KILL", -wait_thread.pid)
-          rescue Errno::ESRCH
-            nil
-          end
-          child_stdout.close
-          child_stderr.close
-          stdout_reader.kill
-          stderr_reader.kill
-          stderr << "Command timed out.\n"
-          wait_thread.value
-        end
-        [wait_status, command_timed_out]
-      end
-      exit_status = status.exitstatus
-      if exit_status && !status.success? && !timed_out
-        stderr << "Command failed with exit code #{exit_status}.\n"
-      elsif status.signaled? && !timed_out
-        stderr << "Command failed with signal #{status.termsig}.\n"
-      end
-    rescue SystemCallError, ArgumentError, TypeError => error
-      stderr << "Command failed: #{error.message}.\n"
-    end
-  end
-
-  response = client.responses.create(
-    model: "codex-mini-latest",
-    tools: [{ type: :local_shell }],
-    parallel_tool_calls: false,
-    previous_response_id: response.id,
-    input: [
-      {
-        type: :local_shell_call_output,
-        id: shell_call.call_id,
-        output: (stdout + stderr).encode("UTF-8", invalid: :replace, undef: :replace)
-      }
-    ]
-  )
-end
-
-puts(response.output_text)
-```
-
-
-## Best practices
-
-- **Sandbox or containerize** execution. Consider using Docker or a jailed user
-  account.
-- **Impose resource limits** (time, memory, network). The `timeout_ms`
-  provided by the model is only a hint—you should enforce your own limits.
-- **Filter or scrutinize** high-risk commands (for example, `rm`, `curl`, network
-  utilities).
-- **Log every command and its output** for auditing and debugging.
-
-### Error handling
-
-If the command fails on your side, for example, with a non-zero exit code or timeout, you can still send a `local_shell_call_output`; include the error message in the `output` field.
-
-The model can choose to recover or try executing a different command. If you send malformed data (for example, a missing `id`) the API returns a standard `400` validation error.
-
----
-
 # Manage permissions in the OpenAI platform
 
 Role-based access control (RBAC) lets you decide who can do what across your organization and projects—both through the API and in the Dashboard. The same permissions govern both surfaces: if someone can call an endpoint (for example, `/v1/chat/completions`), they can use the equivalent Dashboard page, and missing permissions disable related UI (such as the **Upload** button in Playground). With RBAC you can:
@@ -63014,11 +62196,17 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
-CreateResponseOptions options = new() { Model = "gpt-6-astra" };
+CreateResponseOptions options = new()
+{
+    Model = "gpt-6-astra",
+    ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+    ParallelToolCallsEnabled = false
+};
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
         serverLabel: "openai_docs",
         serverUri: new Uri("https://developers.openai.com/mcp"),
+        allowedTools: new McpToolFilter { ToolNames = { "search_openai_docs" } },
         toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval
     )
 );
@@ -63032,6 +62220,7 @@ McpToolCallApprovalRequestItem approvalRequest =
 
 // Step 2: Approve the tool call and get the final response.
 options.PreviousResponseId = response1.Id;
+options.ToolChoice = ResponseToolChoice.CreateNoneChoice();
 options.InputItems.Clear();
 options.InputItems.Add(
     ResponseItem.CreateMcpApprovalResponseItem(approvalRequest.Id, approved: true)
@@ -75423,6 +74612,8 @@ Set spend alerts on the [limits](https://platform.openai.com/settings/organizati
 
 The OpenAI API uses API keys for authentication. Visit your [API keys](https://platform.openai.com/settings/organization/api-keys) page to retrieve the API key you'll use in your requests.
 
+Use a project service account for an application's identity instead of depending on an individual developer's key. See [API keys and service accounts](https://developers.openai.com/api/docs/guides/api-keys) for choosing credentials and automating project and key management.
+
 This is a relatively straightforward way to control access, but you must be vigilant about securing these keys. Avoid exposing the API keys in your code or in public repositories; instead, store them in a secure location. You should expose your keys to your application using environment variables or secret management service, so that you don't need to hard-code them in your codebase. Read more in our [Best practices for API key safety](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety).
 
 We strongly recommend setting an expiration date when you create a project API key and establishing a regular key rotation process. Before a key expires, create a replacement, update your applications to use it, and revoke the old key once you've verified that the replacement works.
@@ -82072,6 +81263,12 @@ options.ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat("metaschema",
         },
         "additionalProperties": {
           "type": "boolean"
+        },
+        "$defs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/schema_definition"
+          }
         }
       },
       "required": [
@@ -82094,6 +81291,12 @@ options.ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat("metaschema",
         "schema_definition": {
           "type": "object",
           "properties": {
+            "description": {
+              "type": "string"
+            },
+            "enum": {
+              "type": "array"
+            },
             "type": {
               "type": "string",
               "enum": [
@@ -82132,24 +81335,50 @@ options.ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat("metaschema",
             },
             "additionalProperties": {
               "type": "boolean"
+            },
+            "$ref": {
+              "type": "string"
+            },
+            "anyOf": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/schema_definition"
+              }
             }
           },
-          "required": [
-            "type"
-          ],
           "additionalProperties": false,
           "if": {
             "properties": {
               "type": {
                 "const": "object"
               }
-            }
+            },
+            "required": [
+              "type"
+            ]
           },
           "then": {
             "required": [
               "properties"
             ]
-          }
+          },
+          "anyOf": [
+            {
+              "required": [
+                "$ref"
+              ]
+            },
+            {
+              "required": [
+                "type"
+              ]
+            },
+            {
+              "required": [
+                "anyOf"
+              ]
+            }
+          ]
         }
       }
     }
@@ -83554,6 +82783,8 @@ options.ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat("function-met
         "schema_definition": {
           "type": "object",
           "properties": {
+            "description": { "type": "string" },
+            "enum": { "type": "array" },
             "type": {
               "type": "string",
               "enum": [
@@ -89745,6 +88976,7 @@ using OpenAI.Realtime;
 RealtimeResponseOptions options = new()
 
 {
+    OutputModalities = { RealtimeOutputModality.Text },
     Instructions = "Say exactly the following: I'm a little teapot, short and stout! This is my handle, this is my spout!"
 
 };
@@ -91426,6 +90658,7 @@ internal static async Task SendFunctionCallOutputAsync(RealtimeSessionClient ses
     {
         ResponseOptions = new()
         {
+            OutputModalities = { RealtimeOutputModality.Text },
             Metadata = new Dictionary<string, BinaryData> { ["topic"] = BinaryData.FromObjectAsJson("lookup_order_followup") },
             ToolChoice = RealtimeDefaultToolChoice.None
         }
@@ -92173,16 +91406,17 @@ private static void send(RealtimeConnection connection, RealtimeClientEvent even
 ```
 
 ```csharp
+using System.Text.Json;
 using OpenAI.Realtime;
 
 #pragma warning disable OPENAI002
-// Replace https://mcp.example.com/mcp with your company's MCP server URL.
+// Connect to the official OpenAI documentation MCP server.
 
 internal static async Task ApproveMcpRequestAsync(RealtimeSessionClient session, string approvalRequestId, CancellationToken cancellationToken)
 {
     await session.SendCommandAsync(new RealtimeClientCommandConversationItemCreate(new RealtimeMcpToolCallApprovalResponseItem(approvalRequestId, true)
     {
-        Id = $"mcp_approval_{approvalRequestId}"
+        Id = Guid.NewGuid().ToString("N")
     }), cancellationToken);
 }
 ```
@@ -92355,6 +91589,7 @@ connection.send(
 ```
 
 ```csharp
+using System.Text.Json;
 using OpenAI.Realtime;
 
 #pragma warning disable OPENAI002
@@ -92364,6 +91599,7 @@ await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
     ResponseOptions = new()
     {
         Metadata = new Dictionary<string, BinaryData> { ["topic"] = BinaryData.FromObjectAsJson("mcp_initial") },
+        ToolChoice = RealtimeDefaultToolChoice.Required,
         OutputModalities =
         {
             RealtimeOutputModality.Text
@@ -100943,16 +100179,17 @@ snapshots, or credentials that should live outside your application server.
 Use provider docs for provider-specific setup, credentials, isolation, storage,
 previews, and persistence behavior.
 
-| Provider   | SDK client                | Documentation and examples                                                                                                                                                                                                                                                                                                                                                                                                 |
-| ---------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Blaxel     | `BlaxelSandboxClient`     | [Sandbox overview](https://docs.blaxel.ai/Sandboxes/Overview)                                                                                                                                                                                                                                                                                                                                                   |
-| Cloudflare | `CloudflareSandboxClient` | [Sandbox documentation](https://developers.cloudflare.com/sandbox/)<br />[OpenAI Agents tutorial](https://docs.cloudflare.com/sandbox/tutorials/openai-agents/)<br />[Sandbox Bridge examples](https://github.com/cloudflare/sandbox-sdk/tree/main/bridge/examples)                                                                                                                       |
-| Daytona    | `DaytonaSandboxClient`    | [Sandbox documentation](https://www.daytona.io/docs/en/sandboxes/)<br />[OpenAI Agents SDK guide](https://www.daytona.io/docs/en/guides/openai-agents/openai-agents-sdk-with-sandboxes)                                                                                                                                                                                                              |
-| Docker     | `DockerSandboxClient`     | [Docker documentation](https://docs.docker.com/)<br />[TypeScript Docker SDK example](https://github.com/openai/openai-agents-js/blob/main/examples/docs/sandbox-agents/docker-client.ts)<br />[Python Docker SDK example](https://github.com/openai/openai-agents-python/blob/main/examples/sandbox/docker/docker_runner.py)                                                             |
-| E2B        | `E2BSandboxClient`        | [Sandbox documentation](https://e2b.dev/docs)<br />[OpenAI Agents SDK guide](https://e2b.dev/docs/agents/openai-agents-sdk)<br />[Launch blog](https://e2b.dev/blog/e2b-is-now-in-agents-sdk)                                                                                                                                                                                             |
-| Modal      | `ModalSandboxClient`      | [Sandbox guide](https://modal.com/docs/guide/sandboxes)<br />[Integration blog](https://modal.com/blog/building-with-modal-and-the-openai-agent-sdk)<br />[Example repo](https://github.com/modal-labs/openai-agents-python-example)<br />[Modal extension reference](https://github.com/modal-labs/openai-agents-python-example?tab=readme-ov-file#modal-extension-reference) |
-| Unix-local | `UnixLocalSandboxClient`  | [TypeScript local SDK example](https://github.com/openai/openai-agents-js/blob/main/examples/docs/sandbox-agents/basic.ts)<br />[Python local SDK example](https://github.com/openai/openai-agents-python/blob/main/examples/sandbox/unix_local_runner.py)                                                                                                                                           |
-| Vercel     | `VercelSandboxClient`     | [Sandbox documentation](https://vercel.com/docs/vercel-sandbox)<br />[OpenAI Agents SDK guide](https://vercel.com/kb/guide/building-an-agent-with-openai-agents-sdk-and-vercel-sandbox)<br />[FastAPI template](https://vercel.com/templates/template/openai-agents-sdk-with-fastapi)<br />[Sample app](https://github.com/vercel-labs/openai-agents-fastapi-starter)          |
+| Provider   | SDK client                | Documentation and examples                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Blaxel     | `BlaxelSandboxClient`     | [Sandbox overview](https://docs.blaxel.ai/Sandboxes/Overview)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Cloudflare | `CloudflareSandboxClient` | [Sandbox documentation](https://developers.cloudflare.com/sandbox/)<br />[OpenAI Agents tutorial](https://docs.cloudflare.com/sandbox/tutorials/openai-agents/)<br />[Sandbox Bridge examples](https://github.com/cloudflare/sandbox-sdk/tree/main/bridge/examples)                                                                                                                                                                                                                                                               |
+| Databricks | `DatabricksSandboxClient` | For Python, install `databricks-openai[sandbox]`.<br />[Sandbox documentation](https://docs.databricks.com/aws/en/compute/serverless/sandbox)<br />[OpenAI Agents SDK example](https://github.com/databricks/databricks-ai-bridge/blob/main/integrations/openai/examples/sandbox_runner.py)<br />[Databricks SDK for Python guide](https://databricks-sdk-py.readthedocs.io/en/latest/sandbox.html) |
+| Daytona    | `DaytonaSandboxClient`    | [Sandbox documentation](https://www.daytona.io/docs/en/sandboxes/)<br />[OpenAI Agents SDK guide](https://www.daytona.io/docs/en/guides/openai-agents/openai-agents-sdk-with-sandboxes)                                                                                                                                                                                                                                                                                                                                                      |
+| Docker     | `DockerSandboxClient`     | [Docker documentation](https://docs.docker.com/)<br />[TypeScript Docker SDK example](https://github.com/openai/openai-agents-js/blob/main/examples/docs/sandbox-agents/docker-client.ts)<br />[Python Docker SDK example](https://github.com/openai/openai-agents-python/blob/main/examples/sandbox/docker/docker_runner.py)                                                                                                                                                                                                     |
+| E2B        | `E2BSandboxClient`        | [Sandbox documentation](https://e2b.dev/docs)<br />[OpenAI Agents SDK guide](https://e2b.dev/docs/agents/openai-agents-sdk)<br />[Launch blog](https://e2b.dev/blog/e2b-is-now-in-agents-sdk)                                                                                                                                                                                                                                                                                                                                     |
+| Modal      | `ModalSandboxClient`      | [Sandbox guide](https://modal.com/docs/guide/sandboxes)<br />[Integration blog](https://modal.com/blog/building-with-modal-and-the-openai-agent-sdk)<br />[Example repo](https://github.com/modal-labs/openai-agents-python-example)<br />[Modal extension reference](https://github.com/modal-labs/openai-agents-python-example?tab=readme-ov-file#modal-extension-reference)                                                                                                                                         |
+| Unix-local | `UnixLocalSandboxClient`  | [TypeScript local SDK example](https://github.com/openai/openai-agents-js/blob/main/examples/docs/sandbox-agents/basic.ts)<br />[Python local SDK example](https://github.com/openai/openai-agents-python/blob/main/examples/sandbox/unix_local_runner.py)                                                                                                                                                                                                                                                                                   |
+| Vercel     | `VercelSandboxClient`     | [Sandbox documentation](https://vercel.com/docs/vercel-sandbox)<br />[OpenAI Agents SDK guide](https://vercel.com/kb/guide/building-an-agent-with-openai-agents-sdk-and-vercel-sandbox)<br />[FastAPI template](https://vercel.com/templates/template/openai-agents-sdk-with-fastapi)<br />[Sample app](https://github.com/vercel-labs/openai-agents-fastapi-starter)                                                                                                                                                  |
 
 [sdk-example-agents-as-tools]: https://github.com/openai/openai-agents-python/blob/main/examples/sandbox/sandbox_agents_as_tools.py
 [sdk-example-basic]: https://github.com/openai/openai-agents-python/blob/main/examples/sandbox/basic.py
@@ -105610,7 +104847,7 @@ The shell tool lets models run commands through either:
 Shell is available through the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses). It's not available via the Chat Completions API.
 
 Running arbitrary shell commands can be dangerous. Always sandbox execution,
-  apply allowlists or denylists where possible, and log tool activity for
+  allow or block specific commands where possible, and log tool activity for
   auditing.
 
 ## Hosted shell quickstart
@@ -106372,7 +105609,7 @@ puts(response.output_text)
 
 Allowlisting domains introduces security risks such as prompt
   injection-driven data exfiltration. Only allowlist domains you trust and that
-  attackers cannot use to receive exfiltrated data. Carefully review the [Risks
+  attackers cannot use to receive stolen data. Carefully review the [Risks
   and safety](#risks-and-safety) section below before using this tool.
 
 ## Network policy precedence
@@ -107278,7 +106515,7 @@ Example shell_call item
 
 You can also run shell commands in your own local runtime by executing `shell_call` actions and sending `shell_call_output` back to the model.
 
-Use this mode when you need full control over execution environment, filesystem access, or existing internal tooling.
+Use this mode when you need control over the filesystem or access to internal tools. Set the tool type to `shell` and its environment type to `local`. If you are migrating from the retired `local_shell` tool, update your request and handle `shell_call` and `shell_call_output` in your execution loop.
 
 Local shell request
 
@@ -107400,7 +106637,9 @@ puts(response.output)
 
 When you receive `shell_call` output items:
 
-- Execute requested commands in your runtime.
+- Inspect each command before execution. Use an allowlist and require approval for destructive commands or commands that access sensitive data.
+- Run approved commands in a sandbox with explicit filesystem, network, memory, and time limits. Enforce your own timeout even when the model suggests one.
+- Log commands and their outcomes for auditing.
 - Capture `stdout`, `stderr`, and outcome.
 - Return results as `shell_call_output` in the next request.
 
@@ -107598,7 +106837,7 @@ Example shell_call_output payload
 ```
 
 
-For legacy migration details, see the older [Local shell guide](https://developers.openai.com/api/docs/guides/tools-local-shell).
+If a command fails or times out, return its outcome so the model can decide whether to retry. See the [legacy tool shutdown notice](https://developers.openai.com/api/docs/deprecations#2025-11-17-codex-mini-latest-model-snapshot).
 
 ## Use local shell with Agents SDK
 
@@ -110237,7 +109476,6 @@ BinaryData schema = BinaryData.FromString(
           "properties": {
             "type": { "type": "string", "enum": ["div", "button", "header", "section", "field", "form"] },
             "label": { "type": "string" },
-            "children": { "type": "array", "items": { "$ref": "#/$defs/component" } },
             "attributes": {
               "type": "array",
               "items": {
@@ -110246,7 +109484,8 @@ BinaryData schema = BinaryData.FromString(
                 "required": ["name", "value"],
                 "additionalProperties": false
               }
-            }
+            },
+            "children": { "type": "array", "items": { "$ref": "#/$defs/component" } }
           },
           "required": ["type", "label", "children", "attributes"],
           "additionalProperties": false
@@ -110258,6 +109497,7 @@ BinaryData schema = BinaryData.FromString(
 CreateResponseOptions options = new()
 {
     Model = "gpt-6-astra",
+    MaxOutputTokenCount = 4096,
     TextOptions = new ResponseTextOptions
     {
         TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
@@ -110268,10 +109508,22 @@ CreateResponseOptions options = new()
     },
 };
 options.InputItems.Add(ResponseItem.CreateSystemMessageItem("You are a UI generator. Convert the user request into a component tree."));
-options.InputItems.Add(ResponseItem.CreateUserMessageItem("Make a User Profile Form"));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem(
+    "Make a small user profile form with exactly three direct children: " +
+    "a Name field, an Email field, and a Save button. Give each child no children. " +
+    "Use short labels and at most two short attributes per component."
+));
 
 ResponseResult response = await client.CreateResponseAsync(options);
-using JsonDocument parsed = JsonDocument.Parse(response.GetOutputText());
+string text = response.GetOutputText();
+bool refused = response.OutputItems.OfType<MessageResponseItem>()
+    .SelectMany(message => message.Content)
+    .Any(part => part.Kind == ResponseContentPartKind.Refusal);
+if (response.Status != ResponseStatus.Completed || refused || string.IsNullOrWhiteSpace(text))
+{
+    throw new InvalidOperationException("UI generation did not complete.");
+}
+using JsonDocument parsed = JsonDocument.Parse(text);
 Console.WriteLine(parsed.RootElement);
 ```
 
@@ -114258,8 +113510,8 @@ Keep the sideband open until `session.closed` supplies final usage, then release
 
 Call a phone number through your SIP provider with [Create session](https://developers.openai.com/api/reference/resources/live/methods/create). Your provider handles the phone network connection while GPT-Live carries the conversation.
 
-Outbound SIP calling must be enabled for your organization. It is available
-  through the Live API, not the Realtime API call-creation endpoint.
+Outbound SIP calling is available to all organizations through the Live API,
+  not the Realtime API call-creation endpoint.
 
 #### Configure your trunk
 
@@ -114343,7 +113595,7 @@ Use the same [transfer](#transfer-or-end-the-call) and [hangup](https://develope
 
 Outbound SIP requests have a 1 MiB body limit. Ringing is limited to 3 minutes, and a connected call is limited to 2 hours. These limits aren't configurable in the creation request.
 
-A `403` response with `outbound_sip_not_enabled` means outbound calling isn't enabled for your organization. Invalid session configuration is returned on the creation request. Transport setup failures can return `502`, and initialization timeouts return `504`. After creation succeeds, monitor `transport.failed` for asynchronous setup failures.
+Invalid session configuration is returned on the creation request. Transport setup failures can return `502`, and initialization timeouts return `504`. After creation succeeds, monitor `transport.failed` for asynchronous setup failures.
 
 Each creation request places a new call. `X-Client-Request-Id` doesn't
   deduplicate requests. Don't automatically retry after an ambiguous timeout or
@@ -128629,17 +127881,13 @@ EmbeddingClient client = new(model, key);
 OpenAIEmbedding embedding = await client.GenerateEmbeddingAsync("Testing 123");
 
 float[] shortened = embedding.ToFloats().Span[..256].ToArray();
-double magnitude = Math.Sqrt(shortened.Sum(value => value * value));
-float[] normalized =
+double magnitude = Math.Sqrt(shortened.Sum(value => (double)value * value));
+double[] normalized =
     magnitude == 0
-        ? shortened
-        : shortened.Select(value => (float)(value / magnitude)).ToArray();
+        ? shortened.Select(value => (double)value).ToArray()
+        : shortened.Select(value => value / magnitude).ToArray();
 
-Console.WriteLine($"Dimensions: {normalized.Length}");
-Console.WriteLine($"First value: {normalized[0]:F6}");
-Console.WriteLine(
-    $"L2 norm: {Math.Sqrt(normalized.Sum(value => value * value)):F3}"
-);
+Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(normalized));
 ```
 
 ```ruby
@@ -129053,9 +128301,9 @@ static double CosineSimilarity(float[] left, float[] right)
     double dot = 0, leftNorm = 0, rightNorm = 0;
     for (int i = 0; i < left.Length; i++)
     {
-        dot += left[i] * right[i];
-        leftNorm += left[i] * left[i];
-        rightNorm += right[i] * right[i];
+        dot += (double)left[i] * right[i];
+        leftNorm += (double)left[i] * left[i];
+        rightNorm += (double)right[i] * right[i];
     }
     return dot / Math.Sqrt(leftNorm * rightNorm);
 }
@@ -129314,9 +128562,9 @@ static double CosineSimilarity(float[] left, float[] right)
     double dot = 0, leftNorm = 0, rightNorm = 0;
     for (int i = 0; i < left.Length; i++)
     {
-        dot += left[i] * right[i];
-        leftNorm += left[i] * left[i];
-        rightNorm += right[i] * right[i];
+        dot += (double)left[i] * right[i];
+        leftNorm += (double)left[i] * left[i];
+        rightNorm += (double)right[i] * right[i];
     }
     return dot / Math.Sqrt(leftNorm * rightNorm);
 }
@@ -129584,9 +128832,9 @@ static double CosineSimilarity(float[] left, float[] right)
     double dot = 0, leftNorm = 0, rightNorm = 0;
     for (int i = 0; i < left.Length; i++)
     {
-        dot += left[i] * right[i];
-        leftNorm += left[i] * left[i];
-        rightNorm += right[i] * right[i];
+        dot += (double)left[i] * right[i];
+        leftNorm += (double)left[i] * left[i];
+        rightNorm += (double)right[i] * right[i];
     }
     return dot / Math.Sqrt(leftNorm * rightNorm);
 }
@@ -129926,9 +129174,9 @@ static double CosineSimilarity(float[] left, float[] right)
     double dot = 0, leftNorm = 0, rightNorm = 0;
     for (int i = 0; i < left.Length; i++)
     {
-        dot += left[i] * right[i];
-        leftNorm += left[i] * left[i];
-        rightNorm += right[i] * right[i];
+        dot += (double)left[i] * right[i];
+        leftNorm += (double)left[i] * left[i];
+        rightNorm += (double)right[i] * right[i];
     }
     return dot / Math.Sqrt(leftNorm * rightNorm);
 }
@@ -138619,7 +137867,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.96.0</version>
+  <version>4.99.0</version>
 </dependency>
 ```
 
@@ -140845,7 +140093,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.96.0</version>
+  <version>4.99.0</version>
 </dependency>
 ```
 

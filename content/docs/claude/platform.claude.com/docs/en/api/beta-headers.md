@@ -17,7 +17,7 @@ To access beta features, include the `anthropic-beta` header in your API request
 ```http
 POST /v1/messages
 Authorization: Bearer YOUR_API_KEY
-anthropic-version: 2023-06-01
+anthropic-version: 2026-10-21
 anthropic-beta: BETA_FEATURE_NAME
 content-type: application/json
 ```

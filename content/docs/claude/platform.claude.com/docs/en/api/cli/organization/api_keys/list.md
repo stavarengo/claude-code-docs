@@ -37,6 +37,14 @@ List API Keys
 
   Filter by API key status.
 
+  - `"active"`
+
+  - `"archived"`
+
+  - `"expired"`
+
+  - `"inactive"`
+
 - `--workspace-id: optional string` (query parameter)
 
   Filter by Workspace ID.

@@ -31,6 +31,18 @@ the remaining entries.
 
   Filter by group type.
 
+  - `"batch"`
+
+  - `"files"`
+
+  - `"model_group"`
+
+  - `"skills"`
+
+  - `"token_count"`
+
+  - `"web_search"`
+
 - `--include-inherited: optional boolean` (query parameter)
 
   Also list the limiter values the workspace inherits from the organization, including groups with no workspace-level override.

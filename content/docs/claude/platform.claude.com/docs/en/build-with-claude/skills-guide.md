@@ -153,7 +153,7 @@ Skills might perform operations that require multiple turns. Handle `pause_turn`
 </CodeGroup>
 
 <Note>
-  The response might include a `pause_turn` stop reason, which indicates that the API paused a long-running Skill operation. You can provide the response back as-is in a subsequent request to let Claude continue its turn, or modify the content if you want to interrupt the conversation and provide additional guidance.
+  The response might include a `pause_turn` stop reason, which indicates that the API paused a long-running Skill operation. You can provide the response back as-is in a subsequent request to let Claude continue its turn, or modify the content if you want to interrupt the conversation and provide additional guidance. Send the response’s container ID back with that request, in the same `container` object as your Skills, as the example does. Without it, the request runs in a new container, and files from earlier in the turn are lost.
 </Note>
 
 ### Using multiple Skills
@@ -198,7 +198,7 @@ Combine multiple Skills in a single request to handle complex workflows:
 
 ### Creating a Skill
 
-A Skill bundle is a directory containing a `SKILL.md` file at the top level with `name` and `description` YAML frontmatter, plus any supporting scripts or resources. See [Get started with Agent Skills in the API](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/quickstart?sdk_languages=cli) to author one, and the **Requirements** list following the examples for the full constraints.
+A Skill bundle is a directory containing a `SKILL.md` file at the top level with `name` and `description` YAML frontmatter, plus any supporting scripts or resources. See [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices?sdk_languages=cli) to author one, and the **Requirements** list following the examples for the full constraints.
 
 Upload your custom Skill to make it available in your workspace. You can upload a zip archive or individual file objects. The Python SDK also provides a `files_from_dir` helper that accepts a directory path, and the CLI’s `ant apply` uploads the directory itself.
 
@@ -549,7 +549,7 @@ Handle Skill-related errors gracefully:
 
 ## Migrate from `skills-2025-10-02`
 
-The Skills API is out of beta and needs no beta header. Migrating off `skills-2025-10-02` is optional: requests that still send it keep working and keep returning the beta response shapes, so an existing integration keeps working until you change it. Removing the header switches those requests to the shapes documented on this page:
+The Skills API is out of beta and needs no beta header. Migrating off `skills-2025-10-02` is optional: requests that send it keep working and keep returning the beta response shapes, so an existing integration keeps working until you change it. Removing the header switches those requests to the shapes documented on this page:
 
 |                                 | With `skills-2025-10-02`                                                        | Without the header                                                                                                                                |
 | ------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |

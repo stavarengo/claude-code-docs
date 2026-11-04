@@ -16,7 +16,7 @@ This page covers managing the people in your **Claude Enterprise** (claude.ai) o
 For Claude Console (Claude Platform) organizations, see the [Admin API guide for Claude Console](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli).
 
 <Note>
-  Group and custom-role requests don’t require the `anthropic-beta: ce-user-management-2026-07-13` [beta header](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=cli). Requests that still send it are accepted and behave identically.
+  Group and custom-role requests don’t require the `anthropic-beta: ce-user-management-2026-07-13` [beta header](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=cli). Requests that send it are accepted and behave identically.
 </Note>
 
 ## Which endpoints can your organization use?
@@ -284,7 +284,6 @@ For complete parameter details and response schemas, see [List groups](https://p
       "name": "Engineering",
       "source_type": "direct",
       "role_ids": ["rbac_role_01CdEfGhIjKlMnOpQrStUv"],
-      "roles": ["rbac_role_01CdEfGhIjKlMnOpQrStUv"],
       "created_at": "2026-03-18T10:01:42Z",
       "updated_at": "2026-05-02T08:55:09Z"
     }
@@ -326,7 +325,6 @@ For complete parameter details and response schemas, see [Create group](https://
   "name": "Engineering",
   "source_type": "direct",
   "role_ids": [],
-  "roles": [],
   "created_at": "2026-07-09T18:00:00Z",
   "updated_at": "2026-07-09T18:00:00Z"
 }
@@ -386,7 +384,6 @@ For complete parameter details and response schemas, see [List group members](ht
     {
       "type": "rbac_group_member",
       "rbac_group_id": "rbac_group_01UvWxYzAbCdEfGhIjKlMn",
-      "group_id": "rbac_group_01UvWxYzAbCdEfGhIjKlMn",
       "user_id": "user_01AbCdEfGhIjKlMnOpQrSt",
       "email": "jane@example.com",
       "created_at": "2026-04-07T12:30:00Z"
@@ -415,7 +412,6 @@ For complete parameter details and response schemas, see [Add group member](http
 {
   "type": "rbac_group_member",
   "rbac_group_id": "rbac_group_01UvWxYzAbCdEfGhIjKlMn",
-  "group_id": "rbac_group_01UvWxYzAbCdEfGhIjKlMn",
   "user_id": "user_01AbCdEfGhIjKlMnOpQrSt",
   "email": "jane@example.com",
   "created_at": "2026-07-09T18:00:00Z"
@@ -439,7 +435,6 @@ For complete parameter details and response schemas, see [Remove group member](h
 ```json
 {
   "rbac_group_id": "rbac_group_01UvWxYzAbCdEfGhIjKlMn",
-  "group_id": "rbac_group_01UvWxYzAbCdEfGhIjKlMn",
   "user_id": "user_01AbCdEfGhIjKlMnOpQrSt",
   "type": "rbac_group_member_deleted"
 }
@@ -470,7 +465,6 @@ For complete parameter details and response schemas, see [List roles](https://pl
       "type": "rbac_role",
       "id": "rbac_role_01CdEfGhIjKlMnOpQrStUv",
       "display_name": "Engineering base",
-      "name": "Engineering base",
       "created_at": "2026-03-18T10:01:42Z",
       "updated_at": "2026-05-02T08:55:09Z"
     }

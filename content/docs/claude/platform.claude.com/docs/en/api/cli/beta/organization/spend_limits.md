@@ -31,11 +31,155 @@ Anthropic account team.
 
   What the limit applies to. Claude Enterprise organizations set `user` limits. Claude Console organizations set `organization` and `workspace` limits. Any other combination returns 400. Setting `organization` and `workspace` limits through the API is in an early access preview. To request access, contact your Anthropic account team.
 
-- `--period: optional "daily" or "monthly" or "weekly"`
+  - `beta_spend_limit_user_scope: object`
+
+    Scope selecting a single member of the organization.
+
+    - `type: "user"`
+
+      Scope type. Always `user` for this scope.
+
+    - `user_id: string`
+
+      Tagged ID of the member the spend limit applies to.
+
+  - `beta_spend_limit_organization_scope: object`
+
+    - `type: "organization"`
+
+  - `beta_spend_limit_workspace_scope: object`
+
+    Scope selecting one workspace of a Claude Console organization.
+
+    - `type: "workspace"`
+
+      Scope type. Always `workspace` for this scope.
+
+    - `workspace_id: string`
+
+      Tagged ID of the workspace the spend limit applies to.
+
+- `--period: optional BetaSpendLimitPeriod`
+
+  - `"daily"`
+
+  - `"monthly"`
+
+  - `"weekly"`
 
 - `--beta: optional array of AnthropicBeta` (header parameter)
 
   Optional header to specify the beta version(s) you want to use.
+
+  - `"message-batches-2024-09-24"`
+
+  - `"prompt-caching-2024-07-31"`
+
+  - `"computer-use-2024-10-22"`
+
+  - `"computer-use-2025-01-24"`
+
+  - `"pdfs-2024-09-25"`
+
+  - `"token-counting-2024-11-01"`
+
+  - `"token-efficient-tools-2025-02-19"`
+
+  - `"output-128k-2025-02-19"`
+
+  - `"files-api-2025-04-14"`
+
+  - `"mcp-client-2025-04-04"`
+
+  - `"mcp-client-2025-11-20"`
+
+  - `"dev-full-thinking-2025-05-14"`
+
+  - `"interleaved-thinking-2025-05-14"`
+
+  - `"code-execution-2025-05-22"`
+
+  - `"extended-cache-ttl-2025-04-11"`
+
+  - `"context-1m-2025-08-07"`
+
+  - `"context-management-2025-06-27"`
+
+  - `"model-context-window-exceeded-2025-08-26"`
+
+  - `"skills-2025-10-02"`
+
+  - `"fast-mode-2026-02-01"`
+
+  - `"output-300k-2026-03-24"`
+
+  - `"user-profiles-2026-03-24"`
+
+  - `"user-profiles-2026-08-18"`
+
+  - `"user-profiles-2026-09-04"`
+
+  - `"advisor-tool-2026-03-01"`
+
+  - `"managed-agents-2026-04-01"`
+
+  - `"cache-diagnosis-2026-04-07"`
+
+  - `"dreaming-2026-04-21"`
+
+  - `"thinking-token-count-2026-05-13"`
+
+  - `"server-side-fallback-2026-06-01"`
+
+  - `"server-side-fallback-2026-07-01"`
+
+  - `"fallback-credit-2026-06-01"`
+
+  - `"fallback-credit-2026-07-01"`
+
+  - `"agent-memory-2026-07-22"`
+
+  - `"mid-conversation-tool-changes-2026-07-01"`
+
+  - `"compact-2026-01-12"`
+
+  - `"computer-use-2025-11-24"`
+
+  - `"mcp-tunnels-2026-06-22"`
+
+  - `"structured-outputs-2025-11-13"`
+
+  - `"task-budgets-2026-03-13"`
+
+  - `"thinking-display-updates-2026-08-18"`
+
+  - `"ce-user-management-2026-07-13"`
+
+  - `"mid-conversation-output-config-2026-07-01"`
+
+  - `"thinking-binding-controls-2026-08-01"`
+
+  - `"mid-conversation-system-clear-at-2026-08-21"`
+
+  - `"compact-2026-09-04"`
+
+  - `"inline-tools-2026-09-15"`
+
+  - `"mcp-client-2026-09-15"`
+
+  - `"ce-plugins-2026-09-01"`
+
+  - `"spend-limit-reads-2026-09-26"`
+
+  - `"telemetry-destinations-2026-08-11"`
+
+  - `"webhooks-2026-10-07"`
+
+  - `"message-threads-2026-08-12"`
+
+  - `"analytics-usage-cost-2026-08-24"`
+
+  - `"experimental-claude-tag-2026-10-21"`
 
 ### Returns
 
@@ -402,6 +546,20 @@ come in a fixed order that is not creation order.
 
   maxItems: 100
 
+  - `"organization"`
+
+  - `"organization_service"`
+
+  - `"rbac_group"`
+
+  - `"seat_tier"`
+
+  - `"usage_tier"`
+
+  - `"user"`
+
+  - `"workspace"`
+
 - `--workspace-id: optional string` (query parameter)
 
   Return only the limits whose `scope.workspace_id` is this workspace (`wrkspc_...`). Claude Console organizations only; other organizations get a 400 error.
@@ -409,6 +567,116 @@ come in a fixed order that is not creation order.
 - `--beta: optional array of AnthropicBeta` (header parameter)
 
   This endpoint is in beta: requests must send `spend-limit-reads-2026-09-26` in this header.
+
+  - `"message-batches-2024-09-24"`
+
+  - `"prompt-caching-2024-07-31"`
+
+  - `"computer-use-2024-10-22"`
+
+  - `"computer-use-2025-01-24"`
+
+  - `"pdfs-2024-09-25"`
+
+  - `"token-counting-2024-11-01"`
+
+  - `"token-efficient-tools-2025-02-19"`
+
+  - `"output-128k-2025-02-19"`
+
+  - `"files-api-2025-04-14"`
+
+  - `"mcp-client-2025-04-04"`
+
+  - `"mcp-client-2025-11-20"`
+
+  - `"dev-full-thinking-2025-05-14"`
+
+  - `"interleaved-thinking-2025-05-14"`
+
+  - `"code-execution-2025-05-22"`
+
+  - `"extended-cache-ttl-2025-04-11"`
+
+  - `"context-1m-2025-08-07"`
+
+  - `"context-management-2025-06-27"`
+
+  - `"model-context-window-exceeded-2025-08-26"`
+
+  - `"skills-2025-10-02"`
+
+  - `"fast-mode-2026-02-01"`
+
+  - `"output-300k-2026-03-24"`
+
+  - `"user-profiles-2026-03-24"`
+
+  - `"user-profiles-2026-08-18"`
+
+  - `"user-profiles-2026-09-04"`
+
+  - `"advisor-tool-2026-03-01"`
+
+  - `"managed-agents-2026-04-01"`
+
+  - `"cache-diagnosis-2026-04-07"`
+
+  - `"dreaming-2026-04-21"`
+
+  - `"thinking-token-count-2026-05-13"`
+
+  - `"server-side-fallback-2026-06-01"`
+
+  - `"server-side-fallback-2026-07-01"`
+
+  - `"fallback-credit-2026-06-01"`
+
+  - `"fallback-credit-2026-07-01"`
+
+  - `"agent-memory-2026-07-22"`
+
+  - `"mid-conversation-tool-changes-2026-07-01"`
+
+  - `"compact-2026-01-12"`
+
+  - `"computer-use-2025-11-24"`
+
+  - `"mcp-tunnels-2026-06-22"`
+
+  - `"structured-outputs-2025-11-13"`
+
+  - `"task-budgets-2026-03-13"`
+
+  - `"thinking-display-updates-2026-08-18"`
+
+  - `"ce-user-management-2026-07-13"`
+
+  - `"mid-conversation-output-config-2026-07-01"`
+
+  - `"thinking-binding-controls-2026-08-01"`
+
+  - `"mid-conversation-system-clear-at-2026-08-21"`
+
+  - `"compact-2026-09-04"`
+
+  - `"inline-tools-2026-09-15"`
+
+  - `"mcp-client-2026-09-15"`
+
+  - `"ce-plugins-2026-09-01"`
+
+  - `"spend-limit-reads-2026-09-26"`
+
+  - `"telemetry-destinations-2026-08-11"`
+
+  - `"webhooks-2026-10-07"`
+
+  - `"message-threads-2026-08-12"`
+
+  - `"analytics-usage-cost-2026-08-24"`
+
+  - `"experimental-claude-tag-2026-10-21"`
 
 ### Returns
 
@@ -970,6 +1238,12 @@ organizations.
 
   maxItems: 3
 
+  - `"daily"`
+
+  - `"monthly"`
+
+  - `"weekly"`
+
 - `--user-id: optional array of string` (query parameter)
 
   Restrict the report to these members, by tagged user ID (`user_...`). At most 100 entries.
@@ -1199,6 +1473,12 @@ Requests whose requester is no longer a member are excluded.
 
   Filter by status. Omit to return all.
 
+  - `"approved"`
+
+  - `"denied"`
+
+  - `"pending"`
+
 #### Returns
 
 - `BetaSpendLimitIncreaseRequestListResponse: object`
@@ -1300,12 +1580,6 @@ Requests whose requester is no longer a member are excluded.
       - `period: "daily" or "monthly" or "weekly"`
 
         Period this row's effective limit and spend are reported for.
-
-        - `"daily"`
-
-        - `"monthly"`
-
-        - `"weekly"`
 
       - `period_to_date_spend: string`
 
@@ -1586,12 +1860,6 @@ requester at the request's period.
 
       Period this row's effective limit and spend are reported for.
 
-      - `"daily"`
-
-      - `"monthly"`
-
-      - `"weekly"`
-
     - `period_to_date_spend: string`
 
       The member's spend so far in the current period, as a non-negative decimal string in the minor unit of `currency` (cents for USD). May carry fractional minor units up to three decimal places (e.g. `"12050.5"`) — metered usage is not rounded to whole cents. Reads as `"0"` when the spend reading is temporarily unavailable.
@@ -1771,7 +2039,13 @@ the member was blocked on. Anthropic emails the requester unless
 
   New per-user spend limit as a non-negative integer decimal string (minor units).
 
-- `--period: optional "daily" or "monthly" or "weekly"`
+- `--period: optional BetaSpendLimitPeriod`
+
+  - `"daily"`
+
+  - `"monthly"`
+
+  - `"weekly"`
 
 - `--suppress-notification: optional boolean`
 
@@ -1881,12 +2155,6 @@ the member was blocked on. Anthropic emails the requester unless
 
       Length of the window the limit resets over. `amount` caps spend within each period.
 
-      - `"daily"`
-
-      - `"monthly"`
-
-      - `"weekly"`
-
     - `scope: BetaSpendLimitUserScope or BetaSpendLimitSeatTierScope or BetaSpendLimitRBACGroupScope or 4 more`
 
       What the limit applies to. A tagged union on `type`; each variant carries the identifier for its scope.
@@ -1982,12 +2250,6 @@ the member was blocked on. Anthropic emails the requester unless
     - `period: "daily" or "monthly" or "weekly"`
 
       Period this row's effective limit and spend are reported for.
-
-      - `"daily"`
-
-      - `"monthly"`
-
-      - `"weekly"`
 
     - `period_to_date_spend: string`
 
@@ -2244,12 +2506,6 @@ Idempotent on `denied`; denying an already-`approved` request returns
     - `period: "daily" or "monthly" or "weekly"`
 
       Period this row's effective limit and spend are reported for.
-
-      - `"daily"`
-
-      - `"monthly"`
-
-      - `"weekly"`
 
     - `period_to_date_spend: string`
 

@@ -39,6 +39,14 @@ API key with the `read:analytics` scope, or an Admin API key.
 
   maxItems: 100
 
+  - `"api_actor"`
+
+  - `"federated_actor"`
+
+  - `"service_account_actor"`
+
+  - `"user_actor"`
+
 - `--agent-id: optional array of string` (query parameter)
 
   Filter to usage incurred by sessions of specific Claude Managed Agents agents. Use `group_by[]=agent_id` to break out per-agent values. Claude Developer Platform organizations only.
@@ -57,6 +65,16 @@ API key with the `read:analytics` scope, or an Admin API key.
 
   maxItems: 100
 
+  - `"dm"`
+
+  - `"engaged"`
+
+  - `"monitoring"`
+
+  - `"proactive"`
+
+  - `"scheduled"`
+
 - `--claude-tag-user-id: optional array of string` (query parameter)
 
   Filter to Claude Tag (Claude in Slack) usage attributed to specific Slack users, by Slack user ID (for example `U0123ABCDEF`), not claude.ai user ID. Usage that is not Claude Tag, and Claude Tag usage not attributed to a single user, never matches. Use `group_by[]=claude_tag_user_id` to break out per-user values.
@@ -68,6 +86,10 @@ API key with the `read:analytics` scope, or an Admin API key.
   Filter to specific context-window pricing tiers. Use `group_by[]=context_window` to break out per-tier values.
 
   maxItems: 100
+
+  - `"0-200k"`
+
+  - `"200k-1M"`
 
 - `--deployment-id: optional array of string` (query parameter)
 
@@ -97,11 +119,59 @@ API key with the `read:analytics` scope, or an Admin API key.
 
   maxItems: 100
 
+  - `"actor"`
+
+  - `"actor_type"`
+
+  - `"agent_id"`
+
+  - `"api_key_id"`
+
+  - `"claude_tag_category"`
+
+  - `"claude_tag_user_id"`
+
+  - `"context_window"`
+
+  - `"cost_type"`
+
+  - `"deployment_id"`
+
+  - `"environment_id"`
+
+  - `"inference_geo"`
+
+  - `"model"`
+
+  - `"product"`
+
+  - `"rbac_group_id"`
+
+  - `"service_tier"`
+
+  - `"session_id"`
+
+  - `"slack_channel_id"`
+
+  - `"speed"`
+
+  - `"token_type"`
+
+  - `"user_profile_id"`
+
+  - `"workspace_id"`
+
 - `--inference-geo: optional array of BetaAnalyticsInferenceGeoFilter` (query parameter)
 
   Filter to specific inference regions. `not_available` matches rows where the region is unset. Use `group_by[]=inference_geo` to break out per-region values.
 
   maxItems: 100
+
+  - `"global"`
+
+  - `"not_available"`
+
+  - `"us"`
 
 - `--limit: optional number` (query parameter)
 
@@ -115,13 +185,23 @@ API key with the `read:analytics` scope, or an Admin API key.
 
   maxItems: 100
 
-- `--order: optional "asc" or "desc"` (query parameter)
+- `--order: optional BetaAnalyticsUsageCostSortOrder` (query parameter)
 
   Sort direction of the `order_by` metric, or of the time buckets when `order_by` is `time` and `time_bucket_width` is set. Defaults to `desc`.
 
-- `--order-by: optional "amount" or "list_amount" or "time"` (query parameter)
+  - `"asc"`
+
+  - `"desc"`
+
+- `--order-by: optional BetaAnalyticsCostOrderBy` (query parameter)
 
   Row order. A metric ranks rows by that metric in the `order` direction. `time` orders rows by time bucket in the `order` direction (newest first by default) and, within a bucket, by `amount`, highest first. `time` takes effect only with `time_bucket_width`; without it, `time` is the same as `amount`. Defaults to `amount`.
+
+  - `"amount"`
+
+  - `"list_amount"`
+
+  - `"time"`
 
 - `--page: optional string` (query parameter)
 
@@ -132,6 +212,30 @@ API key with the `read:analytics` scope, or an Admin API key.
   Product surfaces to include. Defaults to all products.
 
   maxItems: 100
+
+  - `"chat"`
+
+  - `"chat_cowork_unified"`
+
+  - `"claude_code"`
+
+  - `"claude_console"`
+
+  - `"claude_design"`
+
+  - `"claude_in_chrome"`
+
+  - `"claude_tag"`
+
+  - `"cowork"`
+
+  - `"managed_agents_api"`
+
+  - `"message_batches_api"`
+
+  - `"messages_api"`
+
+  - `"office_agent"`
 
 - `--rbac-group-id: optional array of string` (query parameter)
 
@@ -144,6 +248,18 @@ API key with the `read:analytics` scope, or an Admin API key.
   Filter to specific service tiers. Use `group_by[]=service_tier` to break out per-tier values. Claude Developer Platform organizations only; matches nothing for a Claude Enterprise organization.
 
   maxItems: 100
+
+  - `"batch"`
+
+  - `"flex"`
+
+  - `"flex_discount"`
+
+  - `"priority"`
+
+  - `"priority_on_demand"`
+
+  - `"standard"`
 
 - `--session-id: optional array of string` (query parameter)
 
@@ -163,9 +279,19 @@ API key with the `read:analytics` scope, or an Admin API key.
 
   maxItems: 100
 
-- `--time-bucket-width: optional "1d" or "1h" or "1m"` (query parameter)
+  - `"fast"`
+
+  - `"standard"`
+
+- `--time-bucket-width: optional BetaAnalyticsTimeBucketWidth` (query parameter)
 
   Time-bucket granularity. When set, rows are returned per time bucket (one per bucket and dimension combination with usage) and each row's `starting_at` and `ending_at` are that bucket's bounds; the time bucket counts toward `limit`. `ending_at` is required when `time_bucket_width` is set, and with `time_bucket_width="1m"` the range may span at most 24 hours. When omitted, each row aggregates the requested range with `starting_at` and `ending_at` each rounded down to the hour.
+
+  - `"1d"`
+
+  - `"1h"`
+
+  - `"1m"`
 
 - `--user-profile-id: optional array of string` (query parameter)
 
@@ -182,6 +308,116 @@ API key with the `read:analytics` scope, or an Admin API key.
 - `--beta: optional array of AnthropicBeta` (header parameter)
 
   This endpoint is in beta: requests must send `analytics-usage-cost-2026-08-24` in this header.
+
+  - `"message-batches-2024-09-24"`
+
+  - `"prompt-caching-2024-07-31"`
+
+  - `"computer-use-2024-10-22"`
+
+  - `"computer-use-2025-01-24"`
+
+  - `"pdfs-2024-09-25"`
+
+  - `"token-counting-2024-11-01"`
+
+  - `"token-efficient-tools-2025-02-19"`
+
+  - `"output-128k-2025-02-19"`
+
+  - `"files-api-2025-04-14"`
+
+  - `"mcp-client-2025-04-04"`
+
+  - `"mcp-client-2025-11-20"`
+
+  - `"dev-full-thinking-2025-05-14"`
+
+  - `"interleaved-thinking-2025-05-14"`
+
+  - `"code-execution-2025-05-22"`
+
+  - `"extended-cache-ttl-2025-04-11"`
+
+  - `"context-1m-2025-08-07"`
+
+  - `"context-management-2025-06-27"`
+
+  - `"model-context-window-exceeded-2025-08-26"`
+
+  - `"skills-2025-10-02"`
+
+  - `"fast-mode-2026-02-01"`
+
+  - `"output-300k-2026-03-24"`
+
+  - `"user-profiles-2026-03-24"`
+
+  - `"user-profiles-2026-08-18"`
+
+  - `"user-profiles-2026-09-04"`
+
+  - `"advisor-tool-2026-03-01"`
+
+  - `"managed-agents-2026-04-01"`
+
+  - `"cache-diagnosis-2026-04-07"`
+
+  - `"dreaming-2026-04-21"`
+
+  - `"thinking-token-count-2026-05-13"`
+
+  - `"server-side-fallback-2026-06-01"`
+
+  - `"server-side-fallback-2026-07-01"`
+
+  - `"fallback-credit-2026-06-01"`
+
+  - `"fallback-credit-2026-07-01"`
+
+  - `"agent-memory-2026-07-22"`
+
+  - `"mid-conversation-tool-changes-2026-07-01"`
+
+  - `"compact-2026-01-12"`
+
+  - `"computer-use-2025-11-24"`
+
+  - `"mcp-tunnels-2026-06-22"`
+
+  - `"structured-outputs-2025-11-13"`
+
+  - `"task-budgets-2026-03-13"`
+
+  - `"thinking-display-updates-2026-08-18"`
+
+  - `"ce-user-management-2026-07-13"`
+
+  - `"mid-conversation-output-config-2026-07-01"`
+
+  - `"thinking-binding-controls-2026-08-01"`
+
+  - `"mid-conversation-system-clear-at-2026-08-21"`
+
+  - `"compact-2026-09-04"`
+
+  - `"inline-tools-2026-09-15"`
+
+  - `"mcp-client-2026-09-15"`
+
+  - `"ce-plugins-2026-09-01"`
+
+  - `"spend-limit-reads-2026-09-26"`
+
+  - `"telemetry-destinations-2026-08-11"`
+
+  - `"webhooks-2026-10-07"`
+
+  - `"message-threads-2026-08-12"`
+
+  - `"analytics-usage-cost-2026-08-24"`
+
+  - `"experimental-claude-tag-2026-10-21"`
 
 ## Returns
 
