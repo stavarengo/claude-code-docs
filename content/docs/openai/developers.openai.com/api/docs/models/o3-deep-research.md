@@ -2,19 +2,18 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Our most powerful deep research model
+> Retired deep research model
 
 Model ID: `o3-deep-research`
 
 Status: Shut down
 
-o3-deep-research is our most advanced model for deep research, 
-designed to tackle complex, multi-step research tasks. It can 
-search and synthesize information from across the internet as 
-well as from your own data—brought in through MCP connectors.
+o3-deep-research searched public web sources and private data from MCP
+connectors to answer multi-step research questions. The model shut down
+on July 23, 2026.
 
-Learn more about getting started with this model in our
-[deep research](/api/docs/guides/deep-research) guide.
+For current research workflows, see
+[Run longer web research](/api/docs/guides/tools-web-search?api-mode=responses#run-longer-web-research).
 
 ## Model details
 

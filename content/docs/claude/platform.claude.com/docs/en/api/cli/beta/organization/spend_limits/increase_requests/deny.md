@@ -32,6 +32,8 @@ Idempotent on `denied`; denying an already-`approved` request returns
 
   - `actor: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
 
+    Who submitted the increase request.
+
     - `beta_spend_limit_user_actor: object`
 
       A user within the organization. `name` and `email_address` are
@@ -83,6 +85,8 @@ Idempotent on `denied`; denying an already-`approved` request returns
     format: date-time
 
   - `resolved_by: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
+
+    Who approved or denied the increase request.
 
     - `beta_spend_limit_user_actor: object`
 

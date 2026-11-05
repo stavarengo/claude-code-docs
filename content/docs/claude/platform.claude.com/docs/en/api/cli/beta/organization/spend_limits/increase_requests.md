@@ -52,6 +52,8 @@ Requests whose requester is no longer a member are excluded.
 
     - `actor: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
 
+      Who submitted the increase request.
+
       - `beta_spend_limit_user_actor: object`
 
         A user within the organization. `name` and `email_address` are
@@ -103,6 +105,8 @@ Requests whose requester is no longer a member are excluded.
       format: date-time
 
     - `resolved_by: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
+
+      Who approved or denied the increase request.
 
       - `beta_spend_limit_user_actor: object`
 
@@ -331,6 +335,8 @@ requester at the request's period.
 
   - `actor: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
 
+    Who submitted the increase request.
+
     - `beta_spend_limit_user_actor: object`
 
       A user within the organization. `name` and `email_address` are
@@ -382,6 +388,8 @@ requester at the request's period.
     format: date-time
 
   - `resolved_by: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
+
+    Who approved or denied the increase request.
 
     - `beta_spend_limit_user_actor: object`
 
@@ -620,6 +628,8 @@ the member was blocked on. Anthropic emails the requester unless
 
   - `actor: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
 
+    Who submitted the increase request.
+
     - `beta_spend_limit_user_actor: object`
 
       A user within the organization. `name` and `email_address` are
@@ -671,6 +681,8 @@ the member was blocked on. Anthropic emails the requester unless
     format: date-time
 
   - `resolved_by: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
+
+    Who approved or denied the increase request.
 
     - `beta_spend_limit_user_actor: object`
 
@@ -978,6 +990,8 @@ Idempotent on `denied`; denying an already-`approved` request returns
 
   - `actor: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
 
+    Who submitted the increase request.
+
     - `beta_spend_limit_user_actor: object`
 
       A user within the organization. `name` and `email_address` are
@@ -1029,6 +1043,8 @@ Idempotent on `denied`; denying an already-`approved` request returns
     format: date-time
 
   - `resolved_by: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
+
+    Who approved or denied the increase request.
 
     - `beta_spend_limit_user_actor: object`
 
@@ -1236,6 +1252,8 @@ ant beta:organization:spend-limits:increase-requests deny \
 
   - `actor: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
 
+    Who submitted the increase request.
+
     - `beta_spend_limit_user_actor: object`
 
       A user within the organization. `name` and `email_address` are
@@ -1287,6 +1305,8 @@ ant beta:organization:spend-limits:increase-requests deny \
     format: date-time
 
   - `resolved_by: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
+
+    Who approved or denied the increase request.
 
     - `beta_spend_limit_user_actor: object`
 
@@ -1425,6 +1445,86 @@ ant beta:organization:spend-limits:increase-requests deny \
     - `"denied"`
 
     - `"pending"`
+
+### Beta Spend Limit Increase Request Actor
+
+- `beta_spend_limit_increase_request_actor: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
+
+  Who submitted the increase request.
+
+  - `beta_spend_limit_user_actor: object`
+
+    A user within the organization. `name` and `email_address` are
+    null when the underlying account is unavailable or has been deleted;
+    `deleted` is true only for deleted accounts.
+
+    - `type: "user_actor"`
+
+      Actor type. Always `user_actor`.
+
+    - `deleted: boolean`
+
+      True only when the underlying account has been deleted.
+
+    - `email_address: string`
+
+      The user's email address. Null when the account is unavailable or has been deleted.
+
+    - `name: string`
+
+      The user's current display name. Null when the account is unavailable, has been deleted, or has no name set.
+
+    - `user_id: string`
+
+      Tagged ID of the user.
+
+  - `beta_spend_limit_scoped_api_key_actor: object`
+
+    A scoped Admin API key acting on behalf of the organization.
+
+    - `type: "scoped_api_key_actor"`
+
+    - `scoped_api_key_id: string`
+
+### Beta Spend Limit Increase Request Resolved By
+
+- `beta_spend_limit_increase_request_resolved_by: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
+
+  Who approved or denied the increase request.
+
+  - `beta_spend_limit_user_actor: object`
+
+    A user within the organization. `name` and `email_address` are
+    null when the underlying account is unavailable or has been deleted;
+    `deleted` is true only for deleted accounts.
+
+    - `type: "user_actor"`
+
+      Actor type. Always `user_actor`.
+
+    - `deleted: boolean`
+
+      True only when the underlying account has been deleted.
+
+    - `email_address: string`
+
+      The user's email address. Null when the account is unavailable or has been deleted.
+
+    - `name: string`
+
+      The user's current display name. Null when the account is unavailable, has been deleted, or has no name set.
+
+    - `user_id: string`
+
+      Tagged ID of the user.
+
+  - `beta_spend_limit_scoped_api_key_actor: object`
+
+    A scoped Admin API key acting on behalf of the organization.
+
+    - `type: "scoped_api_key_actor"`
+
+    - `scoped_api_key_id: string`
 
 ### Beta Spend Limit Increase Request Status
 

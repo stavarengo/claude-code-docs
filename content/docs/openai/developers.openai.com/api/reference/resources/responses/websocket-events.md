@@ -1986,7 +1986,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -2022,6 +2022,34 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -2043,13 +2071,14 @@ Schema name: `ResponsesClientEventResponseCreate`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -2057,13 +2086,14 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -2072,8 +2102,6 @@ Schema name: `ResponsesClientEventResponseCreate`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -2086,6 +2114,14 @@ Schema name: `ResponsesClientEventResponseCreate`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -2101,16 +2137,24 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -2154,6 +2198,39 @@ Schema name: `ResponsesClientEventResponseCreate`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -3096,7 +3173,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -3132,6 +3209,34 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -3153,13 +3258,14 @@ Schema name: `ResponsesClientEventResponseCreate`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -3167,13 +3273,14 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -3182,8 +3289,6 @@ Schema name: `ResponsesClientEventResponseCreate`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -3196,6 +3301,14 @@ Schema name: `ResponsesClientEventResponseCreate`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -3211,16 +3324,24 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -3264,6 +3385,39 @@ Schema name: `ResponsesClientEventResponseCreate`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -3737,7 +3891,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         The ID of the compaction item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -3825,7 +3979,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             - `"unknown"`
 
-      - `output_format: optional "png" or "webp" or "jpeg" or null`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
         The output format used for generation.
 
@@ -3834,6 +3988,10 @@ Schema name: `ResponsesClientEventResponseCreate`
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -3870,6 +4028,18 @@ Schema name: `ResponsesClientEventResponseCreate`
           - `"1024x1536"`
 
           - `"1536x1024"`
+
+      - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+        - `input_tokens: integer`
+
+        - `model: string`
+
+        - `output_tokens: integer`
+
+        - `reasoning_tokens: integer`
+
+        - `total_tokens: integer`
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -6022,7 +6192,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
       - `"programmatic_tool_calling"`
 
-  - `ImageGeneration object { type, action, background, 9 more }`
+  - `ImageGeneration object { type, action, background, 13 more }`
 
     A tool that generates images using the GPT image models.
 
@@ -6058,6 +6228,34 @@ Schema name: `ResponsesClientEventResponseCreate`
 
       - `"auto"`
 
+    - `complexity: optional "low" or "medium" or "high"`
+
+      Computation spent planning the image, independently of rendering quality.
+      Overrides the outer response's `reasoning.effort` for image generation.
+      When omitted, inherits a supported outer reasoning effort or uses the
+      image model's configured default.
+      For SVG output, controls the reference image, not the SVG author's
+      reasoning.
+
+      - `"low"`
+
+      - `"medium"`
+
+      - `"high"`
+
+    - `frame_count: optional integer (default: 9)`
+
+      Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+      `minimum: 2`, `maximum: 16`
+
+    - `frame_duration_ms: optional integer (default: 200)`
+
+      Duration of each GIF frame in milliseconds, rounded to 10 ms.
+      Requires `output_format` to be `gif`. Default: 200.
+
+      `minimum: 20`, `maximum: 2000`
+
     - `input_fidelity: optional "high" or "low" or null`
 
       Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -6079,13 +6277,14 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         Base64-encoded mask image.
 
-    - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+    - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
       The image generation model to use. One of `gpt-image-1-mini`,
       `gpt-image-1.5`, `gpt-image-2`,
       `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
       `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-      `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+      `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+      `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
       `gpt-image-2`.
 
       `gpt-image-1` was shut down on October 23, 2026. Use
@@ -6093,13 +6292,14 @@ Schema name: `ResponsesClientEventResponseCreate`
 
       - `string`
 
-      - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+      - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
         The image generation model to use. One of `gpt-image-1-mini`,
         `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+        `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
         `gpt-image-2`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
@@ -6108,8 +6308,6 @@ Schema name: `ResponsesClientEventResponseCreate`
         - `"gpt-image-1"`
 
         - `"gpt-image-1-mini"`
-
-        - `"gpt-image-1.5"`
 
         - `"gpt-image-2"`
 
@@ -6122,6 +6320,14 @@ Schema name: `ResponsesClientEventResponseCreate`
         - `"gpt-image-2.5-flare"`
 
         - `"gpt-image-2.5-flare-2026-09-08"`
+
+        - `"gpt-image-2.6-sunburst"`
+
+        - `"gpt-image-2.6-flare"`
+
+        - `"gpt-image-1.5"`
+
+        - `"chatgpt-image-latest"`
 
     - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -6137,16 +6343,24 @@ Schema name: `ResponsesClientEventResponseCreate`
 
       `minimum: 0`, `maximum: 100`
 
-    - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+    - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-      The output format of the generated image. One of `png`, `webp`, or
-      `jpeg`. Default: `png`.
+      The output format of the generated image. One of `png`, `webp`, `jpeg`,
+      `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+      that supports the selected format. GIF output does not support
+      partial image streaming (`partial_images` greater than `0`),
+      `input_image_mask`, or custom `output_compression`.
+      Responses lifecycle events can still be streamed for GIF output.
 
       - `"png"`
 
       - `"webp"`
 
       - `"jpeg"`
+
+      - `"gif"`
+
+      - `"svg"`
 
     - `partial_images: optional integer (default: 0)`
 
@@ -6190,6 +6404,39 @@ Schema name: `ResponsesClientEventResponseCreate`
         - `"1536x1024"`
 
         - `"auto"`
+
+    - `svg: optional object { model, reasoning }`
+
+      SVG author model settings. Requires `output_format` to be `svg`.
+      When SVG model selection is enabled, omitting this object uses the
+      outer response model. Otherwise, the default SVG author is used and
+      explicit model overrides are unavailable.
+
+      - `model: optional string`
+
+        `minLength: 1`
+
+      - `reasoning: optional object { effort }  or null`
+
+        Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+        - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+          Controls how much effort the model should spend on reasoning for this request.
+
+          - `"none"`
+
+          - `"minimal"`
+
+          - `"low"`
+
+          - `"medium"`
+
+          - `"high"`
+
+          - `"xhigh"`
+
+          - `"max"`
 
   - `LocalShell object { type }`
 
@@ -9677,7 +9924,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -9713,6 +9960,34 @@ Schema name: `ResponseCreatedEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -9734,13 +10009,14 @@ Schema name: `ResponseCreatedEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -9748,13 +10024,14 @@ Schema name: `ResponseCreatedEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -9763,8 +10040,6 @@ Schema name: `ResponseCreatedEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -9777,6 +10052,14 @@ Schema name: `ResponseCreatedEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -9792,16 +10075,24 @@ Schema name: `ResponseCreatedEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -9845,6 +10136,39 @@ Schema name: `ResponseCreatedEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -10787,7 +11111,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -10823,6 +11147,34 @@ Schema name: `ResponseCreatedEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -10844,13 +11196,14 @@ Schema name: `ResponseCreatedEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -10858,13 +11211,14 @@ Schema name: `ResponseCreatedEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -10873,8 +11227,6 @@ Schema name: `ResponseCreatedEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -10887,6 +11239,14 @@ Schema name: `ResponseCreatedEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -10902,16 +11262,24 @@ Schema name: `ResponseCreatedEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -10955,6 +11323,39 @@ Schema name: `ResponseCreatedEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -11428,7 +11829,7 @@ Schema name: `ResponseCreatedEvent`
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -11516,7 +11917,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"unknown"`
 
-        - `output_format: optional "png" or "webp" or "jpeg" or null`
+        - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
           The output format used for generation.
 
@@ -11525,6 +11926,10 @@ Schema name: `ResponseCreatedEvent`
           - `"webp"`
 
           - `"jpeg"`
+
+          - `"gif"`
+
+          - `"svg"`
 
         - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -11561,6 +11966,18 @@ Schema name: `ResponseCreatedEvent`
             - `"1024x1536"`
 
             - `"1536x1024"`
+
+        - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+          - `input_tokens: integer`
+
+          - `model: string`
+
+          - `output_tokens: integer`
+
+          - `reasoning_tokens: integer`
+
+          - `total_tokens: integer`
 
       - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -13816,7 +14233,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -13852,6 +14269,34 @@ Schema name: `ResponseCreatedEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -13873,13 +14318,14 @@ Schema name: `ResponseCreatedEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -13887,13 +14333,14 @@ Schema name: `ResponseCreatedEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -13902,8 +14349,6 @@ Schema name: `ResponseCreatedEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -13916,6 +14361,14 @@ Schema name: `ResponseCreatedEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -13931,16 +14384,24 @@ Schema name: `ResponseCreatedEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -13984,6 +14445,39 @@ Schema name: `ResponseCreatedEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -14758,7 +15252,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -14794,6 +15288,34 @@ Schema name: `ResponseCreatedEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -14815,13 +15337,14 @@ Schema name: `ResponseCreatedEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -14829,13 +15352,14 @@ Schema name: `ResponseCreatedEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -14844,8 +15368,6 @@ Schema name: `ResponseCreatedEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -14858,6 +15380,14 @@ Schema name: `ResponseCreatedEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -14873,16 +15403,24 @@ Schema name: `ResponseCreatedEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -14926,6 +15464,39 @@ Schema name: `ResponseCreatedEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -15239,7 +15810,7 @@ Schema name: `ResponseCreatedEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -15327,7 +15898,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"unknown"`
 
-      - `output_format: optional "png" or "webp" or "jpeg" or null`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
         The output format used for generation.
 
@@ -15336,6 +15907,10 @@ Schema name: `ResponseCreatedEvent`
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -15372,6 +15947,18 @@ Schema name: `ResponseCreatedEvent`
           - `"1024x1536"`
 
           - `"1536x1024"`
+
+      - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+        - `input_tokens: integer`
+
+        - `model: string`
+
+        - `output_tokens: integer`
+
+        - `reasoning_tokens: integer`
+
+        - `total_tokens: integer`
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -16813,7 +17400,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"programmatic_tool_calling"`
 
-    - `ImageGeneration object { type, action, background, 9 more }`
+    - `ImageGeneration object { type, action, background, 13 more }`
 
       A tool that generates images using the GPT image models.
 
@@ -16849,6 +17436,34 @@ Schema name: `ResponseCreatedEvent`
 
         - `"auto"`
 
+      - `complexity: optional "low" or "medium" or "high"`
+
+        Computation spent planning the image, independently of rendering quality.
+        Overrides the outer response's `reasoning.effort` for image generation.
+        When omitted, inherits a supported outer reasoning effort or uses the
+        image model's configured default.
+        For SVG output, controls the reference image, not the SVG author's
+        reasoning.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+      - `frame_count: optional integer (default: 9)`
+
+        Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+        `minimum: 2`, `maximum: 16`
+
+      - `frame_duration_ms: optional integer (default: 200)`
+
+        Duration of each GIF frame in milliseconds, rounded to 10 ms.
+        Requires `output_format` to be `gif`. Default: 200.
+
+        `minimum: 20`, `maximum: 2000`
+
       - `input_fidelity: optional "high" or "low" or null`
 
         Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -16870,13 +17485,14 @@ Schema name: `ResponseCreatedEvent`
 
           Base64-encoded mask image.
 
-      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
         The image generation model to use. One of `gpt-image-1-mini`,
         `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+        `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
         `gpt-image-2`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
@@ -16884,13 +17500,14 @@ Schema name: `ResponseCreatedEvent`
 
         - `string`
 
-        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
           The image generation model to use. One of `gpt-image-1-mini`,
           `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+          `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
           `gpt-image-2`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
@@ -16899,8 +17516,6 @@ Schema name: `ResponseCreatedEvent`
           - `"gpt-image-1"`
 
           - `"gpt-image-1-mini"`
-
-          - `"gpt-image-1.5"`
 
           - `"gpt-image-2"`
 
@@ -16913,6 +17528,14 @@ Schema name: `ResponseCreatedEvent`
           - `"gpt-image-2.5-flare"`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
+
+          - `"gpt-image-2.6-sunburst"`
+
+          - `"gpt-image-2.6-flare"`
+
+          - `"gpt-image-1.5"`
+
+          - `"chatgpt-image-latest"`
 
       - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -16928,16 +17551,24 @@ Schema name: `ResponseCreatedEvent`
 
         `minimum: 0`, `maximum: 100`
 
-      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-        The output format of the generated image. One of `png`, `webp`, or
-        `jpeg`. Default: `png`.
+        The output format of the generated image. One of `png`, `webp`, `jpeg`,
+        `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+        that supports the selected format. GIF output does not support
+        partial image streaming (`partial_images` greater than `0`),
+        `input_image_mask`, or custom `output_compression`.
+        Responses lifecycle events can still be streamed for GIF output.
 
         - `"png"`
 
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `partial_images: optional integer (default: 0)`
 
@@ -16981,6 +17612,39 @@ Schema name: `ResponseCreatedEvent`
           - `"1536x1024"`
 
           - `"auto"`
+
+      - `svg: optional object { model, reasoning }`
+
+        SVG author model settings. Requires `output_format` to be `svg`.
+        When SVG model selection is enabled, omitting this object uses the
+        outer response model. Otherwise, the default SVG author is used and
+        explicit model overrides are unavailable.
+
+        - `model: optional string`
+
+          `minLength: 1`
+
+        - `reasoning: optional object { effort }  or null`
+
+          Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+          - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+            Controls how much effort the model should spend on reasoning for this request.
+
+            - `"none"`
+
+            - `"minimal"`
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+            - `"xhigh"`
+
+            - `"max"`
 
     - `LocalShell object { type }`
 
@@ -19979,7 +20643,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -20015,6 +20679,34 @@ Schema name: `ResponseInProgressEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -20036,13 +20728,14 @@ Schema name: `ResponseInProgressEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -20050,13 +20743,14 @@ Schema name: `ResponseInProgressEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -20065,8 +20759,6 @@ Schema name: `ResponseInProgressEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -20079,6 +20771,14 @@ Schema name: `ResponseInProgressEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -20094,16 +20794,24 @@ Schema name: `ResponseInProgressEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -20147,6 +20855,39 @@ Schema name: `ResponseInProgressEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -21089,7 +21830,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -21125,6 +21866,34 @@ Schema name: `ResponseInProgressEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -21146,13 +21915,14 @@ Schema name: `ResponseInProgressEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -21160,13 +21930,14 @@ Schema name: `ResponseInProgressEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -21175,8 +21946,6 @@ Schema name: `ResponseInProgressEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -21189,6 +21958,14 @@ Schema name: `ResponseInProgressEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -21204,16 +21981,24 @@ Schema name: `ResponseInProgressEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -21257,6 +22042,39 @@ Schema name: `ResponseInProgressEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -21730,7 +22548,7 @@ Schema name: `ResponseInProgressEvent`
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -21818,7 +22636,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"unknown"`
 
-        - `output_format: optional "png" or "webp" or "jpeg" or null`
+        - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
           The output format used for generation.
 
@@ -21827,6 +22645,10 @@ Schema name: `ResponseInProgressEvent`
           - `"webp"`
 
           - `"jpeg"`
+
+          - `"gif"`
+
+          - `"svg"`
 
         - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -21863,6 +22685,18 @@ Schema name: `ResponseInProgressEvent`
             - `"1024x1536"`
 
             - `"1536x1024"`
+
+        - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+          - `input_tokens: integer`
+
+          - `model: string`
+
+          - `output_tokens: integer`
+
+          - `reasoning_tokens: integer`
+
+          - `total_tokens: integer`
 
       - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -24118,7 +24952,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -24154,6 +24988,34 @@ Schema name: `ResponseInProgressEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -24175,13 +25037,14 @@ Schema name: `ResponseInProgressEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -24189,13 +25052,14 @@ Schema name: `ResponseInProgressEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -24204,8 +25068,6 @@ Schema name: `ResponseInProgressEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -24218,6 +25080,14 @@ Schema name: `ResponseInProgressEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -24233,16 +25103,24 @@ Schema name: `ResponseInProgressEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -24286,6 +25164,39 @@ Schema name: `ResponseInProgressEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -25060,7 +25971,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -25096,6 +26007,34 @@ Schema name: `ResponseInProgressEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -25117,13 +26056,14 @@ Schema name: `ResponseInProgressEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -25131,13 +26071,14 @@ Schema name: `ResponseInProgressEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -25146,8 +26087,6 @@ Schema name: `ResponseInProgressEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -25160,6 +26099,14 @@ Schema name: `ResponseInProgressEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -25175,16 +26122,24 @@ Schema name: `ResponseInProgressEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -25228,6 +26183,39 @@ Schema name: `ResponseInProgressEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -25541,7 +26529,7 @@ Schema name: `ResponseInProgressEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -25629,7 +26617,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"unknown"`
 
-      - `output_format: optional "png" or "webp" or "jpeg" or null`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
         The output format used for generation.
 
@@ -25638,6 +26626,10 @@ Schema name: `ResponseInProgressEvent`
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -25674,6 +26666,18 @@ Schema name: `ResponseInProgressEvent`
           - `"1024x1536"`
 
           - `"1536x1024"`
+
+      - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+        - `input_tokens: integer`
+
+        - `model: string`
+
+        - `output_tokens: integer`
+
+        - `reasoning_tokens: integer`
+
+        - `total_tokens: integer`
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -27115,7 +28119,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"programmatic_tool_calling"`
 
-    - `ImageGeneration object { type, action, background, 9 more }`
+    - `ImageGeneration object { type, action, background, 13 more }`
 
       A tool that generates images using the GPT image models.
 
@@ -27151,6 +28155,34 @@ Schema name: `ResponseInProgressEvent`
 
         - `"auto"`
 
+      - `complexity: optional "low" or "medium" or "high"`
+
+        Computation spent planning the image, independently of rendering quality.
+        Overrides the outer response's `reasoning.effort` for image generation.
+        When omitted, inherits a supported outer reasoning effort or uses the
+        image model's configured default.
+        For SVG output, controls the reference image, not the SVG author's
+        reasoning.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+      - `frame_count: optional integer (default: 9)`
+
+        Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+        `minimum: 2`, `maximum: 16`
+
+      - `frame_duration_ms: optional integer (default: 200)`
+
+        Duration of each GIF frame in milliseconds, rounded to 10 ms.
+        Requires `output_format` to be `gif`. Default: 200.
+
+        `minimum: 20`, `maximum: 2000`
+
       - `input_fidelity: optional "high" or "low" or null`
 
         Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -27172,13 +28204,14 @@ Schema name: `ResponseInProgressEvent`
 
           Base64-encoded mask image.
 
-      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
         The image generation model to use. One of `gpt-image-1-mini`,
         `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+        `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
         `gpt-image-2`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
@@ -27186,13 +28219,14 @@ Schema name: `ResponseInProgressEvent`
 
         - `string`
 
-        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
           The image generation model to use. One of `gpt-image-1-mini`,
           `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+          `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
           `gpt-image-2`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
@@ -27201,8 +28235,6 @@ Schema name: `ResponseInProgressEvent`
           - `"gpt-image-1"`
 
           - `"gpt-image-1-mini"`
-
-          - `"gpt-image-1.5"`
 
           - `"gpt-image-2"`
 
@@ -27215,6 +28247,14 @@ Schema name: `ResponseInProgressEvent`
           - `"gpt-image-2.5-flare"`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
+
+          - `"gpt-image-2.6-sunburst"`
+
+          - `"gpt-image-2.6-flare"`
+
+          - `"gpt-image-1.5"`
+
+          - `"chatgpt-image-latest"`
 
       - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -27230,16 +28270,24 @@ Schema name: `ResponseInProgressEvent`
 
         `minimum: 0`, `maximum: 100`
 
-      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-        The output format of the generated image. One of `png`, `webp`, or
-        `jpeg`. Default: `png`.
+        The output format of the generated image. One of `png`, `webp`, `jpeg`,
+        `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+        that supports the selected format. GIF output does not support
+        partial image streaming (`partial_images` greater than `0`),
+        `input_image_mask`, or custom `output_compression`.
+        Responses lifecycle events can still be streamed for GIF output.
 
         - `"png"`
 
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `partial_images: optional integer (default: 0)`
 
@@ -27283,6 +28331,39 @@ Schema name: `ResponseInProgressEvent`
           - `"1536x1024"`
 
           - `"auto"`
+
+      - `svg: optional object { model, reasoning }`
+
+        SVG author model settings. Requires `output_format` to be `svg`.
+        When SVG model selection is enabled, omitting this object uses the
+        outer response model. Otherwise, the default SVG author is used and
+        explicit model overrides are unavailable.
+
+        - `model: optional string`
+
+          `minLength: 1`
+
+        - `reasoning: optional object { effort }  or null`
+
+          Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+          - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+            Controls how much effort the model should spend on reasoning for this request.
+
+            - `"none"`
+
+            - `"minimal"`
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+            - `"xhigh"`
+
+            - `"max"`
 
     - `LocalShell object { type }`
 
@@ -30281,7 +31362,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -30317,6 +31398,34 @@ Schema name: `ResponseCompletedEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -30338,13 +31447,14 @@ Schema name: `ResponseCompletedEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -30352,13 +31462,14 @@ Schema name: `ResponseCompletedEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -30367,8 +31478,6 @@ Schema name: `ResponseCompletedEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -30381,6 +31490,14 @@ Schema name: `ResponseCompletedEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -30396,16 +31513,24 @@ Schema name: `ResponseCompletedEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -30449,6 +31574,39 @@ Schema name: `ResponseCompletedEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -31391,7 +32549,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -31427,6 +32585,34 @@ Schema name: `ResponseCompletedEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -31448,13 +32634,14 @@ Schema name: `ResponseCompletedEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -31462,13 +32649,14 @@ Schema name: `ResponseCompletedEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -31477,8 +32665,6 @@ Schema name: `ResponseCompletedEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -31491,6 +32677,14 @@ Schema name: `ResponseCompletedEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -31506,16 +32700,24 @@ Schema name: `ResponseCompletedEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -31559,6 +32761,39 @@ Schema name: `ResponseCompletedEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -32032,7 +33267,7 @@ Schema name: `ResponseCompletedEvent`
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -32120,7 +33355,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"unknown"`
 
-        - `output_format: optional "png" or "webp" or "jpeg" or null`
+        - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
           The output format used for generation.
 
@@ -32129,6 +33364,10 @@ Schema name: `ResponseCompletedEvent`
           - `"webp"`
 
           - `"jpeg"`
+
+          - `"gif"`
+
+          - `"svg"`
 
         - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -32165,6 +33404,18 @@ Schema name: `ResponseCompletedEvent`
             - `"1024x1536"`
 
             - `"1536x1024"`
+
+        - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+          - `input_tokens: integer`
+
+          - `model: string`
+
+          - `output_tokens: integer`
+
+          - `reasoning_tokens: integer`
+
+          - `total_tokens: integer`
 
       - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -34420,7 +35671,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -34456,6 +35707,34 @@ Schema name: `ResponseCompletedEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -34477,13 +35756,14 @@ Schema name: `ResponseCompletedEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -34491,13 +35771,14 @@ Schema name: `ResponseCompletedEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -34506,8 +35787,6 @@ Schema name: `ResponseCompletedEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -34520,6 +35799,14 @@ Schema name: `ResponseCompletedEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -34535,16 +35822,24 @@ Schema name: `ResponseCompletedEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -34588,6 +35883,39 @@ Schema name: `ResponseCompletedEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -35362,7 +36690,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -35398,6 +36726,34 @@ Schema name: `ResponseCompletedEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -35419,13 +36775,14 @@ Schema name: `ResponseCompletedEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -35433,13 +36790,14 @@ Schema name: `ResponseCompletedEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -35448,8 +36806,6 @@ Schema name: `ResponseCompletedEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -35462,6 +36818,14 @@ Schema name: `ResponseCompletedEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -35477,16 +36841,24 @@ Schema name: `ResponseCompletedEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -35530,6 +36902,39 @@ Schema name: `ResponseCompletedEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -35843,7 +37248,7 @@ Schema name: `ResponseCompletedEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -35931,7 +37336,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"unknown"`
 
-      - `output_format: optional "png" or "webp" or "jpeg" or null`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
         The output format used for generation.
 
@@ -35940,6 +37345,10 @@ Schema name: `ResponseCompletedEvent`
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -35976,6 +37385,18 @@ Schema name: `ResponseCompletedEvent`
           - `"1024x1536"`
 
           - `"1536x1024"`
+
+      - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+        - `input_tokens: integer`
+
+        - `model: string`
+
+        - `output_tokens: integer`
+
+        - `reasoning_tokens: integer`
+
+        - `total_tokens: integer`
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -37417,7 +38838,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"programmatic_tool_calling"`
 
-    - `ImageGeneration object { type, action, background, 9 more }`
+    - `ImageGeneration object { type, action, background, 13 more }`
 
       A tool that generates images using the GPT image models.
 
@@ -37453,6 +38874,34 @@ Schema name: `ResponseCompletedEvent`
 
         - `"auto"`
 
+      - `complexity: optional "low" or "medium" or "high"`
+
+        Computation spent planning the image, independently of rendering quality.
+        Overrides the outer response's `reasoning.effort` for image generation.
+        When omitted, inherits a supported outer reasoning effort or uses the
+        image model's configured default.
+        For SVG output, controls the reference image, not the SVG author's
+        reasoning.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+      - `frame_count: optional integer (default: 9)`
+
+        Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+        `minimum: 2`, `maximum: 16`
+
+      - `frame_duration_ms: optional integer (default: 200)`
+
+        Duration of each GIF frame in milliseconds, rounded to 10 ms.
+        Requires `output_format` to be `gif`. Default: 200.
+
+        `minimum: 20`, `maximum: 2000`
+
       - `input_fidelity: optional "high" or "low" or null`
 
         Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -37474,13 +38923,14 @@ Schema name: `ResponseCompletedEvent`
 
           Base64-encoded mask image.
 
-      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
         The image generation model to use. One of `gpt-image-1-mini`,
         `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+        `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
         `gpt-image-2`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
@@ -37488,13 +38938,14 @@ Schema name: `ResponseCompletedEvent`
 
         - `string`
 
-        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
           The image generation model to use. One of `gpt-image-1-mini`,
           `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+          `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
           `gpt-image-2`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
@@ -37503,8 +38954,6 @@ Schema name: `ResponseCompletedEvent`
           - `"gpt-image-1"`
 
           - `"gpt-image-1-mini"`
-
-          - `"gpt-image-1.5"`
 
           - `"gpt-image-2"`
 
@@ -37517,6 +38966,14 @@ Schema name: `ResponseCompletedEvent`
           - `"gpt-image-2.5-flare"`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
+
+          - `"gpt-image-2.6-sunburst"`
+
+          - `"gpt-image-2.6-flare"`
+
+          - `"gpt-image-1.5"`
+
+          - `"chatgpt-image-latest"`
 
       - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -37532,16 +38989,24 @@ Schema name: `ResponseCompletedEvent`
 
         `minimum: 0`, `maximum: 100`
 
-      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-        The output format of the generated image. One of `png`, `webp`, or
-        `jpeg`. Default: `png`.
+        The output format of the generated image. One of `png`, `webp`, `jpeg`,
+        `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+        that supports the selected format. GIF output does not support
+        partial image streaming (`partial_images` greater than `0`),
+        `input_image_mask`, or custom `output_compression`.
+        Responses lifecycle events can still be streamed for GIF output.
 
         - `"png"`
 
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `partial_images: optional integer (default: 0)`
 
@@ -37585,6 +39050,39 @@ Schema name: `ResponseCompletedEvent`
           - `"1536x1024"`
 
           - `"auto"`
+
+      - `svg: optional object { model, reasoning }`
+
+        SVG author model settings. Requires `output_format` to be `svg`.
+        When SVG model selection is enabled, omitting this object uses the
+        outer response model. Otherwise, the default SVG author is used and
+        explicit model overrides are unavailable.
+
+        - `model: optional string`
+
+          `minLength: 1`
+
+        - `reasoning: optional object { effort }  or null`
+
+          Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+          - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+            Controls how much effort the model should spend on reasoning for this request.
+
+            - `"none"`
+
+            - `"minimal"`
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+            - `"xhigh"`
+
+            - `"max"`
 
     - `LocalShell object { type }`
 
@@ -40607,7 +42105,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -40643,6 +42141,34 @@ Schema name: `ResponseFailedEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -40664,13 +42190,14 @@ Schema name: `ResponseFailedEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -40678,13 +42205,14 @@ Schema name: `ResponseFailedEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -40693,8 +42221,6 @@ Schema name: `ResponseFailedEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -40707,6 +42233,14 @@ Schema name: `ResponseFailedEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -40722,16 +42256,24 @@ Schema name: `ResponseFailedEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -40775,6 +42317,39 @@ Schema name: `ResponseFailedEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -41717,7 +43292,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -41753,6 +43328,34 @@ Schema name: `ResponseFailedEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -41774,13 +43377,14 @@ Schema name: `ResponseFailedEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -41788,13 +43392,14 @@ Schema name: `ResponseFailedEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -41803,8 +43408,6 @@ Schema name: `ResponseFailedEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -41817,6 +43420,14 @@ Schema name: `ResponseFailedEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -41832,16 +43443,24 @@ Schema name: `ResponseFailedEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -41885,6 +43504,39 @@ Schema name: `ResponseFailedEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -42358,7 +44010,7 @@ Schema name: `ResponseFailedEvent`
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -42446,7 +44098,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"unknown"`
 
-        - `output_format: optional "png" or "webp" or "jpeg" or null`
+        - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
           The output format used for generation.
 
@@ -42455,6 +44107,10 @@ Schema name: `ResponseFailedEvent`
           - `"webp"`
 
           - `"jpeg"`
+
+          - `"gif"`
+
+          - `"svg"`
 
         - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -42491,6 +44147,18 @@ Schema name: `ResponseFailedEvent`
             - `"1024x1536"`
 
             - `"1536x1024"`
+
+        - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+          - `input_tokens: integer`
+
+          - `model: string`
+
+          - `output_tokens: integer`
+
+          - `reasoning_tokens: integer`
+
+          - `total_tokens: integer`
 
       - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -44746,7 +46414,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -44782,6 +46450,34 @@ Schema name: `ResponseFailedEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -44803,13 +46499,14 @@ Schema name: `ResponseFailedEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -44817,13 +46514,14 @@ Schema name: `ResponseFailedEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -44832,8 +46530,6 @@ Schema name: `ResponseFailedEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -44846,6 +46542,14 @@ Schema name: `ResponseFailedEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -44861,16 +46565,24 @@ Schema name: `ResponseFailedEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -44914,6 +46626,39 @@ Schema name: `ResponseFailedEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -45688,7 +47433,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -45724,6 +47469,34 @@ Schema name: `ResponseFailedEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -45745,13 +47518,14 @@ Schema name: `ResponseFailedEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -45759,13 +47533,14 @@ Schema name: `ResponseFailedEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -45774,8 +47549,6 @@ Schema name: `ResponseFailedEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -45788,6 +47561,14 @@ Schema name: `ResponseFailedEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -45803,16 +47584,24 @@ Schema name: `ResponseFailedEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -45856,6 +47645,39 @@ Schema name: `ResponseFailedEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -46169,7 +47991,7 @@ Schema name: `ResponseFailedEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -46257,7 +48079,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"unknown"`
 
-      - `output_format: optional "png" or "webp" or "jpeg" or null`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
         The output format used for generation.
 
@@ -46266,6 +48088,10 @@ Schema name: `ResponseFailedEvent`
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -46302,6 +48128,18 @@ Schema name: `ResponseFailedEvent`
           - `"1024x1536"`
 
           - `"1536x1024"`
+
+      - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+        - `input_tokens: integer`
+
+        - `model: string`
+
+        - `output_tokens: integer`
+
+        - `reasoning_tokens: integer`
+
+        - `total_tokens: integer`
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -47743,7 +49581,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"programmatic_tool_calling"`
 
-    - `ImageGeneration object { type, action, background, 9 more }`
+    - `ImageGeneration object { type, action, background, 13 more }`
 
       A tool that generates images using the GPT image models.
 
@@ -47779,6 +49617,34 @@ Schema name: `ResponseFailedEvent`
 
         - `"auto"`
 
+      - `complexity: optional "low" or "medium" or "high"`
+
+        Computation spent planning the image, independently of rendering quality.
+        Overrides the outer response's `reasoning.effort` for image generation.
+        When omitted, inherits a supported outer reasoning effort or uses the
+        image model's configured default.
+        For SVG output, controls the reference image, not the SVG author's
+        reasoning.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+      - `frame_count: optional integer (default: 9)`
+
+        Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+        `minimum: 2`, `maximum: 16`
+
+      - `frame_duration_ms: optional integer (default: 200)`
+
+        Duration of each GIF frame in milliseconds, rounded to 10 ms.
+        Requires `output_format` to be `gif`. Default: 200.
+
+        `minimum: 20`, `maximum: 2000`
+
       - `input_fidelity: optional "high" or "low" or null`
 
         Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -47800,13 +49666,14 @@ Schema name: `ResponseFailedEvent`
 
           Base64-encoded mask image.
 
-      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
         The image generation model to use. One of `gpt-image-1-mini`,
         `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+        `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
         `gpt-image-2`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
@@ -47814,13 +49681,14 @@ Schema name: `ResponseFailedEvent`
 
         - `string`
 
-        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
           The image generation model to use. One of `gpt-image-1-mini`,
           `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+          `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
           `gpt-image-2`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
@@ -47829,8 +49697,6 @@ Schema name: `ResponseFailedEvent`
           - `"gpt-image-1"`
 
           - `"gpt-image-1-mini"`
-
-          - `"gpt-image-1.5"`
 
           - `"gpt-image-2"`
 
@@ -47843,6 +49709,14 @@ Schema name: `ResponseFailedEvent`
           - `"gpt-image-2.5-flare"`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
+
+          - `"gpt-image-2.6-sunburst"`
+
+          - `"gpt-image-2.6-flare"`
+
+          - `"gpt-image-1.5"`
+
+          - `"chatgpt-image-latest"`
 
       - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -47858,16 +49732,24 @@ Schema name: `ResponseFailedEvent`
 
         `minimum: 0`, `maximum: 100`
 
-      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-        The output format of the generated image. One of `png`, `webp`, or
-        `jpeg`. Default: `png`.
+        The output format of the generated image. One of `png`, `webp`, `jpeg`,
+        `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+        that supports the selected format. GIF output does not support
+        partial image streaming (`partial_images` greater than `0`),
+        `input_image_mask`, or custom `output_compression`.
+        Responses lifecycle events can still be streamed for GIF output.
 
         - `"png"`
 
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `partial_images: optional integer (default: 0)`
 
@@ -47911,6 +49793,39 @@ Schema name: `ResponseFailedEvent`
           - `"1536x1024"`
 
           - `"auto"`
+
+      - `svg: optional object { model, reasoning }`
+
+        SVG author model settings. Requires `output_format` to be `svg`.
+        When SVG model selection is enabled, omitting this object uses the
+        outer response model. Otherwise, the default SVG author is used and
+        explicit model overrides are unavailable.
+
+        - `model: optional string`
+
+          `minLength: 1`
+
+        - `reasoning: optional object { effort }  or null`
+
+          Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+          - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+            Controls how much effort the model should spend on reasoning for this request.
+
+            - `"none"`
+
+            - `"minimal"`
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+            - `"xhigh"`
+
+            - `"max"`
 
     - `LocalShell object { type }`
 
@@ -50913,7 +52828,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -50949,6 +52864,34 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -50970,13 +52913,14 @@ Schema name: `ResponseIncompleteEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -50984,13 +52928,14 @@ Schema name: `ResponseIncompleteEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -50999,8 +52944,6 @@ Schema name: `ResponseIncompleteEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -51013,6 +52956,14 @@ Schema name: `ResponseIncompleteEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -51028,16 +52979,24 @@ Schema name: `ResponseIncompleteEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -51081,6 +53040,39 @@ Schema name: `ResponseIncompleteEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -52023,7 +54015,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -52059,6 +54051,34 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -52080,13 +54100,14 @@ Schema name: `ResponseIncompleteEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -52094,13 +54115,14 @@ Schema name: `ResponseIncompleteEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -52109,8 +54131,6 @@ Schema name: `ResponseIncompleteEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -52123,6 +54143,14 @@ Schema name: `ResponseIncompleteEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -52138,16 +54166,24 @@ Schema name: `ResponseIncompleteEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -52191,6 +54227,39 @@ Schema name: `ResponseIncompleteEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -52664,7 +54733,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -52752,7 +54821,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"unknown"`
 
-        - `output_format: optional "png" or "webp" or "jpeg" or null`
+        - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
           The output format used for generation.
 
@@ -52761,6 +54830,10 @@ Schema name: `ResponseIncompleteEvent`
           - `"webp"`
 
           - `"jpeg"`
+
+          - `"gif"`
+
+          - `"svg"`
 
         - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -52797,6 +54870,18 @@ Schema name: `ResponseIncompleteEvent`
             - `"1024x1536"`
 
             - `"1536x1024"`
+
+        - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+          - `input_tokens: integer`
+
+          - `model: string`
+
+          - `output_tokens: integer`
+
+          - `reasoning_tokens: integer`
+
+          - `total_tokens: integer`
 
       - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -55052,7 +57137,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -55088,6 +57173,34 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -55109,13 +57222,14 @@ Schema name: `ResponseIncompleteEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -55123,13 +57237,14 @@ Schema name: `ResponseIncompleteEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -55138,8 +57253,6 @@ Schema name: `ResponseIncompleteEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -55152,6 +57265,14 @@ Schema name: `ResponseIncompleteEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -55167,16 +57288,24 @@ Schema name: `ResponseIncompleteEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -55220,6 +57349,39 @@ Schema name: `ResponseIncompleteEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -55994,7 +58156,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -56030,6 +58192,34 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -56051,13 +58241,14 @@ Schema name: `ResponseIncompleteEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -56065,13 +58256,14 @@ Schema name: `ResponseIncompleteEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -56080,8 +58272,6 @@ Schema name: `ResponseIncompleteEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -56094,6 +58284,14 @@ Schema name: `ResponseIncompleteEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -56109,16 +58307,24 @@ Schema name: `ResponseIncompleteEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -56162,6 +58368,39 @@ Schema name: `ResponseIncompleteEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -56475,7 +58714,7 @@ Schema name: `ResponseIncompleteEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -56563,7 +58802,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"unknown"`
 
-      - `output_format: optional "png" or "webp" or "jpeg" or null`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
         The output format used for generation.
 
@@ -56572,6 +58811,10 @@ Schema name: `ResponseIncompleteEvent`
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -56608,6 +58851,18 @@ Schema name: `ResponseIncompleteEvent`
           - `"1024x1536"`
 
           - `"1536x1024"`
+
+      - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+        - `input_tokens: integer`
+
+        - `model: string`
+
+        - `output_tokens: integer`
+
+        - `reasoning_tokens: integer`
+
+        - `total_tokens: integer`
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -58049,7 +60304,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"programmatic_tool_calling"`
 
-    - `ImageGeneration object { type, action, background, 9 more }`
+    - `ImageGeneration object { type, action, background, 13 more }`
 
       A tool that generates images using the GPT image models.
 
@@ -58085,6 +60340,34 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"auto"`
 
+      - `complexity: optional "low" or "medium" or "high"`
+
+        Computation spent planning the image, independently of rendering quality.
+        Overrides the outer response's `reasoning.effort` for image generation.
+        When omitted, inherits a supported outer reasoning effort or uses the
+        image model's configured default.
+        For SVG output, controls the reference image, not the SVG author's
+        reasoning.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+      - `frame_count: optional integer (default: 9)`
+
+        Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+        `minimum: 2`, `maximum: 16`
+
+      - `frame_duration_ms: optional integer (default: 200)`
+
+        Duration of each GIF frame in milliseconds, rounded to 10 ms.
+        Requires `output_format` to be `gif`. Default: 200.
+
+        `minimum: 20`, `maximum: 2000`
+
       - `input_fidelity: optional "high" or "low" or null`
 
         Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -58106,13 +60389,14 @@ Schema name: `ResponseIncompleteEvent`
 
           Base64-encoded mask image.
 
-      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
         The image generation model to use. One of `gpt-image-1-mini`,
         `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+        `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
         `gpt-image-2`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
@@ -58120,13 +60404,14 @@ Schema name: `ResponseIncompleteEvent`
 
         - `string`
 
-        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
           The image generation model to use. One of `gpt-image-1-mini`,
           `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+          `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
           `gpt-image-2`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
@@ -58135,8 +60420,6 @@ Schema name: `ResponseIncompleteEvent`
           - `"gpt-image-1"`
 
           - `"gpt-image-1-mini"`
-
-          - `"gpt-image-1.5"`
 
           - `"gpt-image-2"`
 
@@ -58149,6 +60432,14 @@ Schema name: `ResponseIncompleteEvent`
           - `"gpt-image-2.5-flare"`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
+
+          - `"gpt-image-2.6-sunburst"`
+
+          - `"gpt-image-2.6-flare"`
+
+          - `"gpt-image-1.5"`
+
+          - `"chatgpt-image-latest"`
 
       - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -58164,16 +60455,24 @@ Schema name: `ResponseIncompleteEvent`
 
         `minimum: 0`, `maximum: 100`
 
-      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-        The output format of the generated image. One of `png`, `webp`, or
-        `jpeg`. Default: `png`.
+        The output format of the generated image. One of `png`, `webp`, `jpeg`,
+        `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+        that supports the selected format. GIF output does not support
+        partial image streaming (`partial_images` greater than `0`),
+        `input_image_mask`, or custom `output_compression`.
+        Responses lifecycle events can still be streamed for GIF output.
 
         - `"png"`
 
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `partial_images: optional integer (default: 0)`
 
@@ -58217,6 +60516,39 @@ Schema name: `ResponseIncompleteEvent`
           - `"1536x1024"`
 
           - `"auto"`
+
+      - `svg: optional object { model, reasoning }`
+
+        SVG author model settings. Requires `output_format` to be `svg`.
+        When SVG model selection is enabled, omitting this object uses the
+        outer response model. Otherwise, the default SVG author is used and
+        explicit model overrides are unavailable.
+
+        - `model: optional string`
+
+          `minLength: 1`
+
+        - `reasoning: optional object { effort }  or null`
+
+          Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+          - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+            Controls how much effort the model should spend on reasoning for this request.
+
+            - `"none"`
+
+            - `"minimal"`
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+            - `"xhigh"`
+
+            - `"max"`
 
     - `LocalShell object { type }`
 
@@ -60983,7 +63315,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"programmatic_tool_calling"`
 
-      - `ImageGeneration object { type, action, background, 9 more }`
+      - `ImageGeneration object { type, action, background, 13 more }`
 
         A tool that generates images using the GPT image models.
 
@@ -61019,6 +63351,34 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"auto"`
 
+        - `complexity: optional "low" or "medium" or "high"`
+
+          Computation spent planning the image, independently of rendering quality.
+          Overrides the outer response's `reasoning.effort` for image generation.
+          When omitted, inherits a supported outer reasoning effort or uses the
+          image model's configured default.
+          For SVG output, controls the reference image, not the SVG author's
+          reasoning.
+
+          - `"low"`
+
+          - `"medium"`
+
+          - `"high"`
+
+        - `frame_count: optional integer (default: 9)`
+
+          Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+          `minimum: 2`, `maximum: 16`
+
+        - `frame_duration_ms: optional integer (default: 200)`
+
+          Duration of each GIF frame in milliseconds, rounded to 10 ms.
+          Requires `output_format` to be `gif`. Default: 200.
+
+          `minimum: 20`, `maximum: 2000`
+
         - `input_fidelity: optional "high" or "low" or null`
 
           Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -61040,13 +63400,14 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
           The image generation model to use. One of `gpt-image-1-mini`,
           `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+          `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
           `gpt-image-2`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
@@ -61054,13 +63415,14 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -61069,8 +63431,6 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
-
-            - `"gpt-image-1.5"`
 
             - `"gpt-image-2"`
 
@@ -61083,6 +63443,14 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `"gpt-image-2.5-flare"`
 
             - `"gpt-image-2.5-flare-2026-09-08"`
+
+            - `"gpt-image-2.6-sunburst"`
+
+            - `"gpt-image-2.6-flare"`
+
+            - `"gpt-image-1.5"`
+
+            - `"chatgpt-image-latest"`
 
         - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -61098,16 +63466,24 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           `minimum: 0`, `maximum: 100`
 
-        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+        - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-          The output format of the generated image. One of `png`, `webp`, or
-          `jpeg`. Default: `png`.
+          The output format of the generated image. One of `png`, `webp`, `jpeg`,
+          `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+          that supports the selected format. GIF output does not support
+          partial image streaming (`partial_images` greater than `0`),
+          `input_image_mask`, or custom `output_compression`.
+          Responses lifecycle events can still be streamed for GIF output.
 
           - `"png"`
 
           - `"webp"`
 
           - `"jpeg"`
+
+          - `"gif"`
+
+          - `"svg"`
 
         - `partial_images: optional integer (default: 0)`
 
@@ -61151,6 +63527,39 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `"1536x1024"`
 
             - `"auto"`
+
+        - `svg: optional object { model, reasoning }`
+
+          SVG author model settings. Requires `output_format` to be `svg`.
+          When SVG model selection is enabled, omitting this object uses the
+          outer response model. Otherwise, the default SVG author is used and
+          explicit model overrides are unavailable.
+
+          - `model: optional string`
+
+            `minLength: 1`
+
+          - `reasoning: optional object { effort }  or null`
+
+            Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+            - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+              Controls how much effort the model should spend on reasoning for this request.
+
+              - `"none"`
+
+              - `"minimal"`
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+              - `"xhigh"`
+
+              - `"max"`
 
       - `LocalShell object { type }`
 
@@ -62085,7 +64494,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"programmatic_tool_calling"`
 
-      - `ImageGeneration object { type, action, background, 9 more }`
+      - `ImageGeneration object { type, action, background, 13 more }`
 
         A tool that generates images using the GPT image models.
 
@@ -62121,6 +64530,34 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"auto"`
 
+        - `complexity: optional "low" or "medium" or "high"`
+
+          Computation spent planning the image, independently of rendering quality.
+          Overrides the outer response's `reasoning.effort` for image generation.
+          When omitted, inherits a supported outer reasoning effort or uses the
+          image model's configured default.
+          For SVG output, controls the reference image, not the SVG author's
+          reasoning.
+
+          - `"low"`
+
+          - `"medium"`
+
+          - `"high"`
+
+        - `frame_count: optional integer (default: 9)`
+
+          Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+          `minimum: 2`, `maximum: 16`
+
+        - `frame_duration_ms: optional integer (default: 200)`
+
+          Duration of each GIF frame in milliseconds, rounded to 10 ms.
+          Requires `output_format` to be `gif`. Default: 200.
+
+          `minimum: 20`, `maximum: 2000`
+
         - `input_fidelity: optional "high" or "low" or null`
 
           Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -62142,13 +64579,14 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
           The image generation model to use. One of `gpt-image-1-mini`,
           `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+          `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
           `gpt-image-2`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
@@ -62156,13 +64594,14 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -62171,8 +64610,6 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
-
-            - `"gpt-image-1.5"`
 
             - `"gpt-image-2"`
 
@@ -62185,6 +64622,14 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `"gpt-image-2.5-flare"`
 
             - `"gpt-image-2.5-flare-2026-09-08"`
+
+            - `"gpt-image-2.6-sunburst"`
+
+            - `"gpt-image-2.6-flare"`
+
+            - `"gpt-image-1.5"`
+
+            - `"chatgpt-image-latest"`
 
         - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -62200,16 +64645,24 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           `minimum: 0`, `maximum: 100`
 
-        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+        - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-          The output format of the generated image. One of `png`, `webp`, or
-          `jpeg`. Default: `png`.
+          The output format of the generated image. One of `png`, `webp`, `jpeg`,
+          `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+          that supports the selected format. GIF output does not support
+          partial image streaming (`partial_images` greater than `0`),
+          `input_image_mask`, or custom `output_compression`.
+          Responses lifecycle events can still be streamed for GIF output.
 
           - `"png"`
 
           - `"webp"`
 
           - `"jpeg"`
+
+          - `"gif"`
+
+          - `"svg"`
 
         - `partial_images: optional integer (default: 0)`
 
@@ -62253,6 +64706,39 @@ Schema name: `ResponseOutputItemAddedEvent`
             - `"1536x1024"`
 
             - `"auto"`
+
+        - `svg: optional object { model, reasoning }`
+
+          SVG author model settings. Requires `output_format` to be `svg`.
+          When SVG model selection is enabled, omitting this object uses the
+          outer response model. Otherwise, the default SVG author is used and
+          explicit model overrides are unavailable.
+
+          - `model: optional string`
+
+            `minLength: 1`
+
+          - `reasoning: optional object { effort }  or null`
+
+            Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+            - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+              Controls how much effort the model should spend on reasoning for this request.
+
+              - `"none"`
+
+              - `"minimal"`
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+              - `"xhigh"`
+
+              - `"max"`
 
       - `LocalShell object { type }`
 
@@ -62566,7 +65052,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       The identifier of the actor that created the item.
 
-  - `ImageGenerationCall object { id, result, status, 8 more }`
+  - `ImageGenerationCall object { id, result, status, 9 more }`
 
     An image generation request made by the model.
 
@@ -62654,7 +65140,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"unknown"`
 
-    - `output_format: optional "png" or "webp" or "jpeg" or null`
+    - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
       The output format used for generation.
 
@@ -62663,6 +65149,10 @@ Schema name: `ResponseOutputItemAddedEvent`
       - `"webp"`
 
       - `"jpeg"`
+
+      - `"gif"`
+
+      - `"svg"`
 
     - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -62699,6 +65189,18 @@ Schema name: `ResponseOutputItemAddedEvent`
         - `"1024x1536"`
 
         - `"1536x1024"`
+
+    - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+      - `input_tokens: integer`
+
+      - `model: string`
+
+      - `output_tokens: integer`
+
+      - `reasoning_tokens: integer`
+
+      - `total_tokens: integer`
 
   - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -65325,7 +67827,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"programmatic_tool_calling"`
 
-      - `ImageGeneration object { type, action, background, 9 more }`
+      - `ImageGeneration object { type, action, background, 13 more }`
 
         A tool that generates images using the GPT image models.
 
@@ -65361,6 +67863,34 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"auto"`
 
+        - `complexity: optional "low" or "medium" or "high"`
+
+          Computation spent planning the image, independently of rendering quality.
+          Overrides the outer response's `reasoning.effort` for image generation.
+          When omitted, inherits a supported outer reasoning effort or uses the
+          image model's configured default.
+          For SVG output, controls the reference image, not the SVG author's
+          reasoning.
+
+          - `"low"`
+
+          - `"medium"`
+
+          - `"high"`
+
+        - `frame_count: optional integer (default: 9)`
+
+          Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+          `minimum: 2`, `maximum: 16`
+
+        - `frame_duration_ms: optional integer (default: 200)`
+
+          Duration of each GIF frame in milliseconds, rounded to 10 ms.
+          Requires `output_format` to be `gif`. Default: 200.
+
+          `minimum: 20`, `maximum: 2000`
+
         - `input_fidelity: optional "high" or "low" or null`
 
           Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -65382,13 +67912,14 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
           The image generation model to use. One of `gpt-image-1-mini`,
           `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+          `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
           `gpt-image-2`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
@@ -65396,13 +67927,14 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -65411,8 +67943,6 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
-
-            - `"gpt-image-1.5"`
 
             - `"gpt-image-2"`
 
@@ -65425,6 +67955,14 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `"gpt-image-2.5-flare"`
 
             - `"gpt-image-2.5-flare-2026-09-08"`
+
+            - `"gpt-image-2.6-sunburst"`
+
+            - `"gpt-image-2.6-flare"`
+
+            - `"gpt-image-1.5"`
+
+            - `"chatgpt-image-latest"`
 
         - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -65440,16 +67978,24 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           `minimum: 0`, `maximum: 100`
 
-        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+        - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-          The output format of the generated image. One of `png`, `webp`, or
-          `jpeg`. Default: `png`.
+          The output format of the generated image. One of `png`, `webp`, `jpeg`,
+          `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+          that supports the selected format. GIF output does not support
+          partial image streaming (`partial_images` greater than `0`),
+          `input_image_mask`, or custom `output_compression`.
+          Responses lifecycle events can still be streamed for GIF output.
 
           - `"png"`
 
           - `"webp"`
 
           - `"jpeg"`
+
+          - `"gif"`
+
+          - `"svg"`
 
         - `partial_images: optional integer (default: 0)`
 
@@ -65493,6 +68039,39 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `"1536x1024"`
 
             - `"auto"`
+
+        - `svg: optional object { model, reasoning }`
+
+          SVG author model settings. Requires `output_format` to be `svg`.
+          When SVG model selection is enabled, omitting this object uses the
+          outer response model. Otherwise, the default SVG author is used and
+          explicit model overrides are unavailable.
+
+          - `model: optional string`
+
+            `minLength: 1`
+
+          - `reasoning: optional object { effort }  or null`
+
+            Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+            - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+              Controls how much effort the model should spend on reasoning for this request.
+
+              - `"none"`
+
+              - `"minimal"`
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+              - `"xhigh"`
+
+              - `"max"`
 
       - `LocalShell object { type }`
 
@@ -66427,7 +69006,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"programmatic_tool_calling"`
 
-      - `ImageGeneration object { type, action, background, 9 more }`
+      - `ImageGeneration object { type, action, background, 13 more }`
 
         A tool that generates images using the GPT image models.
 
@@ -66463,6 +69042,34 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"auto"`
 
+        - `complexity: optional "low" or "medium" or "high"`
+
+          Computation spent planning the image, independently of rendering quality.
+          Overrides the outer response's `reasoning.effort` for image generation.
+          When omitted, inherits a supported outer reasoning effort or uses the
+          image model's configured default.
+          For SVG output, controls the reference image, not the SVG author's
+          reasoning.
+
+          - `"low"`
+
+          - `"medium"`
+
+          - `"high"`
+
+        - `frame_count: optional integer (default: 9)`
+
+          Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+          `minimum: 2`, `maximum: 16`
+
+        - `frame_duration_ms: optional integer (default: 200)`
+
+          Duration of each GIF frame in milliseconds, rounded to 10 ms.
+          Requires `output_format` to be `gif`. Default: 200.
+
+          `minimum: 20`, `maximum: 2000`
+
         - `input_fidelity: optional "high" or "low" or null`
 
           Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -66484,13 +69091,14 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             Base64-encoded mask image.
 
-        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+        - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
           The image generation model to use. One of `gpt-image-1-mini`,
           `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+          `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
           `gpt-image-2`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
@@ -66498,13 +69106,14 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `string`
 
-          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -66513,8 +69122,6 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `"gpt-image-1"`
 
             - `"gpt-image-1-mini"`
-
-            - `"gpt-image-1.5"`
 
             - `"gpt-image-2"`
 
@@ -66527,6 +69134,14 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `"gpt-image-2.5-flare"`
 
             - `"gpt-image-2.5-flare-2026-09-08"`
+
+            - `"gpt-image-2.6-sunburst"`
+
+            - `"gpt-image-2.6-flare"`
+
+            - `"gpt-image-1.5"`
+
+            - `"chatgpt-image-latest"`
 
         - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -66542,16 +69157,24 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           `minimum: 0`, `maximum: 100`
 
-        - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+        - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-          The output format of the generated image. One of `png`, `webp`, or
-          `jpeg`. Default: `png`.
+          The output format of the generated image. One of `png`, `webp`, `jpeg`,
+          `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+          that supports the selected format. GIF output does not support
+          partial image streaming (`partial_images` greater than `0`),
+          `input_image_mask`, or custom `output_compression`.
+          Responses lifecycle events can still be streamed for GIF output.
 
           - `"png"`
 
           - `"webp"`
 
           - `"jpeg"`
+
+          - `"gif"`
+
+          - `"svg"`
 
         - `partial_images: optional integer (default: 0)`
 
@@ -66595,6 +69218,39 @@ Schema name: `ResponseOutputItemDoneEvent`
             - `"1536x1024"`
 
             - `"auto"`
+
+        - `svg: optional object { model, reasoning }`
+
+          SVG author model settings. Requires `output_format` to be `svg`.
+          When SVG model selection is enabled, omitting this object uses the
+          outer response model. Otherwise, the default SVG author is used and
+          explicit model overrides are unavailable.
+
+          - `model: optional string`
+
+            `minLength: 1`
+
+          - `reasoning: optional object { effort }  or null`
+
+            Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+            - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+              Controls how much effort the model should spend on reasoning for this request.
+
+              - `"none"`
+
+              - `"minimal"`
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+              - `"xhigh"`
+
+              - `"max"`
 
       - `LocalShell object { type }`
 
@@ -66908,7 +69564,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       The identifier of the actor that created the item.
 
-  - `ImageGenerationCall object { id, result, status, 8 more }`
+  - `ImageGenerationCall object { id, result, status, 9 more }`
 
     An image generation request made by the model.
 
@@ -66996,7 +69652,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"unknown"`
 
-    - `output_format: optional "png" or "webp" or "jpeg" or null`
+    - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
       The output format used for generation.
 
@@ -67005,6 +69661,10 @@ Schema name: `ResponseOutputItemDoneEvent`
       - `"webp"`
 
       - `"jpeg"`
+
+      - `"gif"`
+
+      - `"svg"`
 
     - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -67041,6 +69701,18 @@ Schema name: `ResponseOutputItemDoneEvent`
         - `"1024x1536"`
 
         - `"1536x1024"`
+
+    - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+      - `input_tokens: integer`
+
+      - `model: string`
+
+      - `output_tokens: integer`
+
+      - `reasoning_tokens: integer`
+
+      - `total_tokens: integer`
 
   - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -72323,7 +74995,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -72359,6 +75031,34 @@ Schema name: `ResponseQueuedEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -72380,13 +75080,14 @@ Schema name: `ResponseQueuedEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -72394,13 +75095,14 @@ Schema name: `ResponseQueuedEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -72409,8 +75111,6 @@ Schema name: `ResponseQueuedEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -72423,6 +75123,14 @@ Schema name: `ResponseQueuedEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -72438,16 +75146,24 @@ Schema name: `ResponseQueuedEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -72491,6 +75207,39 @@ Schema name: `ResponseQueuedEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -73433,7 +76182,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"programmatic_tool_calling"`
 
-          - `ImageGeneration object { type, action, background, 9 more }`
+          - `ImageGeneration object { type, action, background, 13 more }`
 
             A tool that generates images using the GPT image models.
 
@@ -73469,6 +76218,34 @@ Schema name: `ResponseQueuedEvent`
 
               - `"auto"`
 
+            - `complexity: optional "low" or "medium" or "high"`
+
+              Computation spent planning the image, independently of rendering quality.
+              Overrides the outer response's `reasoning.effort` for image generation.
+              When omitted, inherits a supported outer reasoning effort or uses the
+              image model's configured default.
+              For SVG output, controls the reference image, not the SVG author's
+              reasoning.
+
+              - `"low"`
+
+              - `"medium"`
+
+              - `"high"`
+
+            - `frame_count: optional integer (default: 9)`
+
+              Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+              `minimum: 2`, `maximum: 16`
+
+            - `frame_duration_ms: optional integer (default: 200)`
+
+              Duration of each GIF frame in milliseconds, rounded to 10 ms.
+              Requires `output_format` to be `gif`. Default: 200.
+
+              `minimum: 20`, `maximum: 2000`
+
             - `input_fidelity: optional "high" or "low" or null`
 
               Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -73490,13 +76267,14 @@ Schema name: `ResponseQueuedEvent`
 
                 Base64-encoded mask image.
 
-            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -73504,13 +76282,14 @@ Schema name: `ResponseQueuedEvent`
 
               - `string`
 
-              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+              - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
                 The image generation model to use. One of `gpt-image-1-mini`,
                 `gpt-image-1.5`, `gpt-image-2`,
                 `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-                `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+                `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+                `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
                 `gpt-image-2`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
@@ -73519,8 +76298,6 @@ Schema name: `ResponseQueuedEvent`
                 - `"gpt-image-1"`
 
                 - `"gpt-image-1-mini"`
-
-                - `"gpt-image-1.5"`
 
                 - `"gpt-image-2"`
 
@@ -73533,6 +76310,14 @@ Schema name: `ResponseQueuedEvent`
                 - `"gpt-image-2.5-flare"`
 
                 - `"gpt-image-2.5-flare-2026-09-08"`
+
+                - `"gpt-image-2.6-sunburst"`
+
+                - `"gpt-image-2.6-flare"`
+
+                - `"gpt-image-1.5"`
+
+                - `"chatgpt-image-latest"`
 
             - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -73548,16 +76333,24 @@ Schema name: `ResponseQueuedEvent`
 
               `minimum: 0`, `maximum: 100`
 
-            - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+            - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-              The output format of the generated image. One of `png`, `webp`, or
-              `jpeg`. Default: `png`.
+              The output format of the generated image. One of `png`, `webp`, `jpeg`,
+              `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+              that supports the selected format. GIF output does not support
+              partial image streaming (`partial_images` greater than `0`),
+              `input_image_mask`, or custom `output_compression`.
+              Responses lifecycle events can still be streamed for GIF output.
 
               - `"png"`
 
               - `"webp"`
 
               - `"jpeg"`
+
+              - `"gif"`
+
+              - `"svg"`
 
             - `partial_images: optional integer (default: 0)`
 
@@ -73601,6 +76394,39 @@ Schema name: `ResponseQueuedEvent`
                 - `"1536x1024"`
 
                 - `"auto"`
+
+            - `svg: optional object { model, reasoning }`
+
+              SVG author model settings. Requires `output_format` to be `svg`.
+              When SVG model selection is enabled, omitting this object uses the
+              outer response model. Otherwise, the default SVG author is used and
+              explicit model overrides are unavailable.
+
+              - `model: optional string`
+
+                `minLength: 1`
+
+              - `reasoning: optional object { effort }  or null`
+
+                Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+                - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                  Controls how much effort the model should spend on reasoning for this request.
+
+                  - `"none"`
+
+                  - `"minimal"`
+
+                  - `"low"`
+
+                  - `"medium"`
+
+                  - `"high"`
+
+                  - `"xhigh"`
+
+                  - `"max"`
 
           - `LocalShell object { type }`
 
@@ -74074,7 +76900,7 @@ Schema name: `ResponseQueuedEvent`
 
           The ID of the compaction item.
 
-      - `ImageGenerationCall object { id, result, status, 8 more }`
+      - `ImageGenerationCall object { id, result, status, 9 more }`
 
         An image generation request made by the model.
 
@@ -74162,7 +76988,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"unknown"`
 
-        - `output_format: optional "png" or "webp" or "jpeg" or null`
+        - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
           The output format used for generation.
 
@@ -74171,6 +76997,10 @@ Schema name: `ResponseQueuedEvent`
           - `"webp"`
 
           - `"jpeg"`
+
+          - `"gif"`
+
+          - `"svg"`
 
         - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -74207,6 +77037,18 @@ Schema name: `ResponseQueuedEvent`
             - `"1024x1536"`
 
             - `"1536x1024"`
+
+        - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+          - `input_tokens: integer`
+
+          - `model: string`
+
+          - `output_tokens: integer`
+
+          - `reasoning_tokens: integer`
+
+          - `total_tokens: integer`
 
       - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -76462,7 +79304,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -76498,6 +79340,34 @@ Schema name: `ResponseQueuedEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -76519,13 +79389,14 @@ Schema name: `ResponseQueuedEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -76533,13 +79404,14 @@ Schema name: `ResponseQueuedEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -76548,8 +79420,6 @@ Schema name: `ResponseQueuedEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -76562,6 +79432,14 @@ Schema name: `ResponseQueuedEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -76577,16 +79455,24 @@ Schema name: `ResponseQueuedEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -76630,6 +79516,39 @@ Schema name: `ResponseQueuedEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -77404,7 +80323,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"programmatic_tool_calling"`
 
-        - `ImageGeneration object { type, action, background, 9 more }`
+        - `ImageGeneration object { type, action, background, 13 more }`
 
           A tool that generates images using the GPT image models.
 
@@ -77440,6 +80359,34 @@ Schema name: `ResponseQueuedEvent`
 
             - `"auto"`
 
+          - `complexity: optional "low" or "medium" or "high"`
+
+            Computation spent planning the image, independently of rendering quality.
+            Overrides the outer response's `reasoning.effort` for image generation.
+            When omitted, inherits a supported outer reasoning effort or uses the
+            image model's configured default.
+            For SVG output, controls the reference image, not the SVG author's
+            reasoning.
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+          - `frame_count: optional integer (default: 9)`
+
+            Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+            `minimum: 2`, `maximum: 16`
+
+          - `frame_duration_ms: optional integer (default: 200)`
+
+            Duration of each GIF frame in milliseconds, rounded to 10 ms.
+            Requires `output_format` to be `gif`. Default: 200.
+
+            `minimum: 20`, `maximum: 2000`
+
           - `input_fidelity: optional "high" or "low" or null`
 
             Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -77461,13 +80408,14 @@ Schema name: `ResponseQueuedEvent`
 
               Base64-encoded mask image.
 
-          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+          - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
             The image generation model to use. One of `gpt-image-1-mini`,
             `gpt-image-1.5`, `gpt-image-2`,
             `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-            `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+            `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+            `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
             `gpt-image-2`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
@@ -77475,13 +80423,14 @@ Schema name: `ResponseQueuedEvent`
 
             - `string`
 
-            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+            - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
               The image generation model to use. One of `gpt-image-1-mini`,
               `gpt-image-1.5`, `gpt-image-2`,
               `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-              `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+              `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+              `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
               `gpt-image-2`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
@@ -77490,8 +80439,6 @@ Schema name: `ResponseQueuedEvent`
               - `"gpt-image-1"`
 
               - `"gpt-image-1-mini"`
-
-              - `"gpt-image-1.5"`
 
               - `"gpt-image-2"`
 
@@ -77504,6 +80451,14 @@ Schema name: `ResponseQueuedEvent`
               - `"gpt-image-2.5-flare"`
 
               - `"gpt-image-2.5-flare-2026-09-08"`
+
+              - `"gpt-image-2.6-sunburst"`
+
+              - `"gpt-image-2.6-flare"`
+
+              - `"gpt-image-1.5"`
+
+              - `"chatgpt-image-latest"`
 
           - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -77519,16 +80474,24 @@ Schema name: `ResponseQueuedEvent`
 
             `minimum: 0`, `maximum: 100`
 
-          - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+          - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-            The output format of the generated image. One of `png`, `webp`, or
-            `jpeg`. Default: `png`.
+            The output format of the generated image. One of `png`, `webp`, `jpeg`,
+            `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+            that supports the selected format. GIF output does not support
+            partial image streaming (`partial_images` greater than `0`),
+            `input_image_mask`, or custom `output_compression`.
+            Responses lifecycle events can still be streamed for GIF output.
 
             - `"png"`
 
             - `"webp"`
 
             - `"jpeg"`
+
+            - `"gif"`
+
+            - `"svg"`
 
           - `partial_images: optional integer (default: 0)`
 
@@ -77572,6 +80535,39 @@ Schema name: `ResponseQueuedEvent`
               - `"1536x1024"`
 
               - `"auto"`
+
+          - `svg: optional object { model, reasoning }`
+
+            SVG author model settings. Requires `output_format` to be `svg`.
+            When SVG model selection is enabled, omitting this object uses the
+            outer response model. Otherwise, the default SVG author is used and
+            explicit model overrides are unavailable.
+
+            - `model: optional string`
+
+              `minLength: 1`
+
+            - `reasoning: optional object { effort }  or null`
+
+              Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+              - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+                Controls how much effort the model should spend on reasoning for this request.
+
+                - `"none"`
+
+                - `"minimal"`
+
+                - `"low"`
+
+                - `"medium"`
+
+                - `"high"`
+
+                - `"xhigh"`
+
+                - `"max"`
 
         - `LocalShell object { type }`
 
@@ -77885,7 +80881,7 @@ Schema name: `ResponseQueuedEvent`
 
         The identifier of the actor that created the item.
 
-    - `ImageGenerationCall object { id, result, status, 8 more }`
+    - `ImageGenerationCall object { id, result, status, 9 more }`
 
       An image generation request made by the model.
 
@@ -77973,7 +80969,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"unknown"`
 
-      - `output_format: optional "png" or "webp" or "jpeg" or null`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more or null`
 
         The output format used for generation.
 
@@ -77982,6 +80978,10 @@ Schema name: `ResponseQueuedEvent`
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
@@ -78018,6 +81018,18 @@ Schema name: `ResponseQueuedEvent`
           - `"1024x1536"`
 
           - `"1536x1024"`
+
+      - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
+
+        - `input_tokens: integer`
+
+        - `model: string`
+
+        - `output_tokens: integer`
+
+        - `reasoning_tokens: integer`
+
+        - `total_tokens: integer`
 
     - `CodeInterpreterCall object { id, code, container_id, 3 more }`
 
@@ -79459,7 +82471,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"programmatic_tool_calling"`
 
-    - `ImageGeneration object { type, action, background, 9 more }`
+    - `ImageGeneration object { type, action, background, 13 more }`
 
       A tool that generates images using the GPT image models.
 
@@ -79495,6 +82507,34 @@ Schema name: `ResponseQueuedEvent`
 
         - `"auto"`
 
+      - `complexity: optional "low" or "medium" or "high"`
+
+        Computation spent planning the image, independently of rendering quality.
+        Overrides the outer response's `reasoning.effort` for image generation.
+        When omitted, inherits a supported outer reasoning effort or uses the
+        image model's configured default.
+        For SVG output, controls the reference image, not the SVG author's
+        reasoning.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+      - `frame_count: optional integer (default: 9)`
+
+        Number of GIF frames. Requires `output_format` to be `gif`. Default: 9.
+
+        `minimum: 2`, `maximum: 16`
+
+      - `frame_duration_ms: optional integer (default: 200)`
+
+        Duration of each GIF frame in milliseconds, rounded to 10 ms.
+        Requires `output_format` to be `gif`. Default: 200.
+
+        `minimum: 20`, `maximum: 2000`
+
       - `input_fidelity: optional "high" or "low" or null`
 
         Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
@@ -79516,13 +82556,14 @@ Schema name: `ResponseQueuedEvent`
 
           Base64-encoded mask image.
 
-      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+      - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
         The image generation model to use. One of `gpt-image-1-mini`,
         `gpt-image-1.5`, `gpt-image-2`,
         `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-        `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+        `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+        `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
         `gpt-image-2`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
@@ -79530,13 +82571,14 @@ Schema name: `ResponseQueuedEvent`
 
         - `string`
 
-        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
+        - `"gpt-image-1" or "gpt-image-1-mini" or "gpt-image-2" or 9 more`
 
           The image generation model to use. One of `gpt-image-1-mini`,
           `gpt-image-1.5`, `gpt-image-2`,
           `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
-          `gpt-image-2.5-flare-2026-09-08`, or `chatgpt-image-latest`. Default:
+          `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
+          `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
           `gpt-image-2`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
@@ -79545,8 +82587,6 @@ Schema name: `ResponseQueuedEvent`
           - `"gpt-image-1"`
 
           - `"gpt-image-1-mini"`
-
-          - `"gpt-image-1.5"`
 
           - `"gpt-image-2"`
 
@@ -79559,6 +82599,14 @@ Schema name: `ResponseQueuedEvent`
           - `"gpt-image-2.5-flare"`
 
           - `"gpt-image-2.5-flare-2026-09-08"`
+
+          - `"gpt-image-2.6-sunburst"`
+
+          - `"gpt-image-2.6-flare"`
+
+          - `"gpt-image-1.5"`
+
+          - `"chatgpt-image-latest"`
 
       - `moderation: optional "auto" or "low" (default: "auto")`
 
@@ -79574,16 +82622,24 @@ Schema name: `ResponseQueuedEvent`
 
         `minimum: 0`, `maximum: 100`
 
-      - `output_format: optional "png" or "webp" or "jpeg" (default: "png")`
+      - `output_format: optional "png" or "webp" or "jpeg" or 2 more (default: "png")`
 
-        The output format of the generated image. One of `png`, `webp`, or
-        `jpeg`. Default: `png`.
+        The output format of the generated image. One of `png`, `webp`, `jpeg`,
+        `gif`, or `svg`. Default: `png`. GIF and SVG output require a model
+        that supports the selected format. GIF output does not support
+        partial image streaming (`partial_images` greater than `0`),
+        `input_image_mask`, or custom `output_compression`.
+        Responses lifecycle events can still be streamed for GIF output.
 
         - `"png"`
 
         - `"webp"`
 
         - `"jpeg"`
+
+        - `"gif"`
+
+        - `"svg"`
 
       - `partial_images: optional integer (default: 0)`
 
@@ -79627,6 +82683,39 @@ Schema name: `ResponseQueuedEvent`
           - `"1536x1024"`
 
           - `"auto"`
+
+      - `svg: optional object { model, reasoning }`
+
+        SVG author model settings. Requires `output_format` to be `svg`.
+        When SVG model selection is enabled, omitting this object uses the
+        outer response model. Otherwise, the default SVG author is used and
+        explicit model overrides are unavailable.
+
+        - `model: optional string`
+
+          `minLength: 1`
+
+        - `reasoning: optional object { effort }  or null`
+
+          Reasoning effort for SVG authoring. When omitted, uses the author model's default in both Images and Responses.
+
+          - `effort: optional "none" or "minimal" or "low" or 4 more`
+
+            Controls how much effort the model should spend on reasoning for this request.
+
+            - `"none"`
+
+            - `"minimal"`
+
+            - `"low"`
+
+            - `"medium"`
+
+            - `"high"`
+
+            - `"xhigh"`
+
+            - `"max"`
 
     - `LocalShell object { type }`
 

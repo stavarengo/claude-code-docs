@@ -46,6 +46,8 @@ the member was blocked on. Anthropic emails the requester unless
 
   - `actor: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
 
+    Who submitted the increase request.
+
     - `beta_spend_limit_user_actor: object`
 
       A user within the organization. `name` and `email_address` are
@@ -97,6 +99,8 @@ the member was blocked on. Anthropic emails the requester unless
     format: date-time
 
   - `resolved_by: BetaSpendLimitUserActor or BetaSpendLimitScopedAPIKeyActor`
+
+    Who approved or denied the increase request.
 
     - `beta_spend_limit_user_actor: object`
 

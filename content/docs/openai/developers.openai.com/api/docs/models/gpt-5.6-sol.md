@@ -34,7 +34,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 | Cached input | $0.4 | 1M tokens |
 | Output | $20 | 1M tokens |
 
-- GPT-5.6 Sol costs $4 per million input tokens and $20 per million output tokens, a 20% reduction in input pricing and a 33% reduction in output pricing. GPT-5.6 Sol’s promotional pricing is available at least through November 21, 2026.
+- GPT-5.6 Sol costs $4 per million input tokens and $20 per million output tokens, a 20% reduction in input pricing and a 33% reduction in output pricing. GPT-5.6 Sol’s promotional pricing is available until November 30, 2026.
 - Prompts with >272K input tokens are priced at 2x input and 1.5x output for the full request.
 - Cache writes are billed at 1.25x the uncached input token rate.
 

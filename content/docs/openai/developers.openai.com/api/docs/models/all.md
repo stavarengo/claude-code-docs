@@ -19,6 +19,8 @@ Compare capabilities and specifications.
 
 Models for image generation and editing.
 
+- [GPT-Image-2.6 Sunburst](/api/docs/models/gpt-image-2.6-sunburst.md): Image generation and editing for detailed visual work
+- [GPT-Image-2.6 Flare](/api/docs/models/gpt-image-2.6-flare.md): Image generation and editing for fast iteration
 - [GPT-Image-2.5 Sunburst](/api/docs/models/gpt-image-2.5-sunburst.md): Our most capable model for image generation and editing
 - [GPT-Image-2.5 Flare](/api/docs/models/gpt-image-2.5-flare.md): Fast, high-quality everyday image generation
 - [GPT-Image-2](/api/docs/models/gpt-image-2.md): State-of-the-art image generation model
@@ -128,8 +130,8 @@ Includes models that have already shut down.
 - [GPT-5.3 Chat](/api/docs/models/gpt-5.3-chat-latest.md): Shut down. GPT-5.3 Instant model used in ChatGPT
 - [GPT-5.2 Chat](/api/docs/models/gpt-5.2-chat-latest.md): Shut down. GPT-5.2 model used in ChatGPT
 - [GPT-5.2-Codex](/api/docs/models/gpt-5.2-codex.md): Shut down. Our most intelligent coding model optimized for long-horizon, agentic coding tasks.
-- [o3-deep-research](/api/docs/models/o3-deep-research.md): Shut down. Our most powerful deep research model
-- [o4-mini-deep-research](/api/docs/models/o4-mini-deep-research.md): Shut down. Faster, more affordable deep research model
+- [o3-deep-research](/api/docs/models/o3-deep-research.md): Shut down. Retired deep research model
+- [o4-mini-deep-research](/api/docs/models/o4-mini-deep-research.md): Shut down. Retired deep research model
 - [GPT-4.1 nano](/api/docs/models/gpt-4.1-nano.md): Shut down. Fastest, most cost-efficient version of GPT-4.1
 - [o4-mini](/api/docs/models/o4-mini.md): Shut down. Fast, cost-efficient reasoning model, succeeded by GPT-5 Mini
 - [o1-pro](/api/docs/models/o1-pro.md): Shut down. Version of o1 with more compute for better responses

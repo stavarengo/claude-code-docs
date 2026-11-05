@@ -106,6 +106,12 @@ Schema name: `SessionEventAgentSessionEnvironmentReady`
 
   - `"agent.session.environment.ready"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -123,7 +129,8 @@ Schema name: `SessionEventAgentSessionEnvironmentReady`
       "code": "code",
       "message": "message"
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -231,6 +238,12 @@ Schema name: `SessionEventAgentSessionEnvironmentSuspended`
 
   - `"agent.session.environment.suspended"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -248,7 +261,8 @@ Schema name: `SessionEventAgentSessionEnvironmentSuspended`
       "code": "code",
       "message": "message"
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -356,6 +370,12 @@ Schema name: `SessionEventAgentSessionEnvironmentExpired`
 
   - `"agent.session.environment.expired"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -373,7 +393,8 @@ Schema name: `SessionEventAgentSessionEnvironmentExpired`
       "code": "code",
       "message": "message"
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -423,6 +444,12 @@ Schema name: `SessionEventAgentSessionEnvironmentReset`
 
   - `"agent.session.environment.reset"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -432,7 +459,8 @@ Schema name: `SessionEventAgentSessionEnvironmentReset`
   "session_id": "session_id",
   "turn_id": "turn_id",
   "environment_id": "environment_id",
-  "reset_count": 0
+  "reset_count": 0,
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -488,6 +516,12 @@ Schema name: `SessionEventAgentOutputCommandExecutionOutputDelta`
 
   - `"agent.output.command_execution_output.delta"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -498,7 +532,8 @@ Schema name: `SessionEventAgentOutputCommandExecutionOutputDelta`
   "turn_id": "turn_id",
   "item_id": "item_id",
   "output_index": 0,
-  "delta": "delta"
+  "delta": "delta",
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -672,7 +707,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
       `minItems: 0`, `maxItems: 2000`
 
-      - `Function object { defer_loading, description, name, 2 more }`
+      - `Function object { defer_loading, description, name, 3 more }`
 
         A function defined by the application.
 
@@ -701,6 +736,10 @@ Schema name: `SessionEventAgentSessionCreated`
           The type of the object. Always `function`.
 
           - `"function"`
+
+        - `async: optional boolean`
+
+          Whether the agent continues without waiting for the function result.
 
       - `ProgrammaticToolCalling object { enabled, type }`
 
@@ -1494,6 +1533,12 @@ Schema name: `SessionEventAgentSessionCreated`
 
   - `"agent.session.created"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -1564,7 +1609,8 @@ Schema name: `SessionEventAgentSessionCreated`
           "parameters": {
             "foo": "bar"
           },
-          "defer_loading": true
+          "defer_loading": true,
+          "async": true
         }
       ],
       "multi_agent": {
@@ -1595,7 +1641,8 @@ Schema name: `SessionEventAgentSessionCreated`
       },
       "total_tokens": 0
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -1865,6 +1912,12 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
   - `"agent.session.turn.created"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -1898,7 +1951,8 @@ Schema name: `SessionEventAgentSessionTurnCreated`
       },
       "total_tokens": 0
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -2168,6 +2222,12 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
   - `"agent.session.turn.in_progress"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -2201,7 +2261,8 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
       },
       "total_tokens": 0
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -2475,6 +2536,12 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
   Token usage by the root agent during the turn, when available.
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -2519,7 +2586,8 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
       "reasoning_tokens": 0
     },
     "total_tokens": 0
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -2793,6 +2861,12 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
   Token usage by the root agent during the turn, when available.
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -2837,7 +2911,8 @@ Schema name: `SessionEventAgentSessionTurnFailed`
       "reasoning_tokens": 0
     },
     "total_tokens": 0
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -3111,6 +3186,12 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
   Token usage by the root agent during the turn, when available.
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -3155,7 +3236,8 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
       "reasoning_tokens": 0
     },
     "total_tokens": 0
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -4241,6 +4323,12 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
   - `"agent.session.turn.item.added"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -4263,7 +4351,8 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
     ],
     "status": "in_progress",
     "phase": "commentary"
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -4437,7 +4526,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
       `minItems: 0`, `maxItems: 2000`
 
-      - `Function object { defer_loading, description, name, 2 more }`
+      - `Function object { defer_loading, description, name, 3 more }`
 
         A function defined by the application.
 
@@ -4466,6 +4555,10 @@ Schema name: `SessionEventAgentSessionIdle`
           The type of the object. Always `function`.
 
           - `"function"`
+
+        - `async: optional boolean`
+
+          Whether the agent continues without waiting for the function result.
 
       - `ProgrammaticToolCalling object { enabled, type }`
 
@@ -5259,6 +5352,12 @@ Schema name: `SessionEventAgentSessionIdle`
 
   - `"agent.session.idle"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -5329,7 +5428,8 @@ Schema name: `SessionEventAgentSessionIdle`
           "parameters": {
             "foo": "bar"
           },
-          "defer_loading": true
+          "defer_loading": true,
+          "async": true
         }
       ],
       "multi_agent": {
@@ -5360,7 +5460,8 @@ Schema name: `SessionEventAgentSessionIdle`
       },
       "total_tokens": 0
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -5534,7 +5635,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       `minItems: 0`, `maxItems: 2000`
 
-      - `Function object { defer_loading, description, name, 2 more }`
+      - `Function object { defer_loading, description, name, 3 more }`
 
         A function defined by the application.
 
@@ -5563,6 +5664,10 @@ Schema name: `SessionEventAgentSessionInProgress`
           The type of the object. Always `function`.
 
           - `"function"`
+
+        - `async: optional boolean`
+
+          Whether the agent continues without waiting for the function result.
 
       - `ProgrammaticToolCalling object { enabled, type }`
 
@@ -6356,6 +6461,12 @@ Schema name: `SessionEventAgentSessionInProgress`
 
   - `"agent.session.in_progress"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -6426,7 +6537,8 @@ Schema name: `SessionEventAgentSessionInProgress`
           "parameters": {
             "foo": "bar"
           },
-          "defer_loading": true
+          "defer_loading": true,
+          "async": true
         }
       ],
       "multi_agent": {
@@ -6457,7 +6569,8 @@ Schema name: `SessionEventAgentSessionInProgress`
       },
       "total_tokens": 0
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -6631,7 +6744,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       `minItems: 0`, `maxItems: 2000`
 
-      - `Function object { defer_loading, description, name, 2 more }`
+      - `Function object { defer_loading, description, name, 3 more }`
 
         A function defined by the application.
 
@@ -6660,6 +6773,10 @@ Schema name: `SessionEventAgentSessionRequiresAction`
           The type of the object. Always `function`.
 
           - `"function"`
+
+        - `async: optional boolean`
+
+          Whether the agent continues without waiting for the function result.
 
       - `ProgrammaticToolCalling object { enabled, type }`
 
@@ -7453,6 +7570,12 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
   - `"agent.session.requires_action"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -7523,7 +7646,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
           "parameters": {
             "foo": "bar"
           },
-          "defer_loading": true
+          "defer_loading": true,
+          "async": true
         }
       ],
       "multi_agent": {
@@ -7554,7 +7678,8 @@ Schema name: `SessionEventAgentSessionRequiresAction`
       },
       "total_tokens": 0
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -7728,7 +7853,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
       `minItems: 0`, `maxItems: 2000`
 
-      - `Function object { defer_loading, description, name, 2 more }`
+      - `Function object { defer_loading, description, name, 3 more }`
 
         A function defined by the application.
 
@@ -7757,6 +7882,10 @@ Schema name: `SessionEventAgentSessionFailed`
           The type of the object. Always `function`.
 
           - `"function"`
+
+        - `async: optional boolean`
+
+          Whether the agent continues without waiting for the function result.
 
       - `ProgrammaticToolCalling object { enabled, type }`
 
@@ -8550,6 +8679,12 @@ Schema name: `SessionEventAgentSessionFailed`
 
   - `"agent.session.failed"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -8620,7 +8755,8 @@ Schema name: `SessionEventAgentSessionFailed`
           "parameters": {
             "foo": "bar"
           },
-          "defer_loading": true
+          "defer_loading": true,
+          "async": true
         }
       ],
       "multi_agent": {
@@ -8651,7 +8787,8 @@ Schema name: `SessionEventAgentSessionFailed`
       },
       "total_tokens": 0
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -8759,6 +8896,12 @@ Schema name: `SessionEventAgentSessionEnvironmentPending`
 
   - `"agent.session.environment.pending"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -8776,7 +8919,8 @@ Schema name: `SessionEventAgentSessionEnvironmentPending`
       "code": "code",
       "message": "message"
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -8884,6 +9028,12 @@ Schema name: `SessionEventAgentSessionEnvironmentConnected`
 
   - `"agent.session.environment.connected"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -8901,7 +9051,8 @@ Schema name: `SessionEventAgentSessionEnvironmentConnected`
       "code": "code",
       "message": "message"
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -9009,6 +9160,12 @@ Schema name: `SessionEventAgentSessionEnvironmentDisconnected`
 
   - `"agent.session.environment.disconnected"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -9026,7 +9183,8 @@ Schema name: `SessionEventAgentSessionEnvironmentDisconnected`
       "code": "code",
       "message": "message"
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -9134,6 +9292,12 @@ Schema name: `SessionEventAgentSessionEnvironmentFailed`
 
   - `"agent.session.environment.failed"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -9151,7 +9315,8 @@ Schema name: `SessionEventAgentSessionEnvironmentFailed`
       "code": "code",
       "message": "message"
     }
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -9273,6 +9438,12 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
 
   - `"agent.session.subagent.created"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -9294,7 +9465,8 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
     "status": "active",
     "opened_at": 0,
     "closed_at": 0
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -9416,6 +9588,12 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
   - `"agent.session.subagent.active"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -9437,7 +9615,8 @@ Schema name: `SessionEventAgentSessionSubagentActive`
     "status": "active",
     "opened_at": 0,
     "closed_at": 0
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -9559,6 +9738,12 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
 
   - `"agent.session.subagent.closed"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -9580,7 +9765,8 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
     "status": "active",
     "opened_at": 0,
     "closed_at": 0
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -10440,6 +10626,12 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
   - `"agent.session.turn.item.done"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -10462,7 +10654,8 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
       }
     ],
     "phase": "commentary"
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -10534,6 +10727,12 @@ Schema name: `SessionEventAgentSessionTurnContentPartAdded`
 
   - `"agent.session.turn.content_part.added"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -10548,7 +10747,8 @@ Schema name: `SessionEventAgentSessionTurnContentPartAdded`
   "part": {
     "type": "output_text",
     "text": "text"
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -10620,6 +10820,12 @@ Schema name: `SessionEventAgentSessionTurnContentPartDone`
 
   - `"agent.session.turn.content_part.done"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -10634,7 +10840,8 @@ Schema name: `SessionEventAgentSessionTurnContentPartDone`
   "part": {
     "type": "output_text",
     "text": "text"
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -10696,6 +10903,12 @@ Schema name: `SessionEventAgentSessionTurnOutputTextDelta`
 
   - `"agent.session.turn.output_text.delta"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -10707,7 +10920,8 @@ Schema name: `SessionEventAgentSessionTurnOutputTextDelta`
   "item_id": "item_id",
   "output_index": 0,
   "content_index": 0,
-  "delta": "delta"
+  "delta": "delta",
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -10769,6 +10983,12 @@ Schema name: `SessionEventAgentSessionTurnOutputTextDone`
 
   - `"agent.session.turn.output_text.done"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -10780,7 +11000,8 @@ Schema name: `SessionEventAgentSessionTurnOutputTextDone`
   "item_id": "item_id",
   "output_index": 0,
   "content_index": 0,
-  "text": "text"
+  "text": "text",
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -10852,6 +11073,12 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartAdded`
 
   - `"agent.session.turn.reasoning_summary_part.added"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -10866,7 +11093,8 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartAdded`
   "part": {
     "type": "summary_text",
     "text": "text"
-  }
+  },
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -10944,6 +11172,12 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartDone`
 
   - `"agent.session.turn.reasoning_summary_part.done"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -10959,7 +11193,8 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartDone`
     "type": "summary_text",
     "text": "text"
   },
-  "status": "incomplete"
+  "status": "incomplete",
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -11021,6 +11256,12 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDelta`
 
   - `"agent.session.turn.reasoning_summary_text.delta"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -11032,7 +11273,8 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDelta`
   "item_id": "item_id",
   "output_index": 0,
   "summary_index": 0,
-  "delta": "delta"
+  "delta": "delta",
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -11094,6 +11336,12 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDone`
 
   - `"agent.session.turn.reasoning_summary_text.done"`
 
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
 ### Example
 
 ```json
@@ -11105,7 +11353,8 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDone`
   "item_id": "item_id",
   "output_index": 0,
   "summary_index": 0,
-  "text": "text"
+  "text": "text",
+  "obfuscation": "obfuscation"
 }
 ```
 
@@ -11164,6 +11413,12 @@ Schema name: `SessionEventError`
   The type of the object. Always `error`.
 
   - `"error"`
+
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
 
 ### Example
 

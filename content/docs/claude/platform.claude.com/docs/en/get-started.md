@@ -4,25 +4,118 @@ url: https://platform.claude.com/docs/en/get-started
 description: Make your first API call to Claude and build a simple web search assistant.
 ---
 
-## Prerequisites
+## Before you begin
 
-* A [Claude Console account](https://platform.claude.com/)
-* An [API key](https://platform.claude.com/docs/en/get-api-key?sdk_languages=curl)
+<Steps continues>
+  <Step title="Create a Claude Console account">
+    [Sign up](https://platform.claude.com/) for a Claude Console account, or sign in to the one you have.
+  </Step>
+
+  <Step title="Choose how to authenticate">
+    Signing in with the CLI is recommended for local development.
+
+    Follow the steps for one of the following options.
+  </Step>
+</Steps>
+
+**CLI**
+
+<Steps continued>
+  <Step title="Install the CLI" stepNumber={3}>
+    <Tabs noDeepLinks>
+      <Tab title="Homebrew (macOS)">
+        ```bash
+        brew install anthropics/tap/ant
+        ```
+      </Tab>
+
+      <Tab title="curl (Linux/WSL)">
+        For Linux environments, download the release binary directly.
+
+        ```bash
+        VERSION=2.6.0
+        OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+        case $(uname -m) in
+          x86_64) ARCH=amd64 ;;
+          aarch64) ARCH=arm64 ;;
+        esac
+        curl -fsSL "https://github.com/anthropics/anthropic-cli/releases/download/v${VERSION}/ant_${VERSION}_${OS}_${ARCH}.tar.gz" \
+          | sudo tar -xz -C /usr/local/bin ant
+        ```
+
+        You can find all releases on the [GitHub releases page](https://github.com/anthropics/anthropic-cli/releases).
+      </Tab>
+
+      <Tab title="go install">
+        You can also install the CLI from source using `go install`. Requires Go 1.25 or later.
+
+        ```bash
+        go install github.com/anthropics/anthropic-cli/v2/cmd/ant@latest
+        ```
+
+        The binary is placed in `$(go env GOPATH)/bin`. Add it to your `PATH` if it isn’t already:
+
+        ```bash
+        export PATH="$PATH:$(go env GOPATH)/bin"
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="Sign in" stepNumber={4}>
+    ```bash
+    ant auth login
+    ```
+
+    Once login is completed, the SDKs and CLI will pick up your credentials automatically.
+  </Step>
+</Steps>
+
+**API key**
+
+<Steps continued>
+  <Step title="Create an API key" stepNumber={3}>
+    Create an [API key](https://platform.claude.com/settings/keys) in the Claude Console.
+  </Step>
+
+  <Step title="Set the environment variable" stepNumber={4}>
+    The SDKs and CLI read your key from `ANTHROPIC_API_KEY`:
+
+    ```bash
+    export ANTHROPIC_API_KEY="your-api-key-here"
+    ```
+  </Step>
+</Steps>
 
 ## Call the API
 
 <Tabs>
   <Tab title="cURL">
     <Steps>
-      <Step title="Set your API key">
-        Export your API key as an environment variable. The cURL command in the following step reads it from `$ANTHROPIC_API_KEY`.
+      <Step title="Make your first API call" stepNumber={5}>
+        **CLI**
 
-        ```bash
-        export ANTHROPIC_API_KEY="your-api-key-here"
+        Send a `POST` request to the Messages API, with [the access token from your CLI sign-in](https://platform.claude.com/docs/en/cli-sdks-libraries/cli/scripting?sdk_languages=curl#authenticate-curl-requests-with-cli-credentials) as a bearer token:
+
+        ```bash cURL
+        curl https://api.anthropic.com/v1/messages \
+          -H "content-type: application/json" \
+          -H "Authorization: Bearer $(ant auth print-credentials --access-token)" \
+          -H "anthropic-version: 2026-10-21" \
+          -d '{
+            "model": "claude-opus-5-5",
+            "max_tokens": 1000,
+            "messages": [
+              {
+                "role": "user",
+                "content": "What should I search for to find the latest developments in renewable energy?"
+              }
+            ]
+          }'
         ```
-      </Step>
 
-      <Step title="Make your first API call">
+        **API key**
+
         Send a `POST` request to the Messages API:
 
         ```bash cURL

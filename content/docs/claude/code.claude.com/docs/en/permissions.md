@@ -69,7 +69,7 @@ When [auto mode](./permission-modes.md#eliminate-prompts-with-auto-mode) is avai
 
 ## Permission modes
 
-Claude Code supports several permission modes that control how it approves tool calls. See [Permission modes](./permission-modes.md) for when to use each one. To change the mode sessions start in, set `defaultMode` in your [settings files](./settings.md#where-settings-live). [Which mode a session starts in](./permission-modes.md#which-mode-a-session-starts-in) covers the built-in default for each plan and what the VS Code extension reads.
+Claude Code supports several permission modes that control how it approves tool calls. See [Permission modes](./permission-modes.md) for when to use each one. To change the default permission mode for new sessions, set `defaultMode` in your [settings files](./settings.md#where-settings-live). [Which mode a session starts in](./permission-modes.md#which-mode-a-session-starts-in) covers the built-in default for each plan and what the VS Code extension reads.
 
 | Mode | Description |
 | :- | :- |

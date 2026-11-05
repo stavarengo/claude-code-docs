@@ -234,7 +234,7 @@ Pass the generated token to the SDK the same way you’d pass an AWS Console-gen
   ```
 
   ```java Java
-  import software.amazon.awsexternalanthropic.TokenGenerator;
+  import software.amazon.awsexternalanthropic.token.TokenGenerator;
   import software.amazon.awssdk.regions.Region;
   import com.anthropic.aws.backends.AwsBackend;
   import com.anthropic.client.AnthropicClient;
@@ -304,28 +304,34 @@ Anthropic’s [client SDKs](https://platform.claude.com/docs/en/cli-sdks-librari
 
   <Tab title="Go">
     ```bash
-    go get github.com/anthropics/anthropic-sdk-go/v2
+    go get github.com/anthropics/anthropic-sdk-go/v2/aws
     ```
   </Tab>
 
   <Tab title="Java">
-    ```kotlin Gradle
-    implementation("com.anthropic:anthropic-java:3.4.0")
-    implementation("com.anthropic:anthropic-java-aws:3.4.0")
-    ```
+    <Tabs>
+      <Tab title="Gradle">
+        ```kotlin
+        implementation("com.anthropic:anthropic-java:3.5.0")
+        implementation("com.anthropic:anthropic-java-aws:3.5.0")
+        ```
+      </Tab>
 
-    ```xml Maven
-    <dependency>
-      <groupId>com.anthropic</groupId>
-      <artifactId>anthropic-java</artifactId>
-      <version>3.4.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.anthropic</groupId>
-      <artifactId>anthropic-java-aws</artifactId>
-      <version>3.4.0</version>
-    </dependency>
-    ```
+      <Tab title="Maven">
+        ```xml
+        <dependency>
+            <groupId>com.anthropic</groupId>
+            <artifactId>anthropic-java</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.anthropic</groupId>
+            <artifactId>anthropic-java-aws</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+        ```
+      </Tab>
+    </Tabs>
   </Tab>
 
   <Tab title="PHP">

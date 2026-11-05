@@ -2,20 +2,18 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Faster, more affordable deep research model
+> Retired deep research model
 
 Model ID: `o4-mini-deep-research`
 
 Status: Shut down
 
-o4-mini-deep-research is our faster, more affordable deep 
-research model—ideal for tackling complex, multi-step research 
-tasks. It can search and synthesize information from across the 
-internet as well as from your own data, brought in through 
-MCP connectors.
+o4-mini-deep-research searched public web sources and private data from MCP
+connectors to answer multi-step research questions. The model shut down
+on July 23, 2026.
 
-Learn more about how to use this model in our
-[deep research](/api/docs/guides/deep-research) guide.
+For current research workflows, see
+[Run longer web research](/api/docs/guides/tools-web-search?api-mode=responses#run-longer-web-research).
 
 ## Model details
 

@@ -21,7 +21,7 @@ The RBAC Groups API is available to Claude Enterprise organizations only.
 
 ## Returns
 
-- `BetaOrganizationRBACGroupDeleteResponse: object`
+- `beta_deleted_rbac_group: object`
 
   - `type: "rbac_group_deleted"`
 
