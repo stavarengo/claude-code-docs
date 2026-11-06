@@ -1832,6 +1832,14 @@ We use the term "legacy" to refer to models and endpoints that no longer receive
 
 Upcoming deprecations are listed below, with the most recent announcements at the top.
 
+### 2026-11-05: GPT-5.5-Cyber
+
+The `gpt-5.5-cyber-preview` model is deprecated and will be removed from the API on February 1, 2027. Migrate to the most capable cyber model available to you before the shutdown date.
+
+| Shutdown date    | Model / system          | Recommended replacement                        |
+| ---------------- | ----------------------- | ---------------------------------------------- |
+| February 1, 2027 | `gpt-5.5-cyber-preview` | The most capable cyber model available to you. |
+
 ### 2026-10-14: GPT-4 series model deprecations
 
 On October 14, 2026, we notified developers using certain GPT-4 series models of their deprecation and removal from the API on January 14, 2027.
@@ -1909,6 +1917,8 @@ On June 11, 2026, we notified developers using older GPT-5 and o3 model snapshot
 | Dec 11, 2026  | `o3` \| `o3-2025-04-16`                 | `gpt-5.6-sol`                         |
 | Dec 11, 2026  | `o3-pro` \| `o3-pro-2025-06-10`         | `gpt-5.6-sol` (`reasoning.mode: pro`) |
 
+Fine-tuned versions of these models follow the same shutdown schedule as their underlying base models.
+
 ### 2026-06-03: Reusable prompts
 
 On June 3, 2026, we notified developers using reusable prompts in the dashboard and API that reusable prompt objects are being deprecated.
@@ -1951,9 +1961,9 @@ On June 2, 2026, we notified developers using older GPT Image models of their de
 
 | Shutdown date | Model / system                                | Recommended replacement                           |
 | ------------- | --------------------------------------------- | ------------------------------------------------- |
-| Dec 1, 2026   | `gpt-image-1-mini`                            | `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` |
-| Dec 1, 2026   | `gpt-image-1.5` \| `gpt-image-1.5-2025-12-16` | `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` |
-| Dec 1, 2026   | `chatgpt-image-latest`                        | `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` |
+| Dec 1, 2026   | `gpt-image-1-mini`                            | `gpt-image-2.6-sunburst` or `gpt-image-2.6-flare` |
+| Dec 1, 2026   | `gpt-image-1.5` \| `gpt-image-1.5-2025-12-16` | `gpt-image-2.6-sunburst` or `gpt-image-2.6-flare` |
+| Dec 1, 2026   | `chatgpt-image-latest`                        | `gpt-image-2.6-sunburst` or `gpt-image-2.6-flare` |
 
 ### Update to OpenAI’s self-serve fine-tuning
 
@@ -6909,8 +6919,8 @@ The Python sample uses `pip install "openai[realtime]>=3.8.0"`.
 The JavaScript sample uses `npm install openai@^7.10.0 ws`.
 The Ruby sample uses `gem install openai async-websocket`.
 
-For Go, run `go get github.com/openai/openai-go/v3@v3.94.0`.
-For Java, add the Maven dependency `com.openai:openai-java:4.95.0`.
+For Go, run `go get github.com/openai/openai-go/v3@v3.96.0`.
+For Java, add the Maven dependency `com.openai:openai-java:4.98.0`.
 These Go and Java SDK versions provide native Responses WebSocket support.
 
 Start a Responses API WebSocket session
@@ -7773,27 +7783,61 @@ Alternatively, you can use the [Agents SDK](https://developers.openai.com/api/do
 Use the apply patch tool with the Agents SDK
 
 ```javascript
+import {
+  mkdirSync,
+  realpathSync,
+  lstatSync,
+  readFileSync,
+  writeFileSync,
+  unlinkSync,
+} from "node:fs";
+import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { applyDiff, Agent, run, applyPatchTool } from "@openai/agents";
 
 class WorkspaceEditor {
+  constructor(root = "workspace") {
+    mkdirSync(root, { recursive: true });
+    this.root = realpathSync(root);
+  }
+
+  path(name) {
+    const target = resolve(this.root, name);
+    const relativePath = relative(this.root, target);
+    if (
+      !relativePath ||
+      isAbsolute(relativePath) ||
+      relativePath === ".." ||
+      relativePath.startsWith(`..${sep}`)
+    ) {
+      throw new Error("Patch paths must stay inside the workspace");
+    }
+    let current = this.root;
+    for (const part of relativePath.split(sep)) {
+      current = join(current, part);
+      if (lstatSync(current, { throwIfNoEntry: false })?.isSymbolicLink()) {
+        throw new Error("Patch paths must not traverse symbolic links");
+      }
+    }
+    return target;
+  }
+
   async createFile(operation) {
-    // convert the diff to the file content
+    const path = this.path(operation.path);
     const content = applyDiff("", operation.diff, "create");
-    // write the file content to the file system
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, content, { encoding: "utf8", flag: "wx" });
     return { status: "completed", output: `Created ${operation.path}` };
   }
 
   async updateFile(operation) {
-    // read the file content from the file system
-    const current = "";
-    // convert the diff to the new file content
-    const newContent = applyDiff(current, operation.diff);
-    // write the updated file content to the file system
+    const path = this.path(operation.path);
+    const content = applyDiff(readFileSync(path, "utf8"), operation.diff);
+    writeFileSync(path, content, "utf8");
     return { status: "completed", output: `Updated ${operation.path}` };
   }
 
   async deleteFile(operation) {
-    // delete the file from the file system
+    unlinkSync(this.path(operation.path));
     return { status: "completed", output: `Deleted ${operation.path}` };
   }
 }
@@ -7804,7 +7848,7 @@ const agent = new Agent({
   name: "Patch Assistant",
   model: "gpt-6-astra",
   instructions:
-    "You can edit files inside the /tmp directory using the apply_patch tool.",
+    "Use apply_patch to edit files in the workspace. Supply paths relative to that workspace.",
   tools: [
     applyPatchTool({
       editor,
@@ -8002,6 +8046,7 @@ The model can then adjust future diffs (for example, by re-reading a file in you
 - [`gpt-5.6-sol`](https://developers.openai.com/api/docs/models/gpt-5.6-sol)
 - [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra)
 - [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra)
+- [`gpt-6-cyber`](https://developers.openai.com/api/docs/models/gpt-6-cyber)
 - [`gpt-6-luna`](https://developers.openai.com/api/docs/models/gpt-6-luna)
 - [`gpt-6-sol`](https://developers.openai.com/api/docs/models/gpt-6-sol)
 - [`gpt-6.1-sol`](https://developers.openai.com/api/docs/models/gpt-6.1-sol)
@@ -20755,9 +20800,11 @@ class EditorDriver {
   }
 
   async keypress(action) {
-    const keys = action.keys.join("+");
+    const keys = action.keys.map((key) => key.toUpperCase()).join("+");
     if (keys !== "CTRL+A" && keys !== "CTRL+S") {
-      throw new Error("Only Select All and Save are allowed.");
+      throw new Error(
+        `Only Select All and Save are allowed; received ${JSON.stringify(action.keys)}.`
+      );
     }
     await this.focusEditor();
     await desktop("xdotool", "key", "--clearmodifiers", keys.toLowerCase());
@@ -36274,7 +36321,7 @@ for session setup requirements.
 
 # Cybersecurity checks
 
-GPT-5.3-Codex and newer models, including GPT-5.4 and GPT-5.5, are classified as having High Cybersecurity Capability under our [Preparedness Framework](https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf). As a result, additional automated safeguards apply when these models are used via the API. Please note that the safeguards applied in the API differ from those used in Codex. You can learn more about the Codex safeguards [here](https://developers.openai.com/codex/cyber-safety/).
+We classify GPT-5.6 Cyber as High and GPT-6 Cyber as Critical for cybersecurity under our [Preparedness Framework](https://cdn.openai.com/pdf/18a02b5d-6b67-4cec-ab64-68cdfbddebcd/preparedness-framework-v2.pdf). Additional automated safeguards apply to API models classified as High or Critical for cybersecurity. Please note that the safeguards applied in the API differ from those used in Codex. You can learn more about the Codex safeguards [here](https://developers.openai.com/codex/cyber-safety/).
 
 These safeguards monitor for signals of potentially suspicious cybersecurity activity. If certain thresholds are met, access to the model may be temporarily limited while activity is reviewed. Because these systems are still being calibrated, legitimate security research or defensive work may occasionally be flagged. We expect only a small portion of traffic to be impacted, and we’re continuing to refine the overall API experience.
 
@@ -36287,8 +36334,7 @@ and project, model, and product surface. Daybreak Red requires separate
 approval and provisioning; applying, verifying an identity, or receiving
 Daybreak Blue access doesn't grant specialist-model access.
 
-For approved API projects, use a Daybreak alias or a compatible underlying
-model ID. Alias resolution can change and depends on your approved access.
+For approved API projects, use the most capable cyber model available to you. Alias resolution can change and depends on your approved access.
 See [Use Daybreak in the Responses API](https://developers.openai.com/api/docs/guides/daybreak) to choose a
 model and `access_programs.cyber` value, understand defaults, and handle errors.
 Access and model behavior depend on the approved organization and project;
@@ -36310,6 +36356,8 @@ audit logs, and fail closed when review is unavailable. See
 
 Application-level tool review and Codex product-side sandboxing are separate
 from the API cybersecurity safeguards described on this page.
+
+For GPT-6-Cyber, [configure your project and IP allowlist](https://developers.openai.com/api/docs/guides/daybreak#set-up-gpt-6-cyber) before sending requests.
 
 ## Safeguard actions for non-ZDR Organizations
 
@@ -48351,6 +48399,10 @@ Start a realtime voice session
 ```javascript
 import { RealtimeAgent, RealtimeSession } from "@openai/agents/realtime";
 
+const ephemeralKey = process.env.OPENAI_REALTIME_EPHEMERAL_KEY;
+if (!ephemeralKey)
+  throw new Error("Set OPENAI_REALTIME_EPHEMERAL_KEY from your server.");
+
 const agent = new RealtimeAgent({
   name: "Assistant",
   instructions: "You are a helpful voice assistant.",
@@ -48361,7 +48413,7 @@ const session = new RealtimeSession(agent, {
 });
 
 await session.connect({
-  apiKey: "ek_...(ephemeral key from your server)",
+  apiKey: ephemeralKey,
 });
 ```
 
@@ -49089,6 +49141,8 @@ try {
 } catch (error) {
   if (error instanceof InputGuardrailTripwireTriggered) {
     console.log("Guardrail blocked the request.");
+  } else {
+    throw error;
   }
 }
 ```
@@ -49178,7 +49232,7 @@ const cancelOrder = tool({
 
 const agent = new Agent({
   name: "Support agent",
-  instructions: "Handle support requests and ask for approval when needed.",
+  instructions: "Use cancel_order to handle cancellation requests.",
   tools: [cancelOrder],
 });
 
@@ -49187,6 +49241,7 @@ let result = await run(agent, "Cancel order 123.");
 if (result.interruptions?.length) {
   const state = result.state;
   for (const interruption of result.interruptions) {
+    console.log(`Approval required: ${interruption.name}`);
     state.approve(interruption);
   }
   result = await run(agent, state);
@@ -52639,13 +52694,13 @@ Flare and Sunburst generated these SVG logos from the same prompt for a Field & 
 
 ### Generate animated GIF output
 
-Set `output_format: "gif"` on `POST /v1/images/generations`. Describe the subject, motion, and desired loop in your prompt. GIF output is for image generation; the image edit endpoint does not support GIF output.
+Set `output_format: "gif"` on `POST /v1/images/generations` or `POST /v1/images/edits`. Describe the subject, motion, and desired loop in your prompt. To guide the animation with still reference images, send them to the image edit endpoint.
 
-Use these request fields to control the animation:
+Use these request fields for GIF output from either endpoint:
 
 | Field               | Values                                                                      | Default |
 | ------------------- | --------------------------------------------------------------------------- | ------- |
-| `frame_count`       | 2–64 frames                                                                 | 9       |
+| `frame_count`       | 2–16 frames                                                                 | 9       |
 | `frame_duration_ms` | 20–2000 milliseconds per frame, rounded to 10 ms                            | 200     |
 | `size`              | `auto`, or `WIDTHxHEIGHT` with positive dimensions that are multiples of 16 | `auto`  |
 
@@ -54378,6 +54433,7 @@ The following non-deprecated models have documented support for the image genera
 - [`gpt-5.6-sol`](https://developers.openai.com/api/docs/models/gpt-5.6-sol)
 - [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra)
 - [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra)
+- [`gpt-6-cyber`](https://developers.openai.com/api/docs/models/gpt-6-cyber)
 - [`gpt-6-luna`](https://developers.openai.com/api/docs/models/gpt-6-luna)
 - [`gpt-6-sol`](https://developers.openai.com/api/docs/models/gpt-6-sol)
 - [`gpt-6.1-sol`](https://developers.openai.com/api/docs/models/gpt-6.1-sol)
@@ -86932,6 +86988,10 @@ Other important things worth noting:
 
 The three paid usage tiers are **Build**, **Launch**, and **Grow**. Your organization's usage tier upgrades automatically as its total credit purchases reach each threshold. Higher tiers generally provide higher rate limits across models.
 
+Usage tiers describe rate limits. A model's rate-limit entry does not confirm
+  access for your organization, project, or API key. If a model is missing,
+  [check model availability](#model-availability).
+
 | Tier   | Qualification                                                         | Usage limits     |
 | ------ | --------------------------------------------------------------------- | ---------------- |
 | Free   | User must be in an [allowed geography](https://developers.openai.com/api/docs/supported-countries) | $100 / month     |
@@ -87030,6 +87090,15 @@ curl https://api.openai.com/v1/fine_tuning/model_limits \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
+
+## Model availability
+
+Model access and rate limits are separate. Meeting a usage-tier threshold doesn't grant access to every model. If a documented model is missing from Playground or `GET /v1/models`, or a request returns `model_not_found`:
+
+1. **Check the model ID and endpoint.** Use the exact ID from the [model documentation](https://developers.openai.com/api/docs/models), confirm that it supports your endpoint, and check for retirement or availability notices.
+2. **Compare the organization, project, and credentials.** Select the intended organization and project in Playground. Call [List models](https://developers.openai.com/api/reference/resources/models/methods/list) with the same API key and any `OpenAI-Organization` and `OpenAI-Project` headers used by the failed request. A model visible in your dashboard session may still be unavailable to a different API key.
+3. **Review project restrictions and model requirements.** Ask someone who can manage the project to check its model permissions and data-retention settings. Follow any model-specific access requirements and review any rollout notices in the model documentation. A missing model alone does not identify the cause.
+4. **Refresh and check again.** After changing access settings, refresh the model list or Playground. If the model is still unavailable, contact support with the model ID, organization and project IDs, request time, error message, and the `x-request-id` response header, if available. Don't share your API key.
 
 ## Error mitigation
 
@@ -88340,8 +88409,12 @@ function floatTo16BitPCM(float32Array) {
   const view = new DataView(buffer);
   let offset = 0;
   for (let i = 0; i < float32Array.length; i++, offset += 2) {
-    let s = Math.max(-1, Math.min(1, float32Array[i]));
-    view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+    const sample = Math.max(-1, Math.min(1, float32Array[i]));
+    view.setInt16(
+      offset,
+      Math.round(sample * (sample < 0 ? 0x8000 : 0x7fff)),
+      true
+    );
   }
   return buffer;
 }
@@ -88367,6 +88440,17 @@ const files = [
   "fixtures/sample3.wav",
 ];
 
+// Manual commit and response creation require automatic turn detection off.
+ws.send(
+  JSON.stringify({
+    type: "session.update",
+    session: {
+      type: "realtime",
+      audio: { input: { turn_detection: null } },
+    },
+  })
+);
+
 for (const filename of files) {
   const audioFile = fs.readFileSync(filename);
   const audioBuffer = await decodeAudio(audioFile);
@@ -88387,7 +88471,12 @@ for (const filename of files) {
 }
 
 ws.send(JSON.stringify({ type: "input_audio_buffer.commit" }));
-ws.send(JSON.stringify({ type: "response.create" }));
+ws.send(
+  JSON.stringify({
+    type: "response.create",
+    response: { output_modalities: ["audio"] },
+  })
+);
 ```
 
 ```python
@@ -91698,7 +91787,6 @@ function approveMcpRequest(approvalRequestId) {
   const event = {
     type: "conversation.item.create",
     item: {
-      id: `mcp_approval_${approvalRequestId}`,
       type: "mcp_approval_response",
       approval_request_id: approvalRequestId,
       approve: true,
@@ -91829,6 +91917,8 @@ const event = {
   type: "response.create",
   response: {
     output_modalities: ["text"],
+    tool_choice: "required",
+    parallel_tool_calls: false,
     input: [
       {
         type: "message",
@@ -100365,10 +100455,11 @@ try {
     content: "Continue from the existing workspace and add tests.",
   });
 
-  await run(agent, conversation, {
+  const secondResult = await run(agent, conversation, {
     maxTurns: 20,
     sandbox: { session: resumedSession },
   });
+  console.log(secondResult.finalOutput);
 } finally {
   await resumedSession.close?.();
 }
@@ -118612,6 +118703,8 @@ Use `access_programs.cyber` to select a cybersecurity access program for a Respo
 
 Before using Daybreak, complete [organization approval and project setup](https://help.openai.com/en/articles/20001261-enterprise-daybreak-onboarding). Your project needs access to both the program and the model. Use an API key from that project. The request parameter selects behavior within your approved access; it doesn't grant access.
 
+All Daybreak Red organizations must [require SSO](https://help.openai.com/en/articles/9534785-single-sign-on-sso-setup-for-openai-products) for the API organization that holds Cyber access and enforce MFA through your identity provider. If you use a separate Cyber organization, verify its domain and test SSO there.
+
 ## Choose the model and access program
 
 The `model` field selects the model. The `access_programs.cyber` field selects a supported access program for that request: `standard`, `daybreak_blue`, or `daybreak_red`.
@@ -118649,6 +118742,9 @@ GPT-6 Astra
             
 GPT-5.5-Cyber
 
+            
+GPT-5.6-Cyber
+
           
 
         </td>
@@ -118671,12 +118767,17 @@ GPT-5.5-Cyber
               `daybreak_red`
             
 
+            
+
+              `daybreak_red`
+            
+
           
 
         </td>
       </tr>
       <tr>
-        <td>GPT-5.6-Cyber</td>
+        <td>GPT-6-Cyber</td>
         <td>Red + additional model approval</td>
         <td>
           `daybreak_red`
@@ -118758,6 +118859,34 @@ When available, `access_programs.cyber` records the selected program. This parti
 
 
 When no program is specified and the request uses standard safeguards, `access_programs` is `null`. For a `-latest` alias, inspect `model` to see which model served the request. Alias resolution can change and depends on your approved access.
+
+## Set up GPT-6-Cyber
+
+Confirm with your account team that your organization has Daybreak Red access and approval for [GPT-6-Cyber](https://developers.openai.com/api/docs/models/gpt-6-cyber).
+
+**Project access.** Ask an organization owner to [enable Daybreak Red](https://help.openai.com/en/articles/20001531-openai-daybreak-set-up-access-for-your-team) for the project that will send requests. With project-level controls, use a non-default project and a key from that project.
+
+**IP allowlisting.** To use GPT-6-Cyber through the API, [configure an IP allowlist](https://developers.openai.com/api/docs/guides/ip-allowlist) for the public IPs your application sends requests from. If you have received approval to embed the model in a product, end users without direct model access don’t need to allowlist their own IPs.
+
+**Zero Data Retention.** If the project uses ZDR, [configure Private Safety Processing](https://developers.openai.com/api/docs/guides/private-safety-processing) (PSP). Check that storage shows “Validated” and that the project’s retention policy is “Zero Data Retention with Private Safety Processing.” PSP applies to all API traffic in that project.
+
+### Send a GPT-6-Cyber request
+
+Set `OPENAI_API_KEY` to a key from the approved project. Replace the sample safety identifier with a stable, pseudonymous identifier for the user making the request.
+
+```bash
+curl https://api.openai.com/v1/responses \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-6-cyber",
+    "access_programs": {"cyber": "daybreak_red"},
+    "safety_identifier": "user_a17f",
+    "input": "Suggest a regression test for a path traversal fix."
+  }'
+```
+
+If the request fails, check the project associated with the key, the active allowlist, and the project’s retention policy. See [Daybreak API errors](https://developers.openai.com/api/docs/guides/daybreak#handle-errors).
 
 ## Handle errors
 
@@ -132901,10 +133030,16 @@ app.post("/session", async (req, res) => {
     });
     // Send back the SDP we received from the OpenAI REST API
     const sdp = await r.text();
+    res.set(
+      "Content-Type",
+      r.ok ? "application/sdp" : (r.headers.get("Content-Type") ?? "text/plain")
+    );
+    const location = r.headers.get("Location");
+    if (location) res.set("Location", location);
     res.status(r.status).send(sdp);
   } catch (error) {
-    console.error("Token generation error:", error);
-    res.status(500).json({ error: "Failed to generate token" });
+    console.error("Session creation error:", error);
+    res.status(500).json({ error: "Failed to create session" });
   }
 });
 
@@ -133037,6 +133172,7 @@ const sessionConfig = JSON.stringify({
 // An endpoint which would work with the client code above - it returns
 // the contents of a REST API request to this protected endpoint
 app.get("/token", async (req, res) => {
+  res.set("Cache-Control", "no-store");
   try {
     const response = await fetch(
       "https://api.openai.com/v1/realtime/client_secrets",
@@ -133086,7 +133222,7 @@ func handler(client openai.Client) http.Handler {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Cache-Control", "no-store")
-		if err := json.NewEncoder(w).Encode(secret); err != nil {
+		if _, err := io.WriteString(w, secret.RawJSON()); err != nil {
 			log.Print("Could not write client credential")
 		}
 	})
@@ -133393,10 +133529,16 @@ app.post("/session", async (req, res) => {
     });
     // Send back the SDP we received from the OpenAI REST API
     const sdp = await r.text();
+    res.set(
+      "Content-Type",
+      r.ok ? "application/sdp" : (r.headers.get("Content-Type") ?? "text/plain")
+    );
+    const location = r.headers.get("Location");
+    if (location) res.set("Location", location);
     res.status(r.status).send(sdp);
   } catch (error) {
-    console.error("Token generation error:", error);
-    res.status(500).json({ error: "Failed to generate token" });
+    console.error("Session creation error:", error);
+    res.status(500).json({ error: "Failed to create session" });
   }
 });
 
@@ -133537,8 +133679,8 @@ Because the connection stays open and each turn sends only incremental input, We
 
 Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python, `npm install openai@^7.10.0 ws` for JavaScript, or `gem install openai async-websocket` for Ruby.
 
-For Go, run `go get github.com/openai/openai-go/v3@v3.94.0`.
-For Java, add the Maven dependency `com.openai:openai-java:4.95.0` and use Java 17 or later for these examples.
+For Go, run `go get github.com/openai/openai-go/v3@v3.96.0`.
+For Java, add the Maven dependency `com.openai:openai-java:4.98.0` and use Java 17 or later for these examples.
 These Go and Java SDK versions provide native Responses WebSocket support.
 
 In WebSocket mode, start each turn by sending a `response.create` event from the client. The payload mirrors the normal [Responses create body](https://developers.openai.com/api/reference/resources/responses/methods/create), except that transport-specific fields like `stream` and `background` are not used.
@@ -136394,6 +136536,7 @@ const run = await openai.evals.runs.create("YOUR_EVAL_ID", {
   data_source: {
     type: "responses",
     model: "gpt-6-astra",
+    sampling_params: { reasoning_effort: "low" },
     input_messages: {
       type: "template",
       template: [
@@ -137801,7 +137944,7 @@ Continue to **Register your storage**.
 
 ### Register your storage
 
-After completing the cloud setup above, use either the API console or the Management API to register and validate your storage. You only need to use one method.
+After completing the cloud setup above, select an eligible base data retention policy for the project. Private Safety Processing can be used with Zero Data Retention or Modified Abuse Monitoring, and the selected policy remains active while Private Safety Processing uses your connected storage. Then use either the API console or the Management API to register and validate your storage. You only need to use one method.
 
 #### Option 1: API console
 
@@ -137815,41 +137958,41 @@ Open **Organization settings > Data controls > Data retention** and select **Con
 
 ##### 2. Enter your storage details
 
-Choose **AWS**, **Azure**, **GCP**, or **OCI**, then select the project. If you opened the modal from project settings, that project is already selected. If **Registered storage** appears, choose **Connect new storage** to add a destination.
+Choose **AWS**, **Azure**, **GCP**, or **OCI**, then select the project. Under **Data retention policy**, select **Zero Data Retention with Private Safety Processing** or **Modified Abuse Monitoring with Private Safety Processing**, depending on the policies available to your organization. If you opened the modal from project settings, that project is already selected. If **Registered storage** appears, choose **Connect new storage** to add a destination.
 
 For **AWS**, enter the **Bucket ARN** and **IAM role ARN** from your cloud setup.
 
 <img src="https://developers.openai.com/images/platform/guides/private-safety-processing/setup-07-platform-aws-connect.webp"
-  alt="Connect external storage dialog with AWS selected, showing project selection, Bucket ARN, IAM role ARN, and Connect and validate."
+  alt="Connect external storage dialog with AWS selected, showing Project Name, Data retention policy, Bucket ARN, and IAM role ARN."
   style={{ border: 0, borderRadius: 0 }}
 />
 
 For **Azure**, enter **Tenant ID**, **Subscription ID**, **Resource group**, **Storage account name**, and **Container name**. Scroll down in the modal to complete all fields.
 
 <img src="https://developers.openai.com/images/platform/guides/private-safety-processing/setup-08-platform-azure-connect.webp"
-  alt="Connect external storage dialog with Azure selected, showing project selection, Tenant ID, Subscription ID, and Resource group."
+  alt="Connect external storage dialog with Azure selected, showing Project Name, Data retention policy, Tenant ID, and Subscription ID."
   style={{ border: 0, borderRadius: 0 }}
 />
 
 For **GCP**, enter **Bucket name**, **Workload identity project number**, **Workload identity pool ID**, and **Workload identity provider ID**. Scroll down in the modal to complete all fields.
 
 <img src="https://developers.openai.com/images/platform/guides/private-safety-processing/setup-10-platform-gcp-connect.webp"
-  alt="Connect external storage dialog with GCP selected, showing project selection, Bucket name, and Workload identity project number."
+  alt="Connect external storage dialog with GCP selected, showing Project Name, Data retention policy, Bucket name, and Workload identity project number."
   style={{ border: 0, borderRadius: 0 }}
 />
 
 For **OCI**, enter **Tenancy OCID**, **Region**, and **Bucket name**. Use the region identifier, such as `us-ashburn-1`, and the bucket name, not its OCID or URL. OpenAI discovers the Object Storage namespace automatically. Scroll down in the modal to complete all fields.
 
 <img src="https://developers.openai.com/images/platform/guides/private-safety-processing/setup-platform-oci-connect.webp"
-  alt="Connect external storage dialog with OCI selected, showing project selection, Tenancy OCID, and Region."
+  alt="Connect external storage dialog with OCI selected, showing Project Name, Data retention policy, and Tenancy OCID."
   style={{ border: 0, borderRadius: 0 }}
 />
 
 ##### 3. Connect and validate
 
-Select **Connect and validate**. The API console registers the storage, runs validation, and refreshes the storage status and project policy. Registration alone doesn't change the policy.
+Select **Connect and validate**. The API console saves the selected base data retention policy, registers the storage, runs validation, and refreshes the storage and project status. Successful validation enables Private Safety Processing while keeping the selected base policy.
 
-Wait for **Storage validated** and confirmation that the project now uses ZDR with PSP, then select **Done**.
+Wait for **Storage validated** and confirmation that Private Safety Processing is active for the project, then select **Done**.
 
 ![OpenAI Project Settings showing validated AWS S3 storage and the Zero Data Retention with Private Safety Processing policy.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-09-platform-storage-validated.webp)
 
@@ -137857,7 +138000,7 @@ If validation fails after registration, fix the reported issue and select **Retr
 
 #### Option 2: Management API
 
-Use an organization Admin API key for this method. Register storage with the commands below, then follow [**3. Verify your setup**](#3-verify-your-setup) to run validation.
+Use an organization Admin API key for this method. Set the project's base data retention policy, register storage, then follow [**4. Verify your setup**](#4-verify-your-setup) to run validation.
 
 ##### 1. Prepare your API settings
 
@@ -137873,7 +138016,22 @@ OPENAI_ORG_ID='<OPENAI_ORG_ID>'
 OPENAI_STORAGE_URL="$OPENAI_API_BASE/v1/organization/external_storage"
 ```
 
-##### 2. Send the registration request
+##### 2. Set the base retention policy
+
+Set an eligible base data retention policy for the project before registering storage. Use `zero_data_retention` for ZDR or `modified_abuse_monitoring` for MAM. The selected policy remains active after Private Safety Processing is enabled.
+
+```bash
+curl --fail-with-body -sS -X POST \
+  "$OPENAI_API_BASE/v1/organization/projects/CUSTOMER_PROJECT_ID/data_retention" \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "OpenAI-Organization: $OPENAI_ORG_ID" \
+  -H 'Content-Type: application/json' \
+  --data-binary '{"retention_type":"zero_data_retention"}'
+```
+
+For Modified Abuse Monitoring, send `{"retention_type":"modified_abuse_monitoring"}` instead. A successful response returns `object: "project.data_retention"` and the selected `type`.
+
+##### 3. Send the registration request
 
 Run the request for your provider only. Replace every `CUSTOMER_...` placeholder with your IDs and the resources you created.
 
@@ -137951,9 +138109,9 @@ curl --fail-with-body -sS -X POST "$OPENAI_STORAGE_URL" \
   }'
 ```
 
-The response contains an `id` beginning with `extstorage_` and `status: "pending"`. Keep the ID for validation. The API console shows **Pending validation** and leaves the project's retention policy unchanged.
+The response contains an `id` beginning with `extstorage_` and `status: "pending"`. Keep the ID for validation. The API console shows **Pending validation** and leaves the project's selected base data retention policy unchanged. Private Safety Processing isn't active until validation succeeds.
 
-##### 3. Verify your setup
+##### 4. Verify your setup
 
 For API validation, replace `EXTERNAL_STORAGE_ID` with the ID returned by registration, then run:
 
@@ -137965,7 +138123,7 @@ curl --fail-with-body -sS -X POST \
   -H "OpenAI-Organization: $OPENAI_ORG_ID"
 ```
 
-A successful response has `status: "validated"`. Validation checks configuration and access, then activates customer-managed retention for that project. The API console shows **Validated** and the read-only policy **Zero Data Retention with Private Safety Processing**.
+A successful response has `status: "validated"`. Validation checks configuration and access, then enables Private Safety Processing with customer-managed storage while keeping the selected base data retention policy. The API console shows **Validated** and the combined project policy, such as **Zero Data Retention with Private Safety Processing** or **Modified Abuse Monitoring with Private Safety Processing**.
 
 If you used the Management API, retrieve the saved registration:
 
@@ -137976,7 +138134,7 @@ curl --fail-with-body -sS \
   -H "OpenAI-Organization: $OPENAI_ORG_ID"
 ```
 
-For either method, open **Project Settings > Data retention** and select **Refresh**. Confirm the destination, provider, geography, and **Validated** status, then check the policy is **Zero Data Retention with Private Safety Processing**. The organization Data retention table also shows storage and status for each project.
+For either method, open **Project Settings > Data retention** and select **Refresh**. Confirm the destination, provider, geography, and **Validated** status, then check that the selected base policy shows Private Safety Processing. The organization Data retention table also shows storage and status for each project.
 
 ![OpenAI Project Settings Data retention page showing an AWS S3 external-storage connection with Validated status and the Zero Data Retention with PSP retention policy.](https://developers.openai.com/images/platform/guides/private-safety-processing/setup-05-verify-project-retention.webp)
 
@@ -138264,7 +138422,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.100.0</version>
+  <version>4.101.0</version>
 </dependency>
 ```
 
@@ -139899,6 +140057,7 @@ Our latest Daybreak models.
 
 | Model | Short context input | Short context output | Short context cached input | Short context 30m write | Short context 12h write | Long context input | Long context output | Long context cached input | Long context 30m write | Long context 12h write |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| gpt-6-cyber | $20.00 | $100.00 | $2.00 | $25.00 | $50.00 | - | - | - | - | - |
 | gpt-5.6-sol | $4.00 | $20.00 | $0.40 | $5.00 | $10.00 | $8.00 | $30.00 | $0.80 | $10.00 | $20.00 |
 | gpt-5.6-cyber | $12.50 | $75.00 | $1.25 | $15.625 | $31.25 | - | - | - | - | - |
 | gpt-5.5-cyber | $12.50 | $75.00 | $1.25 | - | - | - | - | - | - | - |
@@ -140494,7 +140653,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.100.0</version>
+  <version>4.101.0</version>
 </dependency>
 ```
 

@@ -4,7 +4,7 @@
 
 # Test iOS apps in the simulator
 
-> Claude Code Desktop opens your app in the iOS Simulator pane when Claude builds, runs, or checks it, with a separate simulator for each session.
+> Claude Code Desktop opens your app in the iOS Simulator pane when Claude builds, runs, or checks it.
 
 > [!NOTE]
 >
@@ -88,28 +88,35 @@ You and Claude drive the same device, so your taps change the app state Claude s
 
 ## How sessions manage devices
 
-Each device belongs to the session that launched it, so [parallel sessions](./desktop.md#work-in-parallel-with-sessions) don't share a device: what you see in one session's pane reflects that session's work, not another's. Switching sessions in the sidebar switches the simulator view along with the conversation, and switching back resumes the same device where it left off. If Claude works with more than one device, each opens its own pane, up to 4 per session.
+If your prompt doesn't name a simulator, Claude uses one that's already running, even if another [parallel session](./desktop.md#work-in-parallel-with-sessions) opened it. To give each session its own simulator, name a different one in each session's prompt.
 
 Claude Code Desktop shuts down the simulators it booted once they're no longer in use: when you quit the app, when you archive the session, or 10 minutes after you detach a device from its pane. Devices you boot outside Claude Code Desktop, such as in Apple's Simulator app or in Device Hub, are never shut down automatically. To shut down the attached device right away, use the shutdown button in the pane.
 
 ## Grant Claude access to a device
 
-Claude asks for your consent before it controls a device, while building the app or opening a URL on it follows your session's permission mode. You or your organization can also turn Claude's access off entirely.
+Claude asks for your consent before it controls a device, while building or launching the app or opening a URL on it follows your session's permission mode. You or your organization can also turn Claude's access off entirely.
 
 ### Allow a device the first time
 
 The first time Claude uses a simulator, the desktop app asks you to allow it. The consent covers controlling that device and taking screenshots of it, and you give it once per device rather than once per session. Claude's screenshots of the device are sent to Anthropic and kept under your normal conversation retention settings, so don't sign in to real accounts on a device Claude uses.
 
-After you allow a device, Claude's actions on it, such as tapping, typing, launching the app, and taking screenshots, run without further prompts. They carry the same trust as you clicking in the pane, and they only touch the simulated device, so the pane doesn't need the macOS Accessibility and Screen Recording permissions that computer use requires.
+After you allow a device, Claude's actions on it, such as tapping, typing, and taking screenshots, run without prompts, but you approve launching the app as your [permission mode](#actions-that-follow-your-permission-mode) requires. They carry the same trust as you clicking in the pane, and they only touch the simulated device, so the pane doesn't need the macOS Accessibility and Screen Recording permissions that computer use requires.
 
-If you decline, the device still boots and the pane still works for your own taps; only Claude's access stays off. To change your mind later, click **Let Claude use it** in the pane.
+If you decline Claude's request, the device doesn't attach and Desktop doesn't boot it. To use the device yourself:
+
+1. Click **Attach simulator** in the pane.
+2. Click **Continue** on the permission screen.
+3. Click **Cancel** in the dialog that follows.
+
+The device attaches and works for your own taps, and Claude's access stays off. After that, to give Claude access, click **Let Claude use it** in the pane.
 
 ### Actions that follow your permission mode
 
-Two actions follow your session's [permission mode](./permissions.md#permission-modes) instead of the one-time consent:
+Three actions follow your session's [permission mode](./permissions.md#permission-modes) even after you allow a device:
 
 * Opening a URL on the device, for example to test a deep link or load a page in the device's Safari, because a URL can carry data off the device.
 * Building the app, because `xcodebuild` runs your project's build scripts on your Mac. Checking on a build already in progress doesn't prompt.
+* Installing and launching the app, because Claude can run any app it names, not only the one you're building.
 
 ### Turn off simulator access
 

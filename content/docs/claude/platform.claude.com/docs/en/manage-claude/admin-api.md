@@ -31,7 +31,7 @@ The Admin API accepts any of these three credentials:
 
 An Admin API key covers most endpoints. The service-account, federation-issuer, and federation-rule endpoints accept only an `org:admin` OAuth token. Send a personal key or service account key in the `x-api-key` header, as you would an Admin API key. The following examples call the [organization info endpoint](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli#accessing-organization-info) with an OAuth token and with an Admin API key.
 
-In Python, TypeScript, C#, Go, Java, PHP, and Ruby, the SDK exposes the endpoints on this page under `client.organization`, and the `ant` CLI under `ant organization`. The examples on this page use the default client, which reads an Admin API key from `ANTHROPIC_API_KEY` or an OAuth bearer token from `ANTHROPIC_AUTH_TOKEN`. SDK list methods in Python, TypeScript, C#, Go, and Java return an iterator that fetches more pages on demand, so `limit` sets the page size, not the total. The PHP, Ruby, and curl examples return one page. In the CLI, `--limit` caps the results on the member, invite, workspace, workspace-member, and API-key lists. For each endpoint’s parameters and responses, see the [Admin API reference](https://platform.claude.com/docs/en/api/organization?sdk_languages=cli).
+The SDK exposes the endpoints on this page under `client.organization`, and the `ant` CLI under `ant organization`. The examples on this page use the default client, which reads an Admin API key from `ANTHROPIC_API_KEY` or an OAuth bearer token from `ANTHROPIC_AUTH_TOKEN`. The comments in each list example say whether it fetches more pages or reads only the first. For each endpoint’s parameters and responses, see the [Admin API reference](https://platform.claude.com/docs/en/api/organization?sdk_languages=cli).
 
 ### OAuth bearer token
 
@@ -42,9 +42,9 @@ ant auth login --profile admin --scope "org:admin"
 export ANTHROPIC_AUTH_TOKEN=$(ant auth print-credentials --profile admin --access-token)
 ```
 
-Interactive tokens are short-lived. If requests start returning 401, re-run the `export` command to refresh the token.
+Interactive tokens are short-lived. If requests start returning 401, rerun the `export` command to refresh the token.
 
-The SDK and the `ant` CLI read `ANTHROPIC_AUTH_TOKEN` automatically. Leave `ANTHROPIC_API_KEY` unset in the same shell so they send the bearer token. Automated workloads skip the login: they authenticate through workload identity federation, and the SDK and CLI perform the token exchange from the federation environment variables. See [Bootstrap a workload to manage WIF](https://platform.claude.com/docs/en/manage-claude/wif-admin-api?sdk_languages=cli#bootstrap-a-workload-to-manage-wif).
+The SDK and the `ant` CLI read `ANTHROPIC_AUTH_TOKEN` automatically. Leave `ANTHROPIC_API_KEY` unset in the same shell so they send the bearer token. Automated workloads skip the login: they authenticate through Workload Identity Federation, and the SDK and CLI perform the token exchange from the federation environment variables. See [Bootstrap a workload to manage WIF](https://platform.claude.com/docs/en/manage-claude/wif-admin-api?sdk_languages=cli#bootstrap-a-workload-to-manage-wif).
 
 Call the Admin API with the exported token:
 
@@ -104,6 +104,7 @@ List the members of your organization:
 
 <CodeGroup>
   ```bash CLI
+  # At a terminal, the view fetches more pages as you scroll. When piped or with `--format json`, `--limit` caps the results.
   ant organization:users list --limit 10
   ```
 </CodeGroup>
@@ -138,10 +139,11 @@ Invite a user to your organization:
   ```
 </CodeGroup>
 
-List pending invites:
+List pending, accepted, and expired invites:
 
 <CodeGroup>
   ```bash CLI
+  # At a terminal, the view fetches more pages as you scroll. When piped or with `--format json`, `--limit` caps the results.
   ant organization:invites list --limit 10
   ```
 </CodeGroup>
@@ -160,7 +162,7 @@ See [Workspaces](https://platform.claude.com/docs/en/manage-claude/workspaces?sd
 
 ### Workspace members
 
-Manage [user access to specific workspaces](https://platform.claude.com/docs/en/api/organization/workspaces/members/retrieve?sdk_languages=cli):
+Manage [user access to specific workspaces](https://platform.claude.com/docs/en/api/organization/workspaces/members/retrieve?sdk_languages=cli).
 
 Add a member to a workspace:
 
@@ -177,6 +179,7 @@ List the members of a workspace:
 
 <CodeGroup>
   ```bash CLI
+  # At a terminal, the view fetches more pages as you scroll. When piped or with `--format json`, `--limit` caps the results.
   ant organization:workspaces:members list \
     --workspace-id wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ \
     --limit 10
@@ -212,6 +215,7 @@ List the active API keys in a workspace:
 
 <CodeGroup>
   ```bash CLI
+  # At a terminal, the view fetches more pages as you scroll. When piped or with `--format json`, `--limit` caps the results.
   ant organization:api-keys list \
     --limit 10 \
     --status active \
@@ -287,7 +291,7 @@ Register webhook endpoints for events about enforcement actions on your organiza
 * Use meaningful names and descriptions for workspaces and API keys
 * Handle errors from failed operations
 * Regularly audit member roles and permissions
-* Clean up unused workspaces and expired invites
+* Archive unused workspaces and delete pending invites you no longer need
 * Monitor API key usage, audit each key’s [`expires_at`](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-expiration), and rotate keys periodically
 
 ## FAQ
@@ -297,7 +301,7 @@ Register webhook endpoints for events about enforcement actions on your organiza
     The Admin API accepts an Admin API key (starting with `sk-ant-admin`), an OAuth bearer token with the `org:admin` scope, or a personal key or service account key that isn’t scoped to a specific workspace. Only organization members with the admin role can provision Admin API keys, and only members with the admin, owner, or primary owner role can obtain `org:admin` tokens. A personal key or service account key has the same permissions as the linked account. See [Authentication](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli#authentication).
   </Accordion>
 
-  <Accordion title="Can I create new API keys through the Admin API?">
+  <Accordion title="Can the Admin API create API keys?">
     No. You create API keys in the Claude Console. The Admin API can only read, rename, and change the status of existing keys.
   </Accordion>
 

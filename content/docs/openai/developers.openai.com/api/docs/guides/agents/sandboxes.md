@@ -540,10 +540,11 @@ try {
     content: "Continue from the existing workspace and add tests.",
   });
 
-  await run(agent, conversation, {
+  const secondResult = await run(agent, conversation, {
     maxTurns: 20,
     sandbox: { session: resumedSession },
   });
+  console.log(secondResult.finalOutput);
 } finally {
   await resumedSession.close?.();
 }

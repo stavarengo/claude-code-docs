@@ -713,10 +713,16 @@ app.post("/session", async (req, res) => {
     });
     // Send back the SDP we received from the OpenAI REST API
     const sdp = await r.text();
+    res.set(
+      "Content-Type",
+      r.ok ? "application/sdp" : (r.headers.get("Content-Type") ?? "text/plain")
+    );
+    const location = r.headers.get("Location");
+    if (location) res.set("Location", location);
     res.status(r.status).send(sdp);
   } catch (error) {
-    console.error("Token generation error:", error);
-    res.status(500).json({ error: "Failed to generate token" });
+    console.error("Session creation error:", error);
+    res.status(500).json({ error: "Failed to create session" });
   }
 });
 
@@ -849,6 +855,7 @@ const sessionConfig = JSON.stringify({
 // An endpoint which would work with the client code above - it returns
 // the contents of a REST API request to this protected endpoint
 app.get("/token", async (req, res) => {
+  res.set("Cache-Control", "no-store");
   try {
     const response = await fetch(
       "https://api.openai.com/v1/realtime/client_secrets",
@@ -898,7 +905,7 @@ func handler(client openai.Client) http.Handler {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Cache-Control", "no-store")
-		if err := json.NewEncoder(w).Encode(secret); err != nil {
+		if _, err := io.WriteString(w, secret.RawJSON()); err != nil {
 			log.Print("Could not write client credential")
 		}
 	})

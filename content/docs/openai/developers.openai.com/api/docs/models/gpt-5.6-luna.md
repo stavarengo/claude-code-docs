@@ -6,6 +6,11 @@
 
 Model ID: `gpt-5.6-luna`
 
+A rate-limit entry for your usage tier does not confirm model access. If
+GPT-5.6 Luna is missing from Playground or the API model list,
+[check model availability](/api/docs/guides/rate-limits#model-availability).
+
+
 GPT-5.6 Luna is designed for cost-sensitive, high-volume workloads. It
 roughly corresponds to the nano model tier used in earlier GPT-5 families.
 Reasoning.effort supports: none, low, medium (default), high, xhigh, and max.

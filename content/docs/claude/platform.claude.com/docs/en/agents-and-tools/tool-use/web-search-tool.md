@@ -88,7 +88,7 @@ Claude answers directly without searching when the request draws on stable knowl
 * Analysis of content already provided in the conversation
 * Conversational turns and greetings
 
-Triggering is steerable through your system prompt: you can encourage Claude to search more readily or to prefer answering directly. For a hard constraint, use `max_uses` to cap the number of searches for each request.
+Triggering is steerable through your system prompt: you can encourage Claude to search more readily or to prefer answering directly. To enforce a limit, use [`max_uses`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#max-uses) to cap the number of searches in a turn.
 
 ### Dynamic filtering
 
@@ -145,7 +145,7 @@ Provide the web search tool in your API request:
     -H "content-type: application/json" \
     -d '{
       "model": "claude-opus-5-5",
-      "max_tokens": 1024,
+      "max_tokens": 4096,
       "messages": [
         {
           "role": "user",
@@ -170,7 +170,7 @@ The web search tool supports the following parameters:
   "type": "web_search_20250305",
   "name": "web_search",
 
-  // Optional: Limit the number of searches for each request
+  // Optional: Limit the number of searches
   "max_uses": 5,
 
   // Optional: Only include results from these domains.
@@ -195,9 +195,11 @@ All web search tool versions accept `allowed_callers`, which controls whether Cl
 
 ### Max uses
 
-The `max_uses` parameter limits the number of searches performed. If Claude attempts more searches than allowed, the `web_search_tool_result` is an error with the `max_uses_exceeded` error code.
+The `max_uses` parameter limits the number of searches in a single turn. Single-fact queries typically use 1–3 searches; comparative or multientity research can use 10 or more.
 
-Simple factual queries typically use 1–3 searches; comparative or multientity research can use 10 or more. For guidance on choosing a value, see [Server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl).
+Failed searches count against the limit. If Claude calls web search directly more times than allowed, the `web_search_tool_result` is an error with the `max_uses_exceeded` error code. If Claude calls web search from code execution more times than allowed, the code execution run ends with an error.
+
+A turn can span several requests. A request continues a turn when it resumes after [`pause_turn`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl#the-server-side-loop-and-pause-turn) or when its last message contains only `tool_result` blocks. Searches from earlier requests in that turn count against the limit, unless Claude ran them from code execution through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#dynamic-filtering).
 
 ### Domain filtering
 
@@ -225,7 +227,7 @@ On Claude Managed Agents, the `web_search` entry of the agent toolset also accep
   Requires `web_search_20260318` or later.
 </Note>
 
-The `response_inclusion` parameter controls how search result blocks appear in the API response when the result was consumed by a completed [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl) call in the same turn. Set `"response_inclusion": "excluded"` to drop those nested `server_tool_use` and result block pairs entirely from the response, reducing output token costs for agentic workflows that don’t need to echo raw search content back to the client. The default is `"full"`. Results from direct calls, or from code execution calls that paused before completing, are always returned in full so they can be sent back on the next turn.
+The `response_inclusion` parameter controls how search result blocks appear in the API response when a completed [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl) call in the same response consumed the result. Set `"response_inclusion": "excluded"` to drop those nested `server_tool_use` and result block pairs entirely from the response, for agentic workflows that don’t need the raw search content. Token usage is unaffected, because Claude reads the code’s output rather than these blocks. The default is `"full"`. The API always returns results from direct calls, or from code execution calls that paused before completing, in full so that you can send them back in the next request.
 
 ```json JSON
 {
@@ -317,7 +319,7 @@ Search results include:
 * `page_age`: When the site was last updated
 * `encrypted_content`: Encrypted content that you must pass back in multi-turn conversations
 
-To continue a conversation that contains search results, send the assistant’s content blocks back exactly as you received them, including each result’s `encrypted_content`. The API decrypts that content on later turns to restore the search results in Claude’s context. If `encrypted_content` is missing or modified, the request fails with a 400 validation error.
+To continue a conversation that contains search results, send the assistant’s content blocks back exactly as you received them, including each result’s `encrypted_content`. The API decrypts that content in later requests to restore the search results in Claude’s context. If `encrypted_content` is missing or modified, the request fails with a 400 validation error.
 
 ### Citations
 
@@ -374,7 +376,7 @@ To cache tool definitions across turns, see [Tool use with prompt caching](https
 
 ## Streaming
 
-With streaming enabled, you’ll receive search events as part of the stream. There is a pause while the search runs:
+With streaming enabled, you receive search events as part of the stream. There is a pause while the search runs:
 
 ```sse Output
 event: message_start
@@ -403,7 +405,7 @@ data: {"type": "content_block_start", "index": 2, "content_block": {"type": "web
 
 ## Batch requests
 
-You can include the web search tool in the [Messages Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=curl). Web search tool calls through the Messages Batches API are priced the same as those in regular Messages API requests.
+You can include the web search tool in the [Message Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=curl). Web search tool calls through the Message Batches API are priced the same as those in regular Messages API requests.
 
 To protect shared capacity, the Batches API throttles web search requests for each organization, so large batches with many searches might take longer to complete. You can see your organization’s web search rate limit on the [Rate limits](https://platform.claude.com/usage/limits) page in the Claude Console. To request a higher limit, contact sales from that page.
 
@@ -427,7 +429,7 @@ Web search usage is charged in addition to token usage:
 
 Web search is available on the Claude API for **$10 USD per 1,000 searches**, plus standard token costs for search-generated content. Web search results retrieved throughout a conversation are counted as input tokens, in search iterations run during a single turn and in subsequent conversation turns.
 
-Each web search counts as one use, regardless of the number of results returned. If an error occurs during web search, the web search will not be billed.
+Each web search counts as one use, regardless of the number of results returned. A web search that fails with an error is not billed.
 
 ## Next steps
 

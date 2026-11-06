@@ -37,7 +37,7 @@ Here’s how to handle the `pause_turn` stop reason:
     -H "content-type: application/json" \
     -d '{
       "model": "claude-opus-5-5",
-      "max_tokens": 1024,
+      "max_tokens": 4096,
       "messages": [
         {
           "role": "user",
@@ -157,7 +157,7 @@ A `server_tool_use` block and its result block pair up by `tool_use_id`, not by 
   To give Claude more input, send it as a separate user message after the turn completes.
 </Warning>
 
-**How this differs from `pause_turn`:** A [`pause_turn` response](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl#the-server-side-loop-and-pause-turn) can also end with a `server_tool_use` block that has not run, but it never leaves a client `tool_use` block waiting on you, so you continue it by re-sending the assistant content as-is. A response that leaves a client `tool_use` block waiting on you never has a `stop_reason` of `pause_turn`: when Claude stops to call your tools, `stop_reason` is `tool_use`, and you continue it by sending the client `tool_result` blocks rather than by re-sending the response. In both cases the API runs the pending server tool at the start of the next request.
+**How this differs from `pause_turn`:** A [`pause_turn` response](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl#the-server-side-loop-and-pause-turn) can also end with a `server_tool_use` block that has not run, but it never leaves a client `tool_use` block waiting on you, so you continue it by re-sending the assistant content as-is. A response that leaves a client `tool_use` block waiting on you never has a `stop_reason` of `pause_turn`: when Claude stops to call your tools, `stop_reason` is `tool_use`, and you continue it by sending the response back with a new user message that holds the client `tool_result` blocks. In both cases the API runs the pending server tool at the start of the next request.
 
 The following example enables web fetch together with a user-defined `run_command` tool and handles the mixed response:
 
@@ -165,15 +165,15 @@ The following example enables web fetch together with a user-defined `run_comman
   ```bash cURL
   # If "stop_reason" is "tool_use" and a server_tool_use block has no matching
   # result block, that call is not finished. Run the client tools, then POST
-  # again with one more user message containing only their tool_result blocks
-  # and the same tools array (see the SDK tabs).
+  # again with the assistant content, one more user message containing only their
+  # tool_result blocks, and the same tools array.
   curl https://api.anthropic.com/v1/messages \
     -H "x-api-key: $ANTHROPIC_API_KEY" \
     -H "anthropic-version: 2026-10-21" \
     -H "content-type: application/json" \
     -d '{
       "model": "claude-opus-5-5",
-      "max_tokens": 1024,
+      "max_tokens": 4096,
       "messages": [
         {
           "role": "user",
@@ -273,7 +273,7 @@ The `_20260209` and later versions of web search and web fetch use code executio
 
 Server-tool events stream as part of the normal server-sent events (SSE) flow. A `server_tool_use` block that Claude calls directly streams like a client `tool_use` block: a `content_block_start` event followed by `input_json_delta` events. The result block arrives complete in a single `content_block_start` event, with no deltas.
 
-See [Streaming](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl) for the full event reference. Individual tool pages document tool-specific event names where they differ.
+See [Streaming messages](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl) for the full event reference. Individual tool pages document tool-specific event names where they differ.
 
 ## Batch requests
 

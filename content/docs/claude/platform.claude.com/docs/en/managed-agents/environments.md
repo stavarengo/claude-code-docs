@@ -229,10 +229,10 @@ Use `unrestricted` only when the agent must reach sites you cannot list in advan
   # Retrieve a specific environment
   ant beta:environments retrieve --environment-id "$ENVIRONMENT_ID"
 
-  # Archive an environment (read-only, existing sessions continue)
+  # Archive an environment (read-only, no new sessions)
   ant beta:environments archive --environment-id "$ENVIRONMENT_ID"
 
-  # Delete an environment (only if no sessions reference it)
+  # Delete an environment
   ant beta:environments delete --environment-id "$ENVIRONMENT_ID"
   ```
 </CodeGroup>

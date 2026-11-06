@@ -118,7 +118,7 @@ Content type: `multipart/form-data`
 
   - `output_format: optional "png" or "webp" or "jpeg" or 2 more`
 
-    The output format of the generated image.
+    The output format of the generated or edited image.
 
     - `"png"`
 
@@ -166,7 +166,7 @@ Content type: `multipart/form-data`
 
   - `svg_usage: optional object { input_tokens, model, output_tokens, 2 more }`
 
-    Token usage for the model that authored the SVG, separate from image rendering usage.
+    Token usage for SVG authoring, separate from image rendering usage.
 
     - `input_tokens: integer`
 

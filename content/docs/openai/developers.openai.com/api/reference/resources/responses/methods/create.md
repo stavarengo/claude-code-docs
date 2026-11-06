@@ -5143,7 +5143,7 @@ Content type: `application/json`
 
     - `"gpt-3.5-turbo-16k-0613"`
 
-  - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 18 more`
+  - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 19 more`
 
     - `"o1-pro"`
 
@@ -5182,6 +5182,8 @@ Content type: `application/json`
     - `"gpt-daybreak-red-latest"`
 
     - `"gpt-5.6-cyber"`
+
+    - `"gpt-6-cyber"`
 
     - `"gpt-rosalind-research"`
 
@@ -11883,7 +11885,7 @@ Content type: `application/json`
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 18 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 19 more`
 
       - `"o1-pro"`
 
@@ -11922,6 +11924,8 @@ Content type: `application/json`
       - `"gpt-daybreak-red-latest"`
 
       - `"gpt-5.6-cyber"`
+
+      - `"gpt-6-cyber"`
 
       - `"gpt-rosalind-research"`
 

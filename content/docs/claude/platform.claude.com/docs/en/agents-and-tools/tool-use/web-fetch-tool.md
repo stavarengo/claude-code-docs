@@ -65,7 +65,7 @@ For Zero Data Retention eligibility and the `allowed_callers` workaround, see [S
   If data exfiltration is a concern, consider:
 
   * Disabling the web fetch tool entirely
-  * Using the `max_uses` parameter to limit the number of requests
+  * Using the [`max_uses`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool?sdk_languages=cli#max-uses) parameter to limit the number of fetches in a turn
   * Using the `allowed_domains` parameter to restrict to known safe domains
   * Using the `url_sources` parameter to stop client-side tool results from counting as a source (see [URL sources](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool?sdk_languages=cli#url-sources))
 </Warning>
@@ -115,18 +115,11 @@ To enable dynamic filtering, use `web_fetch_20260209` or any later version. The 
 
 <CodeGroup>
   ```bash CLI
-  ant messages create <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 4096
-  messages:
-    - role: user
-      content: >-
-        Fetch the content at https://example.com/research-paper
-        and extract the key findings.
-  tools:
-    - type: web_fetch_20260318
-      name: web_fetch
-  YAML
+  ant messages create \
+    --model claude-opus-5-5 \
+    --max-tokens 4096 \
+    --message '{role: user, content: "Fetch the content at https://example.com/research-paper and extract the key findings."}' \
+    --tool '{type: web_fetch_20260318, name: web_fetch}'
   ```
 </CodeGroup>
 
@@ -144,7 +137,7 @@ Provide the web fetch tool in your API request:
   ```bash CLI
   ant messages create \
     --model claude-opus-5-5 \
-    --max-tokens 1024 \
+    --max-tokens 4096 \
     --message '{role: user, content: "Please analyze the content at https://example.com/article"}' \
     --tool '{type: web_fetch_20250910, name: web_fetch, max_uses: 5}'
   ```
@@ -159,7 +152,7 @@ The web fetch tool supports the following parameters:
   "type": "web_fetch_20250910",
   "name": "web_fetch",
 
-  // Optional: Limit the number of fetches for each request
+  // Optional: Limit the number of fetches
   "max_uses": 10,
 
   // Optional: Only fetch from these domains
@@ -187,7 +180,9 @@ Later tool versions add two more optional parameters: `use_cache` requires `web_
 
 ### Max uses
 
-The `max_uses` parameter limits the number of web fetches performed. Failed fetches count against the limit. If Claude attempts more fetches than allowed, the `web_fetch_tool_result` is an error with the `max_uses_exceeded` error code. There is currently no default limit.
+The `max_uses` parameter limits the number of web fetches in a single turn. Failed fetches count against the limit. If Claude calls web fetch directly more times than allowed, the `web_fetch_tool_result` is an error with the `max_uses_exceeded` error code. If Claude calls web fetch from code execution more times than allowed, the code execution run ends with an error. There is no default limit.
+
+A turn can span several requests. A request continues a turn when it resumes after [`pause_turn`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli#the-server-side-loop-and-pause-turn) or when its last message contains only `tool_result` blocks. Fetches from earlier requests in that turn count against the limit, unless Claude ran them from code execution through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool?sdk_languages=cli#dynamic-filtering).
 
 ### Domain filtering
 
@@ -229,7 +224,7 @@ The `use_cache` parameter controls whether cached content may be returned. Set `
   Requires `web_fetch_20260318` or later.
 </Note>
 
-The `response_inclusion` parameter controls how fetch result blocks appear in the API response when the result was consumed by a completed [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli) call in the same turn. Set `"response_inclusion": "excluded"` to drop those nested `server_tool_use` and result block pairs entirely from the response, reducing output token costs for agentic workflows that don’t need to echo raw page content back to the client. The default is `"full"`. Results from direct calls, or from code execution calls that paused before completing, are always returned in full so they can be sent back on the next turn.
+The `response_inclusion` parameter controls how fetch result blocks appear in the API response when a completed [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli) call in the same response consumed the result. Set `"response_inclusion": "excluded"` to drop those nested `server_tool_use` and result block pairs entirely from the response, for agentic workflows that don’t need the raw page content. Token usage is unaffected, because Claude reads the code’s output rather than these blocks. The default is `"full"`. The API always returns results from direct calls, or from code execution calls that paused before completing, in full so that you can send them back in the next request.
 
 ```json
 {
@@ -515,7 +510,7 @@ data: {"type": "content_block_start", "index": 2, "content_block": {"type": "web
 
 ## Batch requests
 
-You can include the web fetch tool in the [Messages Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli). Web fetch tool calls through the Messages Batches API are priced the same as those in regular Messages API requests.
+You can include the web fetch tool in the [Message Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli). Web fetch tool calls through the Message Batches API are priced the same as those in regular Messages API requests.
 
 ## Usage and pricing
 

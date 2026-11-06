@@ -2,15 +2,15 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Our most advanced cybersecurity model for authorized vulnerability research and security testing.
+> Cybersecurity model for authorized vulnerability research and security testing.
 
 Model ID: `gpt-5.6-cyber`
 
-An alias for our most advanced purpose-trained cybersecurity models, for
-approved defenders conducting advanced, authorized vulnerability research,
-exploit validation, and security testing.
+GPT-5.6 Cyber is an alias for purpose-trained cybersecurity models that help
+approved defenders investigate vulnerabilities and validate exploits in
+authorized environments.
 
-This model requires separate approval and provisioning, you can apply to join the Daybreak program [here](https://openai.com/daybreak/). More details on pricing [here](https://developers.openai.com/api/docs/pricing).
+GPT-5.6 Cyber is available to all [Daybreak Red](https://openai.com/daybreak/) customers. To use it through the API, enable Daybreak Red for the project that sends requests. More details on pricing [here](https://developers.openai.com/api/docs/pricing).
 
 ## Model details
 

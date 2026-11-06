@@ -30,10 +30,10 @@ featureMetadata:
     - claude-sonnet-4-5-20250929
 ---
 
-The monitoring calls on this page run from your monitoring or operations tooling, authenticated with your Claude API key. The worker helpers handle the claim and keep-alive loop, so you don’t call those endpoints directly.
+The queue statistics and stop calls on this page run from your monitoring or operations tooling, authenticated with your organization API key. The worker helpers handle the claim and keep-alive loop, so you don’t call those endpoints directly.
 
 <Warning>
-  These endpoints accept either your organization API key or the environment key. Call them from outside the worker host with your organization API key. Setting `ANTHROPIC_API_KEY` on the worker host exposes an organization-scoped credential to agent tool calls.
+  The queue statistics and stop endpoints accept either your organization API key or the environment key. Call them from outside the worker host with your organization API key. Setting `ANTHROPIC_API_KEY` on the worker host exposes an organization-scoped credential to agent tool calls.
 </Warning>
 
 ## Read queue depth
@@ -71,7 +71,7 @@ By default the work item moves to `stopping`. The worker detects this on its nex
 
 Pass `--force` (cli: `--force`) to mark the work item `stopped` immediately instead of waiting for the worker’s confirmation. A forced stop doesn’t end an in-flight tool call any sooner, because the worker still detects the stop on its next heartbeat.
 
-Because these calls run from your operations tooling rather than the worker host, `ANTHROPIC_WORK_ID` isn’t set automatically. Set it to the target work item’s ID before running the following examples. To find a work item’s ID, list the environment’s work items through the [Environments Work endpoints](https://platform.claude.com/docs/en/api/beta/environments/work?sdk_languages=cli).
+Because these calls run from your operations tooling rather than the worker host, `ANTHROPIC_WORK_ID` isn’t set automatically. Set it to the target work item’s ID before running the following examples. To find a work item’s ID, call [List Work Items](https://platform.claude.com/docs/en/api/beta/environments/work/list?sdk_languages=cli) with the environment key, sent as `Authorization: Bearer $ANTHROPIC_ENVIRONMENT_KEY`. That endpoint rejects your organization API key.
 
 <CodeGroup>
   ```bash CLI

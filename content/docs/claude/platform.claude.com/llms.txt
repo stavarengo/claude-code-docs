@@ -20,18 +20,18 @@ The latest version of each Claude Platform SDK and of the ant CLI is at https://
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 885 pages - /docs - Content included below
-- German (Deutsch) (de) - 308 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 308 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 308 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 308 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 308 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 308 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 308 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 308 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 308 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 308 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 308 pages - /docs/id - Visit website for content
+- English (en) - 886 pages - /docs - Content included below
+- German (Deutsch) (de) - 309 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 309 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 309 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 309 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 309 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 309 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 309 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 309 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 309 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 309 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 309 pages - /docs/id - Visit website for content
 
 ---
 
@@ -205,6 +205,7 @@ The full documentation is available in the following languages on https://platfo
 - [Errors](https://platform.claude.com/docs/en/manage-claude/compliance-errors.md) - Handle Compliance API errors
 - [How it works](https://platform.claude.com/docs/en/manage-claude/cmek-how-it-works.md) - How CMEK works
 - [Overview](https://platform.claude.com/docs/en/manage-claude/inference-hooks.md) - Inference hooks
+- [IP allowlisting (beta)](https://platform.claude.com/docs/en/manage-claude/ip-allowlist.md) - IP allowlisting
 - [Limit key to workspaces](https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms-workspaces.md) - Limit an AWS KMS key to specific workspaces
 - [Organizations, users, roles, groups, and settings](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, groups, and settings
 - [Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md)

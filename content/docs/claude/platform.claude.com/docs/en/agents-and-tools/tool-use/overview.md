@@ -16,9 +16,9 @@ Here’s a minimal example using a server tool, the [Web search tool](https://pl
     -H "content-type: application/json" \
     -d '{
       "model": "claude-opus-5-5",
-      "max_tokens": 1024,
+      "max_tokens": 4096,
       "tools": [{"type": "web_search_20260209", "name": "web_search"}],
-      "messages": [{"role": "user", "content": "What'\''s the latest on the Mars rover?"}]
+      "messages": [{"role": "user", "content": "What is the latest on the Mars rover?"}]
     }'
   ```
 </CodeGroup>
@@ -194,7 +194,6 @@ When you use `tools`, the API also automatically includes a special system promp
 | Claude Sonnet 4 ([retired, except on Claude Models on Google Cloud (Google managed) and Bedrock](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl)) | 313 tokens                                | 315 tokens                               |
 | Claude Haiku 5.5                                                                                                                                                                          | 286 tokens                                | 406 tokens                               |
 | Claude Haiku 4.5                                                                                                                                                                          | 496 tokens                                | 588 tokens                               |
-| Claude Haiku 3.5 ([retired, except on Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl))            | 264 tokens                                | 355 tokens                               |
 
 * **auto, none:** The count when tool\_choice is auto or none.
 * **any, tool:** The count when tool\_choice is any or tool.
