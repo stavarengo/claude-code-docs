@@ -1801,7 +1801,7 @@ The JavaScript sample uses `npm install openai@^7.10.0 ws`.
 The Ruby sample uses `gem install openai async-websocket`.
 
 For Go, run `go get github.com/openai/openai-go/v3@v3.96.0`.
-For Java, add the Maven dependency `com.openai:openai-java:4.98.0`.
+For Java, add the Maven dependency `com.openai:openai-java:4.101.0`.
 These Go and Java SDK versions provide native Responses WebSocket support.
 
 Start a Responses API WebSocket session

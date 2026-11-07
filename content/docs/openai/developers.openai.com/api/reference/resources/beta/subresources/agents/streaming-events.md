@@ -1519,6 +1519,16 @@ Schema name: `SessionEventAgentSessionCreated`
 
     `minItems: 0`, `maxItems: 2000`
 
+  - `prompt_cache_options: optional object { ttl }  or null`
+
+    Default prompt cache lifetime for turns in this session, when configured.
+
+    - `ttl: "30m" or "12h"`
+
+      - `"30m"`
+
+      - `"12h"`
+
   - `review: optional "none" or "auto_review"`
 
     Review applied to eligible actions in this session. Omitted when review is none and automatic review is not enabled. Omission means none.
@@ -1546,6 +1556,9 @@ Schema name: `SessionEventAgentSessionCreated`
   "type": "agent.session.created",
   "event_id": "event_id",
   "session": {
+    "prompt_cache_options": {
+      "ttl": "30m"
+    },
     "review": "none",
     "metadata": {
       "foo": "string"
@@ -1900,6 +1913,16 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
       `format: int64`
 
+  - `prompt_cache_options: optional object { ttl }  or null`
+
+    Prompt cache lifetime selected when this turn started, including an inherited session TTL. Null when the turn used the model default or no TTL was recorded.
+
+    - `ttl: "30m" or "12h"`
+
+      - `"30m"`
+
+      - `"12h"`
+
 - `turn_id: string`
 
   The ID of the turn associated with the event.
@@ -1927,6 +1950,9 @@ Schema name: `SessionEventAgentSessionTurnCreated`
   "session_id": "session_id",
   "turn_id": "turn_id",
   "turn": {
+    "prompt_cache_options": {
+      "ttl": "30m"
+    },
     "id": "id",
     "object": "agent.session.turn",
     "session_id": "session_id",
@@ -2210,6 +2236,16 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
       `format: int64`
 
+  - `prompt_cache_options: optional object { ttl }  or null`
+
+    Prompt cache lifetime selected when this turn started, including an inherited session TTL. Null when the turn used the model default or no TTL was recorded.
+
+    - `ttl: "30m" or "12h"`
+
+      - `"30m"`
+
+      - `"12h"`
+
 - `turn_id: string`
 
   The ID of the turn associated with the event.
@@ -2237,6 +2273,9 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
   "session_id": "session_id",
   "turn_id": "turn_id",
   "turn": {
+    "prompt_cache_options": {
+      "ttl": "30m"
+    },
     "id": "id",
     "object": "agent.session.turn",
     "session_id": "session_id",
@@ -2520,6 +2559,16 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
       `format: int64`
 
+  - `prompt_cache_options: optional object { ttl }  or null`
+
+    Prompt cache lifetime selected when this turn started, including an inherited session TTL. Null when the turn used the model default or no TTL was recorded.
+
+    - `ttl: "30m" or "12h"`
+
+      - `"30m"`
+
+      - `"12h"`
+
 - `turn_id: string`
 
   The ID of the turn associated with the event.
@@ -2551,6 +2600,9 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
   "session_id": "session_id",
   "turn_id": "turn_id",
   "turn": {
+    "prompt_cache_options": {
+      "ttl": "30m"
+    },
     "id": "id",
     "object": "agent.session.turn",
     "session_id": "session_id",
@@ -2845,6 +2897,16 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
       `format: int64`
 
+  - `prompt_cache_options: optional object { ttl }  or null`
+
+    Prompt cache lifetime selected when this turn started, including an inherited session TTL. Null when the turn used the model default or no TTL was recorded.
+
+    - `ttl: "30m" or "12h"`
+
+      - `"30m"`
+
+      - `"12h"`
+
 - `turn_id: string`
 
   The ID of the turn associated with the event.
@@ -2876,6 +2938,9 @@ Schema name: `SessionEventAgentSessionTurnFailed`
   "session_id": "session_id",
   "turn_id": "turn_id",
   "turn": {
+    "prompt_cache_options": {
+      "ttl": "30m"
+    },
     "id": "id",
     "object": "agent.session.turn",
     "session_id": "session_id",
@@ -3170,6 +3235,16 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
       `format: int64`
 
+  - `prompt_cache_options: optional object { ttl }  or null`
+
+    Prompt cache lifetime selected when this turn started, including an inherited session TTL. Null when the turn used the model default or no TTL was recorded.
+
+    - `ttl: "30m" or "12h"`
+
+      - `"30m"`
+
+      - `"12h"`
+
 - `turn_id: string`
 
   The ID of the turn associated with the event.
@@ -3201,6 +3276,9 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
   "session_id": "session_id",
   "turn_id": "turn_id",
   "turn": {
+    "prompt_cache_options": {
+      "ttl": "30m"
+    },
     "id": "id",
     "object": "agent.session.turn",
     "session_id": "session_id",
@@ -5338,6 +5416,16 @@ Schema name: `SessionEventAgentSessionIdle`
 
     `minItems: 0`, `maxItems: 2000`
 
+  - `prompt_cache_options: optional object { ttl }  or null`
+
+    Default prompt cache lifetime for turns in this session, when configured.
+
+    - `ttl: "30m" or "12h"`
+
+      - `"30m"`
+
+      - `"12h"`
+
   - `review: optional "none" or "auto_review"`
 
     Review applied to eligible actions in this session. Omitted when review is none and automatic review is not enabled. Omission means none.
@@ -5365,6 +5453,9 @@ Schema name: `SessionEventAgentSessionIdle`
   "type": "agent.session.idle",
   "event_id": "event_id",
   "session": {
+    "prompt_cache_options": {
+      "ttl": "30m"
+    },
     "review": "none",
     "metadata": {
       "foo": "string"
@@ -6447,6 +6538,16 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     `minItems: 0`, `maxItems: 2000`
 
+  - `prompt_cache_options: optional object { ttl }  or null`
+
+    Default prompt cache lifetime for turns in this session, when configured.
+
+    - `ttl: "30m" or "12h"`
+
+      - `"30m"`
+
+      - `"12h"`
+
   - `review: optional "none" or "auto_review"`
 
     Review applied to eligible actions in this session. Omitted when review is none and automatic review is not enabled. Omission means none.
@@ -6474,6 +6575,9 @@ Schema name: `SessionEventAgentSessionInProgress`
   "type": "agent.session.in_progress",
   "event_id": "event_id",
   "session": {
+    "prompt_cache_options": {
+      "ttl": "30m"
+    },
     "review": "none",
     "metadata": {
       "foo": "string"
@@ -7556,6 +7660,16 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     `minItems: 0`, `maxItems: 2000`
 
+  - `prompt_cache_options: optional object { ttl }  or null`
+
+    Default prompt cache lifetime for turns in this session, when configured.
+
+    - `ttl: "30m" or "12h"`
+
+      - `"30m"`
+
+      - `"12h"`
+
   - `review: optional "none" or "auto_review"`
 
     Review applied to eligible actions in this session. Omitted when review is none and automatic review is not enabled. Omission means none.
@@ -7583,6 +7697,9 @@ Schema name: `SessionEventAgentSessionRequiresAction`
   "type": "agent.session.requires_action",
   "event_id": "event_id",
   "session": {
+    "prompt_cache_options": {
+      "ttl": "30m"
+    },
     "review": "none",
     "metadata": {
       "foo": "string"
@@ -8665,6 +8782,16 @@ Schema name: `SessionEventAgentSessionFailed`
 
     `minItems: 0`, `maxItems: 2000`
 
+  - `prompt_cache_options: optional object { ttl }  or null`
+
+    Default prompt cache lifetime for turns in this session, when configured.
+
+    - `ttl: "30m" or "12h"`
+
+      - `"30m"`
+
+      - `"12h"`
+
   - `review: optional "none" or "auto_review"`
 
     Review applied to eligible actions in this session. Omitted when review is none and automatic review is not enabled. Omission means none.
@@ -8692,6 +8819,9 @@ Schema name: `SessionEventAgentSessionFailed`
   "type": "agent.session.failed",
   "event_id": "event_id",
   "session": {
+    "prompt_cache_options": {
+      "ttl": "30m"
+    },
     "review": "none",
     "metadata": {
       "foo": "string"

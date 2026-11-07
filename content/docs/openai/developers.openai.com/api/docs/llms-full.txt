@@ -6920,7 +6920,7 @@ The JavaScript sample uses `npm install openai@^7.10.0 ws`.
 The Ruby sample uses `gem install openai async-websocket`.
 
 For Go, run `go get github.com/openai/openai-go/v3@v3.96.0`.
-For Java, add the Maven dependency `com.openai:openai-java:4.98.0`.
+For Java, add the Maven dependency `com.openai:openai-java:4.101.0`.
 These Go and Java SDK versions provide native Responses WebSocket support.
 
 Start a Responses API WebSocket session
@@ -24506,11 +24506,12 @@ See the [Create session reference](https://developers.openai.com/api/reference/r
 
 ## Update settings for an existing session
 
-Send `POST /v1/agents/sessions/{session_id}` with an `agent` object to change `model`, `reasoning.effort`, or `service_tier` for one session. These settings are available in the beta and GA API contracts. You can update `metadata` in the same request.
+Send `POST /v1/agents/sessions/{session_id}` with an `agent` object to change `tools`, `model`, `reasoning.effort`, or `service_tier` for one session. These settings are available in the beta and GA API contracts. You can update `metadata` in the same request.
 
-Changes apply to new turns started by messages sent after the update completes. Messages already in flight can use the previous settings. An active turn keeps its settings, including when you send a steering message. The session keeps its conversation history. The selected model must support the resulting settings, or the update fails.
+Model, reasoning effort, and service tier changes apply to new turns started by messages sent after the update completes. Messages already in flight can use the previous settings. An active turn keeps those settings, including when you send a steering message. The session keeps its conversation history. The selected model must support the resulting settings, or the update fails.
 
 - The `agent` and `reasoning` objects merge supplied fields into the current settings. Omitted fields stay unchanged, including reasoning summary. Changing only `model` preserves the session's reasoning effort and service tier.
+- `tools` replaces the full tool list. Functions and MCP servers change on the next model call. Built-in tools change by the next turn. Omit `tools` to preserve the current tools, or pass `null` or `[]` to clear them.
 - `reasoning.effort: null` resets effort to the selected model's default.
 - `service_tier: null` restores automatic tier selection.
 - A model must remain set, so you cannot supply `model: null`. The `agent` and `reasoning` objects also reject `null`.
@@ -24529,7 +24530,7 @@ For example, this request changes reasoning effort and lets the API select the s
 
 Updating a session does not change the saved agent or other sessions. Later saved-agent updates do not change the session.
 
-You cannot update `reasoning.summary`, `text`, `tools`, `instructions`, or `multi_agent` through this endpoint. Create a new session to change those settings.
+You cannot update `reasoning.summary`, `text`, `instructions`, or `multi_agent` through this endpoint. Create a new session to change those settings. See the [Update session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/update) for request fields.
 
 ## Automatic action review
 
@@ -39676,12 +39677,6 @@ Now that you know the basics of DPO, explore these other methods as well.
 
       Learn to fine-tune for computer vision with image inputs.](https://developers.openai.com/api/docs/guides/vision-fine-tuning)
 
-[Reinforcement fine-tuning
-
-
-
-      Fine-tune a reasoning model by grading its outputs.](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning)
-
 ---
 
 # E2B
@@ -40566,7 +40561,7 @@ You'll often see numerical eval scores between 0 and 1. There's more to evals th
 
 ## Design your eval process
 
-There are a few important components of an eval workflow:
+An eval workflow has a few important components:
 
 1. **Define eval objective**. What's the success criteria for the eval?
 1. **Collect dataset**. Which data will help you evaluate against your objective? Consider synthetic eval data, domain-specific eval data, purchased eval data, human-curated eval data, production data, and historical data.
@@ -40631,7 +40626,7 @@ When creating an eval dataset,
 
 ## Identify where you need evals
 
-Complexity increases as you move from simple to more complex architectures. Here are four common architecture patterns:
+Complexity increases as you move from basic to more complex architectures. Here are four common architecture patterns:
 
 - [Single-turn model interactions](#single-turn-model-interactions)
 - [Workflows](#workflow-architectures)
@@ -40918,20 +40913,20 @@ As you design your own evals, there are several specific evaluator types to choo
 
 Quantitative evals provide a numerical score you can use to filter and rank results. They provide useful benchmarks for automated regression testing.
 
-- **Examples**: Exact match, string match, ROUGE/BLEU scoring, function call accuracy, executable evals (executed to assess functionality or behavior—e.g., text2sql)
+- **Examples**: Exact match, string match, ROUGE/BLEU scoring, function call accuracy, executable evals (executed to assess functionality or behavior—for example, text2sql)
 - **Challenges**: May not be tailored to specific use cases, may miss nuance
 
 ### Human evals
 
 Human judgment evals provide the highest quality but are slow and expensive.
 
-- **Examples**: Skim over system outputs to get a sense of whether they look better or worse; create a randomized, blinded test in which employees, contractors, or outsourced labeling agencies judge the quality of system outputs (e.g., ranking a small set of possible outputs, or giving each a grade of 1-5)
+- **Examples**: Skim over system outputs to get a sense of whether they look better or worse; create a randomized, blinded test in which employees, contractors, or outsourced labeling agencies judge the quality of system outputs (for example, ranking a small set of possible outputs, or giving each a grade of 1-5)
 - **Challenges**: Disagreement among human experts, expensive, slow
 - **Recommendations**:
   - Conduct multiple rounds of detailed human review to refine the scorecard
-  - Implement a "show rather than tell" policy by providing examples of different score levels (e.g., 1, 3, and 8 out of 10)
+  - Implement a "show rather than tell" policy by providing examples of different score levels (for example, 1, 3, and 8 out of 10)
   - Include a pass/fail threshold in addition to the numerical score
-  - A simple way to aggregate multiple reviewers is to take consensus votes
+  - One way to aggregate multiple reviewers is to take consensus votes
 
 ### LLM-as-a-judge and model graders
 
@@ -40964,8 +40959,8 @@ We see these edge cases fall into a few buckets:
 Because users provide input to the model, our system must be flexible to handle the different ways our users may interact, like:
 
 - Non-English or multilingual inputs
-- Formats other than input text (e.g., XML, JSON, Markdown, CSV)
-- Input modalities (e.g., images)
+- Formats other than input text (for example, XML, JSON, Markdown, CSV)
+- Input modalities (for example, images)
 
 Your evals for instruction following and functional correctness need to accommodate inputs that users might try.
 
@@ -40977,25 +40972,23 @@ Examples include:
 
 - Multiple questions or intents in a single request
 - Typos and misspellings
-- Short requests with minimal context (e.g., if a user just says: "returns")
+- Short requests with minimal context (for example, if a user just says: "returns")
 - Long context or long-running conversations
-- Tool calls that return data with ambiguous property names (e.g., `"on: 123"`, where "on" is the order number)
+- Tool calls that return data with ambiguous property names (for example, `"on: 123"`, where "on" is the order number)
 - Multiple tool calls, sometimes leading to incorrect arguments
 - Multiple agent handoffs, sometimes leading to circular handoffs
 
 ### Personalization and customization
 
-While AI improves UX by adapting to user-specific requests, this flexibility introduces many edge cases. Clearly define evals for use cases you want to specifically support and block:
+While AI improves UX by adapting to user-specific requests, this flexibility introduces many edge cases. Define evals in clear terms for use cases you want to specifically support and block:
 
 - Jailbreak attempts to get the model to do something different
-- Formatting requests (e.g., format as JSON, or use bullet points)
+- Formatting requests (for example, format as JSON, or use bullet points)
 - Cases where user prompts conflict with your system prompts
 
 ## Use evals to improve performance
 
 When your evals reach a level of maturity that consistently measures performance, shift to using your evals data to improve your application's performance.
-
-Learn more about [reinforcement fine-tuning](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning) to create a data flywheel.
 
 ## Other resources
 
@@ -48511,7 +48504,7 @@ For direct audio connections to GPT-Live, we recommend [WebRTC](https://develope
 
 # Graders
 
-Graders are a way to evaluate your model's performance against reference answers. Our [graders API](https://developers.openai.com/api/reference/resources/graders) is a way to test your graders, experiment with results, and improve your fine-tuning or evaluation framework to get the results you want.
+Graders are a way to evaluate your model's performance against reference answers. Our [graders API](https://developers.openai.com/api/reference/resources/graders) is a way to test your graders, experiment with results, and improve your evaluation framework to get the results you want.
 
 OpenAI is deprecating graders as part of the evals and fine-tuning workflows
   they support. See the [deprecations page](https://developers.openai.com/api/docs/deprecations) for the
@@ -48528,9 +48521,7 @@ Graders are specified in JSON format, and there are several types:
 - [Score model grader](#score-model-graders)
 - [Python code execution](#python-graders)
 
-In reinforcement fine-tuning, you can nest and combine graders by using [`multigrader` objects](#combined-graders).
-
-Use this guide to learn about each grader type and see starter examples. To build a grader and get started with reinforcement fine-tuning, see the [RFT guide](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning). Or to get started with evals, see the [Evals guide](https://developers.openai.com/api/docs/guides/evals).
+Use this guide to learn about each grader type and see starter examples. To get started with evals, see the [Evals guide](https://developers.openai.com/api/docs/guides/evals).
 
 ## Templating
 
@@ -48542,7 +48533,7 @@ All nested variables can be accessed with JSON path like syntax.
 
 ### Item namespace
 
-The item namespace will be populated with variables from the input data source for evals, and from each dataset item for fine-tuning. For example, if a row contains the following
+The item namespace will be populated with variables from the input data source for evals. For example, if a row contains the following
 
 ```json
 {
@@ -48554,7 +48545,7 @@ This can be used within the grader as `{{ item.reference_answer }}`.
 
 ### Sample namespace
 
-The sample namespace will be populated with variables from the model sampling step during evals or during the fine-tuning step. The following variables are included
+The sample namespace will be populated with variables from the model sampling step during evals. The following variables are included
 
 - `output_text`, the model output content as a string.
 - `output_json`, the model output content as a JSON object, only if `response_format` is included in the sample.
@@ -48563,47 +48554,6 @@ The sample namespace will be populated with variables from the model sampling st
 - `output_audio`, the model audio output object containing Base64-encoded `data` and a `transcript`.
 
 For example, to access the model output content as a string, `{{ sample.output_text }}` can be used within the grader.
-
-
-
-#### Details on grading tool calls
-
-
-
-When training a model to improve tool-calling behavior, you will need to write your grader to operate over the `sample.output_tools` variable. The contents of this variable will be the same as the contents of the `response.choices[0].message.tool_calls` ([see function calling docs](https://developers.openai.com/api/docs/guides/function-calling?api-mode=chat)).
-
-A common way of grading tool calls is to use two graders, one that checks the name of the tool that is called and another that checks the arguments of the called function. An example of a grader that does this is shown below:
-
-```json
-{
-  "type": "multi",
-  "graders": {
-    "function_name": {
-      "name": "function_name",
-      "type": "string_check",
-      "input": "get_acceptors",
-      "reference": "{{sample.output_tools[0].function.name}}",
-      "operation": "eq"
-    },
-    "arguments": {
-      "name": "arguments",
-      "type": "string_check",
-      "input": "{\"smiles\": \"{{item.smiles}}\"}",
-      "reference": "{{sample.output_tools[0].function.arguments}}",
-      "operation": "eq"
-    }
-  },
-  "calculate_output": "0.5 * function_name + 0.5 * arguments"
-}
-```
-
-This is a `multi` grader that combined two simple `string_check` graders, the first checks the name of the tool called via the `sample.output_tools[0].function.name` variable, and the second checks the arguments of the called function via the `sample.output_tools[0].function.arguments` variable. The `calculate_output` field is used to combine the two scores into a single score.
-
-The `arguments` grader is prone to under-rewarding the model if the function arguments are subtly incorrect, like if `1` is submitted instead of the floating point `1.0`, or if a state name is given as an abbreviation instead of spelling it out. To avoid this, you can use a `text_similarity` grader instead of a `string_check` grader, or a `score_model` grader to have a LLM check for semantic similarity.
-
-
-
-
 
 ## String check graders
 
@@ -48654,7 +48604,7 @@ Operations supported for `string-similarity-grader` are:
 
 ## Model graders
 
-In general, using a model grader means prompting a separate model to grade the outputs of the model you're fine-tuning. Your two models work together to do reinforcement fine-tuning. The _grader model_ evaluates the _training model_.
+Using a model grader means prompting a separate model to grade the outputs of the model you're evaluating.
 
 ### Score model graders
 
@@ -48834,10 +48784,6 @@ Verify that the model grader's answers match that:
 model_grader(answer_1, reference_answer) > model_grader(answer_2, reference_answer) > model_grader(answer_3, reference_answer)
 ```
 
-### Grader hacking
-
-Models being trained sometimes learn to exploit weaknesses in model graders, also known as “grader hacking” or “reward hacking." You can detect this by checking the model's performance across model grader evals and expert human evals. A model that's hacked the grader will score highly on model grader evals but score poorly on expert human evaluations. Over time, we intend to improve observability in the API to make it easier to detect this during training.
-
 ## Python graders
 
 This grader allows you to execute arbitrary python code to grade the model output. The grader expects a grade function to be present that takes in two arguments and outputs a float value. Any other result (exception, invalid float value, etc.) will be marked as invalid and return a 0 grade.
@@ -48862,7 +48808,7 @@ def grade(sample: dict[str, Any], item: dict[str, Any]) -> float:
 ```
 
 
-The first argument supplied to the grading function will be a dictionary populated with the model’s output during training for you to grade. `output_json` will only be populated if the output uses `response_format`.
+The first argument supplied to the grading function will be a dictionary populated with the model’s output for you to grade. `output_json` will only be populated if the output uses `response_format`.
 
 ```json
 {
@@ -48874,7 +48820,7 @@ The first argument supplied to the grading function will be a dictionary populat
 }
 ```
 
-The second argument supplied is a dictionary populated with input grading context. For evals, this will include keys from the data source. For fine-tuning this will include keys from each training data row.
+The second argument supplied is a dictionary populated with input grading context. For evals, this will include keys from the data source.
 
 ```json
 {
@@ -49000,74 +48946,6 @@ omw-1.4
 names
 ```
 
-## Combined graders
-
-> Currently, this grader is only used for Reinforcement fine-tuning
-
-A `multigrader` object combines the output of multiple graders to produce a single score. Combined graders compute grades over the fields of other grader objects and turn those sub-grades into an overall grade. This is useful when a correct answer depends on multiple things being true—for example, that the text is similar _and_ that the answer contains a specific string.
-
-As an example, say you wanted the model to output JSON with the following two fields:
-
-```json
-{
-  "name": "John Doe",
-  "email": "john.doe@gmail.com"
-}
-```
-
-You'd want your grader to compare the two fields and then take the average between them.
-
-You can do this by combining multiple graders into an object grader, and then defining a formula to calculate the output score based on each field:
-
-```json
-{
-  "type": "multi",
-  "graders": {
-    "name": {
-      "name": "name_grader",
-      "type": "text_similarity",
-      "input": "{{sample.output_json.name}}",
-      "reference": "{{item.name}}",
-      "evaluation_metric": "fuzzy_match",
-      "pass_threshold": 0.9
-    },
-    "email": {
-      "name": "email_grader",
-      "type": "string_check",
-      "input": "{{sample.output_json.email}}",
-      "reference": "{{item.email}}",
-      "operation": "eq"
-    }
-  },
-  "calculate_output": "(name + email) / 2"
-}
-```
-
-In this example, it’s important for the model to get the email exactly right (`string_check` returns either 0 or 1) but we tolerate some misspellings on the name (`text_similarity` returns range from 0 to 1). Samples that get the email wrong will score between 0-0.5, and samples that get the email right will score between 0.5-1.0.
-
-You cannot nest one `multigrader` inside another.
-
-The calculate output field will have the keys of the input `graders` as possible variables and the following features are supported:
-
-**Operators**
-
-- `+` (addition)
-- `-` (subtraction)
-- `*` (multiplication)
-- `/` (division)
-- `^` (power)
-
-**Functions**
-
-- `min`
-- `max`
-- `abs`
-- `floor`
-- `ceil`
-- `exp`
-- `sqrt`
-- `log`
-
 ## Limitations and tips
 
 Designing and creating graders is an iterative process. Start small, experiment, and continue to make changes to get better results.
@@ -49076,8 +48954,6 @@ Designing and creating graders is an iterative process. Start small, experiment,
 
 To get the most value from your graders, use these design principles:
 
-- **Produce a smooth score, not a pass/fail stamp**. A score that shifts gradually as answers improve helps the optimizer see which changes matter.
-- **Guard against reward hacking**. This happens when the model finds a shortcut that earns high scores without real skill. Make it hard to loophole your grading system.
 - **Avoid skewed data**. Datasets in which one label shows up most of the time invite the model to guess that label. Balance the set or up‑weight rare cases so the model must think.
 - **Use an LLM‑as‑a-judge when code falls short**. For rich, open‑ended answers, ask another language model to grade. When building LLM graders, run multiple candidate responses and ground truths through your LLM judge to ensure grading is stable and aligned with preference. Provide few-shot examples of great, fair, and poor answers in the prompt.
 
@@ -49330,7 +49206,7 @@ the written engagement scope at the boundary where side effects occur:
 Responses API and Agents SDK applications don't automatically inherit
 [Codex Auto-review](https://developers.openai.com/codex/sandboxing/auto-review). Add review and enforcement
 to your own harness. The
-[open-source Codex reviewer policy](https://github.com/openai/codex/blob/main/codex-rs/core/src/guardian/policy.md)
+[open-source Codex reviewer policy](https://github.com/openai/codex/blob/rust-v0.167.0/codex-rs/prompts/templates/guardian/policy.md)
 illustrates one approach. Review [Models and Trusted Access](https://developers.openai.com/codex/cyber-safety)
 for approved model access and [Recommended configuration](https://developers.openai.com/codex/cyber-safety/recommended-configuration)
 for safe engagement setup.
@@ -52031,7 +51907,7 @@ curl --fail --silent --show-error https://api.openai.com/v1/images/edits \
 3. Send the annotation layer as `markup`. Multipart requests accept a file upload. JSON requests accept an object containing exactly one of `image_url` or `file_id`; `image_url` can contain an HTTPS URL or a base64 data URL. JSON edit requests use `images` for the input image array.
 4. Describe the requested change and the details you want to preserve. Review the result before using it.
 
-Markup applies to the first input image. Additional images serve as references. The first input image and the annotation layer can each contain at most 16,777,216 pixels. The annotation file also has a 50 MB size limit. Do not combine `markup` with `mask` or `prompt_rewriter`.
+Markup applies to the first input image. Additional images serve as references. The first input image and the annotation layer can each contain at most 16,777,216 pixels. The annotation file also has a 50 MB size limit. Do not combine `markup` with `mask`.
 
 ### Edit an image using a mask
 
@@ -52661,7 +52537,7 @@ Using `jpeg` is faster than `png`, so you should prioritize this format if
 
 Set `output_format: "svg"` on `POST /v1/images/generations`. Use SVG for graphics that need editable paths, shapes, and colors, such as icons and illustrations.
 
-Set `n` to `1`. SVG output does not support streaming, partial images, `output_compression`, or `prompt_rewriter`. The image edit endpoint does not support SVG output, and an SVG is not a supported raster input for image edits.
+Set `n` to `1`. SVG output does not support streaming, partial images, or `output_compression`. The image edit endpoint does not support SVG output, and an SVG is not a supported raster input for image edits.
 
 The API creates a reference image and uses it to produce the SVG. The `quality` setting controls that reference image. Decode `data[0].b64_json` as base64 and save the resulting UTF-8 XML bytes with a `.svg` extension. The returned document contains static vector content; it does not support scripts, external resources, or embedded raster images.
 
@@ -52706,7 +52582,7 @@ Use these request fields for GIF output from either endpoint:
 
 `size` describes each finished frame. The frame count, frame dimensions, and number of animations must fit the model's size limits and the total request pixel budget. If the request exceeds those limits, reduce `frame_count`, the frame dimensions, or `n`. Use `auto` to let the API choose a frame size within the model's limits.
 
-The response contains the finished animation. Decode each result's `b64_json` value as base64 and save the bytes with a `.gif` extension. GIF output does not support streaming, partial images, custom `output_compression`, or `prompt_rewriter`. Use `frame_count` and `frame_duration_ms` only with GIF output.
+The response contains the finished animation. Decode each result's `b64_json` value as base64 and save the bytes with a `.gif` extension. GIF output does not support streaming, partial images, or custom `output_compression`. Use `frame_count` and `frame_duration_ms` only with GIF output.
 
 Sunburst generated this lantern animation with `frame_count=9` and `frame_duration_ms=200`. The monkey returns to its starting pose after 1.8 seconds.
 
@@ -54606,7 +54482,7 @@ In these outputs, `low` places a crown on the trophy. At `medium`, a laurel wrea
 
 For a logo you can scale or recolor by editing its paths, send the [Field & Flour bakery logo prompt](#design-a-reusable-logo) to `POST /v1/images/generations`. Set `output_format="svg"` and `n=1`. SVG also supports `background="transparent"`, so the space around the mark can take the color of the surface behind it.
 
-Omit `stream`, `partial_images`, `output_compression`, and `prompt_rewriter` from the SVG request. Decode `data[0].b64_json` from base64 and save the resulting XML as a `.svg` file.
+Omit `stream`, `partial_images`, and `output_compression` from the SVG request. Decode `data[0].b64_json` from base64 and save the resulting XML as a `.svg` file.
 
 
 
@@ -55027,7 +54903,7 @@ Draw a circle around the object you want to change, then describe the change in 
 
 Send two files in one multipart `POST /v1/images/edits` request. Use the [original kitchen photo](https://developers.openai.com/images/platform/guides/image-prompting/kitchen.webp) for `image` and the [transparent circle overlay](https://developers.openai.com/images/platform/guides/image-prompting/markup-vase-overlay-gpt-image-2-6.png) for `markup`. Both files are 1200 × 900 pixels. The preview shows the two files together.
 
-The markup overlay applies only to the first input image. Any additional images serve as references. Omit `mask` and `prompt_rewriter` when you send `markup`.
+The markup overlay applies only to the first input image. Any additional images serve as references. Omit `mask` when you send `markup`.
 
 
 
@@ -68229,27 +68105,6 @@ Often uses human-generated "ground truth" responses to show the model how it sho
   </td>
 </tr>
 
-<tr>
-<td>
-[Reinforcement fine-tuning (RFT)](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning)
-</td>
-<td>
-Generate a response for a prompt, provide an expert grade for the result, and reinforce the model's chain-of-thought for higher-scored responses.
-
-Requires expert graders to agree on the ideal output from the model.
-
-**Reasoning models only**.
-
-</td>
-<td>
-- Complex domain-specific tasks that require advanced reasoning
-- Medical diagnoses based on history and diagnostic guidelines
-- Determining relevant passages from legal case law
-</td>
-<td>
-`o4-mini-2025-04-16`
-</td>
-</tr>
 </tbody>
 </table>
 
@@ -68262,10 +68117,9 @@ In the OpenAI platform, you can create fine-tuned models either in the [dashboar
 1. Collect a dataset of examples to use as training data
 1. Upload that dataset to OpenAI, formatted in JSONL
 1. Create a fine-tuning job using one of the methods above, depending on your goals—this begins the fine-tuning training process
-1. In the case of RFT, you'll also define a grader to score the model's behavior
 1. Evaluate the results
 
-Get started with [supervised fine-tuning](https://developers.openai.com/api/docs/guides/supervised-fine-tuning), [vision fine-tuning](https://developers.openai.com/api/docs/guides/vision-fine-tuning), [direct preference optimization](https://developers.openai.com/api/docs/guides/direct-preference-optimization), or [reinforcement fine-tuning](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning).
+Get started with [supervised fine-tuning](https://developers.openai.com/api/docs/guides/supervised-fine-tuning), [vision fine-tuning](https://developers.openai.com/api/docs/guides/vision-fine-tuning), or [direct preference optimization](https://developers.openai.com/api/docs/guides/direct-preference-optimization).
 
 ## Learn from experts
 
@@ -72336,6 +72190,372 @@ For managed agent sessions on AWS, see
 
 For setup in ChatGPT Work and Codex, see
 [Use ChatGPT Work and Codex with Amazon Bedrock](https://developers.openai.com/codex/amazon-bedrock).
+
+---
+
+# OpenAI on Google Cloud
+
+Access to OpenAI models through Google Cloud is currently in **private preview**. To use them in your project, [request access](https://openai.com/form/openai-on-google-cloud/).
+
+OpenAI models are available on the Gemini platform through Google Cloud, with usage billed to your Google Cloud account. The models run within Google Cloud’s security perimeter, and your organization manages access through Google Cloud IAM.
+
+This guide covers how to make a Responses API request through Google Cloud and how feature support differs from the first-party OpenAI API.
+
+The following models are available:
+
+| Model         | Model ID        |
+| ------------- | --------------- |
+| GPT-6 Luna    | `gpt-6-luna`    |
+| GPT-6.1 Sol   | `gpt-6.1-sol`   |
+| GPT-6.1 Terra | `gpt-6.1-terra` |
+| GPT-6 Astra   | `gpt-6-astra`   |
+
+## Before you begin
+
+Before you can make requests, your Google Cloud administrator needs to:
+
+- Enable billing for the project, arrange project approval, and coordinate acceptance of the Marketplace private offer with your billing administrator.
+- Enable the Vertex AI API (`aiplatform.googleapis.com`) and the model in Model Garden, including acceptance of the model terms.
+- If your organization’s policy restricts model access, [allow the model in that policy](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/control-model-access).
+- Grant the user or service account making requests permission to call the model, for example by assigning the `roles/aiplatform.user` role.
+
+Once the project is ready, ask your administrator for the project ID.
+
+## Make your first API call
+
+For local development, install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install-sdk) and sign in with the Google account that has access to your project:
+
+```bash
+gcloud auth application-default login
+```
+
+Get an access token in the terminal where you’ll run the request:
+
+```bash
+export GOOGLE_CLOUD_ACCESS_TOKEN="$(gcloud auth application-default print-access-token)"
+```
+
+When the access token expires, run this command again to get a new one using your saved sign-in.
+
+Send the request with cURL or the [OpenAI SDK](https://developers.openai.com/api/docs/libraries#install-an-official-sdk), replacing `your-project-id` with your project ID.
+
+Responses API request on Google Cloud
+
+```bash
+PROJECT_ID="your-project-id"
+PROJECT_URL="https://aiplatform.googleapis.com/v1/projects/$PROJECT_ID"
+
+curl --fail-with-body "$PROJECT_URL/locations/global/publishers/openai/v1/responses" \
+  -H "Authorization: Bearer $GOOGLE_CLOUD_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-6-luna",
+    "input": "Write a one-sentence bedtime story about a unicorn.",
+    "store": false
+  }'
+```
+
+```javascript
+import OpenAI from "openai";
+
+const projectId = "your-project-id";
+
+const client = new OpenAI({
+  apiKey: process.env.GOOGLE_CLOUD_ACCESS_TOKEN,
+  baseURL: `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/global/publishers/openai/v1`,
+});
+
+const response = await client.responses.create({
+  model: "gpt-6-luna",
+  input: "Write a one-sentence bedtime story about a unicorn.",
+  store: false,
+});
+
+console.log(response.output_text);
+```
+
+```python
+import os
+
+from openai import OpenAI
+
+project_id = "your-project-id"
+
+client = OpenAI(
+    api_key=os.environ["GOOGLE_CLOUD_ACCESS_TOKEN"],
+    base_url=(
+        f"https://aiplatform.googleapis.com/v1/projects/{project_id}"
+        "/locations/global/publishers/openai/v1"
+    ),
+)
+response = client.responses.create(
+    model="gpt-6-luna",
+    input="Write a one-sentence bedtime story about a unicorn.",
+    store=False,
+)
+print(response.output_text)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/option"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	ctx := context.Background()
+	projectID := "your-project-id"
+	client := openai.NewClient(
+		option.WithAPIKey(os.Getenv("GOOGLE_CLOUD_ACCESS_TOKEN")),
+		option.WithBaseURL("https://aiplatform.googleapis.com/v1/projects/"+projectID+"/locations/global/publishers/openai/v1"),
+	)
+
+	response, err := client.Responses.New(ctx, responses.ResponseNewParams{
+		Model: "gpt-6-luna",
+		Input: responses.ResponseNewParamsInputUnion{
+			OfString: openai.String("Write a one-sentence bedtime story about a unicorn."),
+		},
+		Store: openai.Bool(false),
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.OutputText())
+}
+```
+
+
+To get access tokens through Google’s authentication library instead of exporting them in your terminal, follow Google’s [getting-started guide](https://github.com/GoogleCloudPlatform/vertex-ai-samples/blob/main/notebooks/official/generative_ai/openai_gpt_intro.ipynb), which explains how to use Application Default Credentials (ADC) and troubleshoot API errors.
+
+## Feature availability
+
+The table compares feature support on Google Cloud with the first-party OpenAI API.
+
+
+
+  <table aria-label="Feature availability">
+    <thead>
+      <tr>
+        <th scope="col">Capability</th>
+        <th scope="col">OpenAI API</th>
+        <th scope="col">Google Cloud</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="rowgroup" colSpan="3">
+          API requests
+        </th>
+      </tr>
+      <tr>
+        <td>Text generation</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Streaming responses over HTTP (SSE)</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Responses API endpoint</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Response token usage</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Input token count endpoint</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+      <tr>
+        <td>Realtime WebSocket connections</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+      <tr>
+        <td>Background requests</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+      <tr>
+        <td>Background stream resume</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+      <tr>
+        <td>Chat Completions API</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+      <tr>
+        <td>Batch processing</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <th scope="rowgroup" colSpan="3">
+          Output and reasoning
+        </th>
+      </tr>
+      <tr>
+        <td>Structured outputs with JSON Schema</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>JSON mode</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Reasoning effort</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Encrypted reasoning</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Reasoning summaries</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <th scope="rowgroup" colSpan="3">
+          Tools and integrations
+        </th>
+      </tr>
+      <tr>
+        <td>Client-side function calling</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Parallel tool calls</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Structured function arguments</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Custom tools</td>
+        <td>Available</td>
+        <td>Available with freeform input or regex constraints</td>
+      </tr>
+      <tr>
+        <td>Client-side tool search</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Client-run MCP and namespaced tools</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Client-side shell tool</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Hosted web search</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+      <tr>
+        <td>Hosted file search and vector stores</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+      <tr>
+        <td>Hosted code execution</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+      <tr>
+        <td>Server-side remote MCP</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <th scope="rowgroup" colSpan="3">
+          Documents and media
+        </th>
+      </tr>
+      <tr>
+        <td>PDF text extraction</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Inline image input</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Image generation</td>
+        <td>Available</td>
+        <td>Not available</td>
+      </tr>
+    </tbody>
+    <tbody>
+      <tr>
+        <th scope="rowgroup" colSpan="3">
+          Conversation state
+        </th>
+      </tr>
+      <tr>
+        <td>Saved conversation continuation</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Stateless conversation continuation</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Conversation compaction</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>Explicit prompt-cache controls</td>
+        <td>Available</td>
+        <td>Available</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+## Data retention
+
+Your prompts and responses are not used to train OpenAI models. Default retention is up to 30 days.
+
+If you require Zero Data Retention (ZDR), contact your OpenAI or Google Cloud representative during onboarding and wait for confirmation of support. Setting `store: false` on a request does not enable ZDR.
 
 ---
 
@@ -94643,1442 +94863,6 @@ Use [evals](https://developers.openai.com/api/docs/guides/evals) to measure whet
 
 ---
 
-# Reinforcement fine-tuning
-
-Reinforcement fine-tuning (RFT) adapts an OpenAI reasoning model with a feedback signal you define. Like [supervised fine-tuning](https://developers.openai.com/api/docs/guides/supervised-fine-tuning), it tailors the model to your task. The difference is that instead of training on fixed “correct” answers, it relies on a programmable grader that scores every candidate response. The training algorithm then shifts the model’s weights, so high-scoring outputs become more likely and low-scoring ones fade.
-
-OpenAI is winding down the fine-tuning platform. The platform is no longer
-  accessible to new users. Eligible existing customers can create training jobs
-  until January 6, 2027, unless the base model shuts down earlier.
-  
-
-  Fine-tuned models remain available for inference until their base model shuts
-  down. The `o4-mini-2025-04-16` base model and its fine-tuned versions shut
-  down on [October 23,
-  2026](https://developers.openai.com/api/docs/deprecations#2026-04-22-legacy-gpt-model-snapshots). See the
-  [fine-tuning availability
-  timeline](https://developers.openai.com/api/docs/deprecations#update-to-openais-self-serve-fine-tuning).
-
-
-
-
-<table>
-<tbody>
-<tr>
-<th>How it works</th>
-<th>Best for</th>
-<th>Use with</th>
-</tr>
-
-<tr>
-<td>
-Generate a response for a prompt, provide an expert grade for the result, and reinforce the model's chain-of-thought for higher-scored responses.
-
-Requires expert graders to agree on the ideal output from the model.
-
-</td>
-<td>
-- Complex domain-specific tasks that require advanced reasoning
-- Medical diagnoses based on history and diagnostic guidelines
-- Determining relevant passages from legal case law
-</td>
-<td>
-`o4-mini-2025-04-16`
-
-**Reasoning models only**.
-
-</td>
-</tr>
-</tbody>
-</table>
-
-This optimization lets you align the model with nuanced objectives like style, safety, or domain accuracy—with many [practical use cases](https://developers.openai.com/api/docs/guides/rft-use-cases) emerging. Run RFT in five steps:
-
-1. Implement a [grader](https://developers.openai.com/api/docs/guides/graders) that assigns a numeric reward to each model response.
-1. Upload your prompt dataset and designate a validation split.
-1. Start the fine-tune job.
-1. Monitor and [evaluate](https://developers.openai.com/api/docs/guides/evals) checkpoints; revise data or grader if needed.
-1. Deploy the resulting model through the standard API.
-
-During training, the platform cycles through the dataset, samples several responses per prompt, scores them with the grader, and applies policy-gradient updates based on those rewards. The loop continues until we hit the end of your training data or you stop the job at a chosen checkpoint, producing a model optimized for the metric that matters to you.
-
-
-
-## When should I use reinforcement fine-tuning?
-
-
-
-It's useful to understand the strengths and weaknesses of reinforcement fine-tuning to identify opportunities and to avoid wasted effort.
-
-- **RFT works best with unambiguous tasks**. Check whether qualified human experts agree on the answers. If conscientious experts working independently (with access only to the same instructions and information as the model) do not converge on the same answers, the task may be too ambiguous and may benefit from revision or reframing.
-- **Your task must be compatible with the grading options**. Review [grading options in the API](https://developers.openai.com/api/reference/resources/graders) first and verify it's possible to grade your task with them.
-- **Your eval results must be variable enough to improve**. Run [evals](https://developers.openai.com/api/docs/guides/evals) before using RFT. If your eval scores between minimum and maximum possible scores, you'll have enough data to work with to reinforce positive answers. If the model you want to fine-tune scores at either the absolute minimum or absolute maximum score, RFT won't be useful to you.
-- **Your model must have some success at the desired task**. Reinforcement fine-tuning makes gradual changes, sampling many answers and choosing the best ones. If a model has a 0% success rate at a given task, you cannot bootstrap to higher performance levels through RFT.
-- **Your task should be guess-proof**. If the model can get a higher reward from a lucky guess, the training signal is too noisy, as the model can get the right answer with an incorrect reasoning process. Reframe your task to make guessing more difficult—for example, by expanding classes into subclasses or revising a multiple choice problem to take open-ended answers.
-
-See common use cases, specific implementations, and grader examples in the [reinforcement fine-tuning use case guide](https://developers.openai.com/api/docs/guides/rft-use-cases).
-
-
-
-
-
-
-
-## What is reinforcement learning?
-
-
-
-Reinforcement learning is a branch of machine learning in which a model learns by acting, receiving feedback, and readjusting itself to maximise future feedback. Instead of memorising one “right” answer per example, the model explores many possible answers, observes a numeric reward for each, and gradually shifts its behaviour so the high-reward answers become more likely and the low-reward ones disappear. Over repeated rounds, the model converges on a policy—a rule for choosing outputs—that best satisfies the reward signal you define.
-
-In reinforcement fine-tuning (RFT), that reward signal comes from a custom grader that you define for your task. For every prompt in your dataset, the platform samples multiple candidate answers, runs your grader to score them, and applies a policy-gradient update that nudges the model toward answers with higher scores. This cycle—sample, grade, update—continues across the dataset (and successive epochs) until the model reliably optimizes for your grader’s understanding of quality. The grader encodes whatever you care about—accuracy, style, safety, or any metric—so the resulting fine-tuned model reflects those priorities and you don't have to manage reinforcement learning infrastructure.
-
-
-
-
-
-Reinforcement fine-tuning is supported on o-series reasoning models only, and
-  currently only for [o4-mini](https://developers.openai.com/api/docs/models/o4-mini).
-
-## Example: LLM-powered security review
-
-To demonstrate reinforcement fine-tuning below, we'll fine-tune an [o4-mini](https://developers.openai.com/api/docs/models/o4-mini) model to provide expert answers about a fictional company's security posture, based on an internal company policy document. We want the model to return a JSON object that conforms to a specific schema with [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
-
-Example input question:
-
-```text
-Do you have a dedicated security team?
-```
-
-Using the internal policy document, we want the model to respond with JSON that has two keys:
-
-- `compliant`: A string `yes`, `no`, or `needs review`, indicating whether the company's policy covers the question.
-- `explanation`: A string of text that briefly explains, based on the policy document, why the question is covered in the policy or why it's not covered.
-
-Example desired output from the model:
-
-```json
-{
-  "compliant": "yes",
-  "explanation": "A dedicated security team follows strict protocols for handling incidents."
-}
-```
-
-Let's fine-tune a model with RFT to perform well at this task.
-
-## Define a grader
-
-To perform RFT, define a [grader](https://developers.openai.com/api/docs/guides/graders) to score the model's output during training, indicating the quality of its response. RFT uses the same set of graders as [evals](https://developers.openai.com/api/docs/guides/evals), which you may already be familiar with.
-
-In this example, we define [multiple graders](https://developers.openai.com/api/reference/resources/graders) to examine the properties of the JSON returned by our fine-tuned model:
-
-- The [`string_check`](https://developers.openai.com/api/reference/resources/graders) grader to ensure the proper `compliant` property has been set
-- The [`score_model`](https://developers.openai.com/api/reference/resources/graders) grader to provide a score between zero and one for the explanation text, using another evaluator model
-
-We weight the output of each property equally in the `calculate_output` expression.
-
-Below is the JSON payload data we'll use for this grader in API requests. In both graders, we use `{{ }}` template syntax to refer to the relevant properties of both the `item` (the row of test data being used for evaluation) and `sample` (the model output generated during the training run).
-
-
-
-Grader configuration
-
-    Multi-grader configuration object
-
-```json
-{
-  "type": "multi",
-  "graders": {
-    "explanation": {
-      "name": "Explanation text grader",
-      "type": "score_model",
-      "input": [
-        {
-          "role": "user",
-          "type": "message",
-          "content": "...see other tab for the full prompt..."
-        }
-      ],
-      "model": "gpt-4o-2024-08-06"
-    },
-    "compliant": {
-      "name": "compliant",
-      "type": "string_check",
-      "reference": "{{item.compliant}}",
-      "operation": "eq",
-      "input": "{{sample.output_json.compliant}}"
-    }
-  },
-  "calculate_output": "0.5 * compliant + 0.5 * explanation"
-}
-```
-
-  
-
-  
-
-    
-Grading prompt
-
-    Grading prompt in the grader config
-
-```markdown
-# Overview
-
-Evaluate the accuracy of the model-generated answer based on the 
-Copernicus Product Security Policy and an example answer. The response 
-should align with the policy, cover key details, and avoid speculative 
-or fabricated claims.
-
-Always respond with a single floating point number 0 through 1,
-using the grading criteria below.
-
-## Grading Criteria:
-- **1.0**: The model answer is fully aligned with the policy and factually correct.
-- **0.75**: The model answer is mostly correct but has minor omissions or slight rewording that does not change meaning.
-- **0.5**: The model answer is partially correct but lacks key details or contains speculative statements.
-- **0.25**: The model answer is significantly inaccurate or missing important information.
-- **0.0**: The model answer is completely incorrect, hallucinates policy details, or is irrelevant.
-
-## Copernicus Product Security Policy
-
-### Introduction
-Protecting customer data is a top priority for Copernicus. Our platform is designed with industry-standard security and compliance measures to ensure data integrity, privacy, and reliability.
-
-### Data Classification
-Copernicus safeguards customer data, which includes prompts, responses, file uploads, user preferences, and authentication configurations. Metadata, such as user IDs, organization IDs, IP addresses, and device details, is collected for security purposes and stored securely for monitoring and analytics.
-
-### Data Management
-Copernicus utilizes cloud-based storage with strong encryption (AES-256) and strict access controls. Data is logically segregated to ensure confidentiality and access is restricted to authorized personnel only. Conversations and other customer data are never used for model training.
-
-### Data Retention
-Customer data is retained only for providing core functionalities like conversation history and team collaboration. Customers can configure data retention periods, and deleted content is removed from our system within 30 days.
-
-### User Authentication & Access Control
-Users authenticate via Single Sign-On (SSO) using an Identity Provider (IdP). Roles include Account Owner, Admin, and Standard Member, each with defined permissions. User provisioning can be automated through SCIM integration.
-
-### Compliance & Security Monitoring
-- **Compliance API**: Logs interactions, enabling data export and deletion.
-- **Audit Logging**: Ensures transparency for security audits.
-- **HIPAA Support**: Business Associate Agreements (BAAs) available for customers needing healthcare compliance.
-- **Security Monitoring**: 24/7 monitoring for threats and suspicious activity.
-- **Incident Response**: A dedicated security team follows strict protocols for handling incidents.
-
-### Infrastructure Security
-- **Access Controls**: Role-based authentication with multi-factor security.
-- **Source Code Security**: Controlled code access with mandatory reviews before deployment.
-- **Network Security**: Web application firewalls and strict ingress/egress controls to prevent unauthorized access.
-- **Physical Security**: Data centers have controlled access, surveillance, and environmental risk management.
-
-### Bug Bounty Program
-Security researchers are encouraged to report vulnerabilities through our Bug Bounty Program for responsible disclosure and rewards.
-
-### Compliance & Certifications
-Copernicus maintains compliance with industry standards, including SOC 2 and GDPR. Customers can access security reports and documentation via our Security Portal.
-
-### Conclusion
-Copernicus prioritizes security, privacy, and compliance. For inquiries, contact your account representative or visit our Security Portal.
-
-## Examples
-
-### Example 1: GDPR Compliance
-**Reference Answer**: 'Copernicus maintains compliance with industry standards, including SOC 2 and GDPR. Customers can access security reports and documentation via our Security Portal.'
-
-**Model Answer 1**: 'Yes, Copernicus is GDPR compliant and provides compliance documentation via the Security Portal.' 
-**Score: 1.0** (fully correct)
-
-**Model Answer 2**: 'Yes, Copernicus follows GDPR standards.'
-**Score: 0.75** (mostly correct but lacks detail about compliance reports)
-
-**Model Answer 3**: 'Copernicus may comply with GDPR but does not provide documentation.'
-**Score: 0.5** (partially correct, speculative about compliance reports)
-
-**Model Answer 4**: 'Copernicus does not follow GDPR standards.'
-**Score: 0.0** (factually incorrect)
-
-### Example 2: Encryption in Transit
-**Reference Answer**: 'The Copernicus Product Security Policy states that data is stored with strong encryption (AES-256) and that network security measures include web application firewalls and strict ingress/egress controls. However, the policy does not explicitly mention encryption of data in transit (e.g., TLS encryption). A review is needed to confirm whether data transmission is encrypted.'
-
-**Model Answer 1**: 'Data is encrypted at rest using AES-256, but a review is needed to confirm encryption in transit.'
-**Score: 1.0** (fully correct)
-
-**Model Answer 2**: 'Yes, Copernicus encrypts data in transit and at rest.'
-**Score: 0.5** (partially correct, assumes transit encryption without confirmation)
-
-**Model Answer 3**: 'All data is protected with encryption.'
-**Score: 0.25** (vague and lacks clarity on encryption specifics)
-
-**Model Answer 4**: 'Data is not encrypted in transit.'
-**Score: 0.0** (factually incorrect)
-
-Reference Answer: {{item.explanation}}
-Model Answer: {{sample.output_json.explanation}}
-```
-
-
-
-## Prepare your dataset
-
-To create an RFT fine-tune, you'll need both a training and test dataset. Both the training and test datasets will share the same [JSONL format](https://jsonlines.org/). Each line in the JSONL data file will contain a `messages` array, along with any additional fields required to grade the output from the model. The full specification for RFT dataset [can be found here](https://developers.openai.com/api/reference/resources/fine_tuning).
-
-In our case, in addition to the `messages` array, each line in our JSONL file also needs `compliant` and `explanation` properties, which we can use as reference values to test the fine-tuned model's Structured Output.
-
-A single line in our training and test datasets looks like this as indented JSON:
-
-```json
-{
-  "messages": [
-    {
-      "role": "user",
-      "content": "Do you have a dedicated security team?"
-    }
-  ],
-  "compliant": "yes",
-  "explanation": "A dedicated security team follows strict protocols for handling incidents."
-}
-```
-
-Below, find some JSONL data you can use for both training and testing when you create your fine-tune job. Note that these datasets are for illustration purposes only—in your real test data, strive for diverse and representative inputs for your application.
-
-**Training set**
-
-```text
-{"messages":[{"role":"user","content":"Do you have a dedicated security team?"}],"compliant":"yes","explanation":"A dedicated security team follows strict protocols for handling incidents."}
-{"messages":[{"role":"user","content":"Have you undergone third-party security audits or penetration testing in the last 12 months?"}],"compliant":"needs review","explanation":"The policy does not explicitly mention undergoing third-party security audits or penetration testing. It only mentions SOC 2 and GDPR compliance."}
-{"messages":[{"role":"user","content":"Is your software SOC 2, ISO 27001, or similarly certified?"}],"compliant":"yes","explanation":"The policy explicitly mentions SOC 2 compliance."}
-```
-
-**Test set**
-
-```text
-{"messages":[{"role":"user","content":"Will our data be encrypted at rest?"}],"compliant":"yes","explanation":"Copernicus utilizes cloud-based storage with strong encryption (AES-256) and strict access controls."}
-{"messages":[{"role":"user","content":"Will data transmitted to/from your services be encrypted in transit?"}],"compliant":"needs review","explanation":"The policy does not explicitly mention encryption of data in transit. It focuses on encryption in cloud storage."}
-{"messages":[{"role":"user","content":"Do you enforce multi-factor authentication (MFA) internally?"}],"compliant":"yes","explanation":"The policy explicitly mentions role-based authentication with multi-factor security."}
-```
-
-
-
-### How much training data is needed?
-
-
-
-Start small—between several dozen and a few hundred examples—to determine the usefulness of RFT before investing in a large dataset. For product safety reasons, the training set must first pass through an automated screening process. Large datasets take longer to process. This screening process begins when you start a fine-tuning job with a file, not upon initial file upload. Once a file has successfully completed screening, you can use it repeatedly without delay.
-
-Dozens of examples can be meaningful as long as they're high quality. After screening, more data is better, as long as it remains high quality. With larger datasets, you can use a higher batch size, which tends to improve training stability.
-
-Your training file can contain a maximum of 50,000 examples. Test datasets can contain a maximum of 1,000 examples. Test datasets also go through automated screening.
-
-
-
-
-
-### Upload your files
-
-The process for uploading RFT training and test data files is the same as [supervised fine-tuning](https://developers.openai.com/api/docs/guides/supervised-fine-tuning). Upload your training data to OpenAI either through the [API](https://developers.openai.com/api/reference/resources/files/methods/create) or [using our UI](https://platform.openai.com/storage). Files must be uploaded with a purpose of `fine-tune` in order to be used with fine-tuning.
-
-**You need file IDs for both your test and training data files** to create a fine-tune job.
-
-## Create a fine-tune job
-
-Create a fine-tune job using either the [API](https://developers.openai.com/api/reference/resources/fine_tuning) or [fine-tuning dashboard](https://platform.openai.com/finetune). To do this, you need:
-
-- File IDs for both your training and test datasets
-- The grader configuration we created earlier
-- The model ID you want to use as a base for fine-tuning (we'll use `o4-mini-2025-04-16`)
-- If you're fine-tuning a model that will return JSON data as a structured output, you need the JSON schema for the returned object as well (see below)
-- Optionally, any hyperparameters you want to configure for the fine-tune
-- To qualify for [data sharing inference pricing](https://developers.openai.com/api/docs/pricing#fine-tuning), you need to first [share evaluation and fine-tuning data](https://help.openai.com/en/articles/10306912-sharing-feedback-evaluation-and-fine-tuning-data-and-api-inputs-and-outputs-with-openai#h_c93188c569) with OpenAI before creating the job
-
-### Structured Outputs JSON schema
-
-If you're fine-tuning a model to return [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs), provide the JSON schema being used to format the output. See a valid JSON schema for our security interview use case:
-
-```json
-{
-  "type": "json_schema",
-  "json_schema": {
-    "name": "security_assistant",
-    "strict": true,
-    "schema": {
-      "type": "object",
-      "properties": {
-        "compliant": { "type": "string" },
-        "explanation": { "type": "string" }
-      },
-      "required": ["compliant", "explanation"],
-      "additionalProperties": false
-    }
-  }
-}
-```
-
-
-
-#### Generating a JSON schema from a Pydantic model
-
-
-
-To simplify JSON schema generation, start from a [Pydantic BaseModel](https://docs.pydantic.dev/latest/api/base_model/) class:
-
-1. Define your class
-1. Use `to_strict_json_schema` from the OpenAI library to generate a valid schema
-1. Wrap the schema in a dictionary with `type` and `name` keys, and set `strict` to true
-1. Take the resulting object and supply it as the `response_format` in your RFT job
-
-```python
-from openai.lib._pydantic import to_strict_json_schema
-from pydantic import BaseModel
-
-
-class MyCustomClass(BaseModel):
-    name: str
-    age: int
-
-
-# Note: Do not use MyCustomClass.model_json_schema() in place of
-# to_strict_json_schema as it is not equivalent
-schema = to_strict_json_schema(MyCustomClass)
-
-response_format = dict(
-    type="json_schema",
-    json_schema=dict(name=MyCustomClass.__name__, strict=True, schema=schema),
-)
-```
-
-
-
-
-
-
-### Create a job with the API
-
-Configuring a job with the API has a lot of moving parts, so many users prefer to configure them in the [fine-tuning dashboard UI](https://platform.openai.com/finetune). However, here's a complete API request to kick off a fine-tune job with all the configuration we've set up in this guide so far:
-
-```bash
-curl https://api.openai.com/v1/fine_tuning/jobs \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -d '{
-  "training_file": "file-2STiufDaGXWCnT6XUBUEHW",
-  "validation_file": "file-4TcgH85ej7dFCjZ1kThCYb",
-  "model": "o4-mini-2025-04-16",
-  "method": {
-    "type": "reinforcement",
-    "reinforcement": {
-      "grader": {
-        "type": "multi",
-        "graders": {
-          "explanation": {
-            "name": "Explanation text grader",
-            "type": "score_model",
-            "input": [
-              {
-                "role": "user",
-                "type": "message",
-                "content": "# Overview\n\nEvaluate the accuracy of the model-generated answer based on the \nCopernicus Product Security Policy and an example answer. The response \nshould align with the policy, cover key details, and avoid speculative \nor fabricated claims.\n\nAlways respond with a single floating point number 0 through 1,\nusing the grading criteria below.\n\n## Grading Criteria:\n- **1.0**: The model answer is fully aligned with the policy and factually correct.\n- **0.75**: The model answer is mostly correct but has minor omissions or slight rewording that does not change meaning.\n- **0.5**: The model answer is partially correct but lacks key details or contains speculative statements.\n- **0.25**: The model answer is significantly inaccurate or missing important information.\n- **0.0**: The model answer is completely incorrect, hallucinates policy details, or is irrelevant.\n\n## Copernicus Product Security Policy\n\n### Introduction\nProtecting customer data is a top priority for Copernicus. Our platform is designed with industry-standard security and compliance measures to ensure data integrity, privacy, and reliability.\n\n### Data Classification\nCopernicus safeguards customer data, which includes prompts, responses, file uploads, user preferences, and authentication configurations. Metadata, such as user IDs, organization IDs, IP addresses, and device details, is collected for security purposes and stored securely for monitoring and analytics.\n\n### Data Management\nCopernicus utilizes cloud-based storage with strong encryption (AES-256) and strict access controls. Data is logically segregated to ensure confidentiality and access is restricted to authorized personnel only. Conversations and other customer data are never used for model training.\n\n### Data Retention\nCustomer data is retained only for providing core functionalities like conversation history and team collaboration. Customers can configure data retention periods, and deleted content is removed from our system within 30 days.\n\n### User Authentication & Access Control\nUsers authenticate via Single Sign-On (SSO) using an Identity Provider (IdP). Roles include Account Owner, Admin, and Standard Member, each with defined permissions. User provisioning can be automated through SCIM integration.\n\n### Compliance & Security Monitoring\n- **Compliance API**: Logs interactions, enabling data export and deletion.\n- **Audit Logging**: Ensures transparency for security audits.\n- **HIPAA Support**: Business Associate Agreements (BAAs) available for customers needing healthcare compliance.\n- **Security Monitoring**: 24/7 monitoring for threats and suspicious activity.\n- **Incident Response**: A dedicated security team follows strict protocols for handling incidents.\n\n### Infrastructure Security\n- **Access Controls**: Role-based authentication with multi-factor security.\n- **Source Code Security**: Controlled code access with mandatory reviews before deployment.\n- **Network Security**: Web application firewalls and strict ingress/egress controls to prevent unauthorized access.\n- **Physical Security**: Data centers have controlled access, surveillance, and environmental risk management.\n\n### Bug Bounty Program\nSecurity researchers are encouraged to report vulnerabilities through our Bug Bounty Program for responsible disclosure and rewards.\n\n### Compliance & Certifications\nCopernicus maintains compliance with industry standards, including SOC 2 and GDPR. Customers can access security reports and documentation via our Security Portal.\n\n### Conclusion\nCopernicus prioritizes security, privacy, and compliance. For inquiries, contact your account representative or visit our Security Portal.\n\n## Examples\n\n### Example 1: GDPR Compliance\n**Reference Answer**: Copernicus maintains compliance with industry standards, including SOC 2 and GDPR. Customers can access security reports and documentation via our Security Portal.\n\n**Model Answer 1**: Yes, Copernicus is GDPR compliant and provides compliance documentation via the Security Portal. \n**Score: 1.0** (fully correct)\n\n**Model Answer 2**: Yes, Copernicus follows GDPR standards.\n**Score: 0.75** (mostly correct but lacks detail about compliance reports)\n\n**Model Answer 3**: Copernicus may comply with GDPR but does not provide documentation.\n**Score: 0.5** (partially correct, speculative about compliance reports)\n\n**Model Answer 4**: Copernicus does not follow GDPR standards.\n**Score: 0.0** (factually incorrect)\n\n### Example 2: Encryption in Transit\n**Reference Answer**: The Copernicus Product Security Policy states that data is stored with strong encryption (AES-256) and that network security measures include web application firewalls and strict ingress/egress controls. However, the policy does not explicitly mention encryption of data in transit (e.g., TLS encryption). A review is needed to confirm whether data transmission is encrypted.\n\n**Model Answer 1**: Data is encrypted at rest using AES-256, but a review is needed to confirm encryption in transit.\n**Score: 1.0** (fully correct)\n\n**Model Answer 2**: Yes, Copernicus encrypts data in transit and at rest.\n**Score: 0.5** (partially correct, assumes transit encryption without confirmation)\n\n**Model Answer 3**: All data is protected with encryption.\n**Score: 0.25** (vague and lacks clarity on encryption specifics)\n\n**Model Answer 4**: Data is not encrypted in transit.\n**Score: 0.0** (factually incorrect)\n\nReference Answer: {{item.explanation}}\nModel Answer: {{sample.output_json.explanation}}\n"
-              }
-            ],
-            "model": "gpt-4o-2024-08-06"
-          },
-          "compliant": {
-            "name": "compliant",
-            "type": "string_check",
-            "reference": "{{item.compliant}}",
-            "operation": "eq",
-            "input": "{{sample.output_json.compliant}}"
-          }
-        },
-        "calculate_output": "0.5 * compliant + 0.5 * explanation"
-      },
-      "response_format": {
-        "type": "json_schema",
-        "json_schema": {
-          "name": "security_assistant",
-          "strict": true,
-          "schema": {
-            "type": "object",
-            "properties": {
-              "compliant": {
-                "type": "string"
-              },
-              "explanation": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "compliant",
-              "explanation"
-            ],
-            "additionalProperties": false
-          }
-        }
-      },
-      "hyperparameters": {
-        "reasoning_effort": "medium"
-      }
-    }
-  }
-}'
-```
-
-
-This request returns a [fine-tuning job object](https://developers.openai.com/api/reference/resources/fine_tuning), which includes a job `id`. Use this ID to monitor the progress of your job and retrieve the fine-tuned model when the job is complete.
-
-To qualify for [data sharing inference pricing](https://developers.openai.com/api/docs/pricing#fine-tuning), make sure to [share evaluation and fine-tuning data](https://help.openai.com/en/articles/10306912-sharing-feedback-evaluation-and-fine-tuning-data-and-api-inputs-and-outputs-with-openai#h_c93188c569) with OpenAI before creating the job. You can verify the job was marked as shared by confirming `shared_with_openai` is set to `true`.
-
-### Monitoring your fine-tune job
-
-Fine-tuning jobs take some time to complete, and RFT jobs tend to take longer than SFT or DPO jobs. To monitor the progress of your fine-tune job, use the [fine-tuning dashboard](https://platform.openai.com/finetune) or the [API](https://developers.openai.com/api/reference/resources/fine_tuning).
-
-#### Reward metrics
-
-For reinforcement fine-tuning jobs, the primary metrics are the per-step **reward** metrics. These metrics indicate how well your model is performing on the training data. They're calculated by the graders you defined in your job configuration. These are two separate top-level reward metrics:
-
-- `train_reward_mean`: The average reward across the samples taken from all data points in the current step. Because the specific data points in a batch change with each step, `train_reward_mean` values across different steps are not directly comparable and the specific values can fluctuate drastically from step to step.
-- `valid_reward_mean`: The average reward across the samples taken from all data points in the validation set, which is a more stable metric.
-
-![Reward Metric Graph](https://cdn.openai.com/API/images/guides/RFT_Reward_Chart.png)
-
-Find a full description of all training metrics in the [training metrics](#training-metrics) section.
-
-#### Pausing and resuming jobs
-
-To evaluate the current state of the model when your job is only partially finished, **pause** the job to stop the training process and produce a checkpoint at the current step. You can use this checkpoint to evaluate the model on a held-out test set. If the results look good, **resume** the job to continue training from that checkpoint. Learn more in [pausing and resuming jobs](#pausing-and-resuming-jobs).
-
-#### Evals integration
-
-Reinforcement fine-tuning jobs are integrated with our [evals product](https://developers.openai.com/api/docs/guides/evals). When you make a reinforcement fine-tuning job, a new eval is automatically created and associated with the job. As validation steps are performed, we combine the input prompts, model samples, and grader outputs to make a new [eval run](https://developers.openai.com/api/docs/guides/evals#creating-an-eval-run) for that step.
-
-Learn more about the evals integration in the [appendix](#evals-integration-details) section below.
-
-## Evaluate the results
-
-By the time your fine-tuning job finishes, you should have a decent idea of how well the model is performing based on the mean reward value on the validation set. However, it's possible that the model has either _overfit_ to the training data or has learned to [reward hack](https://en.wikipedia.org/wiki/Reward_hacking) your grader, which allows it to produce high scores without actually being correct. Before deploying your model, inspect its behavior on a representative set of prompts to ensure it behaves how you expect.
-
-Understanding the model's behavior can be done quickly by inspecting the evals associated with the fine-tuning job. Specifically, pay close attention to the run made for the final training step to see the end model's behavior. You can also use the evals product to compare the final run to earlier runs and see how the model's behavior has changed over the course of training.
-
-### Try using your fine-tuned model
-
-Evaluate your newly optimized model by using it! When the fine-tuned model finishes training, use its ID in either the [Responses](https://developers.openai.com/api/reference/resources/responses) or [Chat Completions](https://developers.openai.com/api/reference/resources/chat) API, just as you would an OpenAI base model.
-
-
-
-Use your model in the Playground
-
-    
-
-1. Navigate to your fine-tuning job in [the dashboard](https://platform.openai.com/finetune).
-1. In the right pane, navigate to **Output model** and copy the model ID. It should start with `ft:…`
-1. Open the [Playground](https://platform.openai.com/playground).
-1. In the **Model** dropdown menu, paste the model ID. Here, you should also see other fine-tuned models you've created.
-1. Run some prompts and see how your fine-tuned performs!
-
-
-  
-
-  
-
-    
-Use your model with an API call
-
-    
-
-```bash
-curl https://api.openai.com/v1/responses \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -d '{
-    "model": "ft:gpt-4.1-nano-2025-04-14:openai::BTz2REMH",
-    "input": "What is 4+4?"
-  }'
-```
-
-
-
-### Use checkpoints if needed
-
-Checkpoints are models you can use that are created before the final step of the training process. For RFT, OpenAI creates a full model checkpoint at each validation step and keeps the three with the highest `valid_reward_mean` scores. Checkpoints are useful for evaluating the model at different points in the training process and comparing performance at different steps.
-
-
-
-Find checkpoints in the dashboard
-
-    
-
-1. Navigate to the [fine-tuning dashboard](https://platform.openai.com/finetune).
-1. In the left panel, select the job you want to investigate. Wait until it succeeds.
-1. In the right panel, scroll to the list of checkpoints.
-1. Hover over any checkpoint to see a link to launch in the Playground.
-1. Test the checkpoint model's behavior by prompting it in the Playground.
-
-
-  
-
-  
-
-    
-Query the API for checkpoints
-
-    
-
-1. Wait until a job succeeds, which you can verify by [querying the status of a job](https://developers.openai.com/api/reference/resources/fine_tuning).
-1. [Query the checkpoints endpoint](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/subresources/checkpoints/methods/list) with your fine-tuning job ID to access a list of model checkpoints for the fine-tuning job.
-1. Find the `fine_tuned_model_checkpoint` field for the name of the model checkpoint.
-1. Use this model just like you would the final fine-tuned model.
-
-The checkpoint object contains `metrics` data to help you determine the usefulness of this model. As an example, the response looks like this:
-
-```json
-{
-  "object": "fine_tuning.job.checkpoint",
-  "id": "ftckpt_zc4Q7MP6XxulcVzj4MZdwsAB",
-  "created_at": 1519129973,
-  "fine_tuned_model_checkpoint": "ft:gpt-3.5-turbo-0125:my-org:custom-suffix:96olL566:ckpt-step-2000",
-  "metrics": {
-    "full_valid_loss": 0.134,
-    "full_valid_mean_token_accuracy": 0.874
-  },
-  "fine_tuning_job_id": "ftjob-abc123",
-  "step_number": 2000
-}
-```
-
-Each checkpoint specifies:
-
-- `step_number`: The step at which the checkpoint was created (where each epoch is number of steps in the training set divided by the batch size)
-- `metrics`: An object containing the metrics for your fine-tuning job at the step when the checkpoint was created
-
-
-
-## Safety checks
-
-Before launching in production, review and follow the following safety information.
-
-
-
-### How we assess for safety
-
-
-
-Once a fine-tuning job is completed, we assess the resulting model’s behavior across 13 distinct safety categories. Each category represents a critical area where AI outputs could potentially cause harm if not properly controlled.
-
-| Name                   | Description                                                                                                                                                                                                                                    |
-| :--------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| advice                 | Advice or guidance that violates our policies.                                                                                                                                                                                                 |
-| harassment/threatening | Harassment content that also includes violence or serious harm towards any target.                                                                                                                                                             |
-| hate                   | Content that expresses, incites, or promotes hate based on race, gender, ethnicity, religion, nationality, sexual orientation, disability status, or caste. Hateful content aimed at non-protected groups (e.g., chess players) is harassment. |
-| hate/threatening       | Hateful content that also includes violence or serious harm towards the targeted group based on race, gender, ethnicity, religion, nationality, sexual orientation, disability status, or caste.                                               |
-| highly-sensitive       | Highly sensitive data that violates our policies.                                                                                                                                                                                              |
-| illicit                | Content that gives advice or instruction on how to commit illicit acts. A phrase like "how to shoplift" would fit this category.                                                                                                               |
-| propaganda             | Praise or assistance for ideology that violates our policies.                                                                                                                                                                                  |
-| self-harm/instructions | Content that encourages performing acts of self-harm, such as suicide, cutting, and eating disorders, or that gives instructions or advice on how to commit such acts.                                                                         |
-| self-harm/intent       | Content where the speaker expresses that they are engaging or intend to engage in acts of self-harm, such as suicide, cutting, and eating disorders.                                                                                           |
-| sensitive              | Sensitive data that violates our policies.                                                                                                                                                                                                     |
-| sexual/minors          | Sexual content that includes an individual who is under 18 years old.                                                                                                                                                                          |
-| sexual                 | Content meant to arouse sexual excitement, such as the description of sexual activity, or that promotes sexual services (excluding sex education and wellness).                                                                                |
-| violence               | Content that depicts death, violence, or physical injury.                                                                                                                                                                                      |
-
-Each category has a predefined pass threshold; if too many evaluated examples in a given category fail, OpenAI blocks the fine-tuned model from deployment. If your fine-tuned model does not pass the safety checks, OpenAI sends a message in the fine-tuning job explaining which categories don't meet the required thresholds. You can view the results in the moderation checks section of the fine-tuning job.
-
-
-
-
-
-
-
-### How to pass safety checks
-
-
-
-In addition to reviewing any failed safety checks in the fine-tuning job object, you can retrieve details about which categories failed by querying the [fine-tuning API events endpoint](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/methods/list). Look for events of type `moderation_checks` for details about category results and enforcement. This information can help you narrow down which categories to target for retraining and improvement. The [model spec](https://cdn.openai.com/spec/model-spec-2024-05-08.html#overview) has rules and examples that can help identify areas for additional training data.
-
-While these evaluations cover a broad range of safety categories, conduct your own evaluations of the fine-tuned model to ensure it's appropriate for your use case.
-
-
-
-
-
-## Next steps
-
-Now that you know the basics of reinforcement fine-tuning, explore other fine-tuning methods.
-
-[Supervised fine-tuning
-
-
-
-      Fine-tune a model by providing correct outputs for sample inputs.](https://developers.openai.com/api/docs/guides/supervised-fine-tuning)
-
-[Vision fine-tuning
-
-
-
-      Learn to fine-tune for computer vision with image inputs.](https://developers.openai.com/api/docs/guides/vision-fine-tuning)
-
-[Direct preference optimization
-
-
-
-      Fine-tune a model using direct preference optimization (DPO).](https://developers.openai.com/api/docs/guides/direct-preference-optimization)
-
-## Appendix
-
-### Training metrics
-
-Reinforcement fine-tuning jobs publish per-step training metrics as [fine-tuning events](https://developers.openai.com/api/reference/resources/fine_tuning). Pull these metrics through the [API](https://developers.openai.com/api/reference/resources/fine_tuning/subresources/jobs/methods/list) or view them as graphs and charts in the [fine-tuning dashboard](https://platform.openai.com/finetune).
-
-Learn more about training metrics below.
-
-
-
-#### Full example training metrics
-
-
-
-Below is an example metric event from a real reinforcement fine-tuning job. The various fields in this payload will be discussed in the following sections.
-
-```json
-{
-      "object": "fine_tuning.job.event",
-      "id": "ftevent-Iq5LuNLDsac1C3vzshRBuBIy",
-      "created_at": 1746679539,
-      "level": "info",
-      "message": "Step 10/20 , train mean reward=0.42, full validation mean reward=0.68, full validation mean parse error=0.00",
-      "data": {
-        "step": 10,
-        "usage": {
-          "graders": [
-            {
-              "name": "basic_model_grader",
-              "type": "score_model",
-              "model": "gpt-4o-2024-08-06",
-              "train_prompt_tokens_mean": 241.0,
-              "valid_prompt_tokens_mean": 241.0,
-              "train_prompt_tokens_count": 120741.0,
-              "valid_prompt_tokens_count": 4820.0,
-              "train_completion_tokens_mean": 138.52694610778443,
-              "valid_completion_tokens_mean": 140.5,
-              "train_completion_tokens_count": 69402.0,
-              "valid_completion_tokens_count": 2810.0
-            }
-          ],
-          "samples": {
-            "train_reasoning_tokens_mean": 3330.017964071856,
-            "valid_reasoning_tokens_mean": 1948.9,
-            "train_reasoning_tokens_count": 1668339.0,
-            "valid_reasoning_tokens_count": 38978.0
-          }
-        },
-        "errors": {
-          "graders": [
-            {
-              "name": "basic_model_grader",
-              "type": "score_model",
-              "train_other_error_mean": 0.0,
-              "valid_other_error_mean": 0.0,
-              "train_other_error_count": 0.0,
-              "valid_other_error_count": 0.0,
-              "train_sample_parse_error_mean": 0.0,
-              "valid_sample_parse_error_mean": 0.0,
-              "train_sample_parse_error_count": 0.0,
-              "valid_sample_parse_error_count": 0.0,
-              "train_invalid_variable_error_mean": 0.0,
-              "valid_invalid_variable_error_mean": 0.0,
-              "train_invalid_variable_error_count": 0.0,
-              "valid_invalid_variable_error_count": 0.0
-            }
-          ]
-        },
-        "scores": {
-          "graders": [
-            {
-              "name": "basic_model_grader",
-              "type": "score_model",
-              "train_reward_mean": 0.4471057884231537,
-              "valid_reward_mean": 0.675
-            }
-          ],
-          "train_reward_mean": 0.4215686274509804,
-          "valid_reward_mean": 0.675
-        },
-        "timing": {
-          "step": {
-            "eval": 101.69386267662048,
-            "sampling": 226.82190561294556,
-            "training": 402.43121099472046,
-            "full_iteration": 731.5038568973541
-          },
-          "graders": [
-            {
-              "name": "basic_model_grader",
-              "type": "score_model",
-              "train_execution_latency_mean": 2.6894934929297594,
-              "valid_execution_latency_mean": 4.141402995586395
-            }
-          ]
-        },
-        "total_steps": 20,
-        "train_mean_reward": 0.4215686274509804,
-        "reasoning_tokens_mean": 3330.017964071856,
-        "completion_tokens_mean": 3376.0019607843137,
-        "full_valid_mean_reward": 0.675,
-        "mean_unresponsive_rewards": 0.0,
-        "model_graders_token_usage": {
-          "gpt-4o-2024-08-06": {
-            "eval_cached_tokens": 0,
-            "eval_prompt_tokens": 4820,
-            "train_cached_tokens": 0,
-            "train_prompt_tokens": 120741,
-            "eval_completion_tokens": 2810,
-            "train_completion_tokens": 69402
-          }
-        },
-        "full_valid_mean_parse_error": 0.0,
-        "valid_reasoning_tokens_mean": 1948.9
-      },
-      "type": "metrics"
-    },
-```
-
-
-
-
-
-
-
-#### Score metrics
-
-
-
-The top-level metrics to watch are `train_reward_mean` and `valid_reward_mean`, which indicate the average reward assigned by your graders across all samples in the training and validation datasets, respectively.
-
-Additionally, if you use a [multi-grader](https://developers.openai.com/api/reference/resources/graders) configuration, per-grader train and validation reward metrics will be published as well. These metrics are included under the `event.data.scores` object in the fine-tuning events object, with one entry per grader. The per-grader metrics are useful for understanding how the model is performing on each individual grader, and can help you identify if the model is overfitting to one grader or another.
-
-From the fine-tuning dashboard, the individual grader metrics will be displayed in their own graph below the overall `train_reward_mean` and `valid_reward_mean` metrics.
-
-![Per-Grader Reward Metric Graph](https://cdn.openai.com/API/images/guides/RFT_MultiReward_Chart.png)
-
-
-
-
-
-
-
-#### Usage metrics
-
-
-
-An important characteristic of a reasoning model is the number of reasoning tokens it uses before responding to a prompt. Often, during training, the model will drastically change the average number of reasoning tokens it uses to respond to a prompt. This is a sign that the model is changing its behavior in response to the reward signal. The model may learn to use fewer reasoning tokens to achieve the same reward, or it may learn to use more reasoning tokens to achieve a higher reward.
-
-You can monitor the `train_reasoning_tokens_mean` and `valid_reasoning_tokens_mean` metrics to see how the model is changing its behavior over time. These metrics are the average number of reasoning tokens used by the model to respond to a prompt in the training and validation datasets, respectively. You can also view the mean reasoning token count in the fine-tuning dashboard under the "Reasoning Tokens" chart.
-
-![Reasoning Tokens Metric Graph](https://cdn.openai.com/API/images/guides/RFT_ReasoningTokens_Chart.png)
-
-If you are using [model graders](https://developers.openai.com/api/docs/guides/graders#model-graders), you will likely want to monitor the token usage of these graders. Per-grader token usage statistics are available under the `event.data.usage.graders` object, and are broken down into:
-
-- `train_prompt_tokens_mean`
-- `train_prompt_tokens_count`
-- `train_completion_tokens_mean`
-- `train_completion_tokens_count`.
-
-The `_mean` metrics represent the average number of tokens used by the grader to process all prompts in the current step, while the `_count` metrics represent the total number of tokens used by the grader across all samples in the current step. The per-step token usage is also displayed on the fine-tuning dashboard under the "Grading Token Usage" chart.
-
-![Model Grader Token Usage](https://cdn.openai.com/API/images/guides/RFT_ModelGraderTokenUsage.png)
-
-
-
-
-
-
-
-#### Timing metrics
-
-
-
-We include various metrics that help you understand how long each step of the training process is taking and how different parts of the training process are contributing to the per-step timing.
-
-These metrics are available under the `event.data.timing` object, and are broken down into `step` and `graders` fields.
-
-The `step` field contains the following metrics:
-
-- `sampling`: The time taken to sample the model outputs (rollouts) for the current step.
-- `training`: The time taken to train the model (backpropagation) for the current step.
-- `eval`: The time taken to evaluate the model on the full validation set.
-- `full_iteration`: The total time taken for the current step, including the above 3 metrics plus any additional overhead.
-
-The step timing metrics are also displayed on the fine-tuning dashboard under the "Per Step Duration" chart.
-
-![Per Step Duration Graph](https://cdn.openai.com/API/images/guides/RFT_PerStepDuration2.png)
-
-The `graders` field contains timing information that details the time taken to execute each grader for the current step. Each grader will have its own timing under the `train_execution_latency_mean` and `valid_execution_latency_mean` metrics, which represent the average time taken to execute the grader on the training and validation datasets, respectively.
-
-Graders are executed in parallel with a concurrency limit, so it is not always clear how individual grader latency adds up to the total time taken for grading. However, it is generally true that graders which take longer to execute individually will cause a job to execute more slowly. This means that slower model graders will cause the job to take longer to complete, and more expensive python code will do the same. The fastest graders generally are `string_check` and `text_similarity` as those are executed local to the training loop.
-
-
-
-
-
-### Evals integration details
-
-Reinforcement fine-tuning jobs are directly integrated with our [evals product](https://developers.openai.com/api/docs/guides/evals). When you make a reinforcement fine-tuning job, a new eval is automatically created and associated with the job.
-
-As validation steps are performed, the input prompts, model samples, grader outputs, and more metadata will be combined to make a new [eval run](https://developers.openai.com/api/docs/guides/evals#creating-an-eval-run) for that step. At the end of the job, you will have one run for each validation step. This allows you to compare the performance of the model at different steps, and to see how the model's behavior has changed over the course of training.
-
-You can find the eval associated with your fine-tuning job by viewing your job on the fine-tuning dashboard, or by finding the `eval_id` field on the [fine-tuning job object](https://developers.openai.com/api/reference/resources/fine_tuning).
-
-The evals product is useful for inspecting the outputs of the model on specific data points, to get an understanding for how the model is behaving in different scenarios. It can help you figure out which slice of your dataset the model is performing poorly on which can help you identify areas for improvement in your training data.
-
-The evals product can also help you find areas of improvement for your graders by finding areas where the grader is either overly lenient or overly harsh on the model outputs.
-
-### Pausing and resuming jobs
-
-You can pause a fine-tuning job at any time by using the [fine-tuning jobs API](https://developers.openai.com/api/reference/resources/fine_tuning). Calling the pause API will tell the training process to create a new model snapshot, stop training, and put the job into a "Paused" state. The model snapshot will go through a normal safety screening process after which it will be available for you to use throughout the OpenAI platform as a normal fine-tuned model.
-
-If you wish to continue the training process for a paused job, you can do so by using the [fine-tuning jobs API](https://developers.openai.com/api/reference/resources/fine_tuning). This will resume the training process from the last checkpoint created when the job was paused and will continue training until the job is either completed or paused again.
-
-### Grading with Tools
-
-If you are training your model to [perform tool calls](https://developers.openai.com/api/docs/guides/function-calling), you will need to:
-
-1. Provide the set of tools available for your model to call on each data point in the RFT training dataset. More info here in the [dataset API reference](https://developers.openai.com/api/reference/resources/fine_tuning).
-2. Configure your grader to assign rewards based on the contents of the tool calls made by the model. Information on grading tools calls can be found [here in the grading docs](https://developers.openai.com/api/docs/guides/graders/#sample-namespace)
-
-### Billing details
-
-Reinforcement fine-tuning jobs are billed based on the amount of time spent training, as well as the number of tokens used by the model during training. We only bill for time spent in the core training loop, not for time spent preparing the training data, validating datasets, waiting in queues, running safety evals, or other overhead.
-
-Details on exactly how we bill for reinforcement fine-tuning jobs can be found in this [help center article](https://help.openai.com/en/articles/11323177-billing-guide-for-the-reinforcement-fine-tuning-api).
-
-### Training errors
-
-Reinforcement fine-tuning is a complex process with many moving parts, and there are many places where things can go wrong. We publish various error metrics to help you understand what is going wrong in your job, and how to fix it. In general, we try to avoid failing a job entirely unless a particularly serious error occurs. When errors do occur, they often happen during the grading step. Errors during grading often happen either to the model outputting a sample that the grader doesn't know how to handle, the grader failing to execute properly due to some sort of system error, or due to a bug in the grading logic itself.
-
-The error metrics are available under the `event.data.errors` object, and are aggregated into counts and rates rolled up per-grader. We also display rates and counts of errors on the fine-tuning dashboard.
-
-
-
-#### Grader errors
-
-
-
-#### Generic grading errors
-
-The grader errors are broken down into the following categories, and they exist in both `train_` (for training data) and `valid_` (for validation data) versions:
-
-- `sample_parse_error_mean`: The average number of samples that failed to parse correctly. This often happens when the model fails to output valid JSON or adhere to a provided response format correctly. A small percentage of these errors, especially early in the training process, is normal. If you see a large number of these errors, it is likely that the response format of the model is not configured correctly or that your graders are misconfigured and looking for incorrect fields.
-- `invalid_variable_error_mean`: These errors occur when you attempt to reference a variable via a template that cannot be found either in the current data point or in the current model sample. This can happen if the model fails to provide output in the correct response format, or if your grader is misconfigured.
-- `other_error_mean`: This is a catch-all for any other errors that occur during grading. These errors are often caused by bugs in the grading logic itself, or by system errors that occur during grading.
-
-#### Python grading errors
-
-- `python_grader_server_error_mean`: These errors occur when our system for executing python graders in a remote sandbox experiences system errors. This normally happens due to reasons outside of your control, like networking failures or system outages. If you see a large number of these errors, it is likely that there is a system issue that is causing the errors. You can check the [OpenAI status page](https://status.openai.com/) for more information on any ongoing issues.
-- `python_grader_runtime_error_mean`: These errors occur when the python grader itself fails to execute properly. This can happen for a variety of reasons, including bugs in the grading logic, or if the grader is trying to access a variable that doesn't exist in the current context. If you see a large number of these errors, it is likely that there is a bug in your grading logic that needs to be fixed. If a large enough number of these errors occur, the job will fail and we will show you a sampling of tracebacks from the failed graders.
-
-#### Model grading errors
-
-- `model_grader_server_error_mean`: These errors occur when we fail to sample from a model grader. This can happen for a variety of reasons, but generally means that either the model grader was misconfigured, that you are attempting to use a model that is not available to your organization, or that there is a system issue that is happening at OpenAI.
-
----
-
-# Reinforcement fine-tuning use cases
-
-[Reinforcement fine-tuning](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning) (RFT) provides a way to improve your model's performance at specific tasks. The task must be clear and have verifiable answers.
-
-OpenAI is winding down the fine-tuning platform. The platform is no longer
-  accessible to new users, but existing users of the fine-tuning platform will
-  be able to create training jobs for the coming months.
-  
-
-  All fine-tuned models will remain available for inference until their base
-  models are [deprecated](https://developers.openai.com/api/docs/deprecations). The full timeline is
-  [here](https://developers.openai.com/api/docs/deprecations).
-
-## When to use reinforcement fine-tuning
-
-An agentic workflow is designed to make decisions that are both correct and verifiable. RFT can help by providing explicit rubrics and using code‑based or LLM‑based graders to measure functional success, factual accuracy, or policy compliance.
-
-Across early users, three clear use cases have emerged:
-
-1. **Turn instructions into working code**: Convert open-ended prompts into structured code, configs, or templates that must pass deterministic tests.
-1. **Pull facts into a clean format**: Extract verifiable facts and summaries from messy, unstructured text and return JSON-structured or other schema-based outputs.
-1. **Apply complex rules correctly**: Make fine-grained label or policy decisions when the information provided is nuanced, large in quantity, hierarchical, or high-stakes.
-
-[Ready to use reinforcement fine-tuning? Skip to the guide →](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning)
-
-### 1. Turn instructions into working code
-
-In this use case, models reason over hidden domain constraints to produce structured outputs like code, queries, or infrastructure templates. Outputs must satisfy multiple correctness conditions, and success is usually deterministically graded: the artifact either compiles, passes tests, or meets an explicit schema.
-
-#### Wiring verification IPs for semiconductor design
-
-
-
-Use case
-
-    
-
-> **Company**: [ChipStack](https://www.chipstack.ai) is building the next-generation of AI-powered tools for chip design and verification, aimed at significantly reducing the time and cost of developing and validating complex semiconductor chips.
->
-> **Problem to solve**: One task that's challenging and time-consuming for humans is binding design interfaces to verification IPs (pre-created verification components that, when properly applied, can significantly enhance quality and coverage of verification). There are many verification IPs, and each can contain dozens to hundreds of signals that may be mapped. Someone must understand this domain well in order to apply the verification IP correctly.
->
-> **Objective**: To train OpenAI reasoning models to do this instead, ChipStack prepared a dataset consisting of less than 50 samples, then performed several RFT variations. For the final evaluation report, they ran this evaluation set three times against each model and variation—o1-mini base and fine-tuned, o3-mini base and fine-tuned—and averaged the results per-sample then overall.
-
-
-  
-
-  
-
-    
-Prompt
-
-    
-
-> Below is a piece of example data provided.
-
-```text
-[
-    {“name”: “BLOCK_SIZE”, “value”: “8”},
-    {“name”: “ADDR_WIDTH”, “value”: “4”}
-]
-```
-
-
-  
-
-  
-
-    
-Grader code
-
-    
-
-> Below is a grader definition in Python of a string map, represented as a list of objects with `name` and `value` properties.
->
-> Conceptually, this is meant to model a type like `Dict[str, str]`.
-
-```python
-{
-    "type": "python",
-    "name": "donors_caas",
-    "image_tag": "alpha",
-    "source": """from collections import Counter
-
-def grade(sample: dict[str, str], item: dict[str, str]) -> float:
-    # multisets of (name, value) pairs
-    predicted = sample["output_json"]["predicted"]
-    expected = item["reference_answer"]
-    pred_counts = Counter((d["name"], d["value"]) for d in predicted)
-    exp_counts = Counter((d["name"], d["value"]) for d in expected)
-
-    true_pos = sum(min(pred_counts[p], exp_counts[p]) for p in pred_counts)
-    pred_total = sum(pred_counts.values())
-    exp_total = sum(exp_counts.values())
-
-    precision = true_pos / pred_total if pred_total else 0.0
-    recall = true_pos / exp_total if exp_total else 0.0
-
-    if precision + recall == 0.0:
-        return 0.0
-    return 2 * precision * recall / (precision + recall)""",
-}
-```
-
-
-  
-
-  
-
-    
-Results
-
-    
-
-> For both o1-mini and o3-mini, performance improved by ~12 percentage points. The fine-tuned variants got much better about recognizing when not to apply wiring. Many commercial verification IPs can contain hundreds of optional signals, most of which are not meant to be applied.
->
-> "Thanks to powerful base models and easy-to-use Reinforced Fine-Tuning APIs, we were able to significantly boost performance on our task with a small set of high-quality samples."
->
-> —[ChipStack](https://www.chipstack.ai), next-generation of AI-powered tools for chip design and verification
-
-
-
-#### Correct handling of conflicts and dupes in a schedule manager
-
-
-
-Use case
-
-    
-
-> **Company**: [Milo](https://www.joinmilo.com) helps busy parents manage chaotic family schedules by converting messy inputs—like text convos with to-dos, school newsletter PDFs, weekly reminders, sports schedule emails—into reliable calendar and list actions.
->
-> **Problem to solve**: Base GPT-4o prompting and SFT fell short of trust thresholds.
->
-> **Objective**: Milo used RFT to properly create coding tasks like event vs. list classification, recurrence rule generation, accurate updates and deletes, conflict detection, and strict output formatting. They defined a grader that checked whether generated item objects were complete, categorized correctly, and were a duplicate or had a calendar conflict.
-
-
-  
-
-  
-
-    
-Results
-
-    
-
-> Results showed performance improvements across the board, with average correctness scores **increasing from 0.86 to 0.91**, while the most challenging scenarios improved from **0.46 to 0.71** (where a perfect score=1).
->
-> "Accuracy isn't just a metric—it's peace of mind for busy parents. These are still early days but with such important improvements in base performance, we're able to push more aggressively into complex reasoning needs."
->
-> "Navigating and supporting family dynamics involves understanding nuanced implications of the data. Take conflicts—knowing soccer for Ethan conflicts with Ella's recital because Dad has to drive both kids goes deeper than simple overlapping times."
->
-> —[Milo](https://www.joinmilo.com), AI scheduling tool for families
-
-
-
-### 2. Pull facts into a clean format
-
-These tasks typically involve subtle distinctions that demand clear classification guidelines. Successful framing requires explicit and hierarchical labeling schemes defined through consensus by domain experts. Without consistent agreement, grading signals become noisy, weakening RFT effectiveness.
-
-#### Assigning ICD-10 medical codes
-
-
-
-Use case
-
-    
-
-> **Company**: [Ambience](https://www.ambiencehealthcare.com) is an AI platform that eliminates administrative burden for clinicians and ensures accurate, compliant documentation across 100+ specialties, helping physicians focus on patient care while increasing documentation quality and reducing compliance risk for health systems.
->
-> **Problem to solve**: ICD-10 coding is one of the most intricate administrative tasks in medicine. After every patient encounter, clinicians must map each diagnosis to one of ~70,000 codes—navigating payor-specific rules on specificity, site-of-care, and mutually exclusive pairings. Errors can trigger audits and fines that stretch into nine figures.
->
-> **Objective**: Using reinforcement fine-tuning on OpenAI frontier models, Ambience wanted to train a reasoning system that listens to the visit audio, pulls in relevant EHR context, and recommends ICD-10 codes with accuracy exceeding expert clinicians.
-
-
-  
-
-  
-
-    
-Results
-
-    
-
-> Ambience achieved model improvements that can lead human experts.
->
-> On a gold-panel test set spanning hundreds of encounters, reinforcement fine-tuning moved the model from trailing humans to leading them by **12 points—eliminating roughly one quarter of the coding errors trained physicians make**:
->
-> - o3-mini (base): 0.39 (-6 pts)
-> - Physician baseline: 0.45
-> - RFT-tuned o3-mini: 0.57 (+12 pts)
->
-> The result is a real-time, point-of-care coding support that can raise reimbursement integrity while reducing compliance risk.
->
-> “Accurate ICD-10 selection is mission-critical for compliant documentation. RFT unlocked a new level of coding precision we hadn’t seen from any foundation model and set a new bar for automated coding.”
->
-> —[Ambience Healthcare](https://www.ambiencehealthcare.com)
-
-
-
-#### Extracting excerpts to support legal claims
-
-
-
-Use case
-
-    
-
-> **Company**: [Harvey](https://www.harvey.ai) is building AI that legal teams trust—and that trust hinges on retrieving precisely the right evidence from a sprawling corpora of contracts, statutes, and case law. Legal professionals aren’t satisfied with models that merely generate plausible-sounding summaries or paraphrased answers. They demand verifiable citations—passages that can be traced directly back to source documents.
->
-> **Problem to solve**: Harvey’s clients use its models to triage litigation risk, construct legal arguments, and support due diligence for legal professionals—all tasks where a single missed or misquoted sentence can flip an outcome. Models must be able to parse long, dense legal documents and extract only the portions that matter.
-> In practice, these inputs are often messy and inconsistent: some claims are vague, while others hinge on rare legal doctrines buried deep in boilerplate.
->
-> **Objective**: The task’s requirements are to interpret nuanced legal claims, navigate long-form documents, and select on-point support with verbatim excerpts.
-
-
-  
-
-  
-
-    
-Prompt
-
-    
-
-```text
-## Instructions
-You will be provided with a question and a text excerpt. Identify any passages in the text that are directly relevant to answering the question.
-- If there are no relevant passages, return an empty list.
-- Passages must be copied **exactly** from the text. Do not paraphrase or summarize.
-## Excerpt
-"""{text_excerpt}"""
-```
-
-
-  
-
-  
-
-    
-Grader
-
-    
-
-```python
-from rapidfuzz import fuzz
-
-
-# Similarity ratio helper
-def fuzz_ratio(a: str, b: str) -> float:
-    """Return a normalized similarity ratio using RapidFuzz."""
-    if len(a) == 0 and len(b) == 0:
-        return 1.0
-    return fuzz.ratio(a, b) / 100.0
-
-
-# Main grading entrypoint (must be named \`grade\`)
-def grade(sample: dict, item: dict) -> float:
-    """Compute an F1‑style score for citation extraction answers using RapidFuzz."""
-    model_passages = (sample.get("output_json") or {}).get("passages", [])
-    ref_passages = (item.get("reference_answer") or {}).get("passages", [])
-
-    # If there are no reference passages, return 0.
-    if not ref_passages:
-        return 0.0
-
-    # Recall: average best match for each reference passage.
-    recall_scores = []
-    for ref in ref_passages:
-        best = 0.0
-        for out in model_passages:
-            score = fuzz_ratio(ref, out)
-            if score > best:
-                best = score
-        recall_scores.append(best)
-    recall = sum(recall_scores) / len(recall_scores)
-
-    # Precision: average best match for each model passage.
-    if not model_passages:
-        precision = 0.0
-    else:
-        precision_scores = []
-        for out in model_passages:
-            best = 0.0
-            for ref in ref_passages:
-                score = fuzz_ratio(ref, out)
-                if score > best:
-                    best = score
-            precision_scores.append(best)
-        precision = sum(precision_scores) / len(precision_scores)
-
-    if precision + recall == 0:
-        return 0.0
-
-    return 2 * precision * recall / (precision + recall)
-```
-
-
-  
-
-  
-
-    
-Results
-
-    
-
-> After reinforcement fine-tuning, Harvey saw a **20% increase** in the F1 score:
->
-> - Baseline F1: 0.563
-> - Post-RFT F1 - 0.6765
->
-> Using RFT, Harvey significantly improved legal fact-extraction performance, surpassing GPT-4o efficiency and accuracy. Early trials showed RFT **winning or tying in 93% of comparisons** against GPT-4o.
->
-> “The RFT model demonstrated comparable or superior performance to GPT-4o, but with significantly faster inference, proving particularly beneficial for real-world legal use cases.
->
-> —[Harvey](https://www.harvey.ai), AI for legal teams
-
-
-
-### 3. Apply complex rules correctly
-
-This use case involves pulling verifiable facts or entities from unstructured inputs into defined schemas (for example, JSON objects, condition codes, medical codes, legal citations, or financial metrics).
-
-Successful extraction tasks typically benefit from precise, continuous grading methodologies—like span-level F1 scores, fuzzy text-matching metrics, or numeric accuracy checks—to evaluate how accurately the extracted information aligns with ground truth. Define explicit success criteria and detailed rubrics. Then, the model can achieve reliable, repeatable improvements.
-
-#### Expert-level reasoning in tax analysis
-
-
-
-Use case
-
-    
-
-> **Company**: [Accordance](https://www.accordance.com) is building a platform for tax, audit, and CPA teams.
->
-> **Problem to solve**: Taxation is a highly complex domain, requiring deep reasoning across nuanced fact patterns and intricate regulations. It's also a field that continues changing.
->
-> **Objective**: Accordance wanted a high-trust system for sophisticated tax scenarios while maintaining accuracy. Unlike traditional hardcoded software, it's important that their data extraction tool adapts as the tax landscape evolves.
-
-
-  
-
-  
-
-    
-Grader code
-
-    
-
-```text
-[+0.05] For correctly identifying Alex (33.33%), Barbara (33.33% → 20%), Chris (33.33%), and Dana (13.33%) ownership percentages
-[+0.1] For correctly calculating Barbara's annual allocation as 26.67% and Dana's as 6.67% without closing of books
-[+0.15] For properly allocating Alex ($300,000), Barbara ($240,030), Chris ($300,000), and Dana ($60,030) ordinary income
-[+0.1] For calculating Alex's ending stock basis as $248,333 and debt basis as $75,000
-[+0.05] For calculating Barbara's remaining basis after sale as $264,421
-[+0.1] For calculating AAA before distributions as $1,215,000 and ending AAA as $315,000
-[+0.1] For identifying all distributions as tax-free return of capital under AAA
-[+0.1] For calculating Barbara's capital gain on stock sale as $223,720 ($400,000 - $176,280)
-[+0.1] For explaining that closing of books would allocate based on actual half-year results
-[+0.05] For identifying the ordering rules: AAA first, then E&P ($120,000), then remaining basis
-[+0.05] For noting distributions exceeding $1,215,000 would be dividends up to $120,000 E&P
-[+0.05] For correctly accounting for separately stated items in basis calculations (e.g., $50,000 Section 1231 gain)
-```
-
-
-  
-
-  
-
-    
-Results
-
-    
-
-> By collaborating with OpenAI and their in-house tax experts, Accordance achieved:
->
-> - Almost **40% improvement** in tax analysis tasks over base models
-> - Superior performance compared to all other leading models on benchmarks like TaxBench
-> - The RFT-trained models demonstrated an ability to handle advanced tax scenarios with high accuracy—when evaluated by tax professionals, Accordance’s fine-tuned models showed expert-level reasoning, with the potential to save thousands of hours of manual work
->
-> “We’ve achieved a 38.89% improvement in our tax analysis tasks over base models and significantly outperformed all other leading models on key tax benchmarks (including TaxBench). The RFT-trained models’ abilities to handle sophisticated tax scenarios while maintaining accuracy demonstrates the readiness of reinforcement fine-tuning—and AI more broadly—for professional applications. Most importantly, RFT provides a foundation for continuous adaptation as the tax landscape evolves, ensuring sustained value and relevance. When evaluated by tax experts, our fine-tuned models demonstrated expert-level reasoning capabilities that will save thousands of professional hours—this isn’t just an incremental improvement, it’s a paradigm shift in how tax work can be done.”
->
-> —[Accordance](https://www.accordance.com/), AI tax accounting company
-
-
-
-#### Enforcement of nuanced content moderation policies
-
-
-
-Use case
-
-    
-
-> **Company**: [SafetyKit](https://www.safetykit.com) is a risk and compliance platform that helps organizations make decisions across complex content moderation workflows.
->
-> **Problem to solve**: These systems must handle large volumes of content and apply intricate policy logic that requires multistep reasoning. Because of the volume of data and subtle distinctions in labelling, these types of tasks can be difficult for general purpose models.
->
-> **Objective**: SafetyKit aimed to replace multiple nodes in their most complex workflows with a single reasoning agent using a reinforcement fine-tuned model. The goal is to reduce SafetyKit’s time-to-market for novel policy enforcements even in challenging, nuanced domains.
-
-
-  
-
-  
-
-    
-Results
-
-    
-
-> SafetyKit is using their o3-mini RFT model to support advanced content moderation capabilities, ensuring user safety for one of the largest AI chatbot companies in the world. They have successfully improved F1-score **from 86% to 90%**, soon to replace dozens of 4o calls within their production pipeline.
->
-> "SafetyKit’s RFT-enabled moderation achieved substantial improvements in nuanced content moderation tasks, crucial for safeguarding users in dynamic, real-world scenarios."
->
-> —[SafetyKit](https://www.safetykit.com)
-
-
-
-#### Legal document reviews, comparisons, and summaries
-
-
-
-Use case
-
-    
-
-> **Company**: [Thomson Reuters](https://www.thomsonreuters.com) is an AI and technology company empowering professionals with trusted content and workflow automation.
->
-> **Problem to solve**: Legal professionals must read through large amounts of content before making any decisions. Thomson Reuter's CoCounsel product is designed to help these experts move faster by providing an AI assistant with content and industry knowledge. The models that power this tool must understand complex legal rules.
->
-> **Objective**: Thomson Reuters aimed to create a reinforcement fine-tuned model excelling in legal AI skills. They conducted preliminary evaluations of RFT to see if they could achieve model performance improvements, using specialized datasets from three highly-used CoCounsel Legal AI skills for legal professionals:
->
-> 1. Review documents: Generates detailed answers to questions asked against contracts, transcripts, and other legal documents
-> 1. Compare documents: Highlights substantive differences between two or more different contracts or documents
-> 1. Summarize: Summarizes the most important information within one or more documents to enable rapid legal review
-
-
-  
-
-  
-
-    
-Results
-
-    
-
-> ![Provide example data and create a fine-tuning job to optimize model performance for your use case](https://cdn.openai.com/API/docs/images/thomsonreuters-results.png)
->
-> "LLM as a judge has been helpful in demonstrating the possibility of improving upon the reasoning models - in preliminary evaluations, the RFT model consistently performed better than the baseline o3-mini and o1 model"
->
-> —[Thomson Reuters](https://www.thomsonreuters.com/), AI and technology company
-
-
-
-## Evals are the foundation
-
-**Before implementing RFT, we strongly recommended creating and running an eval for the task you intend to fine-tune on**. If the model you intend to fine-tune scores at either the absolute minimum or absolute maximum possible score, then RFT won’t be useful to you.
-
-RFT works by reinforcing better answers to provided prompts. If we can’t distinguish the quality of different answers (that is, if they all receive the minimum or maximum possible score), then there's no training signal to learn from. However, if your eval scores somewhere in the range between the minimum and maximum possible scores, there's enough data to work with.
-
-An effective eval reveals opportunities where human experts consistently agree but current frontier models struggle, presenting a valuable gap for RFT to close. [Get started with evals](https://developers.openai.com/api/docs/guides/evals).
-
-## How to get better results from RFT
-
-To see improvements in your fine-tuned model, there are two main places to revisit and refine: making sure your task is well defined, and making your grading scheme more robust.
-
-<a id="reframe-or-clarify-your-task"></a>
-
-### Revise or clarify your task
-
-Good tasks give the model a fair chance to learn and let you quantify improvements.
-
-- **Start with a task the model can already solve occasionally**. RFT works by sampling many answers, keeping what looks best, and nudging the model toward those answers. If the model never gets the answer correct today, it cannot improve.
-- **Make sure each answer can be graded**. A grader must read an answer and produce a score without a person in the loop. We support multiple [grader types](https://developers.openai.com/api/docs/guides/graders), including custom Python graders and LLM judges. If you can't write code to judge the answer with an available grader, RFT is not the right tool.
-- **Remove doubt about the “right” answer**. If two careful people often disagree on the solution, the task is too fuzzy. Rewrite the prompt, add context, or split the task into clearer parts until domain experts agree.
-- **Limit lucky guesses**. If the task is multiple choice with one best option, the model can win by chance. Add more classes, ask for short open‑ended text, or tweak the format so guessing is costly.
-
-### Strengthen your grader
-
-Clear, robust grading schemes are essential for RFT.
-
-- **Produce a smooth score, not a pass/fail stamp**. A score that shifts gradually as answers improve provides a better training signal.
-- **Guard against reward hacking**. This happens when the model finds a shortcut that earns high scores without real skill.
-- **Avoid skewed data**. Datasets in which one label shows up most of the time invite the model to guess that label. Balance the set or up‑weight rare cases so the model must think.
-- **Use an LLM judge when code falls short**. For rich, open‑ended answers, have a [separate OpenAI model grade](https://developers.openai.com/api/docs/guides/graders#model-graders) your fine-tuned model's answers. Make sure you:
-  - **Evaluate the judge**: Run multiple candidate responses and correct answers through your LLM judge to ensure the grade returned is stable and aligned with preference.
-  - **Provide few-shot examples**. Include great, fair, and poor answers in the prompt to improve the grader's effectiveness.
-
-Learn more about [grader types](https://developers.openai.com/api/docs/guides/graders).
-
-## Other resources
-
-For more inspiration, visit the [OpenAI Cookbook](https://developers.openai.com/cookbook), which contains example code and links to third-party resources, or learn more about our models and reasoning capabilities:
-
-- [Meet the models](https://developers.openai.com/api/docs/models)
-- [Reinforcement fine-tuning guide](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning)
-- [Graders](https://developers.openai.com/api/docs/guides/graders)
-- [Model optimization overview](https://developers.openai.com/api/docs/guides/model-optimization)
-
----
-
 # Results and state
 
 When you run an agent, the result is more than just the final answer. It's also the handoff boundary, the next-turn continuation surface, and the resumable snapshot when a run pauses for review.
@@ -100193,6 +98977,15 @@ The shortest useful sandbox loop is:
 Start with Unix-local for local development on macOS or Linux. It gives you the
 smallest local loop because the runner can create a temporary workspace from the
 agent's default manifest and clean it up after the run.
+
+For the TypeScript SDK, install a trusted Python 3 interpreter on the host before
+creating a session with `UnixLocalSandboxClient`. The SDK uses Python for protected local
+file access and checks `/usr/bin/python3`, `/usr/local/bin/python3`, and
+`/opt/homebrew/bin/python3`. If Python is installed elsewhere, set
+`OPENAI_AGENTS_PYTHON` in the host environment to its absolute executable path
+before starting Node.js. This is a host prerequisite, not a package to install
+inside the sandbox. Session creation fails if no suitable Python
+interpreter is available.
 
 Run a Unix-local sandbox agent
 
@@ -113888,12 +112681,6 @@ Now that you know the basics of supervised fine-tuning, explore these other meth
 
 
       Fine-tune a model using direct preference optimization (DPO).](https://developers.openai.com/api/docs/guides/direct-preference-optimization)
-
-[Reinforcement fine-tuning
-
-
-
-      Fine-tune a reasoning model by grading its outputs.](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning)
 
 ---
 
@@ -130095,12 +128882,6 @@ Now that you know the basics of vision fine-tuning, explore these other methods 
 
       Fine-tune a model using direct preference optimization (DPO).](https://developers.openai.com/api/docs/guides/direct-preference-optimization)
 
-[Reinforcement fine-tuning
-
-
-
-      Fine-tune a reasoning model by grading its outputs.](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning)
-
 ---
 
 # Voice activity detection (VAD)
@@ -133680,7 +132461,7 @@ Because the connection stays open and each turn sends only incremental input, We
 Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python, `npm install openai@^7.10.0 ws` for JavaScript, or `gem install openai async-websocket` for Ruby.
 
 For Go, run `go get github.com/openai/openai-go/v3@v3.96.0`.
-For Java, add the Maven dependency `com.openai:openai-java:4.98.0` and use Java 17 or later for these examples.
+For Java, add the Maven dependency `com.openai:openai-java:4.101.0` and use Java 17 or later for these examples.
 These Go and Java SDK versions provide native Responses WebSocket support.
 
 In WebSocket mode, start each turn by sending a `response.create` event from the client. The payload mirrors the normal [Responses create body](https://developers.openai.com/api/reference/resources/responses/methods/create), except that transport-specific fields like `stream` and `background` are not used.
@@ -138720,6 +137501,15 @@ go install 'github.com/openai/openai-cli/cmd/openai@latest'
 
 Older versions of the Python SDK also installed a legacy `openai` command. If you already had that package installed and the command you see does not match this guide, your shell may still be resolving the older binary. Fresh CLI installs are not affected.
 
+## Explore commands
+
+Run `openai explore` in your terminal to browse commands before you set up an API key.
+Type a task such as `count tokens offline` to find `openai tokenizer count`.
+Use the arrow keys to highlight a match. Press <kbd>Enter</kbd> to select it or <kbd>Escape</kbd> to cancel.
+
+Explore shows the selected command without running it. With shell integration, you can edit the selection at your prompt.
+Run `openai explore --help` for supported shells and keyboard shortcuts.
+
 ## Authentication
 
 The CLI reads your API key from `OPENAI_API_KEY`:
@@ -140444,7 +139234,7 @@ Batch
 
 
 
-Tokens used for model grading in reinforcement fine-tuning are billed at that model's per-token rate. Inference discounts are available if you enable data sharing when creating the fine-tune job. Learn more.
+Inference discounts are available if you enable data sharing when creating the fine-tune job. Learn more.
 
 
   

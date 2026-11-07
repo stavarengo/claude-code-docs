@@ -22,7 +22,29 @@ Released [GPT-Image-2.6 Sunburst](https://developers.openai.com/api/docs/models/
 
 See the [image generation guide](https://developers.openai.com/api/docs/guides/image-generation#gpt-image-26).
 
+### Nov 2
+
+Feature · Model: gpt-live-1 · API: v1/live/sessions
+
+Outbound SIP calling is now available to all organizations through the Live API. Connect GPT-Live to a phone number through your SIP provider. See the [SIP guide](https://developers.openai.com/api/docs/guides/voice-sip?api=live#place-an-outbound-call).
+
 ## October, 2026
+
+### Oct 30
+
+Update · API: v1/agents · API: v1/agents/sessions
+
+You can now [update the tools in an existing session](https://developers.openai.com/api/docs/guides/agents-api/configuration#update-settings-for-an-existing-session) in the Agents API public beta. Updates replace the full tool list. Function tools and MCP servers change on the next model call; built-in tools change by the next turn.
+
+Context compaction now runs in the background by default. Set `compaction.async` to `false` for blocking compaction. Background compaction may increase token usage.
+
+Added opt-in experimental time awareness. Set `experimental.time_awareness` to `true` to give the model periodic current-time reminders. It is disabled by default. See the [agent configuration reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/methods/create) for compaction and experimental settings.
+
+### Oct 30
+
+Feature · API: v1/agents/sessions
+
+Added automatic review for eligible Agents API projects. Set the session's `review` field to `"auto_review"` to have a model approve or deny supported tool and permission requests based on conversation intent and risk. See the [automatic review guide](https://developers.openai.com/api/docs/guides/agents-api/sessions/approvals) for supported requests, limitations, and additional token billing.
 
 ### Oct 30
 
@@ -43,6 +65,12 @@ Feature · Model: gpt-6.1-terra · API: v1/responses · API: v1/chat/completions
 Released [GPT-6.1 Terra](https://developers.openai.com/api/docs/models/gpt-6.1-terra), a fast, efficient model for visual reasoning, precise computer use, and clear, natural writing.
 
 See the [GPT-6 guide](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra#gpt-61-terra) for prompting and migration guidance.
+
+### Oct 23
+
+Feature · API: v1/agents/automations
+
+Added [scheduled automations](https://developers.openai.com/api/docs/guides/agents-api/sessions/automations) to the Agents API public beta. Schedule one-time or recurring tasks in new or existing sessions. Enable the `automations` tool to let an agent schedule its own follow-ups in the current session.
 
 ### Oct 22
 
@@ -121,6 +149,12 @@ Simplified API usage tiers from five to three: Build, Launch, and Grow. Organiza
 Feature
 
 Added an in-product flow for HIPAA compliance support in API [Organization settings > General](https://platform.openai.com/settings/organization/general). Admins of eligible organizations can now accept the standard Business Associate Agreement (BAA) and enable HIPAA compliance support for their organization. See the [Help Center](https://help.openai.com/en/articles/8660679-getting-a-business-associate-agreement-for-the-openai-api) for eligibility, covered services, and configuration requirements.
+
+### Oct 2
+
+Feature · API: v1/agents/sessions
+
+Added [item history for individual root-agent turns](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#fetch-items-and-turns) in the Agents API public beta. Retrieve a turn's messages and tool calls without listing the entire session's history.
 
 ## September, 2026
 
@@ -988,7 +1022,7 @@ Launched [codex-mini-latest](https://developers.openai.com/api/docs/models/codex
 
 Feature · API: v1/fine-tuning · API: v1/responses · API: v1/chat/completions
 
-Launched support for [reinforcement fine-tuning](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning). Learn about available [fine-tuning methods](https://developers.openai.com/api/docs/guides/model-optimization). [gpt-4.1-nano](https://developers.openai.com/api/docs/models/gpt-4.1-nano) is now available for fine-tuning.
+Launched support for [reinforcement fine-tuning](https://developers.openai.com/api/reference/resources/fine_tuning). Learn about available [fine-tuning methods](https://developers.openai.com/api/docs/guides/model-optimization). [gpt-4.1-nano](https://developers.openai.com/api/docs/models/gpt-4.1-nano) is now available for fine-tuning.
 
 ## April, 2025
 

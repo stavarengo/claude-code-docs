@@ -100,7 +100,7 @@ The full documentation is available in the following languages on https://platfo
 - [Security](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/security.md) - MCP tunnels security
 - [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool.md)
 - [Message threads](https://platform.claude.com/docs/en/build-with-claude/message-threads.md)
-- [Mid-conversation system messages and tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages.md)
+- [Mid-conversation messages](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages.md) - Mid-conversation system messages and tool changes
 - [Multilingual support](https://platform.claude.com/docs/en/build-with-claude/multilingual-support.md)
 - [Parallel tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md)
 - [PDF support](https://platform.claude.com/docs/en/build-with-claude/pdf-support.md)

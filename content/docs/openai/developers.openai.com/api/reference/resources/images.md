@@ -182,7 +182,7 @@ Content type: `multipart/form-data`
 
   - `usage: optional object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
-    For `gpt-image-1` only, the token usage information for the image generation.
+    Token usage information for image generation with GPT Image models.
 
     - `input_tokens: integer`
 
@@ -677,7 +677,7 @@ Content type: `application/json`
 
   - `usage: optional object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
-    For `gpt-image-1` only, the token usage information for the image generation.
+    Token usage information for image generation with GPT Image models.
 
     - `input_tokens: integer`
 
@@ -1214,7 +1214,7 @@ Content type: `application/json`
 
   - `usage: optional object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
-    For `gpt-image-1` only, the token usage information for the image generation.
+    Token usage information for image generation with GPT Image models.
 
     - `input_tokens: integer`
 
@@ -2289,7 +2289,7 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
   - `usage: optional object { input_tokens, input_tokens_details, output_tokens, 2 more }`
 
-    For `gpt-image-1` only, the token usage information for the image generation.
+    Token usage information for image generation with GPT Image models.
 
     - `input_tokens: integer`
 
