@@ -170,6 +170,7 @@ work more autonomously.
 - [Plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins.md): Package skills and MCP configuration for use across sessions.
 - [Pre-warm sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed.md): Prepare a workspace before starting an agent session.
 - [Predicted Outputs](https://developers.openai.com/api/docs/guides/predicted-outputs.md): Understand how to reduce latency for model responses where much of the response is known ahead of time.
+- [Preserved reasoning](https://developers.openai.com/api/docs/guides/preserved-reasoning.md): Preserve reasoning across Responses API turns when managing conversation history.
 - [Private Link](https://developers.openai.com/api/docs/guides/private-link.md): Configure Azure Private Link endpoints, DNS, health checks, and cross-region routing for the OpenAI API.
 - [Production best practices](https://developers.openai.com/api/docs/guides/production-best-practices.md): Explore best practices for transitioning your AI projects from prototype to production, including scaling, security, and cost management.
 - [Programmatic Tool Calling](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling.md): Configure Programmatic Tool Calling, control which tools programs can invoke, and resume programs after client-owned function calls.

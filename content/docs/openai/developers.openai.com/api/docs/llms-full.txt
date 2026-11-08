@@ -14516,6 +14516,8 @@ To support long-running interactions, you can use compaction to reduce context
 size while preserving state needed for subsequent turns.
 
 Compaction helps you balance quality, cost, and latency as conversations grow.
+For guidance on preserving reasoning when changing conversation history, see
+[Preserved reasoning](https://developers.openai.com/api/docs/guides/preserved-reasoning).
 
 ## Server-side compaction
 
@@ -33938,6 +33940,8 @@ To manually share context across generated responses, include the model's previo
 
 For stateless reasoning-model requests, preserve every item in the response's `output` array. The Responses API returns encrypted reasoning items by default. Replaying the complete output keeps reasoning items and assistant `phase` values intact. Models that support persisted reasoning can use `reasoning.context: "all_turns"` to render the available reasoning from earlier turns into the next sample. See [preserve reasoning across calls](https://developers.openai.com/api/docs/guides/reasoning#preserve-reasoning-across-calls).
 
+When replaying reasoning items, preserve the history that produced them. See [Preserved reasoning](https://developers.openai.com/api/docs/guides/preserved-reasoning) for details on how edits to conversation history affect reasoning.
+
 In the following example, we ask the model to tell a joke, followed by a request for another joke. Appending previous responses to new requests in this way helps ensure conversations feel natural and retain the context of previous interactions.
 
 
@@ -46034,7 +46038,8 @@ puts(response.output_text)
 
 Note that for reasoning models like GPT-5 or o4-mini, any reasoning items
   returned in model responses with tool calls must also be passed back with tool
-  call outputs.
+  call outputs. For guidance on preserving the history that produced those
+  items, see [Preserved reasoning](https://developers.openai.com/api/docs/guides/preserved-reasoning).
 
 ## Defining functions
 
@@ -74959,6 +74964,97 @@ When using Predicted Outputs, you should consider the following factors and limi
 
 ---
 
+# Preserved reasoning
+
+When you continue a conversation with the Responses API, a model can reuse
+reasoning items from an earlier response. To preserve that reasoning when you
+manage conversation history, keep the history that produced it intact and append
+new messages and tool results at the end. The selected model and
+[`reasoning.context` setting](https://developers.openai.com/api/docs/guides/reasoning#preserve-reasoning-across-calls)
+determine which available reasoning items the model can use.
+
+## How history changes affect reasoning
+
+For newer frontier models, the API checks the conversation history before each
+reasoning item you send back. This history is the item's _prefix_. If you edit,
+shorten, or insert a message in that prefix, the API drops the affected
+reasoning. The request can continue with the conversation you provide, and the
+model can generate new reasoning.
+
+For example, an agent calls a ledger tool and uses the returned rows to
+investigate a discrepancy. On the next request, your app replaces those rows
+with a subtotal. The model can still reuse reasoning it used to choose the tool,
+but the API drops reasoning that depended on the original rows, even if you send the
+reasoning item back unchanged.
+
+## Append new instructions
+
+When you manage history yourself, keep the previous input and the response's
+output items in their original order. Add new instructions at the point where
+they take effect.
+
+This example uses the Python SDK in stateless mode with a model that supports
+`reasoning.context` set to `all_turns`. Stateless responses
+include encrypted reasoning content by default. See
+[Preserve reasoning without stored responses](https://developers.openai.com/api/docs/guides/reasoning#preserve-reasoning-without-stored-responses).
+
+Append instructions to a conversation
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+model = "gpt-6.1-sol"
+history = [{"role": "user", "content": "Compare invoice A ($80) and B ($95)."}]
+
+first = client.responses.create(
+    model=model,
+    reasoning={"context": "all_turns"},
+    input=history,
+    store=False,
+)
+
+next_input = [
+    *history,
+    *(item.to_dict() for item in first.output),
+    {
+        "role": "developer",
+        "content": "For the reconciliation report, use a Markdown table.",
+    },
+    {"role": "user", "content": "Add invoice C ($110) and show the total."},
+]
+report = client.responses.create(
+    model=model,
+    reasoning={"context": "all_turns"},
+    input=next_input,
+    store=False,
+)
+print(report.output_text)
+```
+
+
+If you use stored responses, you can continue from the prior response with
+`previous_response_id` and send only the new input items. See
+[Conversation state](https://developers.openai.com/api/docs/guides/conversation-state).
+
+## Migrate away from prefix edits
+
+Compare two consecutive requests in a workflow that reuses reasoning. Find the
+first place your app changes an item it already sent, then choose the migration
+that matches the edit.
+
+| If your app edits…                       | Migrate to…                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Older turns during compaction            | Use OpenAI compaction and continue from the returned context. If you create a portable text summary, let the model reason from it. Replacing the prefix can invalidate reasoning you replay after the summary. If the history includes `configuration_update` items, use an explicit `compaction_trigger`, then append a fresh update before the next user message. Restate every setting you changed, including the format if applicable. Automatic compaction, automatic truncation, and standalone `/responses/compact` don't support histories containing these updates. |
+| Developer instructions                   | Append a developer message when the instruction takes effect. If the response is already running, use mid-turn steering where supported.                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| The tool list when switching modes       | Keep known tool definitions stable. Restrict the next request with `tool_choice` of type `allowed_tools`. To introduce new tools, append an `additional_tools` input item with role `developer` and the definitions in `tools`. Replay it in its original position.                                                                                                                                                                                                                                                                                                          |
+| A tool result the model has already seen | Filter the result before sending `function_call_output` the first time. If the data changes, append a correction or return it from a new tool call.                                                                                                                                                                                                                                                                                                                                                                                                                          |
+
+For more on managing long conversations, see
+[Compaction](https://developers.openai.com/api/docs/guides/compaction).
+
+---
+
 # Private Link
 
 OpenAI Private Link lets Azure workloads reach regional OpenAI API endpoints through Azure Private Link instead of connecting directly to public API endpoints. Create a private endpoint for each OpenAI-provided regional Private Link Service, map its regional host name in private DNS, and send normal authenticated API requests to that host name.
@@ -93656,13 +93752,11 @@ puts(second.output_text)
 
 ### Keeping reasoning items in context
 
-When doing [function calling](https://developers.openai.com/api/docs/guides/function-calling) with a reasoning model in the [Responses API](https://developers.openai.com/api/reference/resources/responses), we highly recommend you pass back any reasoning items returned with the last function call (in addition to the output of your function). If the model calls multiple functions consecutively, you should pass back all reasoning items, function call items, and function call output items, since the last `user` message. This allows the model to continue its reasoning process to produce better results in the most token-efficient manner.
+When doing [function calling](https://developers.openai.com/api/docs/guides/function-calling) with a reasoning model in the [Responses API](https://developers.openai.com/api/reference/resources/responses), pass back the reasoning items returned with the function calls along with the tool outputs. This lets the model continue reasoning after a tool call.
 
-The simplest way to do this is to pass in all reasoning items from a previous response into the next one. Our systems will smartly ignore any reasoning items that aren't relevant to your functions, and only retain those in context that are relevant. You can pass reasoning items from previous responses either using the `previous_response_id` parameter, or by manually passing in all the [output](https://developers.openai.com/api/reference/resources/responses#responses/object-output) items from a past response into the [input](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-input) of a new one.
+You can carry reasoning items forward using `previous_response_id`. If you manage conversation history yourself, include the original input and all [output](https://developers.openai.com/api/reference/resources/responses#responses/object-output) items from each response in the [input](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-input) of the next request. Keep those items in their original order and append new items.
 
-For advanced use cases where you might be truncating and optimizing parts of the context window before passing them on to the next response, just ensure all items between the last user message and your function call output are passed into the next response untouched. This will ensure that the model has all the context it needs.
-
-Check out [this guide](https://developers.openai.com/api/docs/guides/conversation-state) to learn more about manual context management.
+For newer frontier models, changes to the history preceding a reasoning item can cause the API to drop that reasoning. See [Preserved reasoning](https://developers.openai.com/api/docs/guides/preserved-reasoning) for guidance on changing instructions and tool outputs, and managing long conversations.
 
 ## Change reasoning mid-conversation
 
@@ -117496,6 +117590,14 @@ All Daybreak Red organizations must [require SSO](https://help.openai.com/en/art
 
 The `model` field selects the model. The `access_programs.cyber` field selects a supported access program for that request: `standard`, `daybreak_blue`, or `daybreak_red`.
 
+Only organizations with existing access can use `gpt-5.5-cyber-preview`. It
+  retires on **February 1, 2027**. Requests that use this model will fail after
+  retirement. If you use it, change the `model` field to `gpt-5.6-cyber` before
+  that date. If your organization has approval for `gpt-6-cyber`, follow the
+  [setup instructions](#set-up-gpt-6-cyber) to switch to it instead. Confirm
+  your project has access to the replacement before switching. See [API
+  deprecations](https://developers.openai.com/api/docs/deprecations#2026-11-05-gpt-55-cyber).
+
 
 
   <table>
@@ -117527,7 +117629,7 @@ GPT-6.1 Sol
 GPT-6 Astra
 
             
-GPT-5.5-Cyber
+GPT-5.5-Cyber (existing access only)
 
             
 GPT-5.6-Cyber
