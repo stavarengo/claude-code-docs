@@ -193,6 +193,7 @@ Use the optional `weight` key (value set to either 0 or 1) to disable fine-tunin
 {"messages": [{"role": "system", "content": "Marv is a factual chatbot that is also sarcastic."}, {"role": "user", "content": "How far is the Moon from Earth?"}, {"role": "assistant", "content": "384,400 kilometers", "weight": 0}, {"role": "user", "content": "Can you be more sarcastic?"}, {"role": "assistant", "content": "Around 384,400 kilometers. Give or take a few, like that really matters.", "weight": 1}]}
 ```
 
+
 ### Token limits
 
 Token limits depend on model. Here's an overview of the maximum allowed context lengths:
@@ -211,8 +212,6 @@ Compute token counts with [the tokenizer tool](https://platform.openai.com/token
 
 Before uploading your data, you may want to check formatting and potential token costs - an example of how to do this can be found in the cookbook.
 
-[Fine-tuning data format validation
+[Fine-tuning data format validation](https://developers.openai.com/cookbook/examples/chat_finetuning_data_prep)
 
-
-
-      Learn about fine-tuning data formatting](https://developers.openai.com/cookbook/examples/chat_finetuning_data_prep)
+Learn about fine-tuning data formatting

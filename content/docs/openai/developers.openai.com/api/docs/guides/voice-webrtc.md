@@ -486,6 +486,7 @@ Create `index.html` in the directory where you run the server:
 </html>
 ```
 
+
 Paste the following code inside the module script. It adds start and end controls, connects the microphone and output audio, and handles session events. `/api/session` is a route on your application server.
 
 ```javascript
@@ -637,6 +638,7 @@ A successful request returns HTTP 201 with JSON containing the session ID and SD
   "transport": { "type": "webrtc", "sdp": "<SDP answer>" }
 }
 ```
+
 
 Read `result.session.id` and pass `result.transport.sdp` to `setRemoteDescription`. Treat the session ID as opaque and preserve it unchanged, including its prefix.
 
@@ -1019,8 +1021,6 @@ if (dc.readyState === "open") {
 
 To learn more about managing Realtime conversations, refer to the [Realtime conversations guide](https://developers.openai.com/api/docs/guides/realtime-conversations).
 
-[Realtime Console
+[Realtime Console](https://github.com/openai/openai-realtime-console/)
 
-
-
-      Check out the WebRTC Realtime API in this light weight example app.](https://github.com/openai/openai-realtime-console/)
+Check out the WebRTC Realtime API in this light weight example app.

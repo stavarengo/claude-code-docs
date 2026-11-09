@@ -3481,11 +3481,11 @@ To receive (mostly) deterministic outputs across API calls, you can:
 
 Sometimes, determinism may be impacted due to necessary changes OpenAI makes to model configurations on our end. To help you keep track of these changes, we expose the [`system_fingerprint`](https://developers.openai.com/api/reference/resources/chat#chat/object-system_fingerprint) field. If this value is different, you may see different outputs due to changes we've made on our systems.
 
-[Deterministic outputs
+[Deterministic outputs](https://developers.openai.com/cookbook/examples/reproducible_outputs_with_the_seed_parameter)
+
+Explore the new seed parameter in the OpenAI cookbook
 
 
-
-      Explore the new seed parameter in the OpenAI cookbook](https://developers.openai.com/cookbook/examples/reproducible_outputs_with_the_seed_parameter)
 
 ## Managing tokens
 
@@ -3703,11 +3703,7 @@ Use this guide to learn the process and parts of building agents.
 
 To build useful agents, you create workflows for them. A **workflow** is a combination of agents, tools, and control-flow logic. A workflow encapsulates all steps and actions involved in handling your tasks or powering your chats, with working code you can deploy when you're ready.
 
-
-
 Open Agent Builder
-
-
 
 
 
@@ -3997,26 +3993,24 @@ Once one specialist is defined cleanly, move to the guide that matches the next 
 
 
 
-  [Models and providers
+  [Models and providers](https://developers.openai.com/api/docs/guides/agents/models)
+
+Choose models, defaults, and transport strategy for this agent.
 
 
+  [Using tools](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
 
-        Choose models, defaults, and transport strategy for this agent.](https://developers.openai.com/api/docs/guides/agents/models)
-  [Using tools
-
-
-
-        Add capabilities the agent can call directly.](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
-  [Orchestration and handoffs
+Add capabilities the agent can call directly.
 
 
+  [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration)
 
-        Choose how specialists collaborate once one agent is no longer enough.](https://developers.openai.com/api/docs/guides/agents/orchestration)
-  [Running agents
+Choose how specialists collaborate once one agent is no longer enough.
 
 
+  [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents)
 
-        Understand the runtime loop, state, and streaming behavior.](https://developers.openai.com/api/docs/guides/agents/running-agents)
+Understand the runtime loop, state, and streaming behavior.
 
 ---
 
@@ -4950,16 +4944,16 @@ Use the GitHub repositories for more examples, issues, and language-specific ref
 
 
 
-  [TypeScript SDK
+  [TypeScript SDK](https://github.com/openai/openai-agents-js)
+
+Open the TypeScript SDK repository on GitHub.
 
 
+  [Python SDK](https://github.com/openai/openai-agents-python)
 
-        Open the TypeScript SDK repository on GitHub.](https://github.com/openai/openai-agents-js)
-  [Python SDK
+Open the Python SDK repository on GitHub.
 
 
-
-        Open the Python SDK repository on GitHub.](https://github.com/openai/openai-agents-python)
 
 
 
@@ -6919,7 +6913,7 @@ The Python sample uses `pip install "openai[realtime]>=3.8.0"`.
 The JavaScript sample uses `npm install openai@^7.10.0 ws`.
 The Ruby sample uses `gem install openai async-websocket`.
 
-For Go, run `go get github.com/openai/openai-go/v3@v3.96.0`.
+For Go, run `go get github.com/openai/openai-go/v3@v3.97.0`.
 For Java, add the Maven dependency `com.openai:openai-java:4.101.0`.
 These Go and Java SDK versions provide native Responses WebSocket support.
 
@@ -7943,17 +7937,17 @@ if __name__ == "__main__":
 
 You can find full working examples on GitHub.
 
-[Apply patch tool example - TypeScript
+[Apply patch tool example - TypeScript](https://github.com/openai/openai-agents-js/blob/main/examples/tools/applyPatch.ts)
+
+Example of how to use the apply patch tool with the Agents SDK in TypeScript
 
 
 
-      Example of how to use the apply patch tool with the Agents SDK in TypeScript](https://github.com/openai/openai-agents-js/blob/main/examples/tools/applyPatch.ts)
+[Apply patch tool example - Python](https://github.com/openai/openai-agents-python/blob/main/examples/tools/apply_patch.py)
 
-[Apply patch tool example - Python
+Example of how to use the apply patch tool with the Agents SDK in Python
 
 
-
-      Example of how to use the apply patch tool with the Agents SDK in Python](https://github.com/openai/openai-agents-python/blob/main/examples/tools/apply_patch.py)
 
 ## Handling common errors
 
@@ -12092,9 +12086,10 @@ static String getChatKitSessionToken(OpenAIClient client, String authenticatedUs
 
 3. In your project directory, install the ChatKit React bindings:
 
-```bash
+   ```bash
    npm install @openai/chatkit-react
-```
+   ```
+
 
 4. Add the ChatKit JS script to your page. Drop this snippet into your page’s `<head>` or wherever you load scripts, and the browser will fetch and run ChatKit for you.
 
@@ -12179,57 +12174,56 @@ See the [custom theming](https://developers.openai.com/api/docs/guides/chatkit-t
 
 #### Build your implementation
 
-[ChatKit docs on GitHub
+[ChatKit docs on GitHub](https://openai.github.io/chatkit-python)
+
+Learn to handle authentication, add theming and customization, and more.
+
+
+[ChatKit Python SDK](https://github.com/openai/chatkit-python)
+
+Add server-side storage, access control, tools, and other backend functionality.
 
 
 
-      Learn to handle authentication, add theming and customization, and more.](https://openai.github.io/chatkit-python)
-[ChatKit Python SDK
+[ChatKit JS SDK](https://github.com/openai/chatkit-js)
+
+Check out the ChatKit JS repo.
 
 
-
-      Add server-side storage, access control, tools, and other backend
-    functionality.](https://github.com/openai/chatkit-python)
-
-[ChatKit JS SDK
-
-
-
-      Check out the ChatKit JS repo.](https://github.com/openai/chatkit-js)
 
 #### Explore ChatKit UI
 
-[chatkit.world
+[chatkit.world](https://chatkit.world)
+
+Play with an interactive demo of ChatKit.
 
 
 
-      Play with an interactive demo of ChatKit.](https://chatkit.world)
+[Widget builder](https://widgets.chatkit.studio)
 
-[Widget builder
-
-
-
-      Browse available widgets.](https://widgets.chatkit.studio)
-
-[ChatKit playground
+Browse available widgets.
 
 
 
-      Play with an interactive demo to learn by doing.](https://chatkit.studio/playground)
+[ChatKit playground](https://chatkit.studio/playground)
+
+Play with an interactive demo to learn by doing.
+
+
 
 #### See working examples
 
-[Samples on GitHub
+[Samples on GitHub](https://github.com/openai/openai-chatkit-advanced-samples)
+
+See working examples of ChatKit and get inspired.
 
 
 
-      See working examples of ChatKit and get inspired.](https://github.com/openai/openai-chatkit-advanced-samples)
+[Starter app repo](https://github.com/openai/openai-chatkit-starter-app)
 
-[Starter app repo
+Clone a repo to start with a fully working template.
 
 
-
-      Clone a repo to start with a fully working template.](https://github.com/openai/openai-chatkit-starter-app)
 
 ## Next steps
 
@@ -13359,13 +13353,10 @@ Generate a secret for the cleanup endpoint and save it as `EXECUTOR_CLIENT_SECRE
 openssl rand -hex 32
 ```
 
+
 Deploy the Worker in your Cloudflare account:
 
-
-
-Deploy to Cloudflare
-
-
+[Deploy to Cloudflare](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/sandbox-sdk/tree/main/openai/agents-api)
 
 Enter these values when prompted:
 
@@ -39480,6 +39471,7 @@ The data should be formatted in JSONL format, with each line [representing an ex
 }
 ```
 
+
 Currently, we only train on one-turn conversations for each example, where the preferred and non-preferred messages need to be the last assistant message.
 
 ## Create a DPO fine-tune job
@@ -39669,17 +39661,15 @@ While these evaluations cover a broad range of safety categories, conduct your o
 
 Now that you know the basics of DPO, explore these other methods as well.
 
-[Supervised fine-tuning
+[Supervised fine-tuning](https://developers.openai.com/api/docs/guides/supervised-fine-tuning)
+
+Fine-tune a model by providing correct outputs for sample inputs.
 
 
 
-      Fine-tune a model by providing correct outputs for sample inputs.](https://developers.openai.com/api/docs/guides/supervised-fine-tuning)
+[Vision fine-tuning](https://developers.openai.com/api/docs/guides/vision-fine-tuning)
 
-[Vision fine-tuning
-
-
-
-      Learn to fine-tune for computer vision with image inputs.](https://developers.openai.com/api/docs/guides/vision-fine-tuning)
+Learn to fine-tune for computer vision with image inputs.
 
 ---
 
@@ -40403,29 +40393,27 @@ If you need advanced features such as evaluation against external models, evalua
 
 ## Related evaluation surfaces
 
-[Getting started with evals: Datasets
+[Getting started with evals: Datasets](https://developers.openai.com/api/docs/guides/evaluation-getting-started)
+
+Operate a flywheel of continuous improvement using evaluations.
 
 
 
-      Operate a flywheel of continuous improvement using evaluations.](https://developers.openai.com/api/docs/guides/evaluation-getting-started)
+[Working with evals](https://developers.openai.com/api/docs/guides/evals)
 
-[Working with evals
-
-
-
-      Evaluate against external models, interact with evals via API, and more.](https://developers.openai.com/api/docs/guides/evals)
-
-[Prompt optimizer
+Evaluate against external models, interact with evals via API, and more.
 
 
 
-      Use your dataset to automatically improve your prompts.](https://developers.openai.com/api/docs/guides/prompt-optimizer)
+[Prompt optimizer](https://developers.openai.com/api/docs/guides/prompt-optimizer)
 
-[Cookbook: Building resilient prompts with evals
+Use your dataset to automatically improve your prompts.
 
 
 
-      Operate a flywheel of continuous improvement using evaluations.](https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel)
+[Cookbook: Building resilient prompts with evals](https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel)
+
+Operate a flywheel of continuous improvement using evaluations.
 
 ---
 
@@ -40499,17 +40487,15 @@ Once you have configured an external model, you can use it for evals on the by s
 
 For more inspiration, visit the [OpenAI Cookbook](https://developers.openai.com/cookbook), which contains example code and links to third-party resources, or learn more about our tools for evals:
 
-[Getting started with evals
+[Getting started with evals](https://developers.openai.com/api/docs/guides/evaluation-getting-started)
+
+Uses Datasets to quickly build evals and iterate on prompts.
 
 
 
-      Uses Datasets to quickly build evals and iterate on prompts.](https://developers.openai.com/api/docs/guides/evaluation-getting-started)
+[Working with evals](https://developers.openai.com/api/docs/guides/evals)
 
-[Working with evals
-
-
-
-      Evaluate against external models, interact with evals via API, and more.](https://developers.openai.com/api/docs/guides/evals)
+Evaluate against external models, interact with evals via API, and more.
 
 ---
 
@@ -41794,6 +41780,7 @@ A minimal Responses API request body with explicit high detail looks like this:
 }
 ```
 
+
 ## Accepted file types
 
 The following table lists common file types accepted by the Responses API as
@@ -42579,43 +42566,39 @@ Next, you might want to explore one of these resources:
 
 
 
-  [Experiment with file inputs in the Playground
+  [Experiment with file inputs in the Playground](https://platform.openai.com/chat/edit)
 
-
-
-        Use the Playground to develop and iterate on prompts with file inputs.](https://platform.openai.com/chat/edit)
-
-
-
-
-
-  [Full API reference
-
-
-
-        Check out the API reference for more options.](https://developers.openai.com/api/reference/resources/responses)
+Use the Playground to develop and iterate on prompts with file inputs.
 
 
 
 
 
-  [Use File Search for large corpora
+
+
+  [Full API reference](https://developers.openai.com/api/reference/resources/responses)
+
+Check out the API reference for more options.
 
 
 
-        Use retrieval over chunked files when you need scalable search instead of
-      sending whole files in a single context window.](https://developers.openai.com/api/docs/guides/tools-file-search)
+
+
+
+
+  [Use File Search for large corpora](https://developers.openai.com/api/docs/guides/tools-file-search)
+
+Use retrieval over chunked files when you need scalable search instead of sending whole files in a single context window.
 
 
 
 
 
-  [Use Hosted Shell for deep spreadsheet analysis
 
 
+  [Use Hosted Shell for deep spreadsheet analysis](https://developers.openai.com/api/docs/guides/tools-shell#hosted-shell-quickstart)
 
-        Use Hosted Shell for advanced spreadsheet workflows such as joins,
-      aggregations, and charting.](https://developers.openai.com/api/docs/guides/tools-shell#hosted-shell-quickstart)
+Use Hosted Shell for advanced spreadsheet workflows such as joins, aggregations, and charting.
 
 ---
 
@@ -45317,6 +45300,7 @@ Use the optional `weight` key (value set to either 0 or 1) to disable fine-tunin
 {"messages": [{"role": "system", "content": "Marv is a factual chatbot that is also sarcastic."}, {"role": "user", "content": "How far is the Moon from Earth?"}, {"role": "assistant", "content": "384,400 kilometers", "weight": 0}, {"role": "user", "content": "Can you be more sarcastic?"}, {"role": "assistant", "content": "Around 384,400 kilometers. Give or take a few, like that really matters.", "weight": 1}]}
 ```
 
+
 ### Token limits
 
 Token limits depend on model. Here's an overview of the maximum allowed context lengths:
@@ -45335,11 +45319,9 @@ Compute token counts with [the tokenizer tool](https://platform.openai.com/token
 
 Before uploading your data, you may want to check formatting and potential token costs - an example of how to do this can be found in the cookbook.
 
-[Fine-tuning data format validation
+[Fine-tuning data format validation](https://developers.openai.com/cookbook/examples/chat_finetuning_data_prep)
 
-
-
-      Learn about fine-tuning data formatting](https://developers.openai.com/cookbook/examples/chat_finetuning_data_prep)
+Learn about fine-tuning data formatting
 
 ---
 
@@ -48284,29 +48266,27 @@ Datasets are great for rapid iteration. When you're ready to track performance o
 
 For more inspiration, visit the [OpenAI Cookbook](https://developers.openai.com/cookbook/topic/evals), which contains example code and links to third-party resources, or learn more about our evaluation tools:
 
-[Cookbook: Building resilient prompts with evals
+[Cookbook: Building resilient prompts with evals](https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel)
+
+Operate a flywheel of continuous improvement using evaluations.
 
 
 
-      Operate a flywheel of continuous improvement using evaluations.](https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel)
+[Working with evals](https://developers.openai.com/api/docs/guides/evals)
 
-[Working with evals
-
-
-
-      Evaluate against external models, interact with evals via API, and more.](https://developers.openai.com/api/docs/guides/evals)
-
-[Prompt optimizer
+Evaluate against external models, interact with evals via API, and more.
 
 
 
-      Use your dataset to automatically improve your prompts.](https://developers.openai.com/api/docs/guides/prompt-optimizer)
+[Prompt optimizer](https://developers.openai.com/api/docs/guides/prompt-optimizer)
 
-[Graders
+Use your dataset to automatically improve your prompts.
 
 
 
-      Build sophisticated graders to improve the effectiveness of your evals.](https://developers.openai.com/api/docs/guides/graders)
+[Graders](https://developers.openai.com/api/docs/guides/graders)
+
+Build sophisticated graders to improve the effectiveness of your evals.
 
 ---
 
@@ -48917,7 +48897,7 @@ This will automatically use the entire source code of your `grader.py` file as t
 
 - Your uploaded code must be less than `256kB` and will not have network access.
 - The grading execution itself is limited to 2 minutes.
-- At runtime you will be given a limit of 2Gb of memory and 1Gb of disk space to use.
+- At runtime you will be given a limit of 2GB of memory and 1GB of disk space to use.
 - There's a limit of 2 CPU cores—any usage above this amount will result in throttling
 
 The following third-party packages are available at execution time for the image tag `2025-05-08`
@@ -49226,22 +49206,19 @@ Once the control boundaries are clear, continue with the guide that covers the r
 
 
 
-  [Running agents
+  [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents)
+
+See how interruptions and resumptions fit into the runtime loop.
 
 
+  [Results and state](https://developers.openai.com/api/docs/guides/agents/results)
 
-        See how interruptions and resumptions fit into the runtime loop.](https://developers.openai.com/api/docs/guides/agents/running-agents)
-  [Results and state
-
-
-
-        Learn which result surfaces paused runs return to your application.](https://developers.openai.com/api/docs/guides/agents/results)
-  [Using tools
+Learn which result surfaces paused runs return to your application.
 
 
+  [Using tools](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
 
-        Decide which tool surfaces need validation or approval before side effects
-      happen.](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
+Decide which tool surfaces need validation or approval before side effects happen.
 
 ---
 
@@ -58942,21 +58919,19 @@ Once the external surfaces are wired in, continue with the guide that covers cap
 
 
 
-  [Using tools
+  [Using tools](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
+
+See how hosted tools, function tools, and agents-as-tools fit beside MCP.
 
 
+  [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)
 
-        See how hosted tools, function tools, and agents-as-tools fit beside MCP.](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
-  [Guardrails and human review
-
-
-
-        Add approval or validation boundaries around sensitive capabilities.](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)
-  [Agent workflow evaluation
+Add approval or validation boundaries around sensitive capabilities.
 
 
+  [Agent workflow evaluation](https://developers.openai.com/api/docs/guides/agent-evals)
 
-        Move from one-off traces into repeatable grading once behavior stabilizes.](https://developers.openai.com/api/docs/guides/agent-evals)
+Move from one-off traces into repeatable grading once behavior stabilizes.
 
 ---
 
@@ -67999,11 +67974,11 @@ In the OpenAI platform, you can [build and run evals](https://developers.openai.
 
 Run your evals against test inputs like you expect to see in production. Using one of several available [graders](https://developers.openai.com/api/docs/guides/graders), measure the results of a prompt against your test data set.
 
-[Learn about evals
+[Learn about evals](https://developers.openai.com/api/docs/guides/evals)
+
+Run tests on your model outputs to ensure you're getting the right results.
 
 
-
-      Run tests on your model outputs to ensure you're getting the right results.](https://developers.openai.com/api/docs/guides/evals)
 
 ## Write effective prompts
 
@@ -68013,11 +67988,11 @@ With evals in place, you can effectively iterate on [prompts](https://developers
 - **Provide clear instructions** - your prompt should contain clear goals about what kind of output you want. Start with [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) for new work, and use [reasoning model guidance](https://developers.openai.com/api/docs/guides/reasoning) to tune outcome-level instructions, reasoning effort, and verbosity.
 - **Provide example outputs** - give the model a few examples of correct output for a given prompt (a process called few-shot learning). The model can extrapolate from these examples how it should respond for other prompts.
 
-[Learn about prompt engineering
+[Learn about prompt engineering](https://developers.openai.com/api/docs/guides/text)
+
+Learn the basics of writing good prompts for the model.
 
 
-
-      Learn the basics of writing good prompts for the model.](https://developers.openai.com/api/docs/guides/text)
 
 ## Fine-tune a model
 
@@ -68642,21 +68617,19 @@ Once the runtime contract is clear, continue with the guide that matches the res
 
 
 
-  [Agent definitions
+  [Agent definitions](https://developers.openai.com/api/docs/guides/agents/define-agents)
+
+Keep model choices aligned with the responsibilities of each specialist.
 
 
+  [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents)
 
-        Keep model choices aligned with the responsibilities of each specialist.](https://developers.openai.com/api/docs/guides/agents/define-agents)
-  [Running agents
-
-
-
-        See how transport and model choices affect the runtime loop.](https://developers.openai.com/api/docs/guides/agents/running-agents)
-  [External models
+See how transport and model choices affect the runtime loop.
 
 
+  [External models](https://developers.openai.com/api/docs/guides/external-models)
 
-        Compare broader provider options when a mixed-model stack matters.](https://developers.openai.com/api/docs/guides/external-models)
+Compare broader provider options when a mixed-model stack matters.
 
 ---
 
@@ -73507,23 +73480,19 @@ Once the ownership pattern is clear, continue with the guide that covers the adj
 
 
 
-  [Agent definitions
+  [Agent definitions](https://developers.openai.com/api/docs/guides/agents/define-agents)
+
+Refine each specialist's instructions, tools, and output contract.
 
 
+  [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents)
 
-        Refine each specialist's instructions, tools, and output contract.](https://developers.openai.com/api/docs/guides/agents/define-agents)
-  [Running agents
-
-
-
-        Understand how handoffs and tools behave inside a run.](https://developers.openai.com/api/docs/guides/agents/running-agents)
-  [Results and state
+Understand how handoffs and tools behave inside a run.
 
 
+  [Results and state](https://developers.openai.com/api/docs/guides/agents/results)
 
-        See how 
-      `lastAgent` in TypeScript or `last_agent` in Python 
-      and resumable state affect the next turn.](https://developers.openai.com/api/docs/guides/agents/results)
+See how `lastAgent` in TypeScript or `last_agent` in Python and resumable state affect the next turn.
 
 ---
 
@@ -76624,11 +76593,7 @@ Prompt caching preserves that state for a reusable **prefix**: the unchanged tok
 
 The prompt cache stores key-value (KV) tensors, not the tokens themselves.
 
-
-
 Ask ChatGPT for a deeper explanation
-
-
 
 OpenAI caches the model's full rendered context including OpenAI-provided instructions, [developer messages](https://developers.openai.com/api/docs/guides/prompt-engineering#message-roles-and-instruction-following), [tool definitions](https://developers.openai.com/api/docs/guides/function-calling), and [conversation history](https://developers.openai.com/api/docs/guides/conversation-state) containing [text](https://developers.openai.com/api/docs/guides/text), [images](https://developers.openai.com/api/docs/guides/images-vision), [documents](https://developers.openai.com/api/docs/guides/file-inputs), and supported [audio](https://developers.openai.com/api/docs/guides/audio).
 
@@ -76924,11 +76889,7 @@ Using separate keys can make cached token usage and billing easier to explain fo
 
 For models before GPT-5.6, the minimum cacheable input length varies with request settings, including tools, images, output schemas, reasoning effort, and verbosity.
 
-
-
 Ask ChatGPT to find the cache minimum for my request
-
-
 
 <a id="best-practices"></a>
 
@@ -76936,11 +76897,7 @@ Ask ChatGPT to find the cache minimum for my request
 
 Focus on [preserving conversation history](#preserve-conversation-history), [keeping tool definitions stable](#manage-tools-with-append-only-updates), and choosing where caching occurs. On GPT-5.6 and later, use [`prompt_cache_options.mode` and `prompt_cache_breakpoint`](#choose-a-caching-mode) to control cache breakpoints. You can also use an optional [`prompt_cache_key`](#separate-prompts-with-cache-keys) if your application needs separate cache accounting for customers. On models before GPT-5.6, use a stable `prompt_cache_key` to optimize cache routing for requests that share a reusable prefix.
 
-
-
 Ask ChatGPT to optimize my prompt caching
-
-
 
 
 
@@ -77586,6 +77543,7 @@ Suppose request 1 uses implicit mode and caches a prefix through the end of a us
   [Developer message][User message][Follow-up] ▼
 ```
 
+
 To reuse the implicit prefix from request 1, place an explicit breakpoint at the matching content-block boundary in request 2, or keep implicit mode enabled so the earlier eligible message ending remains a lookup candidate.
 
 
@@ -77613,6 +77571,7 @@ Even when both requests use implicit mode, preserving the same initial tokens is
 - Request 2: implicit mode. Cannot reuse the prefix through Content A.
   [Developer message][User message: Content A + Content B] ▼
 ```
+
 
 When the conversation structure permits, preserve the original message and append a new message instead. Otherwise, keep the reusable text in a separate content block and place an explicit breakpoint after it in both requests.
 
@@ -77879,6 +77838,7 @@ An array of content generated by the model is in the `output` property of the re
   }
 ]
 ```
+
 
 **The `output` array often has more than one item in it!** It can contain tool calls, data about reasoning tokens generated by [reasoning models](https://developers.openai.com/api/docs/guides/reasoning), and other items. It is not safe to assume that the model's text output is present at `output[0].content[0].text`.
 
@@ -78537,6 +78497,7 @@ Negative
 </assistant_response>
 ```
 
+
 ## Include relevant context information
 
 It is often useful to include additional context information the model can use to generate a response within the prompt you give the model. There are a few common reasons why you might do this:
@@ -78559,10 +78520,11 @@ Models have different context window sizes from the low 100k range up to one mil
 
 GPT models like [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) benefit from precise instructions that explicitly provide the logic and data required to complete the task in the prompt. To get the most out of the latest model, start with the current prompting guide.
 
-[
+[](https://developers.openai.com/api/docs/guides/latest-model)
 
-      Get the most out of prompting the latest model with current guidance,
-    practical examples, and migration notes.](https://developers.openai.com/api/docs/guides/latest-model)
+Get the most out of prompting the latest model with current guidance, practical examples, and migration notes.
+
+
 
 
 
@@ -78627,6 +78589,7 @@ Step 3: Apply the rubric to iterate on the optimal solution to the given prompt.
 Step 4: Aim for simplicity while fully achieving the goal, and avoid external dependencies such as Next.js or React.
 ```
 
+
 **Integration with large codebases**
 
 For front-end engineering work in larger codebases, we've found that adding these categories of instruction to your prompts delivers the best results:
@@ -78672,6 +78635,7 @@ ensuring the user's query, and related sub-requests
 are completely resolved.
 ```
 
+
 **Preambles for transparency**
 
 Ask the model to explain why it is calling a tool, but only at notable steps.
@@ -78679,6 +78643,7 @@ Ask the model to explain why it is calling a tool, but only at notable steps.
 ```text
 Before you call a tool explain why you are calling it
 ```
+
 
 **Progress tracking with rubrics and TODOs**
 
@@ -78705,23 +78670,23 @@ For more information on best practices when using reasoning models, [refer to th
 
 Now that you know the basics of text inputs and outputs, you might want to check out one of these resources next.
 
-[Build a prompt in the Playground
+[Build a prompt in the Playground](https://platform.openai.com/chat/edit)
+
+Use the Playground to develop and iterate on prompts.
 
 
 
-      Use the Playground to develop and iterate on prompts.](https://platform.openai.com/chat/edit)
+[Generate JSON data with Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
 
-[Generate JSON data with Structured Outputs
-
-
-
-      Ensure JSON data emitted from a model conforms to a JSON schema.](https://developers.openai.com/api/docs/guides/structured-outputs)
-
-[Full API reference
+Ensure JSON data emitted from a model conforms to a JSON schema.
 
 
 
-      Check out all the options for text generation in the API reference.](https://developers.openai.com/api/reference/resources/responses)
+[Full API reference](https://developers.openai.com/api/reference/resources/responses)
+
+Check out all the options for text generation in the API reference.
+
+
 
 ## Other resources
 
@@ -83861,29 +83826,27 @@ Always evaluate and manually review optimized prompts before using them in produ
 
 For more inspiration, visit the [OpenAI Cookbook](https://developers.openai.com/cookbook), which contains example code and links to third-party resources, or learn more about our tools for evals:
 
-[Cookbook: Building resilient prompts with evals
+[Cookbook: Building resilient prompts with evals](https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel)
+
+Operate a flywheel of continuous improvement using evaluations.
 
 
 
-      Operate a flywheel of continuous improvement using evaluations.](https://developers.openai.com/cookbook/examples/evaluation/building_resilient_prompts_using_an_evaluation_flywheel)
+[Working with evals](https://developers.openai.com/api/docs/guides/evals)
 
-[Working with evals
-
-
-
-      Evaluate against external models, interact with evals via API, and more.](https://developers.openai.com/api/docs/guides/evals)
-
-[Graders
+Evaluate against external models, interact with evals via API, and more.
 
 
 
-      Build sophisticated graders to improve the effectiveness of your evals.](https://developers.openai.com/api/docs/guides/graders)
+[Graders](https://developers.openai.com/api/docs/guides/graders)
 
-[Fine-tuning
+Build sophisticated graders to improve the effectiveness of your evals.
 
 
 
-      Improve a model's ability to generate responses tailored to your use case.](https://developers.openai.com/api/docs/guides/model-optimization)
+[Fine-tuning](https://developers.openai.com/api/docs/guides/model-optimization)
+
+Improve a model's ability to generate responses tailored to your use case.
 
 ---
 
@@ -83931,17 +83894,15 @@ If you already use prompt IDs or prompt versions in API requests, follow the [mi
 
 When you feel confident in your prompts, you might want to check out the following guides and resources.
 
-[Text generation
+[Text generation](https://developers.openai.com/api/docs/guides/text)
+
+Learn how to prompt a model to generate text.
 
 
 
-      Learn how to prompt a model to generate text.](https://developers.openai.com/api/docs/guides/text)
+[Engineer better prompts](https://developers.openai.com/api/docs/guides/prompt-engineering)
 
-[Engineer better prompts
-
-
-
-      Learn about OpenAI's prompt engineering tools and techniques.](https://developers.openai.com/api/docs/guides/prompt-engineering)
+Learn about OpenAI's prompt engineering tools and techniques.
 
 ---
 
@@ -87019,11 +86980,7 @@ Use this page when you want the shortest path to a working SDK-based agent. The 
 
 Create a project, install the SDK, and set your API key.
 
-
-
-Create an API Key
-
-
+[Create an API Key](https://platform.openai.com/api-keys)
 
 
 
@@ -87037,6 +86994,7 @@ pip install openai-agents
 
 export OPENAI_API_KEY=sk-...
 ```
+
 
 ## Create and run your first agent
 
@@ -87244,26 +87202,24 @@ Once the first run works, continue with the guide that matches the next capabili
 
 
 
-  [Agent definitions
+  [Agent definitions](https://developers.openai.com/api/docs/guides/agents/define-agents)
+
+Shape one specialist cleanly before you scale the workflow.
 
 
+  [Using tools](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
 
-        Shape one specialist cleanly before you scale the workflow.](https://developers.openai.com/api/docs/guides/agents/define-agents)
-  [Using tools
-
-
-
-        Add hosted tools, function tools, and agents-as-tools.](https://developers.openai.com/api/docs/guides/tools#usage-in-the-agents-sdk)
-  [Running agents
+Add hosted tools, function tools, and agents-as-tools.
 
 
+  [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents)
 
-        Learn the agent loop, streaming, and continuation strategies.](https://developers.openai.com/api/docs/guides/agents/running-agents)
-  [Orchestration and handoffs
+Learn the agent loop, streaming, and continuation strategies.
 
 
+  [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration)
 
-        Decide when specialists should take over the conversation.](https://developers.openai.com/api/docs/guides/agents/orchestration)
+Decide when specialists should take over the conversation.
 
 ---
 
@@ -90137,6 +90093,7 @@ A delta event contains newly available transcript text:
 }
 ```
 
+
 A completion event contains the final transcript for the committed item:
 
 ```json
@@ -90147,6 +90104,7 @@ A completion event contains the final transcript for the committed item:
   "transcript": "Hello, how are you?"
 }
 ```
+
 
 Ordering between completion events from different speech turns isn't guaranteed. Use `item_id` to match transcription events to committed input items.
 
@@ -90285,6 +90243,7 @@ Append audio and send `input_audio_buffer.commit`. The model can then emit trans
 }
 ```
 
+
 When `gpt-transcribe` can't make a reliable language prediction, `languages` is an empty array. `gpt-live-transcribe` doesn't return detected-language predictions.
 
 ## Tune latency and accuracy
@@ -90320,29 +90279,27 @@ Don't choose a setting from synthetic audio alone. Test with representative micr
 
 ## Related guides
 
-[Realtime and audio overview
+[Realtime and audio overview](https://developers.openai.com/api/docs/guides/realtime)
+
+Compare voice-agent, translation, and transcription sessions.
 
 
 
-      Compare voice-agent, translation, and transcription sessions.](https://developers.openai.com/api/docs/guides/realtime)
+[Realtime translation](https://developers.openai.com/api/docs/guides/realtime-translation)
 
-[Realtime translation
-
-
-
-      Translate live speech with a dedicated translation session.](https://developers.openai.com/api/docs/guides/realtime-translation)
-
-[WebSocket connection
+Translate live speech with a dedicated translation session.
 
 
 
-      Stream raw audio through a server-side media pipeline.](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime)
+[WebSocket connection](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime)
 
-[Voice activity detection
+Stream raw audio through a server-side media pipeline.
 
 
 
-      Configure turn detection for live audio streams.](https://developers.openai.com/api/docs/guides/realtime-vad)
+[Voice activity detection](https://developers.openai.com/api/docs/guides/realtime-vad)
+
+Configure turn detection for live audio streams.
 
 ---
 
@@ -91004,6 +90961,7 @@ The typical architecture is:
 source audio -> translation session -> translated audio + subtitles
 ```
 
+
 Create one translation session for each target language. If the same English source needs Spanish and French output, create one English-to-Spanish session and one English-to-French session.
 
 For browser listen-along apps, capture tab audio with `getDisplayMedia()`, send it over WebRTC, and play the remote translated audio track. For production broadcasts, run translation in a server media worker and publish translated audio tracks or captions to listeners.
@@ -91021,11 +90979,13 @@ Caller A audio -> translate into Caller B language -> play to Caller B
 Caller B audio -> translate into Caller A language -> play to Caller A
 ```
 
+
 For group rooms, session count depends on active speakers and target languages:
 
 ```text
 translation sessions ~= active source speaker tracks x distinct target languages
 ```
+
 
 For small rooms, each listener can create browser-side translation sidecars for the remote speakers they want translated. For larger rooms, use a server-side participant or media worker that subscribes to each source speaker once, creates one translation session per target language, and republishes translated tracks.
 
@@ -91063,29 +91023,27 @@ If your use case depends on exact names or domain terms, build a golden set befo
 
 ## Related guides
 
-[Realtime and audio overview
+[Realtime and audio overview](https://developers.openai.com/api/docs/guides/realtime)
+
+Compare voice-agent, translation, and transcription sessions.
 
 
 
-      Compare voice-agent, translation, and transcription sessions.](https://developers.openai.com/api/docs/guides/realtime)
+[WebRTC connection](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime)
 
-[WebRTC connection
-
-
-
-      Connect browser media to a realtime session.](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime)
-
-[WebSocket connection
+Connect browser media to a realtime session.
 
 
 
-      Stream raw audio through a server-side media pipeline.](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime)
+[WebSocket connection](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime)
 
-[Realtime transcription
+Stream raw audio through a server-side media pipeline.
 
 
 
-      Stream transcript deltas from live audio.](https://developers.openai.com/api/docs/guides/realtime-transcription)
+[Realtime transcription](https://developers.openai.com/api/docs/guides/realtime-transcription)
+
+Stream transcript deltas from live audio.
 
 ---
 
@@ -93090,6 +93048,7 @@ It's important to ensure there's enough space in the context window for reasonin
 }
 ```
 
+
 Context window lengths are found on the [model reference page](https://developers.openai.com/api/docs/models), and will differ across model snapshots.
 
 ### Allocating space for reasoning
@@ -93776,6 +93735,7 @@ Add the following item before the next user message in the `input` array of an H
 }
 ```
 
+
 For example, if the conversation starts with request-level effort `low`, this update selects `high` for the next response and subsequent responses until another update overrides it.
 
 Increase reasoning effort for a follow-up
@@ -94165,6 +94125,7 @@ This API request will return an output array with both an assistant message and 
 ]
 ```
 
+
 Before using summarizers with our latest reasoning models, you may need to
   complete [organization
   verification](https://help.openai.com/en/articles/10910291-api-organization-verification)
@@ -94416,6 +94377,7 @@ const response = await openai.responses.create({
 console.log(response.output_text);
 ```
 
+
 ```python
 from openai import OpenAI
 
@@ -94462,6 +94424,7 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
+
 ```go
 package main
 
@@ -94500,6 +94463,7 @@ const books = [
 }
 ```
 
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -94529,6 +94493,7 @@ client.responses().create(params).output().stream()
     .flatMap(content -> content.outputText().stream())
     .forEach(text -> System.out.println(text.text()));
 ```
+
 
 ```csharp
 using OpenAI.Responses;
@@ -94571,6 +94536,7 @@ ResponseResult response = await client.CreateResponseAsync(
 Console.WriteLine(response.GetOutputText());
 ```
 
+
 ```ruby
 require "openai"
 
@@ -94595,6 +94561,7 @@ response = client.responses.create(
 
 puts(response.output_text)
 ```
+
 
 
   
@@ -94641,6 +94608,7 @@ const response = await openai.responses.create({
 console.log(response.output_text);
 ```
 
+
 ```python
 from openai import OpenAI
 
@@ -94668,6 +94636,7 @@ response = client.responses.create(
 
 print(response.output_text)
 ```
+
 
 ```go
 package main
@@ -94702,6 +94671,7 @@ directory structure you will need, then return each file in full.`
 }
 ```
 
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -94726,6 +94696,7 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -94746,6 +94717,7 @@ ResponseResult response = await client.CreateResponseAsync("gpt-6-astra", prompt
 Console.WriteLine(response.GetOutputText());
 ```
 
+
 ```ruby
 require "openai"
 
@@ -94764,6 +94736,7 @@ response = client.responses.create(
 
 puts(response.output_text)
 ```
+
 
 
   
@@ -94806,6 +94779,7 @@ const response = await openai.responses.create({
 console.log(response.output_text);
 ```
 
+
 ```python
 from openai import OpenAI
 
@@ -94823,6 +94797,7 @@ response = client.responses.create(
 
 print(response.output_text)
 ```
+
 
 ```go
 package main
@@ -94854,6 +94829,7 @@ research into new antibiotics? Why should we consider them?`
 }
 ```
 
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -94876,6 +94852,7 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+
 ```csharp
 using OpenAI.Responses;
 #pragma warning disable OPENAI001
@@ -94894,6 +94871,7 @@ ResponseResult response = await client.CreateResponseAsync(
 );
 Console.WriteLine(response.GetOutputText());
 ```
+
 
 ```ruby
 require "openai"
@@ -94914,21 +94892,20 @@ puts(response.output_text)
 
 
 
+
 ## Use case examples
 
 Some examples of using reasoning models for real-world use cases can be found in [the cookbook](https://developers.openai.com/cookbook).
 
-[Using reasoning for data validation
+[Using reasoning for data validation](https://developers.openai.com/cookbook/examples/o1/using_reasoning_for_data_validation)
+
+Evaluate a synthetic medical data set for discrepancies.
 
 
 
-      Evaluate a synthetic medical data set for discrepancies.](https://developers.openai.com/cookbook/examples/o1/using_reasoning_for_data_validation)
+[Using reasoning for routine generation](https://developers.openai.com/cookbook/examples/o1/using_reasoning_for_routine_generation)
 
-[Using reasoning for routine generation
-
-
-
-      Use help center articles to generate actions that an agent could perform.](https://developers.openai.com/cookbook/examples/o1/using_reasoning_for_routine_generation)
+Use help center articles to generate actions that an agent could perform.
 
 ---
 
@@ -95009,22 +94986,19 @@ Once you know which result surfaces matter, continue with the guide that explain
 
 
 
-  [Running agents
+  [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents)
+
+Connect result handling back to the runtime loop and continuation strategy.
 
 
+  [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)
 
-        Connect result handling back to the runtime loop and continuation
-      strategy.](https://developers.openai.com/api/docs/guides/agents/running-agents)
-  [Guardrails and human review
-
+See how paused runs return interruptions and resumable state.
 
 
-        See how paused runs return interruptions and resumable state.](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)
-  [Integrations and observability
+  [Integrations and observability](https://developers.openai.com/api/docs/guides/agents/integrations-observability)
 
-
-
-        Use traces when you need to inspect the richer workflow record.](https://developers.openai.com/api/docs/guides/agents/integrations-observability)
+Use traces when you need to inspect the richer workflow record.
 
 ---
 
@@ -97257,7 +97231,7 @@ def format_results(results):
     formatted_results = ""
     for result in results.data:
         formatted_result = (
-            f"<result file_id='{result.file_id}' file_name='{result.file_name}'>"
+            f"<result file_id='{result.file_id}' file_name='{result.filename}'>"
         )
         for part in result.content:
             formatted_result += f"<content>{part.text}</content>"
@@ -97274,15 +97248,6 @@ import (
 
 	"github.com/openai/openai-go/v3"
 )
-
-func main() {
-	results := []openai.VectorStoreSearchResponse{{
-		FileID:   "file-12345",
-		Filename: "woodchuck_policy.txt",
-		Content:  []openai.VectorStoreSearchResponseContent{{Text: "Each passenger may carry up to two woodchucks."}},
-	}}
-	fmt.Println(formatResults(results))
-}
 
 func formatResults(results []openai.VectorStoreSearchResponse) string {
 	var sources strings.Builder
@@ -97303,8 +97268,6 @@ func formatResults(results []openai.VectorStoreSearchResponse) string {
 import com.openai.models.vectorstores.VectorStoreSearchResponse;
 import java.util.List;
 
-System.out.println(formatResults(results.data()));
-
 static String formatResults(List<VectorStoreSearchResponse> results) {
   var formatted = new StringBuilder("<sources>");
   for (var result : results) {
@@ -97324,20 +97287,14 @@ static String formatResults(List<VectorStoreSearchResponse> results) {
 ```
 
 ```ruby
-results = [
-  {
-    file_id: "file-12345",
-    filename: "woodchuck_policy.txt",
-    content: [{ text: "Each passenger may carry up to two woodchucks." }]
-  }
-]
+def format_results(results)
+  sources = results.map do |result|
+    content = result.content.map { |part| "<content>#{part.text}</content>" }.join
+    "<result file_id=\"#{result.file_id}\" file_name=\"#{result.filename}\">#{content}</result>"
+  end
 
-sources = results.map do |result|
-  content = result.fetch(:content).map { |part| "<content>#{part.fetch(:text)}</content>" }.join
-  "<result file_id=\"#{result.fetch(:file_id)}\" file_name=\"#{result.fetch(:filename)}\">#{content}</result>"
+  "<sources>#{sources.join}</sources>"
 end
-
-puts("<sources>#{sources.join}</sources>")
 ```
 
 ---
@@ -98123,22 +98080,19 @@ Once the runtime loop is clear, move to the guide that matches the next workflow
 
 
 
-  [Results and state
+  [Results and state](https://developers.openai.com/api/docs/guides/agents/results)
+
+Learn which result surfaces your application should carry into the next turn.
 
 
+  [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration)
 
-        Learn which result surfaces your application should carry into the next
-      turn.](https://developers.openai.com/api/docs/guides/agents/results)
-  [Orchestration and handoffs
-
+Decide how multiple specialists behave inside the same runtime loop.
 
 
-        Decide how multiple specialists behave inside the same runtime loop.](https://developers.openai.com/api/docs/guides/agents/orchestration)
-  [Guardrails and human review
+  [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)
 
-
-
-        Add validation and approval pauses without breaking turn continuity.](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)
+Add validation and approval pauses without breaking turn continuity.
 
 ---
 
@@ -99888,7 +99842,7 @@ automation, err := client.Beta.Agents.Automations.New(ctx,
 if err != nil {
 	panic(err)
 }
-fmt.Println(automation)
+fmt.Println(automation.ID)
 ```
 
 ```java
@@ -100464,7 +100418,7 @@ automation, err := client.Beta.Agents.Automations.New(ctx,
 if err != nil {
 	panic(err)
 }
-fmt.Println(automation)
+fmt.Println(automation.ID)
 ```
 
 ```java
@@ -100666,7 +100620,7 @@ automation, err := client.Beta.Agents.Automations.New(ctx,
 if err != nil {
 	panic(err)
 }
-fmt.Println(automation)
+fmt.Println(automation.ID)
 ```
 
 ```java
@@ -100904,7 +100858,7 @@ automation, err := client.Beta.Agents.Automations.New(ctx,
 if err != nil {
 	panic(err)
 }
-fmt.Println(automation)
+fmt.Println(automation.ID)
 ```
 
 ```java
@@ -101180,7 +101134,7 @@ automation, err := client.Beta.Agents.Automations.New(ctx,
 if err != nil {
 	panic(err)
 }
-fmt.Println(automation)
+fmt.Println(automation.ID)
 ```
 
 ```java
@@ -101427,7 +101381,7 @@ automation, err := client.Beta.Agents.Automations.New(ctx,
 if err != nil {
 	panic(err)
 }
-fmt.Println(automation)
+fmt.Println(automation.ID)
 ```
 
 ```java
@@ -101654,7 +101608,7 @@ automation, err := client.Beta.Agents.Automations.New(ctx,
 if err != nil {
 	panic(err)
 }
-fmt.Println(automation)
+fmt.Println(automation.ID)
 ```
 
 ```java
@@ -101829,7 +101783,7 @@ automation, err := client.Beta.Agents.Automations.New(ctx,
 if err != nil {
 	panic(err)
 }
-fmt.Println(automation)
+fmt.Println(automation.ID)
 ```
 
 ```java
@@ -102196,7 +102150,7 @@ automation, err := client.Beta.Agents.Automations.New(ctx,
 if err != nil {
 	panic(err)
 }
-fmt.Println(automation)
+fmt.Println(automation.ID)
 ```
 
 ```java
@@ -102460,7 +102414,7 @@ automation, err := client.Beta.Agents.Automations.Update(ctx, "auto_123",
 if err != nil {
 	panic(err)
 }
-fmt.Println(automation)
+fmt.Println(automation.ID)
 ```
 
 ```java
@@ -106306,17 +106260,17 @@ if __name__ == "__main__":
 
 You can find working examples in the SDK repositories.
 
-[Shell tool example - TypeScript
+[Shell tool example - TypeScript](https://github.com/openai/openai-agents-js/blob/main/examples/tools/shell.ts)
+
+TypeScript example for the shell tool in the Agents SDK.
 
 
 
-      TypeScript example for the shell tool in the Agents SDK.](https://github.com/openai/openai-agents-js/blob/main/examples/tools/shell.ts)
+[Shell tool example - Python](https://github.com/openai/openai-agents-python/blob/main/examples/tools/shell.py)
 
-[Shell tool example - Python
+Python example for the shell tool in the Agents SDK.
 
 
-
-      Python example for the shell tool in the Agents SDK.](https://github.com/openai/openai-agents-python/blob/main/examples/tools/shell.py)
 
 ## Handling common errors
 
@@ -112292,6 +112246,7 @@ An example of JSONL training data, where the model calls a `get_weather` functio
 ```
 
 
+
   
 
   
@@ -112347,6 +112302,7 @@ Each line of the training data file contains a JSON structure like the following
 
 
 
+
 ### Distilling from a larger model
 
 One way to build a training data set for a smaller model is to distill the results of a large model to create training data for supervised fine tuning. The general flow of this technique is:
@@ -112394,6 +112350,7 @@ curl https://api.openai.com/v1/files \
 ```
 
 
+
 Note the `id` of the file that is uploaded in the data returned from the API - you'll need that file identifier in subsequent API requests.
 
 ```json
@@ -112409,6 +112366,7 @@ Note the `id` of the file that is uploaded in the data returned from the API - y
   "status_details": null
 }
 ```
+
 
 
 
@@ -112451,6 +112409,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
     "model": "gpt-4.1-nano-2025-04-14"
   }'
 ```
+
 
 
 The API responds with information about the fine-tuning job in progress. Depending on the size of your training data, the training process may take several minutes or hours. You can [poll the API](https://developers.openai.com/api/reference/resources/fine_tuning) for updates on a specific job.
@@ -112497,6 +112456,7 @@ When the fine-tuning job finishes, your fine-tuned model is ready to use. A comp
 }
 ```
 
+
 Note the `fine_tuned_model` property. This is the model ID to use in [Responses](https://developers.openai.com/api/reference/resources/responses) or [Chat Completions](https://developers.openai.com/api/reference/resources/chat) to make API requests using your fine-tuned model.
 
 Here's an example of calling the Responses API with your fine-tuned model ID:
@@ -112528,6 +112488,7 @@ curl https://api.openai.com/v1/responses \
     "tool_choice": "auto"
   }'
 ```
+
 
 
 
@@ -112571,6 +112532,7 @@ Use this curl command to get information about your fine-tuning job:
 curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-uL1VKpwx7maorHNbOiDwFIn6 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
+
 
 
 The job contains a `fine_tuned_model` property, which is your new fine-tuned model's unique ID.
@@ -112617,6 +112579,7 @@ The job contains a `fine_tuned_model` property, which is your new fine-tuned mod
 
 
 
+
 ### Try using your fine-tuned model
 
 Evaluate your newly optimized model by using it! When the fine-tuned model finishes training, use its ID in either the [Responses](https://developers.openai.com/api/reference/resources/responses) or [Chat Completions](https://developers.openai.com/api/reference/resources/chat) API, just as you would an OpenAI base model.
@@ -112652,6 +112615,7 @@ curl https://api.openai.com/v1/responses \
     "input": "What is 4+4?"
   }'
 ```
+
 
 
 
@@ -112702,6 +112666,7 @@ The checkpoint object contains `metrics` data to help you determine the usefulne
   "step_number": 2000
 }
 ```
+
 
 Each checkpoint specifies:
 
@@ -112764,17 +112729,15 @@ While these evaluations cover a broad range of safety categories, conduct your o
 
 Now that you know the basics of supervised fine-tuning, explore these other methods as well.
 
-[Vision fine-tuning
+[Vision fine-tuning](https://developers.openai.com/api/docs/guides/vision-fine-tuning)
+
+Learn to fine-tune for computer vision with image inputs.
 
 
 
-      Learn to fine-tune for computer vision with image inputs.](https://developers.openai.com/api/docs/guides/vision-fine-tuning)
+[Direct preference optimization](https://developers.openai.com/api/docs/guides/direct-preference-optimization)
 
-[Direct preference optimization
-
-
-
-      Fine-tune a model using direct preference optimization (DPO).](https://developers.openai.com/api/docs/guides/direct-preference-optimization)
+Fine-tune a model using direct preference optimization (DPO).
 
 ---
 
@@ -113717,6 +113680,7 @@ An array of content generated by the model is in the `output` property of the re
 ]
 ```
 
+
 **The `output` array often has more than one item in it!** It can contain tool calls, data about reasoning tokens generated by [reasoning models](https://developers.openai.com/api/docs/guides/reasoning), and other items. It is not safe to assume that the model's text output is present at `output[0].content[0].text`.
 
 Some of our [official SDKs](https://developers.openai.com/api/docs/libraries) include an `output_text` property on model responses for convenience, which aggregates all text outputs from the model into a single string. This may be useful as a shortcut to access text output from the model.
@@ -114142,23 +114106,21 @@ If your integration already calls a saved prompt with a prompt ID or version, us
 
 Now that you know the basics of text inputs and outputs, you might want to check out one of these resources next.
 
-[Build a prompt in the Playground
+[Build a prompt in the Playground](https://platform.openai.com/chat/edit)
+
+Use the Playground to develop and iterate on prompts.
 
 
 
-      Use the Playground to develop and iterate on prompts.](https://platform.openai.com/chat/edit)
+[Generate JSON data with Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
 
-[Generate JSON data with Structured Outputs
-
-
-
-      Ensure JSON data emitted from a model conforms to a JSON schema.](https://developers.openai.com/api/docs/guides/structured-outputs)
-
-[Full API reference
+Ensure JSON data emitted from a model conforms to a JSON schema.
 
 
 
-      Check out all the options for text generation in the API reference.](https://developers.openai.com/api/reference/resources/responses)
+[Full API reference](https://developers.openai.com/api/reference/resources/responses)
+
+Check out all the options for text generation in the API reference.
 
 ---
 
@@ -114583,18 +114545,15 @@ Pass the created voice ID when generating speech. See the
 
 ## Related guides
 
-[Realtime and audio overview
+[Realtime and audio overview](https://developers.openai.com/api/docs/guides/realtime)
+
+Choose the right path for voice agents, translation, transcription, and speech generation.
 
 
 
-      Choose the right path for voice agents, translation, transcription, and
-    speech generation.](https://developers.openai.com/api/docs/guides/realtime)
+[Audio and speech concepts](https://developers.openai.com/api/docs/guides/audio)
 
-[Audio and speech concepts
-
-
-
-      Review audio modalities, speech tasks, streaming, and request-based APIs.](https://developers.openai.com/api/docs/guides/audio)
+Review audio modalities, speech tasks, streaming, and request-based APIs.
 
 ---
 
@@ -114617,37 +114576,37 @@ Visit [ChatKit Studio](https://chatkit.studio) to see working implementations of
 
 #### Explore ChatKit UI
 
-[chatkit.world
+[chatkit.world](https://chatkit.world)
+
+Play with an interactive demo of ChatKit.
 
 
 
-      Play with an interactive demo of ChatKit.](https://chatkit.world)
+[Widget builder](https://widgets.chatkit.studio)
 
-[Widget builder
-
-
-
-      Browse available widgets.](https://widgets.chatkit.studio)
-
-[ChatKit playground
+Browse available widgets.
 
 
 
-      Play with an interactive demo to learn by doing.](https://chatkit.studio/playground)
+[ChatKit playground](https://chatkit.studio/playground)
+
+Play with an interactive demo to learn by doing.
+
+
 
 #### See working examples
 
-[Samples on GitHub
+[Samples on GitHub](https://github.com/openai/openai-chatkit-advanced-samples)
+
+See working examples of ChatKit and get inspired.
 
 
 
-      See working examples of ChatKit and get inspired.](https://github.com/openai/openai-chatkit-advanced-samples)
+[Starter app repo](https://github.com/openai/openai-chatkit-starter-app)
 
-[Starter app repo
+Clone a repo to start with a fully working template.
 
 
-
-      Clone a repo to start with a fully working template.](https://github.com/openai/openai-chatkit-starter-app)
 
 ## Change the theme
 
@@ -114795,11 +114754,11 @@ const options = {
 
 You can customize the appearance of entity tags on mouseover using widgets. Show rich previews such as a business card, document summary, or image when the user hovers over an entity tag.
 
-[Widget builder
+[Widget builder](https://widgets.chatkit.studio)
+
+Browse available widgets.
 
 
-
-      Browse available widgets.](https://widgets.chatkit.studio)
 
 ```javascript
 const options = {
@@ -121211,11 +121170,11 @@ Local shell is supported in GPT-5.2. The shell tool allows the model to interact
 
 When the GPT-5 model family launched, we introduced a new capability called custom tools, which lets models send any raw text as tool call input but still constrain outputs if desired. This tool behavior remains true in GPT-5.2.
 
-[Function calling guide
+[Function calling guide](https://developers.openai.com/api/docs/guides/function-calling)
+
+Learn about custom tools in the function calling guide.
 
 
-
-      Learn about custom tools in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 #### Freeform inputs
 
@@ -121228,6 +121187,7 @@ Define your tool with `type: custom` to enable models to send plaintext inputs d
   "description": "Executes arbitrary python code"
 }
 ```
+
 
 #### Constraining outputs
 
@@ -121244,11 +121204,11 @@ This enables precise, constrained tool calls or structured responses and lets yo
 
 The `allowed_tools` parameter under `tool_choice` lets you pass N tool definitions but restrict the model to only M (&lt; N) of them. List your full toolkit in `tools`, and then use an `allowed_tools` block to name the subset and specify a mode—either `auto` (the model may pick any of those) or `required` (the model must invoke one).
 
-[Function calling guide
+[Function calling guide](https://developers.openai.com/api/docs/guides/function-calling)
+
+Learn about the allowed tools option in the function calling guide.
 
 
-
-      Learn about the allowed tools option in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 By separating all possible tools from the subset that can be used _now_, you gain greater safety, predictability, and improved prompt caching. You also avoid brittle prompt engineering, such as hard-coded call order. GPT-5.2 dynamically invokes or requires specific functions mid-conversation while reducing the risk of unintended tool usage over long contexts.
 
@@ -121270,6 +121230,7 @@ By separating all possible tools from the subset that can be used _now_, you gai
   }
 }
 ```
+
 
 For a more detailed overview of all of these new features, see the [accompanying cookbook](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5-2_prompting_guide).
 
@@ -121520,6 +121481,7 @@ Example clamp adjust based on desired verbosity:
 </output_verbosity_spec>
 ```
 
+
 #### 3.2 Preventing Scope drift (e.g., UX / design in frontend tasks)
 
 GPT-5.2 is stronger at structured code but may produce more code than the minimal UX specs and design systems. To stay within the scope, explicitly forbid extra features and uncontrolled styling.
@@ -121534,6 +121496,7 @@ GPT-5.2 is stronger at structured code but may produce more code than the minima
 - If any instruction is ambiguous, choose the simplest valid interpretation.
 </design_and_scope_constraints>
 ```
+
 
 For design system enforcement, reuse your 5.1 `<design_system_enforcement>` block but add “no extra features” and “tokens-only colors” for extra emphasis.
 
@@ -121550,6 +121513,7 @@ For long-context tasks, the prompt may benefit from **force summarization and re
 - If the answer depends on fine details (dates, thresholds, clauses), quote or paraphrase them.
 </long_context_handling>
 ```
+
 
 #### 3.4 Handling ambiguity & hallucination risk
 
@@ -121569,6 +121533,7 @@ Mitigation prompt:
 </uncertainty_and_ambiguity>
 ```
 
+
 You can also add a short self-check step for high-risk outputs:
 
 ```text
@@ -121581,6 +121546,7 @@ Before finalizing an answer in legal, financial, compliance, or safety-sensitive
 - If you find any, soften or qualify them and explicitly state assumptions.
 </high_risk_self_check>
 ```
+
 
 ### 4. Compaction (Extending Effective Context)
 
@@ -121606,6 +121572,7 @@ Endpoint
 ```text
 POST https://api.openai.com/v1/responses/compact
 ```
+
 
 **What it does**
 
@@ -121725,6 +121692,7 @@ Example updated spec:
 </user_updates_spec>
 ```
 
+
 ### 6. Tool-calling and parallelism
 
 GPT-5.2 improves on 5.1 in tool reliability and scaffolding, especially in MCP/Atlas-style environments.
@@ -121748,6 +121716,7 @@ Example tool usage section:
   - Any follow-up validation performed.
 </tool_usage_rules>
 ```
+
 
 ### 7. Structured extraction, PDF, and Office workflows
 
@@ -121774,6 +121743,7 @@ You will extract structured data from tables/PDFs/emails into JSON.
 - Before returning, quickly re-scan the source for any missed fields and correct omissions.
 </extraction_spec>
 ```
+
 
 For multi-table/multi-file extraction, add guidance to:
 
@@ -121825,6 +121795,7 @@ Best practices to follow:
 - Write clearly and directly using Markdown (headers, bullets, tables when helpful); define acronyms, use concrete examples, and keep a natural, conversational tone.
 </web_search_rules>
 ```
+
 
 ### 10. Conclusion
 
@@ -121932,6 +121903,7 @@ Do not lead with a blunt refusal if you can safely provide something helpful imm
 First deliver what you can (safe partial answers, verified material, or a closely related helpful alternative), then clearly state any limitations (policy limits, missing/behind-paywall data, unverifiable claims).
 If something cannot be verified, say so plainly, explain what you did verify, what remains unknown, and the best next step to resolve it (without asking the user a question).
 ```
+
 
 ## Further reading
 
@@ -123069,12 +123041,11 @@ Computer use lets GPT-5.4 operate software through the user interface by inspect
 
 Use it in an isolated browser or VM, and keep a human in the loop for high-impact actions. The full guide covers the built-in Responses API loop, custom harness patterns, and code-execution-based setups.
 
-[Computer use guide
+[Computer use guide](https://developers.openai.com/api/docs/guides/tools-computer-use)
+
+Learn how to run the built-in computer tool safely and integrate it with your own harness.
 
 
-
-      Learn how to run the built-in computer tool safely and integrate it with
-    your own harness.](https://developers.openai.com/api/docs/guides/tools-computer-use)
 
 ### Tool search tool
 
@@ -123082,21 +123053,21 @@ Tool search lets GPT-5.4 defer large tool surfaces until runtime so the model lo
 
 Use hosted tool search when the candidate tools are already known at request time, or client-executed tool search when your application needs to decide what to load dynamically. The full guide also covers best practices for `namespaces`, MCP servers, and deferred loading.
 
-[Tool search guide
+[Tool search guide](https://developers.openai.com/api/docs/guides/tools-tool-search)
+
+Learn how to defer tool definitions and load the right subset at runtime.
 
 
-
-      Learn how to defer tool definitions and load the right subset at runtime.](https://developers.openai.com/api/docs/guides/tools-tool-search)
 
 ### Custom tools
 
 When the GPT-5 model family launched, we introduced a new capability called custom tools, which lets models send any raw text as tool call input but still constrain outputs if desired. This tool behavior remains true in GPT-5.4.
 
-[Function calling guide
+[Function calling guide](https://developers.openai.com/api/docs/guides/function-calling)
+
+Learn about custom tools in the function calling guide.
 
 
-
-      Learn about custom tools in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 #### Freeform inputs
 
@@ -123109,6 +123080,7 @@ Define your tool with `type: custom` to enable models to send plaintext inputs d
   "description": "Executes arbitrary python code"
 }
 ```
+
 
 #### Constraining outputs
 
@@ -123125,11 +123097,11 @@ This enables precise, constrained tool calls or structured responses and lets yo
 
 The `allowed_tools` parameter under `tool_choice` lets you pass N tool definitions but restrict the model to only M (&lt; N) of them. List your full toolkit in `tools`, and then use an `allowed_tools` block to name the subset and specify a mode—either `auto` (the model may pick any of those) or `required` (the model must invoke one).
 
-[Function calling guide
+[Function calling guide](https://developers.openai.com/api/docs/guides/function-calling)
+
+Learn about the allowed tools option in the function calling guide.
 
 
-
-      Learn about the allowed tools option in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 By separating all possible tools from the subset that can be used _now_, you gain greater safety, predictability, and improved prompt caching. You also avoid brittle prompt engineering, such as hard-coded call order. GPT-5.4 dynamically invokes or requires specific functions mid-conversation while reducing the risk of unintended tool usage over long contexts.
 
@@ -123151,6 +123123,7 @@ By separating all possible tools from the subset that can be used _now_, you gai
   }
 }
 ```
+
 
 For a more detailed overview of all of these new features, see the [prompt guidance for GPT-5.4](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.4#prompting-best-practices).
 
@@ -123569,6 +123542,7 @@ To improve token efficiency with GPT-5.4, constrain verbosity and enforce struct
 </verbosity_controls>
 ```
 
+
 #### Set clear defaults for follow-through
 
 Users often change the task, format, or tone mid-conversation. To keep the assistant aligned, define clear rules for when to proceed, when to ask, and how newer instructions override earlier defaults.
@@ -123586,6 +123560,7 @@ Use a default follow-through policy like this:
 </default_follow_through_policy>
 ```
 
+
 Make instruction priority explicit:
 
 ```xml
@@ -123596,6 +123571,7 @@ Make instruction priority explicit:
 - Preserve earlier instructions that do not conflict.
 </instruction_priority>
 ```
+
 
 Higher-priority developer or system instructions remain binding.
 
@@ -123620,6 +123596,7 @@ All earlier instructions still apply unless they conflict with this update.
 </task_update>
 ```
 
+
 If the task itself changes, say so directly:
 
 ```text
@@ -123638,6 +123615,7 @@ Rules for this turn:
 </task_update>
 ```
 
+
 #### Make tool use persistent when correctness depends on it
 
 Use explicit rules to keep tool use thorough, dependency-aware, and appropriately paced, especially in workflows where later actions rely on earlier retrieval or verification. A common failure mode is skipping prerequisites because the right end state seems obvious.
@@ -123655,6 +123633,7 @@ GPT-5.4 can be less reliable at tool routing early in a session, when context is
 </tool_persistence_rules>
 ```
 
+
 This is especially important for workflows where the final action depends on earlier lookup or retrieval steps. One of the most common failure modes is skipping prerequisites because the intended end state seems obvious.
 
 ```xml
@@ -123664,6 +123643,7 @@ This is especially important for workflows where the final action depends on ear
 - If the task depends on the output of a prior step, resolve that dependency first.
 </dependency_checks>
 ```
+
 
 Prompt for parallelism when the work is independent and wall-clock matters. Prompt for sequencing when dependencies, ambiguity, or irreversible actions matter more than speed.
 
@@ -123675,6 +123655,7 @@ Prompt for parallelism when the work is independent and wall-clock matters. Prom
 - Prefer selective parallelism: parallelize independent evidence gathering, not speculative or redundant tool use.
 </parallel_tool_calling>
 ```
+
 
 #### Force completeness on long-horizon tasks
 
@@ -123694,6 +123675,7 @@ Coverage can be achieved through sequential or parallel retrieval, but completio
 </completeness_contract>
 ```
 
+
 For workflows where empty, partial, or noisy retrieval is common:
 
 ```xml
@@ -123710,6 +123692,7 @@ If a lookup returns empty, partial, or suspiciously narrow results:
 </empty_result_recovery>
 ```
 
+
 #### Add a verification loop before high-impact actions
 
 Once the workflow appears complete, add a lightweight verification step before returning the answer or taking an irreversible action. This helps catch requirement misses, grounding issues, and format drift before commit.
@@ -123724,6 +123707,7 @@ Before finalizing:
 </verification_loop>
 ```
 
+
 ```xml
 <missing_context_gating>
 - If required context is missing, do NOT guess.
@@ -123731,6 +123715,7 @@ Before finalizing:
 - If you must proceed, label assumptions explicitly and choose a reversible action.
 </missing_context_gating>
 ```
+
 
 For agents that actively take actions, add a short execution frame:
 
@@ -123741,6 +123726,7 @@ For agents that actively take actions, add a short execution frame:
 - Post-flight: confirm the outcome and any validation that was performed.
 </action_safety>
 ```
+
 
 ### Handle specialized workflows
 
@@ -123761,6 +123747,7 @@ When citation quality matters, make both the source boundary and the format requ
 </citation_rules>
 ```
 
+
 ```xml
 <grounding_rules>
 - Base claims only on provided context or tool outputs.
@@ -123769,6 +123756,7 @@ When citation quality matters, make both the source boundary and the format requ
 - If a statement is an inference rather than a directly supported fact, label it as an inference.
 </grounding_rules>
 ```
+
 
 If your application requires inline citations, require inline citations. If it requires footnotes, require footnotes. The key is to lock the format and prevent the model from improvising unsupported references.
 
@@ -123786,6 +123774,7 @@ Push GPT-5.4 into a disciplined research mode. Use this pattern for research, re
 </research_mode>
 ```
 
+
 If your host environment uses a specific research tool or requires a submit step, combine this with the host's finalization contract.
 
 #### Clamp strict output formats
@@ -123802,6 +123791,7 @@ For SQL, JSON, or other parse-sensitive outputs, tell GPT-5.4 to emit only the t
 </structured_output_contract>
 ```
 
+
 If you are extracting document regions or OCR boxes, define the coordinate system and add a drift check:
 
 ```text
@@ -123812,6 +123802,7 @@ If you are extracting document regions or OCR boxes, define the coordinate syste
 - If the layout is dense, process page by page and do a second pass for missed items.
 </bbox_extraction_spec>
 ```
+
 
 #### Keep tool boundaries explicit in coding and terminal agents
 
@@ -123832,6 +123823,7 @@ Recommended update spec:
 </user_updates_spec>
 ```
 
+
 For coding agents, see the Prompting patterns for coding tasks section below for more specific guidance.
 
 #### Prompting patterns for coding tasks
@@ -123847,6 +123839,7 @@ Persist until the task is fully handled end-to-end within the current turn whene
 Unless the user explicitly asks for a plan, asks a question about the code, is brainstorming potential solutions, or some other intent that makes it clear that code should not be written, assume the user wants you to make code changes or run tools to solve the user's problem. In these cases, it's bad to output your proposed solution in a message, you should go ahead and actually implement the change. If you encounter challenges or blockers, you should attempt to resolve them yourself.
 </autonomy_and_persistence>
 ```
+
 
 **Intermediary updates**
 
@@ -123869,6 +123862,7 @@ Keep updates sparse and high-signal. In coding tasks, prefer updates at key poin
 </user_updates_spec>
 ```
 
+
 **Formatting**
 
 GPT-5.4 often defaults to more structured formatting and may overuse bullet lists. If you want a clean final response, explicitly clamp list shape.
@@ -123876,6 +123870,7 @@ GPT-5.4 often defaults to more structured formatting and may overuse bullet list
 ```xml
 Never use nested bullets. Keep lists flat (single level). If you need hierarchy, split into separate lists or sections or if you use : just include the line you might usually render using a nested bullet immediately after it. For numbered lists, only use the `1. 2. 3.` style markers (with a period), never `1)`.
 ```
+
 
 **Frontend tasks**
 
@@ -123902,6 +123897,7 @@ Exception: If working within an existing website or design system, preserve the 
 </frontend_tasks>
 ```
 
+
 ```xml
 <terminal_tool_hygiene>
 - Only run shell commands via the terminal tool.
@@ -123910,6 +123906,7 @@ Exception: If working within an existing website or design system, preserve the 
 - After changes, run a lightweight verification step such as ls, tests, or a build before declaring the task done.
 </terminal_tool_hygiene>
 ```
+
 
 #### Document localization and OCR boxes
 
@@ -123924,6 +123921,7 @@ For bbox tasks, be explicit about coordinate conventions and add drift tests.
 - If dense layout, process page by page and do a second pass for missed items.
 </bbox_extraction_spec>
 ```
+
 
 #### Use runtime and API integration notes
 
@@ -123977,6 +123975,7 @@ For natural, high-quality prose, the highest-leverage controls are:
 </personality_and_writing_controls>
 ```
 
+
 For more personality patterns you can lift directly, see the [Prompt Personalities cookbook](https://developers.openai.com/cookbook/examples/gpt-5/prompt_personalities).
 
 **Professional memo mode**
@@ -123993,6 +123992,7 @@ For memos, reviews, and other professional writing tasks, general writing instru
 - Synthesize across documents rather than summarizing each one independently.
 </memo_mode>
 ```
+
 
 This mode is especially useful for legal, policy, research, and executive-facing writing, where the goal is not just fluency, but disciplined synthesis and clear conclusions.
 
@@ -124032,6 +124032,7 @@ If the model still feels too literal or stops at the first plausible answer, add
 - If the task is safety or accuracy critical, perform at least one verification step.
 </dig_deeper_nudge>
 ```
+
 
 #### Migrate prompts to GPT-5.4 one change at a time
 
@@ -125914,70 +125915,65 @@ puts(response.output_text)
 
 Here's an overview of the tools available in the OpenAI platform—select one of them for further guidance on usage.
 
-[Function calling
+[Function calling](https://developers.openai.com/api/docs/guides/function-calling)
+
+Call custom code to give the model access to additional data and capabilities.
 
 
 
-      Call custom code to give the model access to additional data and
-    capabilities.](https://developers.openai.com/api/docs/guides/function-calling)
+[Web search](https://developers.openai.com/api/docs/guides/tools-web-search)
 
-[Web search
-
-
-
-      Include data from the Internet in model response generation.](https://developers.openai.com/api/docs/guides/tools-web-search)
-
-[Remote MCP servers
+Include data from the Internet in model response generation.
 
 
 
-      Give the model access to new capabilities via Model Context Protocol (MCP)
-    servers.](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)
+[Remote MCP servers](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)
 
-[Skills
-
-
-
-      Upload and reuse versioned skill bundles in hosted shell environments.](https://developers.openai.com/api/docs/guides/tools-skills)
-
-[Shell
+Give the model access to new capabilities via Model Context Protocol (MCP) servers.
 
 
 
-      Run shell commands in hosted containers or in your own local runtime.](https://developers.openai.com/api/docs/guides/tools-shell)
+[Skills](https://developers.openai.com/api/docs/guides/tools-skills)
 
-[Computer use
-
-
-
-      Create agentic workflows that enable a model to control a computer
-    interface.](https://developers.openai.com/api/docs/guides/tools-computer-use)
-
-[Image generation
+Upload and reuse versioned skill bundles in hosted shell environments.
 
 
 
-      Generate or edit images using GPT Image.](https://developers.openai.com/api/docs/guides/tools-image-generation)
+[Shell](https://developers.openai.com/api/docs/guides/tools-shell)
 
-[File search
-
-
-
-      Search the contents of uploaded files for context when generating a
-    response.](https://developers.openai.com/api/docs/guides/tools-file-search)
-
-[Tool search
+Run shell commands in hosted containers or in your own local runtime.
 
 
 
-      Dynamically load relevant tools into the model’s context to optimize token
-    usage.](https://developers.openai.com/api/docs/guides/tools-tool-search)
+[Computer use](https://developers.openai.com/api/docs/guides/tools-computer-use)
 
-[Programmatic Tool Calling
-
+Create agentic workflows that enable a model to control a computer interface.
 
 
-      Let models compose and run JavaScript that orchestrates tool calls.](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling)
+
+[Image generation](https://developers.openai.com/api/docs/guides/tools-image-generation)
+
+Generate or edit images using GPT Image.
+
+
+
+[File search](https://developers.openai.com/api/docs/guides/tools-file-search)
+
+Search the contents of uploaded files for context when generating a response.
+
+
+
+[Tool search](https://developers.openai.com/api/docs/guides/tools-tool-search)
+
+Dynamically load relevant tools into the model’s context to optimize token usage.
+
+
+
+[Programmatic Tool Calling](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling)
+
+Let models compose and run JavaScript that orchestrates tool calls.
+
+
 
 ## Usage in the API
 
@@ -126957,6 +126953,7 @@ The response contains the embedding vector (list of floating point numbers) alon
 }
 ```
 
+
 By default, the length of the embedding vector is `1536` for `text-embedding-3-small` or `3072` for `text-embedding-3-large`. To reduce the embedding's dimensions without losing its concept-representing properties, pass in the [dimensions parameter](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings-create-dimensions). Find more detail on embedding dimensions in the [embedding use case section](#use-cases).
 
 ## Embedding models
@@ -126991,7 +126988,6 @@ The dataset contains a total of 568,454 food reviews left by Amazon users up to 
 
 
 Below, we combine the review summary and review text into a single combined text. The model encodes this combined text and output a single vector embedding.
-
 
 
 Get_embeddings_from_dataset.ipynb
@@ -127349,10 +127345,13 @@ Dynamically changing the dimensions enables very flexible usage. For example, wh
 
 
 
-  
-
+  [
 Question_answering_using_embeddings.ipynb
- There are many common cases where the model is not trained on data which contains key facts and information you want to make accessible when generating responses to a user query. One way of solving this, as shown below, is to put additional information into the context window of the model. This is effective in many use cases but leads to higher token costs. In this notebook, we explore the tradeoff between this approach and embeddings bases search.
+ ](https://developers.openai.com/cookbook/examples/question_answering_using_embeddings)
+
+
+
+There are many common cases where the model is not trained on data which contains key facts and information you want to make accessible when generating responses to a user query. One way of solving this, as shown below, is to put additional information into the context window of the model. This is effective in many use cases but leads to higher token costs. In this notebook, we explore the tradeoff between this approach and embeddings bases search.
 
 ```javascript
 import OpenAI from "openai";
@@ -127524,10 +127523,13 @@ puts(response.choices.fetch(0).message.content)
 
 
 
-  
-
+  [
 Semantic_text_search_using_embeddings.ipynb
- To retrieve the most relevant documents we use the cosine similarity between the embedding vectors of the query and each document, and return the highest scored documents.
+ ](https://developers.openai.com/cookbook/examples/semantic_text_search_using_embeddings)
+
+
+
+To retrieve the most relevant documents we use the cosine similarity between the embedding vectors of the query and each document, and return the highest scored documents.
 
 ```javascript
 import OpenAI from "openai";
@@ -127781,10 +127783,13 @@ puts(results)
 
 
 
-  
-
+  [
 Code_search.ipynb
- Code search works similarly to embedding-based text search. We provide a method to extract Python functions from all the Python files in a given repository. Each function is then indexed by the `text-embedding-3-small` model.
+ ](https://developers.openai.com/cookbook/examples/code_search_using_embeddings)
+
+
+
+Code search works similarly to embedding-based text search. We provide a method to extract Python functions from all the Python files in a given repository. Each function is then indexed by the `text-embedding-3-small` model.
 
 To perform a code search, we embed the query in natural language using the same model. Then we calculate cosine similarity between the resulting query embedding and each of the function embeddings. The highest cosine similarity results are most relevant.
 
@@ -128041,10 +128046,13 @@ puts(results)
 
 
 
-  
-
+  [
 Recommendation_using_embeddings.ipynb
- Because shorter distances between embedding vectors represent greater similarity, embeddings can be useful for recommendation.
+ ](https://developers.openai.com/cookbook/examples/recommendation_using_embeddings)
+
+
+
+Because shorter distances between embedding vectors represent greater similarity, embeddings can be useful for recommendation.
 
 Below, we illustrate a basic recommender. It takes in a list of strings and one 'source' string, computes their embeddings, and then returns a ranking of the strings, ranked from most similar to least similar. As a concrete example, the linked notebook below applies a version of this function to the [AG news dataset](http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html) (sampled down to 2,000 news article descriptions) to return the top 5 most similar articles to any given source article.
 
@@ -128313,10 +128321,13 @@ puts(recommendations)
 
 
 
-  
-
+  [
 Visualizing_embeddings_in_2D.ipynb
- The size of the embeddings varies with the complexity of the underlying model. In order to visualize this high dimensional data we use the t-SNE algorithm to transform the data into two dimensions.
+ ](https://developers.openai.com/cookbook/examples/visualizing_embeddings_in_2d)
+
+
+
+The size of the embeddings varies with the complexity of the underlying model. In order to visualize this high dimensional data we use the t-SNE algorithm to transform the data into two dimensions.
 
 We color the individual reviews based on the star rating which the reviewer has given:
 
@@ -128368,10 +128379,13 @@ plt.title("Amazon ratings visualized in language using t-SNE")
 
 
 
-  
-
+  [
 Regression_using_embeddings.ipynb
- An embedding can be used as a general free-text feature encoder within a machine learning model. Incorporating embeddings will improve the performance of any machine learning model, if some of the relevant inputs are free text. An embedding can also be used as a categorical feature encoder within a ML model. This adds most value if the names of categorical variables are meaningful and numerous, such as job titles. Similarity embeddings generally perform better than search embeddings for this task.
+ ](https://developers.openai.com/cookbook/examples/regression_using_embeddings)
+
+
+
+An embedding can be used as a general free-text feature encoder within a machine learning model. Incorporating embeddings will improve the performance of any machine learning model, if some of the relevant inputs are free text. An embedding can also be used as a categorical feature encoder within a ML model. This adds most value if the names of categorical variables are meaningful and numerous, such as job titles. Similarity embeddings generally perform better than search embeddings for this task.
 
 We observed that generally the embedding representation is very rich and information dense. For example, reducing the dimensionality of the inputs using SVD or PCA, even by 10%, generally results in worse downstream performance on specific tasks.
 
@@ -128413,10 +128427,13 @@ preds = rfr.predict(X_test)
 
 
 
-  
-
+  [
 Classification_using_embeddings.ipynb
- This time, instead of having the algorithm predict a value anywhere between 1 and 5, we will attempt to classify the exact number of stars for a review into 5 buckets, ranging from 1 to 5 stars.
+ ](https://developers.openai.com/cookbook/examples/classification_using_embeddings)
+
+
+
+This time, instead of having the algorithm predict a value anywhere between 1 and 5, we will attempt to classify the exact number of stars for a review into 5 buckets, ranging from 1 to 5 stars.
 
 After the training, the model learns to predict 1 and 5-star reviews much better than the more nuanced reviews (2-4 stars), likely due to more extreme sentiment expression.
 
@@ -128442,10 +128459,13 @@ preds = clf.predict(X_test)
 
 
 
-  
-
+  [
 Zero-shot_classification_with_embeddings.ipynb
- We can use embeddings for zero shot classification without any labeled training data. For each class, we embed the class name or a short description of the class. To classify some new text in a zero-shot manner, we compare its embedding to all class embeddings and predict the class with the highest similarity.
+ ](https://developers.openai.com/cookbook/examples/zero-shot_classification_with_embeddings)
+
+
+
+We can use embeddings for zero shot classification without any labeled training data. For each class, we embed the class name or a short description of the class. To classify some new text in a zero-shot manner, we compare its embedding to all class embeddings and predict the class with the highest similarity.
 
 ```javascript
 import OpenAI from "openai";
@@ -128646,10 +128666,13 @@ puts((positive > negative) ? "positive" : "negative")
 
 
 
-  
-
+  [
 User_and_product_embeddings.ipynb
- We can obtain a user embedding by averaging over all of their reviews. Similarly, we can obtain a product embedding by averaging over all the reviews about that product. In order to showcase the usefulness of this approach we use a subset of 50k reviews to cover more reviews per user and per product.
+ ](https://developers.openai.com/cookbook/examples/user_and_product_embeddings)
+
+
+
+We can obtain a user embedding by averaging over all of their reviews. Similarly, we can obtain a product embedding by averaging over all the reviews about that product. In order to showcase the usefulness of this approach we use a subset of 50k reviews to cover more reviews per user and per product.
 
 We evaluate the usefulness of these embeddings on a separate test set, where we plot similarity of the user and product embedding as a function of the rating. Interestingly, based on this approach, even before the user receives the product we can predict better than random whether they would like the product.
 
@@ -128671,10 +128694,13 @@ prod_embeddings = df.groupby("ProductId").ada_embedding.apply(np.mean)
 
 
 
-  
-
+  [
 Clustering.ipynb
- Clustering is one way of making sense of a large volume of textual data. Embeddings are useful for this task, as they provide semantically meaningful vector representations of each text. Thus, in an unsupervised way, clustering will uncover hidden groupings in our dataset.
+ ](https://developers.openai.com/cookbook/examples/clustering)
+
+
+
+Clustering is one way of making sense of a large volume of textual data. Embeddings are useful for this task, as they provide semantically meaningful vector representations of each text. Thus, in an unsupervised way, clustering will uncover hidden groupings in our dataset.
 
 In this example, we discover four distinct clusters: one focusing on dog food, one on negative reviews, and two on positive reviews.
 
@@ -128860,6 +128886,7 @@ Here's an example of an image message on a line of your JSONL file. Below, the J
 }
 ```
 
+
 Uploading training data for vision fine-tuning follows the [same process described here](https://developers.openai.com/api/docs/guides/supervised-fine-tuning).
 
 ## Image data requirements
@@ -128915,6 +128942,7 @@ If you set the `detail` parameter for an image to `low`, the image is resized to
   }
 }
 ```
+
 
 #### Control image quality
 
@@ -128972,17 +129000,15 @@ While these evaluations cover a broad range of safety categories, conduct your o
 
 Now that you know the basics of vision fine-tuning, explore these other methods as well.
 
-[Supervised fine-tuning
+[Supervised fine-tuning](https://developers.openai.com/api/docs/guides/supervised-fine-tuning)
+
+Fine-tune a model by providing correct outputs for sample inputs.
 
 
 
-      Fine-tune a model by providing correct outputs for sample inputs.](https://developers.openai.com/api/docs/guides/supervised-fine-tuning)
+[Direct preference optimization](https://developers.openai.com/api/docs/guides/direct-preference-optimization)
 
-[Direct preference optimization
-
-
-
-      Fine-tune a model using direct preference optimization (DPO).](https://developers.openai.com/api/docs/guides/direct-preference-optimization)
+Fine-tune a model using direct preference optimization (DPO).
 
 ---
 
@@ -129243,29 +129269,27 @@ The practical rule is: choose the audio architecture first, then design the rest
 
 ## Next steps
 
-[Audio and voice overview
+[Audio and voice overview](https://developers.openai.com/api/docs/guides/audio)
+
+Choose the right realtime or audio guide for your use case.
 
 
 
-      Choose the right realtime or audio guide for your use case.](https://developers.openai.com/api/docs/guides/audio)
+[Managing conversations](https://developers.openai.com/api/docs/guides/realtime-conversations)
 
-[Managing conversations
-
-
-
-      Work with the Realtime session lifecycle and event model.](https://developers.openai.com/api/docs/guides/realtime-conversations)
-
-[WebRTC connection
+Work with the Realtime session lifecycle and event model.
 
 
 
-      Connect browser and mobile audio directly to a Realtime session.](https://developers.openai.com/api/docs/guides/voice-webrtc)
+[WebRTC connection](https://developers.openai.com/api/docs/guides/voice-webrtc)
 
-[Realtime prompting guide
+Connect browser and mobile audio directly to a Realtime session.
 
 
 
-      Tune reasoning, preambles, tools, entity capture, and voice behavior.](https://developers.openai.com/api/docs/guides/voice-prompting)
+[Realtime prompting guide](https://developers.openai.com/api/docs/guides/voice-prompting)
+
+Tune reasoning, preambles, tools, entity capture, and voice behavior.
 
 ---
 
@@ -130741,11 +130765,11 @@ To receive organization-level warning and deactivation notices for safety identi
 
 For Agents API sessions, see [Session webhooks](https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks) for session events and recovery patterns. Use the endpoint setup, signature verification, and delivery guidance on this page for the webhook receiver.
 
-[API reference for webhook events
+[API reference for webhook events](https://developers.openai.com/api/reference/resources/webhooks)
+
+View the full list of webhook events.
 
 
-
-      View the full list of webhook events.](https://developers.openai.com/api/reference/resources/webhooks)
 
 Below are examples of servers capable of ingesting webhooks from OpenAI, specifically for the [`response.completed`](https://developers.openai.com/api/reference/resources/webhooks) event.
 
@@ -131044,6 +131068,7 @@ webhook-signature: v1,K5oZfzN95Z9UVu1EsfQmfVNQhnkZ2pj9o9NDN/H/pI4=
 }
 ```
 
+
 Your endpoint should respond quickly to these incoming HTTP requests with a successful (`2xx`) status code, indicating successful receipt. To avoid timeouts, we recommend offloading any non-trivial processing to a background worker so that the endpoint can respond immediately.
 If the endpoint doesn't return a successful (`2xx`) status code, or doesn't respond within a few seconds, the webhook request will be retried. OpenAI will continue to attempt delivery for up to 72 hours with exponential backoff. Note that `3xx` redirects will not be followed; they are treated as failures and your endpoint should be updated to use the final destination URL.
 
@@ -131065,6 +131090,7 @@ When you create a webhook endpoint in the OpenAI dashboard, you'll be given a si
 ```bash
 export OPENAI_WEBHOOK_SECRET="<your secret here>"
 ```
+
 
 The simplest way to verify webhook signatures is by using the `unwrap()` method of the official OpenAI SDK helpers:
 
@@ -131686,6 +131712,7 @@ Create `index.html` in the directory where you run the server:
 </html>
 ```
 
+
 Paste the following code inside the module script. It adds start and end controls, connects the microphone and output audio, and handles session events. `/api/session` is a route on your application server.
 
 ```javascript
@@ -131837,6 +131864,7 @@ A successful request returns HTTP 201 with JSON containing the session ID and SD
   "transport": { "type": "webrtc", "sdp": "<SDP answer>" }
 }
 ```
+
 
 Read `result.session.id` and pass `result.transport.sdp` to `setRemoteDescription`. Treat the session ID as opaque and preserve it unchanged, including its prefix.
 
@@ -132219,11 +132247,9 @@ if (dc.readyState === "open") {
 
 To learn more about managing Realtime conversations, refer to the [Realtime conversations guide](https://developers.openai.com/api/docs/guides/realtime-conversations).
 
-[Realtime Console
+[Realtime Console](https://github.com/openai/openai-realtime-console/)
 
-
-
-      Check out the WebRTC Realtime API in this light weight example app.](https://github.com/openai/openai-realtime-console/)
+Check out the WebRTC Realtime API in this light weight example app.
 
 ---
 
@@ -132562,7 +132588,7 @@ Because the connection stays open and each turn sends only incremental input, We
 
 Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python, `npm install openai@^7.10.0 ws` for JavaScript, or `gem install openai async-websocket` for Ruby.
 
-For Go, run `go get github.com/openai/openai-go/v3@v3.96.0`.
+For Go, run `go get github.com/openai/openai-go/v3@v3.97.0`.
 For Java, add the Maven dependency `com.openai:openai-java:4.101.0` and use Java 17 or later for these examples.
 These Go and Java SDK versions provide native Responses WebSocket support.
 
@@ -135222,6 +135248,7 @@ Since we will be referencing a **sample** in our test criteria (the output gener
 
 
 
+
 ### Explanation: testing_criteria parameter
 
 
@@ -135242,6 +135269,7 @@ In the test configuration, we will introduce template syntax, represented by the
   "reference": "{{ item.category }}"
 }
 ```
+
 
 
 
@@ -135273,6 +135301,7 @@ After creating the eval, it will be assigned a UUID that you will need to addres
 }
 ```
 
+
 Now that we've created an eval that describes the desired behavior of our application, let's test a prompt with a set of test data.
 
 ## Test a prompt with your eval
@@ -135288,6 +135317,7 @@ You can provide test data for eval runs in several ways, but it may be convenien
 { "item": { "ticket_text": "I'm in vim and I can't quit!", "correct_label": "Software" } }
 { "item": { "ticket_text": "Best restaurants in Cleveland?", "correct_label": "Other" } }
 ```
+
 
 This data set contains both test inputs and ground truth labels to compare model outputs against.
 
@@ -135400,6 +135430,7 @@ When you upload the file, make note of the unique `id` property in the response 
   "status_details": null
 }
 ```
+
 
 ### Creating an eval run
 
@@ -135633,6 +135664,7 @@ If the eval run is successfully created, you'll receive an API response that loo
 
 
 
+
 Your eval run has now been queued, and it will execute asynchronously as it processes every row in your data set, generating responses for testing with the prompt and model we specified.
 
 ## Analyze the results
@@ -135764,6 +135796,7 @@ You'll need the UUID of both your eval and eval run to fetch its status. When yo
 
 
 
+
 The API response contains granular information about test criteria results, API usage for generating model responses, and a `report_url` property that takes you to a page in the dashboard where you can explore the results visually.
 
 In our test, the model reliably generated the content we wanted for a small test case sample. In reality, you will often have to run your eval with more criteria, different prompts, and different data sets. But the process above gives you all the tools you need to build robust evals for your LLM apps!
@@ -135772,35 +135805,32 @@ In our test, the model reliably generated the content we wanted for a small test
 
 Now you know how to create and run evals via API, and using the dashboard! Here are a few other resources that may be useful to you as you continue to improve your model results.
 
-[Cookbook: Detecting prompt regressions
+[Cookbook: Detecting prompt regressions](https://developers.openai.com/cookbook/examples/evaluation/use-cases/regression)
+
+Keep tabs on the performance of your prompts as you iterate on them.
 
 
 
-      Keep tabs on the performance of your prompts as you iterate on them.](https://developers.openai.com/cookbook/examples/evaluation/use-cases/regression)
+[Cookbook: Bulk model and prompt experimentation](https://developers.openai.com/cookbook/examples/evaluation/use-cases/bulk-experimentation)
 
-[Cookbook: Bulk model and prompt experimentation
-
-
-
-      Compare the results of many different prompts and models at once.](https://developers.openai.com/cookbook/examples/evaluation/use-cases/bulk-experimentation)
-
-[Cookbook: Monitoring stored completions
+Compare the results of many different prompts and models at once.
 
 
 
-      Examine stored completions to test for prompt regressions.](https://developers.openai.com/cookbook/examples/evaluation/use-cases/completion-monitoring)
+[Cookbook: Monitoring stored completions](https://developers.openai.com/cookbook/examples/evaluation/use-cases/completion-monitoring)
 
-[Fine-tuning
-
-
-
-      Improve a model's ability to generate responses tailored to your use case.](https://developers.openai.com/api/docs/guides/model-optimization)
-[Model distillation
+Examine stored completions to test for prompt regressions.
 
 
 
-      Learn how to distill large model results to smaller, cheaper, and faster
-    models.](https://developers.openai.com/api/docs/guides/supervised-fine-tuning#distilling-from-a-larger-model)
+[Fine-tuning](https://developers.openai.com/api/docs/guides/model-optimization)
+
+Improve a model's ability to generate responses tailored to your use case.
+
+
+[Model distillation](https://developers.openai.com/api/docs/guides/supervised-fine-tuning#distilling-from-a-larger-model)
+
+Learn how to distill large model results to smaller, cheaper, and faster models.
 
 ---
 
@@ -136217,8 +136247,6 @@ then run `codex login status` again.
 ---
 
 # ZDR with Private Safety Processing
-
-li+li]:mt-2! [&_ul>li>p]:my-0! [&_#built-with-three-principles+ol>li+li]:mt-2! [&_#check-storage-status]:mt-0!">
 
 Zero Data Retention with Private Safety Processing (ZDR with PSP) enables offline, automated safety review without OpenAI retaining customer prompts or responses. This guide provides an overview of how ZDR with PSP works and your operating responsibilities. For the full architecture and security model, see the [Private Safety Processing technical white paper](https://openaiassets.blob.core.windows.net/$web/pdf/c7284810-2252-462f-803e-075b0c95bccb/psp-whitepaper.pdf).
 
@@ -137184,6 +137212,7 @@ npm install openai
 ```
 
 
+
 With the OpenAI SDK installed, create a file called `example.mjs` and copy the example code into it:
 
 Test a basic API request
@@ -137201,13 +137230,12 @@ console.log(response.output_text);
 ```
 
 
+
 Execute the code with `node example.mjs` (or the equivalent command for Deno or Bun). In a few moments, you should see the output of your API request.
 
-[Learn more on GitHub
+[Learn more on GitHub](https://github.com/openai/openai-node)
 
-
-
-      Discover more SDK capabilities and options on the library's GitHub README.](https://github.com/openai/openai-node)
+Discover more SDK capabilities and options on the library's GitHub README.
 
 
   
@@ -137228,6 +137256,7 @@ pip install openai
 ```
 
 
+
 With the OpenAI SDK installed, create a file called `example.py` and copy the example code into it:
 
 Test a basic API request
@@ -137246,13 +137275,12 @@ print(response.output_text)
 ```
 
 
+
 Execute the code with `python example.py`. In a few moments, you should see the output of your API request.
 
-[Learn more on GitHub
+[Learn more on GitHub](https://github.com/openai/openai-python)
 
-
-
-      Discover more SDK capabilities and options on the library's GitHub README.](https://github.com/openai/openai-python)
+Discover more SDK capabilities and options on the library's GitHub README.
 
 
   
@@ -137269,6 +137297,7 @@ In collaboration with Microsoft, OpenAI provides an officially supported API cli
 ```bash
 dotnet add package OpenAI
 ```
+
 
 A simple API request to the [Responses API](https://developers.openai.com/api/reference/resources/responses) would look like this:
 
@@ -137290,6 +137319,7 @@ Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
 ```
 
 
+
   
 
   
@@ -137308,6 +137338,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
   <version>4.101.0</version>
 </dependency>
 ```
+
 
 
 A simple API request to [Responses API](https://developers.openai.com/api/reference/resources/responses) would look like this:
@@ -137338,13 +137369,12 @@ public class Main {
 ```
 
 
+
 To learn more about using the OpenAI API in Java, check out the GitHub repo linked below!
 
-[Learn more on GitHub
+[Learn more on GitHub](https://github.com/openai/openai-java)
 
-
-
-      Discover more SDK capabilities and options on the library's GitHub README.](https://github.com/openai/openai-java)
+Discover more SDK capabilities and options on the library's GitHub README.
 
 
   
@@ -137363,6 +137393,7 @@ import (
 	"github.com/openai/openai-go/v3" // imported as openai
 )
 ```
+
 
 
 A first API request to the [Responses API](https://developers.openai.com/api/reference/resources/responses) would look like this:
@@ -137396,13 +137427,12 @@ func main() {
 ```
 
 
+
 To learn more about using the OpenAI API in Go, check out the GitHub repo linked below!
 
-[Learn more on GitHub
+[Learn more on GitHub](https://github.com/openai/openai-go)
 
-
-
-      Discover more SDK capabilities and options on the library's GitHub README.](https://github.com/openai/openai-go)
+Discover more SDK capabilities and options on the library's GitHub README.
 
 
   
@@ -137423,6 +137453,7 @@ gem "openai"
 ```
 
 
+
 With the OpenAI SDK installed, create a file called `example.rb` and copy the example code into it:
 
 Test a basic API request
@@ -137441,13 +137472,12 @@ puts(response.output_text)
 ```
 
 
+
 Execute the code with `ruby example.rb`. In a few moments, you should see the output of your API request.
 
-[Learn more on GitHub
+[Learn more on GitHub](https://github.com/openai/openai-ruby)
 
-
-
-      Discover more SDK capabilities and options on the library's GitHub README.](https://github.com/openai/openai-ruby)
+Discover more SDK capabilities and options on the library's GitHub README.
 
 
   
@@ -137468,6 +137498,7 @@ brew install openai/tools/openai
 ```
 
 
+
 Then run a basic API request from your shell:
 
 Test a basic API request
@@ -137481,13 +137512,12 @@ openai responses create \
 ```
 
 
+
 Use the CLI for repeatable terminal workflows such as extracting structured data from files, generating images, creating speech, and composing API calls with shell tools like `jq`.
 
-[OpenAI CLI guide
+[OpenAI CLI guide](https://developers.openai.com/api/docs/libraries/openai-cli)
 
-
-
-      Learn more about CLI workflows and command patterns.](https://developers.openai.com/api/docs/libraries/openai-cli)
+Learn more about CLI workflows and command patterns.
 
 
 
@@ -137500,11 +137530,11 @@ handoffs, guardrails, tracing, or sandbox execution.
 If you are deciding between direct API requests and code-first orchestration,
 see [how the Responses API compares with the Agents SDK](https://developers.openai.com/api/docs/guides/agents#agents-sdk-vs-responses-api).
 
-[Agents SDK quickstart
+[Agents SDK quickstart](https://developers.openai.com/api/docs/guides/agents/quickstart)
+
+Build your first agent with the Agents SDK.
 
 
-
-      Build your first agent with the Agents SDK.](https://developers.openai.com/api/docs/guides/agents/quickstart)
 
 - [OpenAI Agents SDK for TypeScript](https://github.com/openai/openai-agents-js)
 - [OpenAI Agents SDK for Python](https://github.com/openai/openai-agents-python)
@@ -138270,6 +138300,7 @@ The final tool response should look like:
 }
 ```
 
+
 ### `fetch` tool
 
 The fetch tool is used to retrieve the full contents of a search result document or item.
@@ -138312,6 +138343,7 @@ The final tool response should look like:
 }
 ```
 
+
 ### Citation behavior
 
 For both `search` results and `fetch` responses, ChatGPT creates citation
@@ -138324,6 +138356,7 @@ For example, ChatGPT might call `search` with:
 ```json
 { "query": "What is the quarterly plan?" }
 ```
+
 
 The MCP server can respond with a URL-backed result:
 
@@ -138347,6 +138380,7 @@ The MCP server can respond with a URL-backed result:
 }
 ```
 
+
 In this response, the `url` field has a value, which makes the result eligible
 for citation metadata. The query itself does not trigger citation handling. If
 the result omits `url`, or provides an empty or non-string value, ChatGPT
@@ -138356,11 +138390,11 @@ preserves the result as ordinary tool output.
 
 You can try this example MCP server in a [browser-based development environment](https://replit.com/). Configure the sample with your own API credentials and vector store information.
 
-[Example MCP server on Replit
+[Example MCP server on Replit](https://replit.com/@kwhinnery-oai/DeepResearchServer?v=1#README.md)
+
+Remix the server example on Replit to test live.
 
 
-
-      Remix the server example on Replit to test live.](https://replit.com/@kwhinnery-oai/DeepResearchServer?v=1#README.md)
 
 A full implementation of both the `search` and `fetch` tools in FastMCP is below also for convenience.
 
@@ -138606,6 +138640,7 @@ In the long dev URL, ensure it ends with `/sse/`, which is the server-sent event
 ```text
 https://777xxx.janeway.replit.dev/sse/
 ```
+
 
 
 
@@ -139361,14 +139396,7 @@ The OpenAI API provides a consistent interface to state-of-the-art AI [models](h
 
 ## Create and export an API key
 
-
-
-StatsigClient.logEvent("quickstart_create_api_key_click", null, null)
-  }
->
-  Create an API Key
-
-
+[Create an API Key](https://platform.openai.com/api-keys)
 
 
 
@@ -139424,6 +139452,7 @@ npm install openai
 ```
 
 
+
 With the OpenAI SDK installed, create a file called `example.mjs` and copy the example code into it:
 
 Test a basic API request
@@ -139441,13 +139470,12 @@ console.log(response.output_text);
 ```
 
 
+
 Execute the code with `node example.mjs` (or the equivalent command for Deno or Bun). In a few moments, you should see the output of your API request.
 
-[Learn more on GitHub
+[Learn more on GitHub](https://github.com/openai/openai-node)
 
-
-
-      Discover more SDK capabilities and options on the library's GitHub README.](https://github.com/openai/openai-node)
+Discover more SDK capabilities and options on the library's GitHub README.
 
 
   
@@ -139468,6 +139496,7 @@ pip install openai
 ```
 
 
+
 With the OpenAI SDK installed, create a file called `example.py` and copy the example code into it:
 
 Test a basic API request
@@ -139486,13 +139515,12 @@ print(response.output_text)
 ```
 
 
+
 Execute the code with `python example.py`. In a few moments, you should see the output of your API request.
 
-[Learn more on GitHub
+[Learn more on GitHub](https://github.com/openai/openai-python)
 
-
-
-      Discover more SDK capabilities and options on the library's GitHub README.](https://github.com/openai/openai-python)
+Discover more SDK capabilities and options on the library's GitHub README.
 
 
   
@@ -139509,6 +139537,7 @@ In collaboration with Microsoft, OpenAI provides an officially supported API cli
 ```bash
 dotnet add package OpenAI
 ```
+
 
 A simple API request to the [Responses API](https://developers.openai.com/api/reference/resources/responses) would look like this:
 
@@ -139530,6 +139559,7 @@ Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
 ```
 
 
+
   
 
   
@@ -139548,6 +139578,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
   <version>4.101.0</version>
 </dependency>
 ```
+
 
 
 A simple API request to [Responses API](https://developers.openai.com/api/reference/resources/responses) would look like this:
@@ -139578,13 +139609,12 @@ public class Main {
 ```
 
 
+
 To learn more about using the OpenAI API in Java, check out the GitHub repo linked below!
 
-[Learn more on GitHub
+[Learn more on GitHub](https://github.com/openai/openai-java)
 
-
-
-      Discover more SDK capabilities and options on the library's GitHub README.](https://github.com/openai/openai-java)
+Discover more SDK capabilities and options on the library's GitHub README.
 
 
   
@@ -139603,6 +139633,7 @@ import (
 	"github.com/openai/openai-go/v3" // imported as openai
 )
 ```
+
 
 
 A first API request to the [Responses API](https://developers.openai.com/api/reference/resources/responses) would look like this:
@@ -139636,13 +139667,12 @@ func main() {
 ```
 
 
+
 To learn more about using the OpenAI API in Go, check out the GitHub repo linked below!
 
-[Learn more on GitHub
+[Learn more on GitHub](https://github.com/openai/openai-go)
 
-
-
-      Discover more SDK capabilities and options on the library's GitHub README.](https://github.com/openai/openai-go)
+Discover more SDK capabilities and options on the library's GitHub README.
 
 
   
@@ -139663,6 +139693,7 @@ gem "openai"
 ```
 
 
+
 With the OpenAI SDK installed, create a file called `example.rb` and copy the example code into it:
 
 Test a basic API request
@@ -139681,37 +139712,29 @@ puts(response.output_text)
 ```
 
 
+
 Execute the code with `ruby example.rb`. In a few moments, you should see the output of your API request.
 
-[Learn more on GitHub
+[Learn more on GitHub](https://github.com/openai/openai-ruby)
+
+Discover more SDK capabilities and options on the library's GitHub README.
+
+
+[Responses starter app](https://github.com/openai/openai-responses-starter-app)
+
+Start building with the Responses API.
 
 
 
-      Discover more SDK capabilities and options on the library's GitHub README.](https://github.com/openai/openai-ruby)
+[Text generation and prompting](https://developers.openai.com/api/docs/guides/text)
+
+Learn more about prompting, message roles, and building conversational apps.
 
 
-[Responses starter app
-
-
-
-      Start building with the Responses API.](https://github.com/openai/openai-responses-starter-app)
-
-[Text generation and prompting
-
-
-
-      Learn more about prompting, message roles, and building conversational apps.](https://developers.openai.com/api/docs/guides/text)
 
 ## Add credits to keep building
 
-
-
-StatsigClient.logEvent("quickstart_add_credits_billing_click", null, null)
-  }
->
-  Go to billing
-
-
+[Go to billing](https://platform.openai.com/account/billing/overview)
 
 Congrats on running a free test API request! Start building real applications with higher limits and use [our models](https://developers.openai.com/api/docs/models) to generate text, audio, images, videos and more.
 
@@ -139721,23 +139744,16 @@ Congrats on running a free test API request! Start building real applications wi
   Explore tools and docs designed to help you ship faster:
 
 
-[StatsigClient.logEvent(
-      "quickstart_add_credits_chat_playground_click",
-      null,
-      null
-    )
-  }
->
-  Chat Playground
+[Chat Playground](https://platform.openai.com/chat)
+
+Build & test conversational prompts and embed them in your app.
 
 
+[Build agents](https://developers.openai.com/api/docs/guides/agents)
 
-      Build & test conversational prompts and embed them in your app.](https://platform.openai.com/chat)
-[Build agents
+Use the Agents SDK to build, run, and observe agent workflows.
 
 
-
-      Use the Agents SDK to build, run, and observe agent workflows.](https://developers.openai.com/api/docs/guides/agents)
 
 ## Analyze images and files
 
@@ -140449,17 +140465,17 @@ curl "https://api.openai.com/v1/responses" \
 
 
 
-[Image inputs guide
+[Image inputs guide](https://developers.openai.com/api/docs/guides/images-vision)
+
+Learn to use image inputs to the model and extract meaning from images.
 
 
 
-      Learn to use image inputs to the model and extract meaning from images.](https://developers.openai.com/api/docs/guides/images-vision)
+[File inputs guide](https://developers.openai.com/api/docs/guides/file-inputs)
 
-[File inputs guide
+Learn to use file inputs to the model and extract meaning from documents.
 
 
-
-      Learn to use file inputs to the model and extract meaning from documents.](https://developers.openai.com/api/docs/guides/file-inputs)
 
 ## Extend the model with tools
 
@@ -141348,17 +141364,17 @@ puts(response.output_text)
 
 
 
-[Use built-in tools
+[Use built-in tools](https://developers.openai.com/api/docs/guides/tools)
+
+Learn about powerful built-in tools like web search and file search.
 
 
 
-      Learn about powerful built-in tools like web search and file search.](https://developers.openai.com/api/docs/guides/tools)
+[Function calling guide](https://developers.openai.com/api/docs/guides/function-calling)
 
-[Function calling guide
+Learn to enable the model to call your own custom code.
 
 
-
-      Learn to enable the model to call your own custom code.](https://developers.openai.com/api/docs/guides/function-calling)
 
 ## Stream responses and build real-time apps
 
@@ -141492,17 +141508,17 @@ end
 ```
 
 
-[Use streaming events
+[Use streaming events](https://developers.openai.com/api/docs/guides/streaming-responses)
+
+Use server-sent events to stream model responses to users fast.
 
 
 
-      Use server-sent events to stream model responses to users fast.](https://developers.openai.com/api/docs/guides/streaming-responses)
+[Get started with the Realtime API](https://developers.openai.com/api/docs/guides/realtime)
 
-[Get started with the Realtime API
+Use WebRTC or WebSockets for super fast speech-to-speech AI apps.
 
 
-
-      Use WebRTC or WebSockets for super fast speech-to-speech AI apps.](https://developers.openai.com/api/docs/guides/realtime)
 
 ## Build agents
 
@@ -141565,11 +141581,9 @@ if __name__ == "__main__":
 ```
 
 
-[Build agents that can take action
+[Build agents that can take action](https://developers.openai.com/api/docs/guides/agents)
 
-
-
-      Learn how to use the OpenAI platform to build powerful, capable AI agents.](https://developers.openai.com/api/docs/guides/agents)
+Learn how to use the OpenAI platform to build powerful, capable AI agents.
 
 ---
 
@@ -141822,11 +141836,7 @@ Install the [OpenAI SDK](https://developers.openai.com/api/docs/libraries) and a
 
     
 
-      
-
-Download sample audio
-
-
+      Download sample audio
     
 
   

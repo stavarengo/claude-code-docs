@@ -30,13 +30,10 @@ Generate a secret for the cleanup endpoint and save it as `EXECUTOR_CLIENT_SECRE
 openssl rand -hex 32
 ```
 
+
 Deploy the Worker in your Cloudflare account:
 
-
-
-Deploy to Cloudflare
-
-
+[Deploy to Cloudflare](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/sandbox-sdk/tree/main/openai/agents-api)
 
 Enter these values when prompted:
 

@@ -325,12 +325,11 @@ Computer use lets GPT-5.4 operate software through the user interface by inspect
 
 Use it in an isolated browser or VM, and keep a human in the loop for high-impact actions. The full guide covers the built-in Responses API loop, custom harness patterns, and code-execution-based setups.
 
-[Computer use guide
+[Computer use guide](https://developers.openai.com/api/docs/guides/tools-computer-use)
+
+Learn how to run the built-in computer tool safely and integrate it with your own harness.
 
 
-
-      Learn how to run the built-in computer tool safely and integrate it with
-    your own harness.](https://developers.openai.com/api/docs/guides/tools-computer-use)
 
 ### Tool search tool
 
@@ -338,21 +337,21 @@ Tool search lets GPT-5.4 defer large tool surfaces until runtime so the model lo
 
 Use hosted tool search when the candidate tools are already known at request time, or client-executed tool search when your application needs to decide what to load dynamically. The full guide also covers best practices for `namespaces`, MCP servers, and deferred loading.
 
-[Tool search guide
+[Tool search guide](https://developers.openai.com/api/docs/guides/tools-tool-search)
+
+Learn how to defer tool definitions and load the right subset at runtime.
 
 
-
-      Learn how to defer tool definitions and load the right subset at runtime.](https://developers.openai.com/api/docs/guides/tools-tool-search)
 
 ### Custom tools
 
 When the GPT-5 model family launched, we introduced a new capability called custom tools, which lets models send any raw text as tool call input but still constrain outputs if desired. This tool behavior remains true in GPT-5.4.
 
-[Function calling guide
+[Function calling guide](https://developers.openai.com/api/docs/guides/function-calling)
+
+Learn about custom tools in the function calling guide.
 
 
-
-      Learn about custom tools in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 #### Freeform inputs
 
@@ -365,6 +364,7 @@ Define your tool with `type: custom` to enable models to send plaintext inputs d
   "description": "Executes arbitrary python code"
 }
 ```
+
 
 #### Constraining outputs
 
@@ -381,11 +381,11 @@ This enables precise, constrained tool calls or structured responses and lets yo
 
 The `allowed_tools` parameter under `tool_choice` lets you pass N tool definitions but restrict the model to only M (&lt; N) of them. List your full toolkit in `tools`, and then use an `allowed_tools` block to name the subset and specify a mode—either `auto` (the model may pick any of those) or `required` (the model must invoke one).
 
-[Function calling guide
+[Function calling guide](https://developers.openai.com/api/docs/guides/function-calling)
+
+Learn about the allowed tools option in the function calling guide.
 
 
-
-      Learn about the allowed tools option in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 By separating all possible tools from the subset that can be used _now_, you gain greater safety, predictability, and improved prompt caching. You also avoid brittle prompt engineering, such as hard-coded call order. GPT-5.4 dynamically invokes or requires specific functions mid-conversation while reducing the risk of unintended tool usage over long contexts.
 
@@ -407,6 +407,7 @@ By separating all possible tools from the subset that can be used _now_, you gai
   }
 }
 ```
+
 
 For a more detailed overview of all of these new features, see the [prompt guidance for GPT-5.4](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.4#prompting-best-practices).
 
@@ -825,6 +826,7 @@ To improve token efficiency with GPT-5.4, constrain verbosity and enforce struct
 </verbosity_controls>
 ```
 
+
 #### Set clear defaults for follow-through
 
 Users often change the task, format, or tone mid-conversation. To keep the assistant aligned, define clear rules for when to proceed, when to ask, and how newer instructions override earlier defaults.
@@ -842,6 +844,7 @@ Use a default follow-through policy like this:
 </default_follow_through_policy>
 ```
 
+
 Make instruction priority explicit:
 
 ```xml
@@ -852,6 +855,7 @@ Make instruction priority explicit:
 - Preserve earlier instructions that do not conflict.
 </instruction_priority>
 ```
+
 
 Higher-priority developer or system instructions remain binding.
 
@@ -876,6 +880,7 @@ All earlier instructions still apply unless they conflict with this update.
 </task_update>
 ```
 
+
 If the task itself changes, say so directly:
 
 ```text
@@ -894,6 +899,7 @@ Rules for this turn:
 </task_update>
 ```
 
+
 #### Make tool use persistent when correctness depends on it
 
 Use explicit rules to keep tool use thorough, dependency-aware, and appropriately paced, especially in workflows where later actions rely on earlier retrieval or verification. A common failure mode is skipping prerequisites because the right end state seems obvious.
@@ -911,6 +917,7 @@ GPT-5.4 can be less reliable at tool routing early in a session, when context is
 </tool_persistence_rules>
 ```
 
+
 This is especially important for workflows where the final action depends on earlier lookup or retrieval steps. One of the most common failure modes is skipping prerequisites because the intended end state seems obvious.
 
 ```xml
@@ -920,6 +927,7 @@ This is especially important for workflows where the final action depends on ear
 - If the task depends on the output of a prior step, resolve that dependency first.
 </dependency_checks>
 ```
+
 
 Prompt for parallelism when the work is independent and wall-clock matters. Prompt for sequencing when dependencies, ambiguity, or irreversible actions matter more than speed.
 
@@ -931,6 +939,7 @@ Prompt for parallelism when the work is independent and wall-clock matters. Prom
 - Prefer selective parallelism: parallelize independent evidence gathering, not speculative or redundant tool use.
 </parallel_tool_calling>
 ```
+
 
 #### Force completeness on long-horizon tasks
 
@@ -950,6 +959,7 @@ Coverage can be achieved through sequential or parallel retrieval, but completio
 </completeness_contract>
 ```
 
+
 For workflows where empty, partial, or noisy retrieval is common:
 
 ```xml
@@ -966,6 +976,7 @@ If a lookup returns empty, partial, or suspiciously narrow results:
 </empty_result_recovery>
 ```
 
+
 #### Add a verification loop before high-impact actions
 
 Once the workflow appears complete, add a lightweight verification step before returning the answer or taking an irreversible action. This helps catch requirement misses, grounding issues, and format drift before commit.
@@ -980,6 +991,7 @@ Before finalizing:
 </verification_loop>
 ```
 
+
 ```xml
 <missing_context_gating>
 - If required context is missing, do NOT guess.
@@ -987,6 +999,7 @@ Before finalizing:
 - If you must proceed, label assumptions explicitly and choose a reversible action.
 </missing_context_gating>
 ```
+
 
 For agents that actively take actions, add a short execution frame:
 
@@ -997,6 +1010,7 @@ For agents that actively take actions, add a short execution frame:
 - Post-flight: confirm the outcome and any validation that was performed.
 </action_safety>
 ```
+
 
 ### Handle specialized workflows
 
@@ -1017,6 +1031,7 @@ When citation quality matters, make both the source boundary and the format requ
 </citation_rules>
 ```
 
+
 ```xml
 <grounding_rules>
 - Base claims only on provided context or tool outputs.
@@ -1025,6 +1040,7 @@ When citation quality matters, make both the source boundary and the format requ
 - If a statement is an inference rather than a directly supported fact, label it as an inference.
 </grounding_rules>
 ```
+
 
 If your application requires inline citations, require inline citations. If it requires footnotes, require footnotes. The key is to lock the format and prevent the model from improvising unsupported references.
 
@@ -1042,6 +1058,7 @@ Push GPT-5.4 into a disciplined research mode. Use this pattern for research, re
 </research_mode>
 ```
 
+
 If your host environment uses a specific research tool or requires a submit step, combine this with the host's finalization contract.
 
 #### Clamp strict output formats
@@ -1058,6 +1075,7 @@ For SQL, JSON, or other parse-sensitive outputs, tell GPT-5.4 to emit only the t
 </structured_output_contract>
 ```
 
+
 If you are extracting document regions or OCR boxes, define the coordinate system and add a drift check:
 
 ```text
@@ -1068,6 +1086,7 @@ If you are extracting document regions or OCR boxes, define the coordinate syste
 - If the layout is dense, process page by page and do a second pass for missed items.
 </bbox_extraction_spec>
 ```
+
 
 #### Keep tool boundaries explicit in coding and terminal agents
 
@@ -1088,6 +1107,7 @@ Recommended update spec:
 </user_updates_spec>
 ```
 
+
 For coding agents, see the Prompting patterns for coding tasks section below for more specific guidance.
 
 #### Prompting patterns for coding tasks
@@ -1103,6 +1123,7 @@ Persist until the task is fully handled end-to-end within the current turn whene
 Unless the user explicitly asks for a plan, asks a question about the code, is brainstorming potential solutions, or some other intent that makes it clear that code should not be written, assume the user wants you to make code changes or run tools to solve the user's problem. In these cases, it's bad to output your proposed solution in a message, you should go ahead and actually implement the change. If you encounter challenges or blockers, you should attempt to resolve them yourself.
 </autonomy_and_persistence>
 ```
+
 
 **Intermediary updates**
 
@@ -1125,6 +1146,7 @@ Keep updates sparse and high-signal. In coding tasks, prefer updates at key poin
 </user_updates_spec>
 ```
 
+
 **Formatting**
 
 GPT-5.4 often defaults to more structured formatting and may overuse bullet lists. If you want a clean final response, explicitly clamp list shape.
@@ -1132,6 +1154,7 @@ GPT-5.4 often defaults to more structured formatting and may overuse bullet list
 ```xml
 Never use nested bullets. Keep lists flat (single level). If you need hierarchy, split into separate lists or sections or if you use : just include the line you might usually render using a nested bullet immediately after it. For numbered lists, only use the `1. 2. 3.` style markers (with a period), never `1)`.
 ```
+
 
 **Frontend tasks**
 
@@ -1158,6 +1181,7 @@ Exception: If working within an existing website or design system, preserve the 
 </frontend_tasks>
 ```
 
+
 ```xml
 <terminal_tool_hygiene>
 - Only run shell commands via the terminal tool.
@@ -1166,6 +1190,7 @@ Exception: If working within an existing website or design system, preserve the 
 - After changes, run a lightweight verification step such as ls, tests, or a build before declaring the task done.
 </terminal_tool_hygiene>
 ```
+
 
 #### Document localization and OCR boxes
 
@@ -1180,6 +1205,7 @@ For bbox tasks, be explicit about coordinate conventions and add drift tests.
 - If dense layout, process page by page and do a second pass for missed items.
 </bbox_extraction_spec>
 ```
+
 
 #### Use runtime and API integration notes
 
@@ -1233,6 +1259,7 @@ For natural, high-quality prose, the highest-leverage controls are:
 </personality_and_writing_controls>
 ```
 
+
 For more personality patterns you can lift directly, see the [Prompt Personalities cookbook](https://developers.openai.com/cookbook/examples/gpt-5/prompt_personalities).
 
 **Professional memo mode**
@@ -1249,6 +1276,7 @@ For memos, reviews, and other professional writing tasks, general writing instru
 - Synthesize across documents rather than summarizing each one independently.
 </memo_mode>
 ```
+
 
 This mode is especially useful for legal, policy, research, and executive-facing writing, where the goal is not just fluency, but disciplined synthesis and clear conclusions.
 
@@ -1288,6 +1316,7 @@ If the model still feels too literal or stops at the first plausible answer, add
 - If the task is safety or accuracy critical, perform at least one verification step.
 </dig_deeper_nudge>
 ```
+
 
 #### Migrate prompts to GPT-5.4 one change at a time
 

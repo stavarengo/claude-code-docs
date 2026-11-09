@@ -1467,7 +1467,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The namespace of the tool that produced the output.
 
-          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -13649,7 +13649,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The namespace of the tool that produced the output.
 
-          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -25831,7 +25831,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The namespace of the tool that produced the output.
 
-          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -38037,7 +38037,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The namespace of the tool that produced the output.
 
-          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -50223,7 +50223,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The namespace of the tool that produced the output.
 
-          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -75127,7 +75127,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The namespace of the tool that produced the output.
 
-          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 64`
+          `pattern: ^[a-zA-Z0-9_-]+$`, `minLength: 1`, `maxLength: 128`
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 

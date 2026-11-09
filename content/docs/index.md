@@ -349,7 +349,6 @@ claude/platform.claude.com/docs/en/release-notes/system-prompts:{claude-fable-5-
 claude/platform.claude.com/docs/en/resources:{overview.md}
 claude/platform.claude.com/docs/en/test-and-evaluate:{develop-tests.md}
 claude/platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails:{handle-streaming-refusals.md,increase-consistency.md,mitigate-jailbreaks.md,reduce-hallucinations.md,reduce-latency.md,reduce-prompt-leak.md}
-claude/raw.githubusercontent.com/aws-solutions-library-samples/guidance-for-claude-code-with-amazon-bedrock/refs/heads/main/assets/docs:{MONITORING.md}
 openai/developers.openai.com/api/docs:{bots.md,changelog.md,concepts.md,deprecations.md,libraries.md,llms-full.txt,llms.txt,mcp.md,models.md,pricing.md,quickstart.md,supported-countries.md}
 openai/developers.openai.com/api/docs/actions:{actions-library.md,authentication.md,data-retrieval.md,getting-started.md,introduction.md,production.md,sending-files.md}
 openai/developers.openai.com/api/docs/assistants:{migration.md}

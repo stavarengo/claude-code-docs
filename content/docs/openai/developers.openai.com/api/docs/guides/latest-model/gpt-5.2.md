@@ -320,11 +320,11 @@ Local shell is supported in GPT-5.2. The shell tool allows the model to interact
 
 When the GPT-5 model family launched, we introduced a new capability called custom tools, which lets models send any raw text as tool call input but still constrain outputs if desired. This tool behavior remains true in GPT-5.2.
 
-[Function calling guide
+[Function calling guide](https://developers.openai.com/api/docs/guides/function-calling)
+
+Learn about custom tools in the function calling guide.
 
 
-
-      Learn about custom tools in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 #### Freeform inputs
 
@@ -337,6 +337,7 @@ Define your tool with `type: custom` to enable models to send plaintext inputs d
   "description": "Executes arbitrary python code"
 }
 ```
+
 
 #### Constraining outputs
 
@@ -353,11 +354,11 @@ This enables precise, constrained tool calls or structured responses and lets yo
 
 The `allowed_tools` parameter under `tool_choice` lets you pass N tool definitions but restrict the model to only M (&lt; N) of them. List your full toolkit in `tools`, and then use an `allowed_tools` block to name the subset and specify a mode—either `auto` (the model may pick any of those) or `required` (the model must invoke one).
 
-[Function calling guide
+[Function calling guide](https://developers.openai.com/api/docs/guides/function-calling)
+
+Learn about the allowed tools option in the function calling guide.
 
 
-
-      Learn about the allowed tools option in the function calling guide.](https://developers.openai.com/api/docs/guides/function-calling)
 
 By separating all possible tools from the subset that can be used _now_, you gain greater safety, predictability, and improved prompt caching. You also avoid brittle prompt engineering, such as hard-coded call order. GPT-5.2 dynamically invokes or requires specific functions mid-conversation while reducing the risk of unintended tool usage over long contexts.
 
@@ -379,6 +380,7 @@ By separating all possible tools from the subset that can be used _now_, you gai
   }
 }
 ```
+
 
 For a more detailed overview of all of these new features, see the [accompanying cookbook](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5-2_prompting_guide).
 
@@ -629,6 +631,7 @@ Example clamp adjust based on desired verbosity:
 </output_verbosity_spec>
 ```
 
+
 #### 3.2 Preventing Scope drift (e.g., UX / design in frontend tasks)
 
 GPT-5.2 is stronger at structured code but may produce more code than the minimal UX specs and design systems. To stay within the scope, explicitly forbid extra features and uncontrolled styling.
@@ -643,6 +646,7 @@ GPT-5.2 is stronger at structured code but may produce more code than the minima
 - If any instruction is ambiguous, choose the simplest valid interpretation.
 </design_and_scope_constraints>
 ```
+
 
 For design system enforcement, reuse your 5.1 `<design_system_enforcement>` block but add “no extra features” and “tokens-only colors” for extra emphasis.
 
@@ -659,6 +663,7 @@ For long-context tasks, the prompt may benefit from **force summarization and re
 - If the answer depends on fine details (dates, thresholds, clauses), quote or paraphrase them.
 </long_context_handling>
 ```
+
 
 #### 3.4 Handling ambiguity & hallucination risk
 
@@ -678,6 +683,7 @@ Mitigation prompt:
 </uncertainty_and_ambiguity>
 ```
 
+
 You can also add a short self-check step for high-risk outputs:
 
 ```text
@@ -690,6 +696,7 @@ Before finalizing an answer in legal, financial, compliance, or safety-sensitive
 - If you find any, soften or qualify them and explicitly state assumptions.
 </high_risk_self_check>
 ```
+
 
 ### 4. Compaction (Extending Effective Context)
 
@@ -715,6 +722,7 @@ Endpoint
 ```text
 POST https://api.openai.com/v1/responses/compact
 ```
+
 
 **What it does**
 
@@ -834,6 +842,7 @@ Example updated spec:
 </user_updates_spec>
 ```
 
+
 ### 6. Tool-calling and parallelism
 
 GPT-5.2 improves on 5.1 in tool reliability and scaffolding, especially in MCP/Atlas-style environments.
@@ -857,6 +866,7 @@ Example tool usage section:
   - Any follow-up validation performed.
 </tool_usage_rules>
 ```
+
 
 ### 7. Structured extraction, PDF, and Office workflows
 
@@ -883,6 +893,7 @@ You will extract structured data from tables/PDFs/emails into JSON.
 - Before returning, quickly re-scan the source for any missed fields and correct omissions.
 </extraction_spec>
 ```
+
 
 For multi-table/multi-file extraction, add guidance to:
 
@@ -934,6 +945,7 @@ Best practices to follow:
 - Write clearly and directly using Markdown (headers, bullets, tables when helpful); define acronyms, use concrete examples, and keep a natural, conversational tone.
 </web_search_rules>
 ```
+
 
 ### 10. Conclusion
 
@@ -1041,6 +1053,7 @@ Do not lead with a blunt refusal if you can safely provide something helpful imm
 First deliver what you can (safe partial answers, verified material, or a closely related helpful alternative), then clearly state any limitations (policy limits, missing/behind-paywall data, unverifiable claims).
 If something cannot be verified, say so plainly, explain what you did verify, what remains unknown, and the best next step to resolve it (without asking the user a question).
 ```
+
 
 ## Further reading
 

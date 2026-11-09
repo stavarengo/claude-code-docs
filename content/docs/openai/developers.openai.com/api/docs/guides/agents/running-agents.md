@@ -229,19 +229,16 @@ Once the runtime loop is clear, move to the guide that matches the next workflow
 
 
 
-  [Results and state
+  [Results and state](https://developers.openai.com/api/docs/guides/agents/results)
+
+Learn which result surfaces your application should carry into the next turn.
 
 
+  [Orchestration and handoffs](https://developers.openai.com/api/docs/guides/agents/orchestration)
 
-        Learn which result surfaces your application should carry into the next
-      turn.](https://developers.openai.com/api/docs/guides/agents/results)
-  [Orchestration and handoffs
-
+Decide how multiple specialists behave inside the same runtime loop.
 
 
-        Decide how multiple specialists behave inside the same runtime loop.](https://developers.openai.com/api/docs/guides/agents/orchestration)
-  [Guardrails and human review
+  [Guardrails and human review](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)
 
-
-
-        Add validation and approval pauses without breaking turn continuity.](https://developers.openai.com/api/docs/guides/agents/guardrails-approvals)
+Add validation and approval pauses without breaking turn continuity.

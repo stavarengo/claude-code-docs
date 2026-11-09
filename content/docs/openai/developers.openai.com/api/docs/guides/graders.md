@@ -410,7 +410,7 @@ This will automatically use the entire source code of your `grader.py` file as t
 
 - Your uploaded code must be less than `256kB` and will not have network access.
 - The grading execution itself is limited to 2 minutes.
-- At runtime you will be given a limit of 2Gb of memory and 1Gb of disk space to use.
+- At runtime you will be given a limit of 2GB of memory and 1GB of disk space to use.
 - There's a limit of 2 CPU cores—any usage above this amount will result in throttling
 
 The following third-party packages are available at execution time for the image tag `2025-05-08`
