@@ -367,7 +367,7 @@ On the Amazon Bedrock [Invoke API](https://docs.aws.amazon.com/bedrock/latest/AP
 | `ap-*` | `apac.` |
 | All other regions | `global.` |
 
-Set `ANTHROPIC_BEDROCK_REGION_PREFIX` to choose the prefix Claude Code tries first; when Claude Code can check profile availability and finds no matching profile for a model, it falls back as described in the resolution order below. Valid values are `us`, `eu`, `apac`, `jp`, `au`, and `global`. For example, set it to `global` when your account has `global.` profiles enabled but Claude Code would derive a geography-specific one from your AWS region. Requires Claude Code v2.1.224 or later.
+Set `ANTHROPIC_BEDROCK_REGION_PREFIX` to choose the prefix Claude Code tries first. Valid values are `us`, `eu`, `apac`, `jp`, `au`, and `global`. For example, set it to `global` when your account has `global.` profiles enabled but Claude Code would derive a geography-specific one from your AWS region.
 
 This example routes the default models through `global.` profiles:
 
@@ -627,4 +627,4 @@ A `400` that names the model ID means that model isn't served on Mantle. Mantle 
 * [Amazon Bedrock inference profiles](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html)
 * [Amazon Bedrock token burndown and quotas](https://docs.aws.amazon.com/bedrock/latest/userguide/quotas-token-burndown.html)
 * [Claude Code on Amazon Bedrock: Quick Setup Guide](https://builder.aws.com/content/2tXkZKrZzlrlu0KfH8gST5Dkppq/claude-code-on-amazon-bedrock-quick-setup-guide)
-* [Claude Code Monitoring Implementation (Amazon Bedrock)](https://github.com/aws-solutions-library-samples/guidance-for-claude-code-with-amazon-bedrock/blob/main/assets/docs/MONITORING.md)
+* [Claude Code Monitoring Implementation (Amazon Bedrock)](../../../raw.githubusercontent.com/aws-solutions-library-samples/guidance-for-claude-code-with-amazon-bedrock/refs/heads/main/assets/docs/MONITORING.md)

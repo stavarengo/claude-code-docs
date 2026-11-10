@@ -6,11 +6,14 @@ featureMetadata:
   topic:
     title: Managed Agents
     url: https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli
+  status: beta
   betaHeader: managed-agents-2026-04-01
   zdr:
     eligibility: not-eligible
     note: Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes.
   supportedModels:
+    - claude-fable-5-2
+    - claude-mythos-5-2
     - claude-fable-5-1
     - claude-mythos-5-1
     - claude-fable-5
@@ -28,6 +31,10 @@ featureMetadata:
     - claude-sonnet-4-6
     - claude-opus-4-5-20251101
     - claude-sonnet-4-5-20250929
+  supportedPlatforms:
+    Claude API: beta
+    Claude Platform on AWS: beta
+    Claude Models on Google Cloud (Anthropic managed): beta
 ---
 
 [Custom tools](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#custom-tools) are tools your own code runs: the agent emits an `agent.custom_tool_use` event and waits for a matching `user.custom_tool_result`. Your worker can be that code. Because it runs inside your sandbox, the tool reaches the internal services, credentials, and network egress you configured for the sandbox, and nothing more.

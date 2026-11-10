@@ -11,7 +11,7 @@ url: https://platform.claude.com/docs/en/api/cli/beta/organization/analytics/use
 
 [Legacy] Get per-user token usage across a date range.
 
-Returns usage per user, ranked by the chosen token metric; `group_by[]` or `bucket_width` splits a user across several rows. Use this to see which users consume the most tokens. Only usage attributed to a user account is included; usage with no user attributed to it, such as Code Review usage and Claude Tag usage in Slack channels, is left out. Available to organizations on a Claude Enterprise plan. Requires an API key with the `read:analytics` scope.
+Returns usage per user, ranked by the chosen token metric; `group_by[]` or `bucket_width` splits a user across several rows. Use this to see which users consume the most tokens. Only usage attributed to a user account is included, so usage with no user account, such as Code Review usage and Claude Tag usage in Slack channels, is left out. Claude Tag one-to-one direct messages are included, with product `claude-tag`, only for members who have connected a Claude account. Available to organizations on a Claude Enterprise plan. Requires an API key with the `read:analytics` scope.
 
 This endpoint is one of the legacy Claude Enterprise usage and cost reports. For new integrations, use [`GET /v1/organizations/analytics/usage`](https://platform.claude.com/docs/en/api/beta/organization/analytics/usage/list?sdk_languages=cli) in the Usage and Cost Analytics API instead. To move an existing integration, see [Migrate from the Claude Enterprise usage and cost reports](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli#migrate-from-enterprise-analytics-reports).
 
@@ -35,7 +35,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
 - `--claude-tag-category: optional array of BetaAnalyticsClaudeTagCategory` (query parameter)
 
-  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. `dm` usage is reported under the user's product rather than `claude-tag`, so combining this filter with `products[]=claude-tag` excludes it. Use `group_by[]=claude_tag_category` to break out per-category values.
+  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. Use `group_by[]=claude_tag_category` to break out per-category values.
 
   maxItems: 100
 
@@ -251,7 +251,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
     - `claude_tag_category: "dm" or "engaged" or "monitoring" or 2 more`
 
-      Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. Direct-message usage is billed to the individual user and is reported under that user's product, not under `claude-tag`. New categories may be added over time.
+      Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. New categories may be added over time.
 
       - `"dm"`
 
@@ -319,7 +319,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
     - `slack_channel_id: string`
 
-      Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack (and for rows recorded before channel attribution was enabled).
+      Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack, for some Claude Tag usage that has no channel recorded, and for usage recorded before channel attribution was enabled.
 
     - `speed: "fast" or "standard"`
 

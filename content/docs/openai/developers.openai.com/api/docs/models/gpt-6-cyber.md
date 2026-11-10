@@ -33,7 +33,8 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 | Cache writes | $25 | 1M tokens |
 | Output | $100 | 1M tokens |
 
-- These are standard short-context prices.
+- The table shows Standard prices for requests with up to 272K input tokens.
+- For requests with more than 272K input tokens, Standard prices per 1M tokens are $40 for input, $4 for cached input, and $150 for output.
 - Short-context cache writes cost $25 per 1M tokens for 30 minutes or $50 per 1M tokens for 12 hours.
 
 ## Endpoints

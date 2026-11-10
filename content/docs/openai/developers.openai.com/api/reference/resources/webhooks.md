@@ -1048,6 +1048,58 @@ Schema name: `WebhookLiveTransportIncoming`
 }
 ```
 
+<a id="live.transport.connected"></a>
+
+## live.transport.connected
+
+Sent when a direct Live WebRTC session is created or an Instant Connect session activates. Use its session ID to attach a sideband observer.
+
+### Schema
+
+Schema name: `WebhookLiveTransportConnected`
+
+- `id: string`
+
+  The webhook event ID.
+
+- `created_at: integer`
+
+  Unix time in seconds when the event was created.
+
+  `format: unixtime`
+
+- `data: object { session_id, type }`
+
+  - `session_id: string`
+
+    The Live session ID to use with the sideband attach endpoint.
+
+  - `type: "webrtc"`
+
+    The session transport.
+
+    - `"webrtc"`
+
+- `object: "event"`
+
+  - `"event"`
+
+- `type: "live.transport.connected"`
+
+  - `"live.transport.connected"`
+
+### Example
+
+```json
+{
+  "id": "evt_abc123",
+  "object": "event",
+  "created_at": 1793815201,
+  "type": "live.transport.connected",
+  "data": {"session_id": "live_u0_abc123", "type": "webrtc"}
+}
+```
+
 <a id="safety.warning_issued"></a>
 
 ## safety.warning_issued

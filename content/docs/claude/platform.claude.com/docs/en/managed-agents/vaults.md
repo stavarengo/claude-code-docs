@@ -6,11 +6,14 @@ featureMetadata:
   topic:
     title: Managed Agents
     url: https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli
+  status: beta
   betaHeader: managed-agents-2026-04-01
   zdr:
     eligibility: not-eligible
     note: Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes.
   supportedModels:
+    - claude-fable-5-2
+    - claude-mythos-5-2
     - claude-fable-5-1
     - claude-mythos-5-1
     - claude-fable-5
@@ -28,6 +31,10 @@ featureMetadata:
     - claude-sonnet-4-6
     - claude-opus-4-5-20251101
     - claude-sonnet-4-5-20250929
+  supportedPlatforms:
+    Claude API: beta
+    Claude Platform on AWS: beta
+    Claude Models on Google Cloud (Anthropic managed): beta
 ---
 
 Vaults and credentials are authentication primitives that let you register credentials for third-party services once and reference them by ID at session creation. This means you don’t need to run your own secret store, transmit tokens on every call, or lose track of which end user an agent acted on behalf of.
@@ -318,7 +325,7 @@ The response is a `vault_credential_validation` object. `mcp_probe` includes the
 
 ## Availability
 
-Vaults are available on every model.
+Vaults are in beta on every model.
 
 ### API support
 
@@ -326,9 +333,9 @@ Vaults are available on every model.
 
 * Availability: Available
 
-| Status    | Cloud platforms                                                                                                                                                                                                                                                                                                    | Models                                                                              |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| Available | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli) | [All models](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli) |
+| Status | Cloud platforms                                                                                                                                                                                                                                                                                                    | Models                                                                              |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| Beta   | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli) | [All models](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli) |
 
 ### Required beta headers
 

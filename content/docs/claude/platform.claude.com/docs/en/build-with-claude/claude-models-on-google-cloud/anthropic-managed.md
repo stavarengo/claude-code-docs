@@ -177,8 +177,8 @@ Install the package that provides the client:
     <Tabs>
       <Tab title="Gradle">
         ```kotlin
-        implementation("com.anthropic:anthropic-java:3.6.0")
-        implementation("com.anthropic:anthropic-java-google-cloud:3.6.0")
+        implementation("com.anthropic:anthropic-java:3.7.0")
+        implementation("com.anthropic:anthropic-java-google-cloud:3.7.0")
         ```
       </Tab>
 
@@ -187,12 +187,12 @@ Install the package that provides the client:
         <dependency>
             <groupId>com.anthropic</groupId>
             <artifactId>anthropic-java</artifactId>
-            <version>3.6.0</version>
+            <version>3.7.0</version>
         </dependency>
         <dependency>
             <groupId>com.anthropic</groupId>
             <artifactId>anthropic-java-google-cloud</artifactId>
-            <version>3.6.0</version>
+            <version>3.7.0</version>
         </dependency>
         ```
       </Tab>
@@ -403,6 +403,7 @@ The Models API and the following features are available on Claude Models on Goog
 * [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli)
   * [Adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost?sdk_languages=cli)
   * [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli)
+  * [Preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking?sdk_languages=cli)
 * [Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli)
 * [Tool runner](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-runner?sdk_languages=cli) (Beta)
 * [Vision (images)](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli)
@@ -429,7 +430,6 @@ Customer-managed encryption keys (CMEK) are available with Google Cloud KMS keys
   * [Session threads](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli) (Beta)
 * [Outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes?sdk_languages=cli) (Beta)
 * [Permission policies](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli) (Beta)
-* [Preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking?sdk_languages=cli)
 * [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments?sdk_languages=cli) (Beta)
 * [Self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes?sdk_languages=cli) (Beta)
 * [Session budgets](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli) (Beta)

@@ -33,7 +33,7 @@ description: Make your first API call to Claude and build a simple web search as
         For Linux environments, download the release binary directly.
 
         ```bash
-        VERSION=2.7.1
+        VERSION=2.8.0
         OS=$(uname -s | tr '[:upper:]' '[:lower:]')
         case $(uname -m) in
           x86_64) ARCH=amd64 ;;

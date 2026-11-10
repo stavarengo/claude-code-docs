@@ -413,7 +413,7 @@ When the model decides to execute an apply_patch tool, you will receive an apply
 [This repository](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/apply_patch.py) contains the expected implementation for the apply_patch tool executable. When your system finishes executing the patch tool, the Responses API expects a tool output in the following form:
 
 ```python
-{
+output = {
     "type": "apply_patch_call_output",
     "call_id": call["call_id"],
     "status": "completed" if success else "failed",

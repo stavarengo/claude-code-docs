@@ -136,6 +136,7 @@ work more autonomously.
 - [Integrations and observability](https://developers.openai.com/api/docs/guides/agents/integrations-observability.md): Learn how to integrate MCP into Agents SDK workflows and how to trace and debug runs.
 - [IP allowlist](https://developers.openai.com/api/docs/guides/ip-allowlist.md): Configure organization- or project-level IP allowlists for OpenAI API requests.
 - [IP egress ranges](https://developers.openai.com/api/docs/guides/ip-addresses.md): Find the published IP egress ranges used by OpenAI products.
+- [Keep the prefix unchanged](https://developers.openai.com/api/docs/guides/preserved-reasoning.md): Avoid prefix changes for increased intelligence, lower costs, and lower latency.
 - [Latency optimization](https://developers.openai.com/api/docs/guides/latency-optimization.md): Improve latency across a wide variety of LLM-related use cases.
 - [Manage permissions in the OpenAI platform](https://developers.openai.com/api/docs/guides/rbac.md): Learn how to use role-based access control to assign permissions, create custom roles, group users, and scope access across both the OpenAI API and dashboard.
 - [Manage projects and access with Terraform](https://developers.openai.com/api/docs/guides/terraform/projects-and-access.md): Create an OpenAI project, define least-privilege roles, and manage group and user access with Terraform.
@@ -170,7 +171,6 @@ work more autonomously.
 - [Plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins.md): Package skills and MCP configuration for use across sessions.
 - [Pre-warm sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/prewarmed.md): Prepare a workspace before starting an agent session.
 - [Predicted Outputs](https://developers.openai.com/api/docs/guides/predicted-outputs.md): Understand how to reduce latency for model responses where much of the response is known ahead of time.
-- [Preserved reasoning](https://developers.openai.com/api/docs/guides/preserved-reasoning.md): Preserve reasoning across Responses API turns when managing conversation history.
 - [Private Link](https://developers.openai.com/api/docs/guides/private-link.md): Configure Azure Private Link endpoints, DNS, health checks, and cross-region routing for the OpenAI API.
 - [Production best practices](https://developers.openai.com/api/docs/guides/production-best-practices.md): Explore best practices for transitioning your AI projects from prototype to production, including scaling, security, and cost management.
 - [Programmatic Tool Calling](https://developers.openai.com/api/docs/guides/tools-programmatic-tool-calling.md): Configure Programmatic Tool Calling, control which tools programs can invoke, and resume programs after client-owned function calls.

@@ -6,6 +6,8 @@
 
 Model ID: `gpt-image-2`
 
+Status: Deprecated
+
 GPT Image 2 is our state-of-the-art image generation model for fast, high-quality image generation and editing. It supports flexible image sizes and high-fidelity image inputs. Learn more in our [image generation guide](/api/docs/guides/image-generation), or see the [pricing page](/api/docs/pricing#image-generation) and [image generation calculator](/api/docs/guides/image-generation#calculating-costs) for cost estimates.
 
 ## Model details
@@ -45,7 +47,7 @@ GPT Image 2 is our state-of-the-art image generation model for fast, high-qualit
 
 Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Image-2.
 
-- `gpt-image-2-2026-04-21`
+- `gpt-image-2-2026-04-21` — Deprecated
 
 ## Rate limits
 

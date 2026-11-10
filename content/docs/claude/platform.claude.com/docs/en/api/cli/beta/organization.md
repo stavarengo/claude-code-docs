@@ -706,7 +706,7 @@ Create an external key config owned by the caller's organization.
 
 - `--user-profile-id: optional string`
 
-  ID of a user profile to bind the key to. Omit this field for a key that isn't bound to a user profile. Such a key can be attached to a Workspace whatever its user profile. The binding cannot be changed later. A key bound to a user profile can only be attached to a Workspace that has the same user profile.
+  ID of a user profile to bind the key to. A user profile represents one of your customers: bind a customer's key to that customer's user profile. A key bound to a user profile can only be attached to a Workspace that has the same user profile, and the binding cannot be changed later. Omit this field only for your organization's own key, because a key created without a user profile ID can be attached to any Workspace, including another customer's.
 
 #### Returns
 
@@ -1666,6 +1666,8 @@ matched as the JWT's `iss` claim and is not fetched.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -1983,6 +1985,8 @@ Archived issuers are excluded unless `include_archived=true`.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -2291,6 +2295,8 @@ Retrieve a federation issuer by its ID (`fdis_...`).
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -2679,6 +2685,8 @@ session.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -2987,6 +2995,8 @@ issuer cannot be changed), or recreate them against another issuer.
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -3384,6 +3394,8 @@ manage rules whose `oauth_scope` is `workspace:developer` or
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -3715,6 +3727,8 @@ unless `include_archived=true`.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -4023,6 +4037,8 @@ Retrieve a federation rule by its ID (`fdrl_...`).
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -4426,6 +4442,8 @@ Console session.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -4743,6 +4761,8 @@ other scopes require a Console session.
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -5069,6 +5089,8 @@ other scopes require a Console session.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -5263,6 +5285,8 @@ rules with `applies_to_all_workspaces` or a legacy single
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -5461,6 +5485,8 @@ Console session.
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -6116,6 +6142,8 @@ accounts.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -6346,6 +6374,8 @@ archived service accounts.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -6566,6 +6596,8 @@ Retrieve a service account by its ID (`svac_...`).
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -6802,6 +6834,8 @@ interactive credential (a user OAuth token or a Console session).
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -7022,6 +7056,8 @@ those rules first or change their target to another service account.
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -7264,6 +7300,8 @@ rejected.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -7476,6 +7514,8 @@ page to recover.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -7684,6 +7724,8 @@ to the implicit `workspace_user` membership. Archived workspaces return
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -8082,6 +8124,212 @@ ant beta:organization:users remove \
 }
 ```
 
+### Sign Out User
+
+`$ ant beta:organization:users sign-out`
+
+**POST** `/v1/organizations/users/{user_id}/sign_out`
+
+Sign a member out of Claude everywhere, without removing them from the organization. This ends their sign-in sessions and removes their trusted devices wherever they use Claude, including other organizations and individual plans. It also ends the OAuth tokens issued to them for this organization, so apps such as Claude Code must sign in again.
+
+A token can take up to an hour to stop working, though it almost always stops at once. The member keeps their role and can sign in again right away. To keep them out, remove them from the organization or, if your organization uses single sign-on, block them in your identity provider. Signing out does not end API keys, OAuth tokens that were not issued for this organization, or the member's Claude Code cloud sessions and routines.
+
+You cannot sign out the organization's primary owner or the person your API key or token acts for, and a request to sign out another owner, a member with owner permissions, or a membership admin may be refused. A refused request returns a `400` or `403` error that says why. If the request returns `503`, send it again to finish; anything already ended stays ended.
+
+Every request must include the beta header `anthropic-beta: admin-user-sign-out-2026-10-08`. A request without it returns `400`. Sign-out is in beta for Claude Enterprise organizations. In an organization where it is not enabled, a request returns `400` with `error_code` `organization_not_enrolled_in_beta`. In a Claude Enterprise organization, an API key needs the `write:members` scope; a key without it gets `403`.
+
+#### Parameters
+
+- `--user-id: string` (path parameter)
+
+  ID of the User.
+
+- `--beta: optional array of AnthropicBeta` (header parameter)
+
+  This endpoint is in beta: requests must send `admin-user-sign-out-2026-10-08` in this header.
+
+  - `"message-batches-2024-09-24"`
+
+  - `"prompt-caching-2024-07-31"`
+
+  - `"computer-use-2024-10-22"`
+
+  - `"computer-use-2025-01-24"`
+
+  - `"pdfs-2024-09-25"`
+
+  - `"token-counting-2024-11-01"`
+
+  - `"token-efficient-tools-2025-02-19"`
+
+  - `"output-128k-2025-02-19"`
+
+  - `"files-api-2025-04-14"`
+
+  - `"mcp-client-2025-04-04"`
+
+  - `"mcp-client-2025-11-20"`
+
+  - `"dev-full-thinking-2025-05-14"`
+
+  - `"interleaved-thinking-2025-05-14"`
+
+  - `"code-execution-2025-05-22"`
+
+  - `"extended-cache-ttl-2025-04-11"`
+
+  - `"context-1m-2025-08-07"`
+
+  - `"context-management-2025-06-27"`
+
+  - `"model-context-window-exceeded-2025-08-26"`
+
+  - `"skills-2025-10-02"`
+
+  - `"fast-mode-2026-02-01"`
+
+  - `"output-300k-2026-03-24"`
+
+  - `"user-profiles-2026-03-24"`
+
+  - `"user-profiles-2026-08-18"`
+
+  - `"user-profiles-2026-09-04"`
+
+  - `"advisor-tool-2026-03-01"`
+
+  - `"managed-agents-2026-04-01"`
+
+  - `"cache-diagnosis-2026-04-07"`
+
+  - `"dreaming-2026-04-21"`
+
+  - `"thinking-token-count-2026-05-13"`
+
+  - `"server-side-fallback-2026-06-01"`
+
+  - `"server-side-fallback-2026-07-01"`
+
+  - `"fallback-credit-2026-06-01"`
+
+  - `"fallback-credit-2026-07-01"`
+
+  - `"agent-memory-2026-07-22"`
+
+  - `"mid-conversation-tool-changes-2026-07-01"`
+
+  - `"compact-2026-01-12"`
+
+  - `"computer-use-2025-11-24"`
+
+  - `"mcp-tunnels-2026-06-22"`
+
+  - `"structured-outputs-2025-11-13"`
+
+  - `"task-budgets-2026-03-13"`
+
+  - `"thinking-display-updates-2026-08-18"`
+
+  - `"ce-user-management-2026-07-13"`
+
+  - `"mid-conversation-output-config-2026-07-01"`
+
+  - `"thinking-binding-controls-2026-08-01"`
+
+  - `"mid-conversation-system-clear-at-2026-08-21"`
+
+  - `"compact-2026-09-04"`
+
+  - `"inline-tools-2026-09-15"`
+
+  - `"mcp-client-2026-09-15"`
+
+  - `"ce-plugins-2026-09-01"`
+
+  - `"spend-limit-reads-2026-09-26"`
+
+  - `"telemetry-destinations-2026-08-11"`
+
+  - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
+
+  - `"message-threads-2026-08-12"`
+
+  - `"analytics-usage-cost-2026-08-24"`
+
+  - `"experimental-claude-tag-2026-10-21"`
+
+#### Returns
+
+- `beta_organization_user: object`
+
+  - `type: "user"`
+
+    Object type.
+
+    For Users, this is always `"user"`.
+
+  - `id: string`
+
+    ID of the User.
+
+  - `added_at: string`
+
+    RFC 3339 datetime string indicating when the User joined the Organization.
+
+    format: date-time
+
+  - `email: string`
+
+    Email of the User.
+
+  - `name: string`
+
+    Name of the User.
+
+  - `role: "admin" or "billing" or "claude_code_user" or 6 more`
+
+    Organization role of the User.
+
+    - `"admin"`
+
+    - `"billing"`
+
+    - `"claude_code_user"`
+
+    - `"developer"`
+
+    - `"managed"`
+
+    - `"membership_admin"`
+
+    - `"owner"`
+
+    - `"primary_owner"`
+
+    - `"user"`
+
+#### Example
+
+```bash
+ant beta:organization:users sign-out \
+  --user-id user_id
+```
+
+##### Response (200)
+
+```json
+{
+  "id": "user_01WxYzAbCdEfGhJkMnPqRsTu",
+  "added_at": "2024-10-30T23:58:27.427722Z",
+  "email": "user@emaildomain.com",
+  "name": "Jane Doe",
+  "role": "admin",
+  "type": "user"
+}
+```
+
 ## Organization › Workspaces
 
 ### List Workspaces
@@ -8101,6 +8349,10 @@ List Workspaces
 - `--before-id: optional string` (query parameter)
 
   ID of the object to use as a cursor for pagination. When provided, returns the page of results immediately before this object.
+
+- `--id: optional array of string` (query parameter)
+
+  Only the Workspaces with these IDs, at most 100. `include_archived` and `include_default` still apply, and IDs of Workspaces the caller can't list are left out.
 
 - `--include-archived: optional boolean` (query parameter)
 
@@ -8447,6 +8699,8 @@ Create Workspace
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -10050,6 +10304,8 @@ omitted from the results.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -10272,6 +10528,8 @@ accounts cannot be added and are rejected.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -10470,6 +10728,8 @@ account returns 404.
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -10681,6 +10941,8 @@ rejected.
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -10878,6 +11140,8 @@ membership. Archived workspaces return 400.
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -13270,19 +13534,19 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
 
 - `--agent-id: optional array of string` (query parameter)
 
-  Filter to usage incurred by sessions of specific Claude Managed Agents agents. Use `group_by[]=agent_id` to break out per-agent values. Claude Developer Platform organizations only.
+  Filter to usage incurred by sessions of specific Claude Managed Agents agents. Use `group_by[]=agent_id` to break out per-agent values. Claude Platform organizations only.
 
   maxItems: 100
 
 - `--api-key-id: optional array of string` (query parameter)
 
-  Filter to usage authenticated by specific API keys, by tagged API key ID (`apikey_...`), whichever identity the usage is attributed to. Include an empty entry (`api_key_ids[]=`) to also match usage that no API key authenticated. Use `group_by[]=api_key_id` to break out per-key values; usage without a key has a null `api_key_id`. Claude Developer Platform organizations only.
+  Filter to usage authenticated by specific API keys, by tagged API key ID (`apikey_...`), whichever identity the usage is attributed to. Include an empty entry (`api_key_ids[]=`) to also match usage that no API key authenticated. Use `group_by[]=api_key_id` to break out per-key values; usage without a key has a null `api_key_id`. Claude Platform organizations only.
 
   maxItems: 100
 
 - `--claude-tag-category: optional array of BetaAnalyticsClaudeTagCategory` (query parameter)
 
-  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. `dm` usage is reported under the user's product rather than `claude_tag`, so combining this filter with `products[]=claude_tag` excludes it. Use `group_by[]=claude_tag_category` to break out per-category values.
+  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. Use `group_by[]=claude_tag_category` to break out per-category values.
 
   maxItems: 100
 
@@ -13314,7 +13578,7 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
 
 - `--deployment-id: optional array of string` (query parameter)
 
-  Filter to usage incurred by Claude Managed Agents sessions that specific deployments started. Use `group_by[]=deployment_id` to break out per-deployment values. Claude Developer Platform organizations only.
+  Filter to usage incurred by Claude Managed Agents sessions that specific deployments started. Use `group_by[]=deployment_id` to break out per-deployment values. Claude Platform organizations only.
 
   maxItems: 100
 
@@ -13326,7 +13590,7 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
 
 - `--environment-id: optional array of string` (query parameter)
 
-  Filter to usage incurred by Claude Managed Agents sessions that ran in specific environments. Use `group_by[]=environment_id` to break out per-environment values. Claude Developer Platform organizations only.
+  Filter to usage incurred by Claude Managed Agents sessions that ran in specific environments. Use `group_by[]=environment_id` to break out per-environment values. Claude Platform organizations only.
 
   maxItems: 100
 
@@ -13361,6 +13625,8 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
   - `"inference_geo"`
 
   - `"model"`
+
+  - `"organization_id"`
 
   - `"product"`
 
@@ -13424,6 +13690,12 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
 
   - `"uncached_input_tokens"`
 
+- `--organization-id: optional array of string` (query parameter)
+
+  Filter a parent organization's report to specific child organizations, by organization UUID or `org_` ID; an ID that is not one of its child organizations matches nothing. Requires an API key created at the parent organization level. Use `group_by[]=organization_id` to break out per-organization values.
+
+  maxItems: 100
+
 - `--page: optional string` (query parameter)
 
   Opaque cursor from a previous response's `next_page` field.
@@ -13466,7 +13738,7 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
 
 - `--service-tier: optional array of BetaAnalyticsServiceTier` (query parameter)
 
-  Filter to specific service tiers. Use `group_by[]=service_tier` to break out per-tier values. Claude Developer Platform organizations only; matches nothing for a Claude Enterprise organization.
+  Filter to specific service tiers. Use `group_by[]=service_tier` to break out per-tier values. Claude Platform organizations only; matches nothing for a Claude Enterprise organization.
 
   maxItems: 100
 
@@ -13484,7 +13756,7 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
 
 - `--session-id: optional array of string` (query parameter)
 
-  Filter to usage incurred by specific Claude Managed Agents sessions, by tagged session ID (`sesn_...`). Use `group_by[]=session_id` to break out per-session values. Claude Developer Platform organizations only.
+  Filter to usage incurred by specific Claude Managed Agents sessions, by tagged session ID (`sesn_...`). Use `group_by[]=session_id` to break out per-session values. Claude Platform organizations only.
 
   maxItems: 100
 
@@ -13516,13 +13788,13 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
 
 - `--user-profile-id: optional array of string` (query parameter)
 
-  Filter to usage attributed to specific user profiles, by tagged user profile ID (`uprof_...`). Use `group_by[]=user_profile_id` to break out per-profile values. Claude Developer Platform organizations only.
+  Filter to usage attributed to specific user profiles, by tagged user profile ID (`uprof_...`). Use `group_by[]=user_profile_id` to break out per-profile values. Claude Platform organizations only.
 
   maxItems: 100
 
 - `--workspace-id: optional array of string` (query parameter)
 
-  Filter to usage in specific workspaces, by tagged workspace ID (`wrkspc_...`). Use `group_by[]=workspace_id` to break out per-workspace values. Claude Developer Platform organizations only; matches nothing for a Claude Enterprise organization.
+  Filter to usage in specific workspaces, by tagged workspace ID (`wrkspc_...`). Use `group_by[]=workspace_id` to break out per-workspace values. Claude Platform organizations only; matches nothing for a Claude Enterprise organization.
 
   maxItems: 100
 
@@ -13633,6 +13905,8 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -13770,7 +14044,7 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
 
       - `claude_tag_category: "dm" or "engaged" or "monitoring" or 2 more`
 
-        Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. Direct-message usage is billed to the individual user and is reported under that user's product, not under `claude_tag`. New categories may be added over time.
+        Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. New categories may be added over time.
 
         - `"dm"`
 
@@ -13814,6 +14088,10 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
 
         Model that produced the usage or cost, as a model name in the form the `models[]` filter accepts (for example, `claude-opus-5-5`). Null unless `model` is in `group_by[]`; it can also be null on grouped rows whose usage or cost is not attributed to a specific model, such as code execution.
 
+      - `organization_id: string`
+
+        UUID of the child organization the usage belongs to, on a parent organization's report across its children. Null unless `organization_id` is in `group_by[]`.
+
       - `product: string`
 
         Product surface that produced the usage or cost. Null unless product is in `group_by[]`; it can also be null on grouped rows whose usage cannot be attributed to a known surface. Values include `chat`, `claude_code`, `cowork`, `office_agent`, `claude_in_chrome`, `claude_design`, `claude_tag`, and `chat_cowork_unified`. `claude_tag` is Claude Tag, the Claude product in Slack. `chat_cowork_unified` is Chat and Cowork unified, Cowork's features inside claude.ai chat: chat and Cowork usage by a member who has it turned on is reported under this value instead of `chat` or `cowork`. It is accepted as a filter only where Chat and Cowork unified is available. Some unattributed usage is reported as "other".
@@ -13844,7 +14122,7 @@ Requires an API key with the `read:analytics` scope, or an Admin API key.
 
       - `slack_channel_id: string`
 
-        Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack (and for rows recorded before channel attribution was enabled).
+        Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack, for some Claude Tag usage that has no channel recorded, and for usage recorded before channel attribution was enabled.
 
       - `speed: "fast" or "standard"`
 
@@ -13962,6 +14240,7 @@ ant beta:organization:analytics:usage list \
         "environment_id": "env_017oTjuGedHtjhJauVC5xGJD",
         "inference_geo": "global",
         "model": "claude-opus-5-5",
+        "organization_id": "12345678-1234-5678-1234-567812345678",
         "product": "chat",
         "rbac_group_id": "rbac_group_012rppKaSVsmTo6NqRDXQXNF",
         "service_tier": "standard",
@@ -14042,19 +14321,19 @@ API key with the `read:analytics` scope, or an Admin API key.
 
 - `--agent-id: optional array of string` (query parameter)
 
-  Filter to usage incurred by sessions of specific Claude Managed Agents agents. Use `group_by[]=agent_id` to break out per-agent values. Claude Developer Platform organizations only.
+  Filter to usage incurred by sessions of specific Claude Managed Agents agents. Use `group_by[]=agent_id` to break out per-agent values. Claude Platform organizations only.
 
   maxItems: 100
 
 - `--api-key-id: optional array of string` (query parameter)
 
-  Filter to usage authenticated by specific API keys, by tagged API key ID (`apikey_...`), whichever identity the usage is attributed to. Include an empty entry (`api_key_ids[]=`) to also match usage that no API key authenticated. Use `group_by[]=api_key_id` to break out per-key values; usage without a key has a null `api_key_id`. Claude Developer Platform organizations only.
+  Filter to usage authenticated by specific API keys, by tagged API key ID (`apikey_...`), whichever identity the usage is attributed to. Include an empty entry (`api_key_ids[]=`) to also match usage that no API key authenticated. Use `group_by[]=api_key_id` to break out per-key values; usage without a key has a null `api_key_id`. Claude Platform organizations only.
 
   maxItems: 100
 
 - `--claude-tag-category: optional array of BetaAnalyticsClaudeTagCategory` (query parameter)
 
-  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. `dm` usage is reported under the user's product rather than `claude_tag`, so combining this filter with `products[]=claude_tag` excludes it. Use `group_by[]=claude_tag_category` to break out per-category values.
+  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. Use `group_by[]=claude_tag_category` to break out per-category values.
 
   maxItems: 100
 
@@ -14086,7 +14365,7 @@ API key with the `read:analytics` scope, or an Admin API key.
 
 - `--deployment-id: optional array of string` (query parameter)
 
-  Filter to usage incurred by Claude Managed Agents sessions that specific deployments started. Use `group_by[]=deployment_id` to break out per-deployment values. Claude Developer Platform organizations only.
+  Filter to usage incurred by Claude Managed Agents sessions that specific deployments started. Use `group_by[]=deployment_id` to break out per-deployment values. Claude Platform organizations only.
 
   maxItems: 100
 
@@ -14098,7 +14377,7 @@ API key with the `read:analytics` scope, or an Admin API key.
 
 - `--environment-id: optional array of string` (query parameter)
 
-  Filter to usage incurred by Claude Managed Agents sessions that ran in specific environments. Use `group_by[]=environment_id` to break out per-environment values. Claude Developer Platform organizations only.
+  Filter to usage incurred by Claude Managed Agents sessions that ran in specific environments. Use `group_by[]=environment_id` to break out per-environment values. Claude Platform organizations only.
 
   maxItems: 100
 
@@ -14135,6 +14414,8 @@ API key with the `read:analytics` scope, or an Admin API key.
   - `"inference_geo"`
 
   - `"model"`
+
+  - `"organization_id"`
 
   - `"product"`
 
@@ -14196,6 +14477,12 @@ API key with the `read:analytics` scope, or an Admin API key.
 
   - `"time"`
 
+- `--organization-id: optional array of string` (query parameter)
+
+  Filter a parent organization's report to specific child organizations, by organization UUID or `org_` ID; an ID that is not one of its child organizations matches nothing. Requires an API key created at the parent organization level. Use `group_by[]=organization_id` to break out per-organization values.
+
+  maxItems: 100
+
 - `--page: optional string` (query parameter)
 
   Opaque cursor from a previous response's `next_page` field.
@@ -14238,7 +14525,7 @@ API key with the `read:analytics` scope, or an Admin API key.
 
 - `--service-tier: optional array of BetaAnalyticsServiceTier` (query parameter)
 
-  Filter to specific service tiers. Use `group_by[]=service_tier` to break out per-tier values. Claude Developer Platform organizations only; matches nothing for a Claude Enterprise organization.
+  Filter to specific service tiers. Use `group_by[]=service_tier` to break out per-tier values. Claude Platform organizations only; matches nothing for a Claude Enterprise organization.
 
   maxItems: 100
 
@@ -14256,7 +14543,7 @@ API key with the `read:analytics` scope, or an Admin API key.
 
 - `--session-id: optional array of string` (query parameter)
 
-  Filter to usage incurred by specific Claude Managed Agents sessions, by tagged session ID (`sesn_...`). Use `group_by[]=session_id` to break out per-session values. Claude Developer Platform organizations only.
+  Filter to usage incurred by specific Claude Managed Agents sessions, by tagged session ID (`sesn_...`). Use `group_by[]=session_id` to break out per-session values. Claude Platform organizations only.
 
   maxItems: 100
 
@@ -14288,13 +14575,13 @@ API key with the `read:analytics` scope, or an Admin API key.
 
 - `--user-profile-id: optional array of string` (query parameter)
 
-  Filter to usage attributed to specific user profiles, by tagged user profile ID (`uprof_...`). Use `group_by[]=user_profile_id` to break out per-profile values. Claude Developer Platform organizations only.
+  Filter to usage attributed to specific user profiles, by tagged user profile ID (`uprof_...`). Use `group_by[]=user_profile_id` to break out per-profile values. Claude Platform organizations only.
 
   maxItems: 100
 
 - `--workspace-id: optional array of string` (query parameter)
 
-  Filter to usage in specific workspaces, by tagged workspace ID (`wrkspc_...`). Use `group_by[]=workspace_id` to break out per-workspace values. Claude Developer Platform organizations only; matches nothing for a Claude Enterprise organization.
+  Filter to usage in specific workspaces, by tagged workspace ID (`wrkspc_...`). Use `group_by[]=workspace_id` to break out per-workspace values. Claude Platform organizations only; matches nothing for a Claude Enterprise organization.
 
   maxItems: 100
 
@@ -14405,6 +14692,8 @@ API key with the `read:analytics` scope, or an Admin API key.
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -14562,7 +14851,7 @@ API key with the `read:analytics` scope, or an Admin API key.
 
       - `claude_tag_category: "dm" or "engaged" or "monitoring" or 2 more`
 
-        Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. Direct-message usage is billed to the individual user and is reported under that user's product, not under `claude_tag`. New categories may be added over time.
+        Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. New categories may be added over time.
 
         - `"dm"`
 
@@ -14618,6 +14907,10 @@ API key with the `read:analytics` scope, or an Admin API key.
 
         Model that produced the usage or cost, as a model name in the form the `models[]` filter accepts (for example, `claude-opus-5-5`). Null unless `model` is in `group_by[]`; it can also be null on grouped rows whose usage or cost is not attributed to a specific model, such as code execution.
 
+      - `organization_id: string`
+
+        UUID of the child organization the usage belongs to, on a parent organization's report across its children. Null unless `organization_id` is in `group_by[]`.
+
       - `product: string`
 
         Product surface that produced the usage or cost. Null unless product is in `group_by[]`; it can also be null on grouped rows whose usage cannot be attributed to a known surface. Values include `chat`, `claude_code`, `cowork`, `office_agent`, `claude_in_chrome`, `claude_design`, `claude_tag`, and `chat_cowork_unified`. `claude_tag` is Claude Tag, the Claude product in Slack. `chat_cowork_unified` is Chat and Cowork unified, Cowork's features inside claude.ai chat: chat and Cowork usage by a member who has it turned on is reported under this value instead of `chat` or `cowork`. It is accepted as a filter only where Chat and Cowork unified is available. Some unattributed usage is reported as "other".
@@ -14648,7 +14941,7 @@ API key with the `read:analytics` scope, or an Admin API key.
 
       - `slack_channel_id: string`
 
-        Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack (and for rows recorded before channel attribution was enabled).
+        Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack, for some Claude Tag usage that has no channel recorded, and for usage recorded before channel attribution was enabled.
 
       - `speed: "fast" or "standard"`
 
@@ -14739,6 +15032,7 @@ ant beta:organization:analytics:cost list \
         "environment_id": "env_017oTjuGedHtjhJauVC5xGJD",
         "inference_geo": "global",
         "model": "claude-opus-5-5",
+        "organization_id": "12345678-1234-5678-1234-567812345678",
         "product": "chat",
         "rbac_group_id": "rbac_group_012rppKaSVsmTo6NqRDXQXNF",
         "service_tier": "standard",
@@ -14792,7 +15086,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
 - `--claude-tag-category: optional array of BetaAnalyticsClaudeTagCategory` (query parameter)
 
-  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. `dm` usage is reported under the user's product rather than `claude-tag`, so combining this filter with `products[]=claude-tag` excludes it. Use `group_by[]=claude_tag_category` to break out per-category values.
+  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. Use `group_by[]=claude_tag_category` to break out per-category values.
 
   maxItems: 100
 
@@ -14970,7 +15264,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
       - `claude_tag_category: "dm" or "engaged" or "monitoring" or 2 more`
 
-        Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. Direct-message usage is billed to the individual user and is reported under that user's product, not under `claude-tag`. New categories may be added over time.
+        Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. New categories may be added over time.
 
         - `"dm"`
 
@@ -15032,7 +15326,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
       - `slack_channel_id: string`
 
-        Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack (and for rows recorded before channel attribution was enabled).
+        Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack, for some Claude Tag usage that has no channel recorded, and for usage recorded before channel attribution was enabled.
 
       - `speed: "fast" or "standard"`
 
@@ -15128,7 +15422,7 @@ ant beta:organization:analytics:usage-report list \
 
 [Legacy] Get per-user token usage across a date range.
 
-Returns usage per user, ranked by the chosen token metric; `group_by[]` or `bucket_width` splits a user across several rows. Use this to see which users consume the most tokens. Only usage attributed to a user account is included; usage with no user attributed to it, such as Code Review usage and Claude Tag usage in Slack channels, is left out. Available to organizations on a Claude Enterprise plan. Requires an API key with the `read:analytics` scope.
+Returns usage per user, ranked by the chosen token metric; `group_by[]` or `bucket_width` splits a user across several rows. Use this to see which users consume the most tokens. Only usage attributed to a user account is included, so usage with no user account, such as Code Review usage and Claude Tag usage in Slack channels, is left out. Claude Tag one-to-one direct messages are included, with product `claude-tag`, only for members who have connected a Claude account. Available to organizations on a Claude Enterprise plan. Requires an API key with the `read:analytics` scope.
 
 This endpoint is one of the legacy Claude Enterprise usage and cost reports. For new integrations, use [`GET /v1/organizations/analytics/usage`](https://platform.claude.com/docs/en/api/beta/organization/analytics/usage/list?sdk_languages=cli) in the Usage and Cost Analytics API instead. To move an existing integration, see [Migrate from the Claude Enterprise usage and cost reports](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli#migrate-from-enterprise-analytics-reports).
 
@@ -15152,7 +15446,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
 - `--claude-tag-category: optional array of BetaAnalyticsClaudeTagCategory` (query parameter)
 
-  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. `dm` usage is reported under the user's product rather than `claude-tag`, so combining this filter with `products[]=claude-tag` excludes it. Use `group_by[]=claude_tag_category` to break out per-category values.
+  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. Use `group_by[]=claude_tag_category` to break out per-category values.
 
   maxItems: 100
 
@@ -15368,7 +15662,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
     - `claude_tag_category: "dm" or "engaged" or "monitoring" or 2 more`
 
-      Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. Direct-message usage is billed to the individual user and is reported under that user's product, not under `claude-tag`. New categories may be added over time.
+      Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. New categories may be added over time.
 
       - `"dm"`
 
@@ -15436,7 +15730,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
     - `slack_channel_id: string`
 
-      Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack (and for rows recorded before channel attribution was enabled).
+      Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack, for some Claude Tag usage that has no channel recorded, and for usage recorded before channel attribution was enabled.
 
     - `speed: "fast" or "standard"`
 
@@ -15564,7 +15858,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
 - `--claude-tag-category: optional array of BetaAnalyticsClaudeTagCategory` (query parameter)
 
-  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. `dm` usage is reported under the user's product rather than `claude-tag`, so combining this filter with `products[]=claude-tag` excludes it. Use `group_by[]=claude_tag_category` to break out per-category values.
+  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. Use `group_by[]=claude_tag_category` to break out per-category values.
 
   maxItems: 100
 
@@ -15730,7 +16024,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
       - `claude_tag_category: "dm" or "engaged" or "monitoring" or 2 more`
 
-        Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. Direct-message usage is billed to the individual user and is reported under that user's product, not under `claude-tag`. New categories may be added over time.
+        Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. New categories may be added over time.
 
         - `"dm"`
 
@@ -15798,7 +16092,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
       - `slack_channel_id: string`
 
-        Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack (and for rows recorded before channel attribution was enabled).
+        Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack, for some Claude Tag usage that has no channel recorded, and for usage recorded before channel attribution was enabled.
 
       - `speed: "fast" or "standard"`
 
@@ -15899,7 +16193,7 @@ ant beta:organization:analytics:cost-report list \
 
 [Legacy] Get per-user cost in USD across a date range.
 
-Returns cost per user, ranked by spend; `group_by[]` or `bucket_width` splits a user across several rows. Use this to see which users account for the most cost. Only cost attributed to a user account is included; cost with no user attributed to it, such as Code Review usage and Claude Tag usage in Slack channels, is left out. Available to organizations on a Claude Enterprise plan. Requires an API key with the `read:analytics` scope.
+Returns cost per user, ranked by spend; `group_by[]` or `bucket_width` splits a user across several rows. Use this to see which users account for the most cost. Only cost attributed to a user account is included, so cost with no user account, such as Code Review usage and Claude Tag usage in Slack channels, is left out. Claude Tag one-to-one direct messages are included, with product `claude-tag`, only for members who have connected a Claude account. Available to organizations on a Claude Enterprise plan. Requires an API key with the `read:analytics` scope.
 
 This endpoint is one of the legacy Claude Enterprise usage and cost reports. For new integrations, use [`GET /v1/organizations/analytics/cost`](https://platform.claude.com/docs/en/api/beta/organization/analytics/cost/list?sdk_languages=cli) in the Usage and Cost Analytics API instead. To move an existing integration, see [Migrate from the Claude Enterprise usage and cost reports](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli#migrate-from-enterprise-analytics-reports).
 
@@ -15923,7 +16217,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
 - `--claude-tag-category: optional array of BetaAnalyticsClaudeTagCategory` (query parameter)
 
-  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. `dm` usage is reported under the user's product rather than `claude-tag`, so combining this filter with `products[]=claude-tag` excludes it. Use `group_by[]=claude_tag_category` to break out per-category values.
+  Filter to Claude Tag (Claude in Slack) usage in specific spend categories. Usage with no category never matches. Use `group_by[]=claude_tag_category` to break out per-category values.
 
   maxItems: 100
 
@@ -16123,7 +16417,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
     - `claude_tag_category: "dm" or "engaged" or "monitoring" or 2 more`
 
-      Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. Direct-message usage is billed to the individual user and is reported under that user's product, not under `claude-tag`. New categories may be added over time.
+      Claude Tag (Claude in Slack) spend category: `engaged` (a person addressed Claude in a channel or thread), `proactive` (Claude responded without being addressed), `scheduled` (a scheduled routine ran), `monitoring` (Claude watching a channel it was asked to monitor), or `dm` (direct messages with Claude). Populated only when `claude_tag_category` is in `group_by[]`; null for usage that is not Claude Tag. New categories may be added over time.
 
       - `"dm"`
 
@@ -16197,7 +16491,7 @@ This endpoint is one of the legacy Claude Enterprise usage and cost reports. For
 
     - `slack_channel_id: string`
 
-      Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack (and for rows recorded before channel attribution was enabled).
+      Slack channel the usage originated from. Populated only when `slack_channel_id` is in `group_by[]`; null for usage outside Slack, for some Claude Tag usage that has no channel recorded, and for usage recorded before channel attribution was enabled.
 
     - `speed: "fast" or "standard"`
 
@@ -16462,6 +16756,8 @@ Anthropic account team.
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -16959,6 +17255,8 @@ come in a fixed order that is not creation order.
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -19251,7 +19549,7 @@ The RBAC Roles API is available to Claude Enterprise organizations only.
 
     - `display_name: string`
 
-      Name of the RBAC Role. For a role created by Anthropic, this name can differ from the label claude.ai shows, and Anthropic may change the name. To keep a lasting reference to a role, store its `id`.
+      Name of the RBAC Role. For a role created by Anthropic, this is Anthropic's name for the access that the role grants. Anthropic may change this name, so to keep a lasting reference to a role, store its `id`.
 
     - `updated_at: string`
 
@@ -19330,7 +19628,7 @@ The RBAC Roles API is available to Claude Enterprise organizations only.
 
   - `display_name: string`
 
-    Name of the RBAC Role. For a role created by Anthropic, this name can differ from the label claude.ai shows, and Anthropic may change the name. To keep a lasting reference to a role, store its `id`.
+    Name of the RBAC Role. For a role created by Anthropic, this is Anthropic's name for the access that the role grants. Anthropic may change this name, so to keep a lasting reference to a role, store its `id`.
 
   - `updated_at: string`
 
@@ -19408,8 +19706,8 @@ The RBAC Roles API is available to Claude Enterprise organizations only.
       permission entitlement (`permission_*`), or a blanket capability-access
       mode — `capability_access_all` grants every product-feature entitlement
       except `inference_hooks_inspection`, which a role holds only through its
-      own row, and `capability_access_all_ga` grants the generally-available
-      subset of those as it stands at permission-check time; neither mode grants
+      own row, and `capability_access_all_ga` grants the subset of those for
+      stable features as it stands at permission-check time; neither mode grants
       model-access entitlements. A consumer enumerating a role's per-feature grants should
       treat a blanket row as granting every product-feature entitlement it
       covers, or it will under-report the role's effective access. A `connector_tool` grant carries
@@ -19550,10 +19848,9 @@ The `name` must be unique within the marketplace: a name already taken
 returns a 409 with `error_code` `plugin_name_taken` and, when a Plugin holds it,
 that Plugin's ID in `details.plugin_id`. A Plugin going into the organization's
 library marketplace is also refused with a 409 when one of its skills has the name of
-an organization skill (a skill an administrator uploaded for the whole organization
-in claude.ai): `error_code` `skill_name_taken`, with that name in
-`details.skill_name`; rename the skill, or remove the organization skill in
-claude.ai. A 503 with `error_code`
+an organization skill that this API does not list: `error_code`
+`skill_name_taken`, with that name in `details.skill_name`; rename the skill, or
+remove the organization skill in claude.ai. A 503 with `error_code`
 `registration_pending` means the Plugin and its version were stored (their IDs are
 in `details`) but are not yet usable in claude.ai: do not retry the create (the
 retry would return `plugin_name_taken`); create a version on the stored Plugin
@@ -19689,6 +19986,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -19864,9 +20163,9 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
     How far the served version reaches, or `null` if it is not classified.
 
-    `remote` means it declares an MCP server or a CLI. `privileged` means it declares no MCP server or CLI, but declares a hook, monitor, language server, or settings, or has a skill, command, or other Markdown file whose frontmatter pre-approves tools (`allowed-tools` with any value other than an empty one or one that names only `AskUserQuestion`, `TodoWrite`, and `ToolSearch`). Otherwise it is `contained`.
+    `remote` means it declares an MCP server or a CLI, or something that counts as one. `privileged` means it is not `remote`, but declares a hook (of any type, even one that posts to a URL), monitor, language server, Claude Code workflow (any file in a `workflows/` folder at its root counts as one), or settings, or has a skill, command, or other Markdown file whose frontmatter pre-approves tools (`allowed-tools` with any value other than an empty one or one that names only `AskUserQuestion`, `TodoWrite`, and `ToolSearch`). Otherwise it is `contained`.
 
-    If the frontmatter of a skill, command, or other Markdown file that could change the value could not be read, or was past a size limit, the version is `null` or `privileged` (or `remote`, if it declares an MCP server or a CLI), not `contained`. The value is normally worked out when a version is stored, under the rules of that time, so an older version can be `null`, or `contained` where the same files stored today would be `privileged` or `null`.
+    If the frontmatter of a skill, command, or other Markdown file that could change the value could not be read, or was past a size limit, the version is `null` or `privileged` (or `remote`, if something else it declares makes it `remote`), not `contained`. The value is normally worked out when a version is stored, under the rules of that time, so an older version can be `null`, `contained` where the same files stored today would be `privileged`, `remote`, or `null`, or `privileged` where they would be `remote`.
 
     - `"contained"`
 
@@ -20067,6 +20366,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -20241,9 +20542,9 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
     How far the served version reaches, or `null` if it is not classified.
 
-    `remote` means it declares an MCP server or a CLI. `privileged` means it declares no MCP server or CLI, but declares a hook, monitor, language server, or settings, or has a skill, command, or other Markdown file whose frontmatter pre-approves tools (`allowed-tools` with any value other than an empty one or one that names only `AskUserQuestion`, `TodoWrite`, and `ToolSearch`). Otherwise it is `contained`.
+    `remote` means it declares an MCP server or a CLI, or something that counts as one. `privileged` means it is not `remote`, but declares a hook (of any type, even one that posts to a URL), monitor, language server, Claude Code workflow (any file in a `workflows/` folder at its root counts as one), or settings, or has a skill, command, or other Markdown file whose frontmatter pre-approves tools (`allowed-tools` with any value other than an empty one or one that names only `AskUserQuestion`, `TodoWrite`, and `ToolSearch`). Otherwise it is `contained`.
 
-    If the frontmatter of a skill, command, or other Markdown file that could change the value could not be read, or was past a size limit, the version is `null` or `privileged` (or `remote`, if it declares an MCP server or a CLI), not `contained`. The value is normally worked out when a version is stored, under the rules of that time, so an older version can be `null`, or `contained` where the same files stored today would be `privileged` or `null`.
+    If the frontmatter of a skill, command, or other Markdown file that could change the value could not be read, or was past a size limit, the version is `null` or `privileged` (or `remote`, if something else it declares makes it `remote`), not `contained`. The value is normally worked out when a version is stored, under the rules of that time, so an older version can be `null`, `contained` where the same files stored today would be `privileged`, `remote`, or `null`, or `privileged` where they would be `remote`.
 
     - `"contained"`
 
@@ -20337,10 +20638,9 @@ with a 400 (`error_code` `scan_failed`); a `warn` is accepted. If the scan outco
 cannot be read at that moment, the request fails with a retryable 503 instead.
 When the Plugin is in the organization's
 library marketplace, a version other than the one served is also refused with a 409
-when one of its skills has a name that an organization skill (one an administrator
-uploaded for the whole organization in claude.ai) has since taken: `error_code`
-`skill_name_taken`, with that name in `details.skill_name`. A member-owned Plugin
-cannot be updated here (403).
+when an organization skill that this API does not list has since taken the name of
+one of its skills: `error_code` `skill_name_taken`, with that name in
+`details.skill_name`. A member-owned Plugin cannot be updated here (403).
 
 This endpoint does not write installation settings; they are written at
 `/v1/organizations/plugins/{plugin_id}/installation_settings/{target}`.
@@ -20467,6 +20767,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -20641,9 +20943,9 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
     How far the served version reaches, or `null` if it is not classified.
 
-    `remote` means it declares an MCP server or a CLI. `privileged` means it declares no MCP server or CLI, but declares a hook, monitor, language server, or settings, or has a skill, command, or other Markdown file whose frontmatter pre-approves tools (`allowed-tools` with any value other than an empty one or one that names only `AskUserQuestion`, `TodoWrite`, and `ToolSearch`). Otherwise it is `contained`.
+    `remote` means it declares an MCP server or a CLI, or something that counts as one. `privileged` means it is not `remote`, but declares a hook (of any type, even one that posts to a URL), monitor, language server, Claude Code workflow (any file in a `workflows/` folder at its root counts as one), or settings, or has a skill, command, or other Markdown file whose frontmatter pre-approves tools (`allowed-tools` with any value other than an empty one or one that names only `AskUserQuestion`, `TodoWrite`, and `ToolSearch`). Otherwise it is `contained`.
 
-    If the frontmatter of a skill, command, or other Markdown file that could change the value could not be read, or was past a size limit, the version is `null` or `privileged` (or `remote`, if it declares an MCP server or a CLI), not `contained`. The value is normally worked out when a version is stored, under the rules of that time, so an older version can be `null`, or `contained` where the same files stored today would be `privileged` or `null`.
+    If the frontmatter of a skill, command, or other Markdown file that could change the value could not be read, or was past a size limit, the version is `null` or `privileged` (or `remote`, if something else it declares makes it `remote`), not `contained`. The value is normally worked out when a version is stored, under the rules of that time, so an older version can be `null`, `contained` where the same files stored today would be `privileged`, `remote`, or `null`, or `privileged` where they would be `remote`.
 
     - `"contained"`
 
@@ -20901,6 +21203,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -21077,9 +21381,9 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
       How far the served version reaches, or `null` if it is not classified.
 
-      `remote` means it declares an MCP server or a CLI. `privileged` means it declares no MCP server or CLI, but declares a hook, monitor, language server, or settings, or has a skill, command, or other Markdown file whose frontmatter pre-approves tools (`allowed-tools` with any value other than an empty one or one that names only `AskUserQuestion`, `TodoWrite`, and `ToolSearch`). Otherwise it is `contained`.
+      `remote` means it declares an MCP server or a CLI, or something that counts as one. `privileged` means it is not `remote`, but declares a hook (of any type, even one that posts to a URL), monitor, language server, Claude Code workflow (any file in a `workflows/` folder at its root counts as one), or settings, or has a skill, command, or other Markdown file whose frontmatter pre-approves tools (`allowed-tools` with any value other than an empty one or one that names only `AskUserQuestion`, `TodoWrite`, and `ToolSearch`). Otherwise it is `contained`.
 
-      If the frontmatter of a skill, command, or other Markdown file that could change the value could not be read, or was past a size limit, the version is `null` or `privileged` (or `remote`, if it declares an MCP server or a CLI), not `contained`. The value is normally worked out when a version is stored, under the rules of that time, so an older version can be `null`, or `contained` where the same files stored today would be `privileged` or `null`.
+      If the frontmatter of a skill, command, or other Markdown file that could change the value could not be read, or was past a size limit, the version is `null` or `privileged` (or `remote`, if something else it declares makes it `remote`), not `contained`. The value is normally worked out when a version is stored, under the rules of that time, so an older version can be `null`, `contained` where the same files stored today would be `privileged`, `remote`, or `null`, or `privileged` where they would be `remote`.
 
       - `"contained"`
 
@@ -21166,7 +21470,9 @@ ant beta:organization:plugins list
 
 Permanently delete a Plugin and every version it holds, exactly as when an
 administrator deletes it in claude.ai. The Plugin may belong to the organization or
-to a member, including a member who has since left the organization.
+to a member, including a member who has since left the organization. Do not delete a
+Plugin only because your pipeline did not create it: a member or an administrator
+might have added it in claude.ai.
 
 An organization-owned Plugin's installation settings go with it; a member-owned
 Plugin's shares are withdrawn and its owner no longer has it.
@@ -21295,6 +21601,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -21349,9 +21657,8 @@ see which version it serves.
 Only a Plugin in a `manual` marketplace takes uploads; a Plugin synchronized from
 a repository gets its versions from the repository. When the Plugin is in the
 organization's library marketplace, a version that adds a skill with the name of an
-organization skill (a skill an administrator uploaded for the whole organization in
-claude.ai) is refused with a 409: `error_code` `skill_name_taken`, with that name in
-`details.skill_name`. A 503 with `error_code`
+organization skill that this API does not list is refused with a 409: `error_code`
+`skill_name_taken`, with that name in `details.skill_name`. A 503 with `error_code`
 `registration_pending` means the version was stored but is not yet usable; a later
 version create on the Plugin completes it.
 
@@ -21486,6 +21793,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -21598,7 +21907,7 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `description: string`
 
-    The manifest's description; null when it declares none.
+    The manifest's description; null when it declares none. The value can be longer than 500 characters, the limit on `description` in an uploaded manifest. A description that the manifest takes from a `SKILL.md` is cut to its first 500 characters. So if the manifest's description is the first 500 characters of exactly one distinct skill `description` in `components`, that skill `description` is returned instead.
 
   - `display_name: string`
 
@@ -21814,6 +22123,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -21928,7 +22239,7 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
     - `description: string`
 
-      The manifest's description; null when it declares none.
+      The manifest's description; null when it declares none. The value can be longer than 500 characters, the limit on `description` in an uploaded manifest. A description that the manifest takes from a `SKILL.md` is cut to its first 500 characters. So if the manifest's description is the first 500 characters of exactly one distinct skill `description` in `components`, that skill `description` is returned instead.
 
     - `display_name: string`
 
@@ -22139,6 +22450,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -22251,7 +22564,7 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `description: string`
 
-    The manifest's description; null when it declares none.
+    The manifest's description; null when it declares none. The value can be longer than 500 characters, the limit on `description` in an uploaded manifest. A description that the manifest takes from a `SKILL.md` is cut to its first 500 characters. So if the manifest's description is the first 500 characters of exactly one distinct skill `description` in `components`, that skill `description` is returned instead.
 
   - `display_name: string`
 
@@ -22470,6 +22783,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -22646,6 +22961,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -22906,6 +23223,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -23152,6 +23471,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -23386,6 +23707,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -23444,7 +23767,7 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `next_page: string`
 
-    Token to provide in as `page` in the subsequent request to retrieve the next page of data.
+    Token to provide in as `page` in the subsequent request to retrieve the next page of data. A page may hold fewer than `limit` shares, even none, while this is set; keep following it until it is null.
 
 #### Example
 
@@ -23640,6 +23963,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -23906,6 +24231,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -24175,6 +24502,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -24452,6 +24781,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -24710,6 +25041,8 @@ Every request must include the beta header `anthropic-beta: ce-plugins-2026-09-0
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -25060,6 +25393,8 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -25414,6 +25749,8 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -25765,6 +26102,8 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -26242,6 +26581,8 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -26584,6 +26925,8 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -26739,6 +27082,8 @@ Send one test span, named `anthropic.test`, to the destination with its register
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -26929,6 +27274,8 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -27121,6 +27468,8 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -27302,6 +27651,8 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -27362,13 +27713,15 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
 #### Parameters
 
-- `--enabled-event: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+- `--enabled-event: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved" or "user_profile.program_status_updated"`
 
   The event types to deliver to the endpoint. Must list at least one.
 
   - `"user_profile.enforcement_action_opened"`
 
   - `"user_profile.enforcement_action_resolved"`
+
+  - `"user_profile.program_status_updated"`
 
 - `--url: string`
 
@@ -27492,6 +27845,8 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -27522,13 +27877,15 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
     Why Anthropic disabled the endpoint automatically. An empty string when the endpoint is enabled, or when you disabled it.
 
-  - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+  - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved" or "user_profile.program_status_updated"`
 
     The event types delivered to the endpoint.
 
     - `"user_profile.enforcement_action_opened"`
 
     - `"user_profile.enforcement_action_resolved"`
+
+    - `"user_profile.program_status_updated"`
 
   - `name: string`
 
@@ -27728,6 +28085,8 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -27762,13 +28121,15 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
       Why Anthropic disabled the endpoint automatically. An empty string when the endpoint is enabled, or when you disabled it.
 
-    - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+    - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved" or "user_profile.program_status_updated"`
 
       The event types delivered to the endpoint.
 
       - `"user_profile.enforcement_action_opened"`
 
       - `"user_profile.enforcement_action_resolved"`
+
+      - `"user_profile.program_status_updated"`
 
     - `name: string`
 
@@ -27961,6 +28322,8 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -27992,13 +28355,15 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
     Why Anthropic disabled the endpoint automatically. An empty string when the endpoint is enabled, or when you disabled it.
 
-  - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+  - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved" or "user_profile.program_status_updated"`
 
     The event types delivered to the endpoint.
 
     - `"user_profile.enforcement_action_opened"`
 
     - `"user_profile.enforcement_action_resolved"`
+
+    - `"user_profile.program_status_updated"`
 
   - `name: string`
 
@@ -28069,13 +28434,15 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
   Notes about the endpoint.
 
-- `--enabled-event: optional array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+- `--enabled-event: optional array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved" or "user_profile.program_status_updated"`
 
   The event types to deliver to the endpoint. Replaces the whole set; an empty list leaves it unchanged.
 
   - `"user_profile.enforcement_action_opened"`
 
   - `"user_profile.enforcement_action_resolved"`
+
+  - `"user_profile.program_status_updated"`
 
 - `--name: optional string`
 
@@ -28203,6 +28570,8 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -28234,13 +28603,15 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
     Why Anthropic disabled the endpoint automatically. An empty string when the endpoint is enabled, or when you disabled it.
 
-  - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved"`
+  - `enabled_events: array of "user_profile.enforcement_action_opened" or "user_profile.enforcement_action_resolved" or "user_profile.program_status_updated"`
 
     The event types delivered to the endpoint.
 
     - `"user_profile.enforcement_action_opened"`
 
     - `"user_profile.enforcement_action_resolved"`
+
+    - `"user_profile.program_status_updated"`
 
   - `name: string`
 
@@ -28415,6 +28786,8 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -28578,6 +28951,8 @@ Every request must include the beta header `anthropic-beta: webhooks-2026-10-07`
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -28682,6 +29057,34 @@ Set a Slack channel up for Claude Tag and return it with its identifier. If the 
     The model Claude uses: the identifier of a model, or the name of a model line, that the organization is entitled to for Claude Tag. Null clears it.
 
     minLength: 1, maxLength: 128
+
+  - `reply_mode: optional BetaClaudeTagReplyModeAutomatic or BetaClaudeTagReplyModeMentionOnly or BetaClaudeTagReplyModeAlwaysAwake or BetaClaudeTagReplyModeThread`
+
+    How Claude takes part in the channel: `automatic`, `mention_only`, `always_awake` or `thread`. Only a channel takes one: an update of a workspace that sends a value is refused, and one that sends null changes nothing. Null never clears it: sent to a channel that stores none it changes nothing, and sent to a channel that stores one it is refused, because a stored reply mode can be changed but never cleared; a caller that wants Claude's default behavior sends `automatic`.
+
+    - `beta_claude_tag_reply_mode_automatic: object`
+
+      Claude reads along and joins in when it can help, and pauses on its own in quiet or busy channels.
+
+      - `type: "automatic"`
+
+    - `beta_claude_tag_reply_mode_mention_only: object`
+
+      Claude replies only when it is @-mentioned.
+
+      - `type: "mention_only"`
+
+    - `beta_claude_tag_reply_mode_always_awake: object`
+
+      Like `automatic`, but Claude never pauses on its own. Available where it is enabled for the channel.
+
+      - `type: "always_awake"`
+
+    - `beta_claude_tag_reply_mode_thread: object`
+
+      Every new top-level message in the channel gets its own reply from Claude, in a thread under it. Available where it is enabled for the channel, and only once Claude has been used in the channel.
+
+      - `type: "thread"`
 
 - `--beta: optional array of AnthropicBeta` (header parameter)
 
@@ -28791,6 +29194,8 @@ Set a Slack channel up for Claude Tag and return it with its identifier. If the 
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -28856,6 +29261,34 @@ Set a Slack channel up for Claude Tag and return it with its identifier. If the 
     - `model: string`
 
       The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+    - `reply_mode: BetaClaudeTagReplyModeAutomatic or BetaClaudeTagReplyModeMentionOnly or BetaClaudeTagReplyModeAlwaysAwake or BetaClaudeTagReplyModeThread`
+
+      How Claude takes part in the channel. Only a channel stores one, and no settings level passes one on, so it is always null on a workspace. Null on a channel means the channel stores none yet: Claude then follows the reply mode chosen in Slack, if one was, else `automatic`. A stored reply mode can be changed but never cleared.
+
+      - `beta_claude_tag_reply_mode_automatic: object`
+
+        Claude reads along and joins in when it can help, and pauses on its own in quiet or busy channels.
+
+        - `type: "automatic"`
+
+      - `beta_claude_tag_reply_mode_mention_only: object`
+
+        Claude replies only when it is @-mentioned.
+
+        - `type: "mention_only"`
+
+      - `beta_claude_tag_reply_mode_always_awake: object`
+
+        Like `automatic`, but Claude never pauses on its own. Available where it is enabled for the channel.
+
+        - `type: "always_awake"`
+
+      - `beta_claude_tag_reply_mode_thread: object`
+
+        Every new top-level message in the channel gets its own reply from Claude, in a thread under it. Available where it is enabled for the channel, and only once Claude has been used in the channel.
+
+        - `type: "thread"`
 
   - `slack: object`
 
@@ -28973,6 +29406,10 @@ Set a Slack channel up for Claude Tag and return it with its identifier. If the 
 
       The settings level `model` comes from.
 
+    - `reply_mode: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `reply_mode` comes from: the channel when it stores one. With `include_inherited=true` and no stored mode it is `default`.
+
   - `updated_at: string`
 
     Time Claude Tag's record of the channel last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the channel again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
@@ -28999,7 +29436,10 @@ ant beta:organization:claude-tag:slack-channels create \
       "type": "allow"
     },
     "instructions": "instructions",
-    "model": "model"
+    "model": "model",
+    "reply_mode": {
+      "type": "automatic"
+    }
   },
   "slack": {
     "channel_id": "xx",
@@ -29025,6 +29465,10 @@ ant beta:organization:claude-tag:slack-channels create \
       }
     ],
     "model": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "reply_mode": {
       "slack_channel_id": "slack_channel_id",
       "type": "slack_channel"
     }
@@ -29174,6 +29618,8 @@ List the set-up Slack channels of one Slack workspace, newest first by `created_
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -29241,6 +29687,34 @@ List the set-up Slack channels of one Slack workspace, newest first by `created_
       - `model: string`
 
         The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+      - `reply_mode: BetaClaudeTagReplyModeAutomatic or BetaClaudeTagReplyModeMentionOnly or BetaClaudeTagReplyModeAlwaysAwake or BetaClaudeTagReplyModeThread`
+
+        How Claude takes part in the channel. Only a channel stores one, and no settings level passes one on, so it is always null on a workspace. Null on a channel means the channel stores none yet: Claude then follows the reply mode chosen in Slack, if one was, else `automatic`. A stored reply mode can be changed but never cleared.
+
+        - `beta_claude_tag_reply_mode_automatic: object`
+
+          Claude reads along and joins in when it can help, and pauses on its own in quiet or busy channels.
+
+          - `type: "automatic"`
+
+        - `beta_claude_tag_reply_mode_mention_only: object`
+
+          Claude replies only when it is @-mentioned.
+
+          - `type: "mention_only"`
+
+        - `beta_claude_tag_reply_mode_always_awake: object`
+
+          Like `automatic`, but Claude never pauses on its own. Available where it is enabled for the channel.
+
+          - `type: "always_awake"`
+
+        - `beta_claude_tag_reply_mode_thread: object`
+
+          Every new top-level message in the channel gets its own reply from Claude, in a thread under it. Available where it is enabled for the channel, and only once Claude has been used in the channel.
+
+          - `type: "thread"`
 
     - `slack: object`
 
@@ -29358,6 +29832,10 @@ List the set-up Slack channels of one Slack workspace, newest first by `created_
 
         The settings level `model` comes from.
 
+      - `reply_mode: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+        The settings level `reply_mode` comes from: the channel when it stores one. With `include_inherited=true` and no stored mode it is `default`.
+
     - `updated_at: string`
 
       Time Claude Tag's record of the channel last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the channel again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
@@ -29390,7 +29868,10 @@ ant beta:organization:claude-tag:slack-channels list \
           "type": "allow"
         },
         "instructions": "instructions",
-        "model": "model"
+        "model": "model",
+        "reply_mode": {
+          "type": "automatic"
+        }
       },
       "slack": {
         "channel_id": "xx",
@@ -29416,6 +29897,10 @@ ant beta:organization:claude-tag:slack-channels list \
           }
         ],
         "model": {
+          "slack_channel_id": "slack_channel_id",
+          "type": "slack_channel"
+        },
+        "reply_mode": {
           "slack_channel_id": "slack_channel_id",
           "type": "slack_channel"
         }
@@ -29554,6 +30039,8 @@ Get one Slack channel and its settings. By default `settings` holds what the cha
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -29619,6 +30106,34 @@ Get one Slack channel and its settings. By default `settings` holds what the cha
     - `model: string`
 
       The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+    - `reply_mode: BetaClaudeTagReplyModeAutomatic or BetaClaudeTagReplyModeMentionOnly or BetaClaudeTagReplyModeAlwaysAwake or BetaClaudeTagReplyModeThread`
+
+      How Claude takes part in the channel. Only a channel stores one, and no settings level passes one on, so it is always null on a workspace. Null on a channel means the channel stores none yet: Claude then follows the reply mode chosen in Slack, if one was, else `automatic`. A stored reply mode can be changed but never cleared.
+
+      - `beta_claude_tag_reply_mode_automatic: object`
+
+        Claude reads along and joins in when it can help, and pauses on its own in quiet or busy channels.
+
+        - `type: "automatic"`
+
+      - `beta_claude_tag_reply_mode_mention_only: object`
+
+        Claude replies only when it is @-mentioned.
+
+        - `type: "mention_only"`
+
+      - `beta_claude_tag_reply_mode_always_awake: object`
+
+        Like `automatic`, but Claude never pauses on its own. Available where it is enabled for the channel.
+
+        - `type: "always_awake"`
+
+      - `beta_claude_tag_reply_mode_thread: object`
+
+        Every new top-level message in the channel gets its own reply from Claude, in a thread under it. Available where it is enabled for the channel, and only once Claude has been used in the channel.
+
+        - `type: "thread"`
 
   - `slack: object`
 
@@ -29736,6 +30251,10 @@ Get one Slack channel and its settings. By default `settings` holds what the cha
 
       The settings level `model` comes from.
 
+    - `reply_mode: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `reply_mode` comes from: the channel when it stores one. With `include_inherited=true` and no stored mode it is `default`.
+
   - `updated_at: string`
 
     Time Claude Tag's record of the channel last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the channel again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
@@ -29762,7 +30281,10 @@ ant beta:organization:claude-tag:slack-channels retrieve \
       "type": "allow"
     },
     "instructions": "instructions",
-    "model": "model"
+    "model": "model",
+    "reply_mode": {
+      "type": "automatic"
+    }
   },
   "slack": {
     "channel_id": "xx",
@@ -29788,6 +30310,10 @@ ant beta:organization:claude-tag:slack-channels retrieve \
       }
     ],
     "model": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "reply_mode": {
       "slack_channel_id": "slack_channel_id",
       "type": "slack_channel"
     }
@@ -29856,6 +30382,34 @@ Change the settings a Slack channel stores. The update is partial: a setting lef
     The model Claude uses: the identifier of a model, or the name of a model line, that the organization is entitled to for Claude Tag. Null clears it.
 
     minLength: 1, maxLength: 128
+
+  - `reply_mode: optional BetaClaudeTagReplyModeAutomatic or BetaClaudeTagReplyModeMentionOnly or BetaClaudeTagReplyModeAlwaysAwake or BetaClaudeTagReplyModeThread`
+
+    How Claude takes part in the channel: `automatic`, `mention_only`, `always_awake` or `thread`. Only a channel takes one: an update of a workspace that sends a value is refused, and one that sends null changes nothing. Null never clears it: sent to a channel that stores none it changes nothing, and sent to a channel that stores one it is refused, because a stored reply mode can be changed but never cleared; a caller that wants Claude's default behavior sends `automatic`.
+
+    - `beta_claude_tag_reply_mode_automatic: object`
+
+      Claude reads along and joins in when it can help, and pauses on its own in quiet or busy channels.
+
+      - `type: "automatic"`
+
+    - `beta_claude_tag_reply_mode_mention_only: object`
+
+      Claude replies only when it is @-mentioned.
+
+      - `type: "mention_only"`
+
+    - `beta_claude_tag_reply_mode_always_awake: object`
+
+      Like `automatic`, but Claude never pauses on its own. Available where it is enabled for the channel.
+
+      - `type: "always_awake"`
+
+    - `beta_claude_tag_reply_mode_thread: object`
+
+      Every new top-level message in the channel gets its own reply from Claude, in a thread under it. Available where it is enabled for the channel, and only once Claude has been used in the channel.
+
+      - `type: "thread"`
 
 - `--beta: optional array of AnthropicBeta` (header parameter)
 
@@ -29965,6 +30519,8 @@ Change the settings a Slack channel stores. The update is partial: a setting lef
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -30030,6 +30586,34 @@ Change the settings a Slack channel stores. The update is partial: a setting lef
     - `model: string`
 
       The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+    - `reply_mode: BetaClaudeTagReplyModeAutomatic or BetaClaudeTagReplyModeMentionOnly or BetaClaudeTagReplyModeAlwaysAwake or BetaClaudeTagReplyModeThread`
+
+      How Claude takes part in the channel. Only a channel stores one, and no settings level passes one on, so it is always null on a workspace. Null on a channel means the channel stores none yet: Claude then follows the reply mode chosen in Slack, if one was, else `automatic`. A stored reply mode can be changed but never cleared.
+
+      - `beta_claude_tag_reply_mode_automatic: object`
+
+        Claude reads along and joins in when it can help, and pauses on its own in quiet or busy channels.
+
+        - `type: "automatic"`
+
+      - `beta_claude_tag_reply_mode_mention_only: object`
+
+        Claude replies only when it is @-mentioned.
+
+        - `type: "mention_only"`
+
+      - `beta_claude_tag_reply_mode_always_awake: object`
+
+        Like `automatic`, but Claude never pauses on its own. Available where it is enabled for the channel.
+
+        - `type: "always_awake"`
+
+      - `beta_claude_tag_reply_mode_thread: object`
+
+        Every new top-level message in the channel gets its own reply from Claude, in a thread under it. Available where it is enabled for the channel, and only once Claude has been used in the channel.
+
+        - `type: "thread"`
 
   - `slack: object`
 
@@ -30147,6 +30731,10 @@ Change the settings a Slack channel stores. The update is partial: a setting lef
 
       The settings level `model` comes from.
 
+    - `reply_mode: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `reply_mode` comes from: the channel when it stores one. With `include_inherited=true` and no stored mode it is `default`.
+
   - `updated_at: string`
 
     Time Claude Tag's record of the channel last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the channel again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
@@ -30174,7 +30762,10 @@ ant beta:organization:claude-tag:slack-channels update \
       "type": "allow"
     },
     "instructions": "instructions",
-    "model": "model"
+    "model": "model",
+    "reply_mode": {
+      "type": "automatic"
+    }
   },
   "slack": {
     "channel_id": "xx",
@@ -30200,6 +30791,10 @@ ant beta:organization:claude-tag:slack-channels update \
       }
     ],
     "model": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "reply_mode": {
       "slack_channel_id": "slack_channel_id",
       "type": "slack_channel"
     }
@@ -30330,6 +30925,8 @@ Remove a Slack channel from Claude Tag. This deletes the channel's stored settin
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -30503,6 +31100,8 @@ List the set-up Slack workspaces the organization owns, newest first by `created
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -30570,6 +31169,34 @@ List the set-up Slack workspaces the organization owns, newest first by `created
       - `model: string`
 
         The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+      - `reply_mode: BetaClaudeTagReplyModeAutomatic or BetaClaudeTagReplyModeMentionOnly or BetaClaudeTagReplyModeAlwaysAwake or BetaClaudeTagReplyModeThread`
+
+        How Claude takes part in the channel. Only a channel stores one, and no settings level passes one on, so it is always null on a workspace. Null on a channel means the channel stores none yet: Claude then follows the reply mode chosen in Slack, if one was, else `automatic`. A stored reply mode can be changed but never cleared.
+
+        - `beta_claude_tag_reply_mode_automatic: object`
+
+          Claude reads along and joins in when it can help, and pauses on its own in quiet or busy channels.
+
+          - `type: "automatic"`
+
+        - `beta_claude_tag_reply_mode_mention_only: object`
+
+          Claude replies only when it is @-mentioned.
+
+          - `type: "mention_only"`
+
+        - `beta_claude_tag_reply_mode_always_awake: object`
+
+          Like `automatic`, but Claude never pauses on its own. Available where it is enabled for the channel.
+
+          - `type: "always_awake"`
+
+        - `beta_claude_tag_reply_mode_thread: object`
+
+          Every new top-level message in the channel gets its own reply from Claude, in a thread under it. Available where it is enabled for the channel, and only once Claude has been used in the channel.
+
+          - `type: "thread"`
 
     - `slack: object`
 
@@ -30691,6 +31318,10 @@ List the set-up Slack workspaces the organization owns, newest first by `created
 
         The settings level `model` comes from.
 
+      - `reply_mode: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+        The settings level `reply_mode` comes from: the channel when it stores one. With `include_inherited=true` and no stored mode it is `default`.
+
     - `updated_at: string`
 
       Time Claude Tag's record of the workspace last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the workspace again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
@@ -30722,7 +31353,10 @@ ant beta:organization:claude-tag:slack-workspaces list
           "type": "allow"
         },
         "instructions": "instructions",
-        "model": "model"
+        "model": "model",
+        "reply_mode": {
+          "type": "automatic"
+        }
       },
       "slack": {
         "workspace_id": "workspace_id"
@@ -30747,6 +31381,10 @@ ant beta:organization:claude-tag:slack-workspaces list
           }
         ],
         "model": {
+          "slack_channel_id": "slack_channel_id",
+          "type": "slack_channel"
+        },
+        "reply_mode": {
           "slack_channel_id": "slack_channel_id",
           "type": "slack_channel"
         }
@@ -30885,6 +31523,8 @@ Get one Slack workspace and its settings. By default `settings` holds what the w
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -30950,6 +31590,34 @@ Get one Slack workspace and its settings. By default `settings` holds what the w
     - `model: string`
 
       The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+    - `reply_mode: BetaClaudeTagReplyModeAutomatic or BetaClaudeTagReplyModeMentionOnly or BetaClaudeTagReplyModeAlwaysAwake or BetaClaudeTagReplyModeThread`
+
+      How Claude takes part in the channel. Only a channel stores one, and no settings level passes one on, so it is always null on a workspace. Null on a channel means the channel stores none yet: Claude then follows the reply mode chosen in Slack, if one was, else `automatic`. A stored reply mode can be changed but never cleared.
+
+      - `beta_claude_tag_reply_mode_automatic: object`
+
+        Claude reads along and joins in when it can help, and pauses on its own in quiet or busy channels.
+
+        - `type: "automatic"`
+
+      - `beta_claude_tag_reply_mode_mention_only: object`
+
+        Claude replies only when it is @-mentioned.
+
+        - `type: "mention_only"`
+
+      - `beta_claude_tag_reply_mode_always_awake: object`
+
+        Like `automatic`, but Claude never pauses on its own. Available where it is enabled for the channel.
+
+        - `type: "always_awake"`
+
+      - `beta_claude_tag_reply_mode_thread: object`
+
+        Every new top-level message in the channel gets its own reply from Claude, in a thread under it. Available where it is enabled for the channel, and only once Claude has been used in the channel.
+
+        - `type: "thread"`
 
   - `slack: object`
 
@@ -31071,6 +31739,10 @@ Get one Slack workspace and its settings. By default `settings` holds what the w
 
       The settings level `model` comes from.
 
+    - `reply_mode: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `reply_mode` comes from: the channel when it stores one. With `include_inherited=true` and no stored mode it is `default`.
+
   - `updated_at: string`
 
     Time Claude Tag's record of the workspace last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the workspace again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
@@ -31097,7 +31769,10 @@ ant beta:organization:claude-tag:slack-workspaces retrieve \
       "type": "allow"
     },
     "instructions": "instructions",
-    "model": "model"
+    "model": "model",
+    "reply_mode": {
+      "type": "automatic"
+    }
   },
   "slack": {
     "workspace_id": "workspace_id"
@@ -31122,6 +31797,10 @@ ant beta:organization:claude-tag:slack-workspaces retrieve \
       }
     ],
     "model": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "reply_mode": {
       "slack_channel_id": "slack_channel_id",
       "type": "slack_channel"
     }
@@ -31190,6 +31869,34 @@ Change the settings a Slack workspace stores. The update is partial: a setting l
     The model Claude uses: the identifier of a model, or the name of a model line, that the organization is entitled to for Claude Tag. Null clears it.
 
     minLength: 1, maxLength: 128
+
+  - `reply_mode: optional BetaClaudeTagReplyModeAutomatic or BetaClaudeTagReplyModeMentionOnly or BetaClaudeTagReplyModeAlwaysAwake or BetaClaudeTagReplyModeThread`
+
+    How Claude takes part in the channel: `automatic`, `mention_only`, `always_awake` or `thread`. Only a channel takes one: an update of a workspace that sends a value is refused, and one that sends null changes nothing. Null never clears it: sent to a channel that stores none it changes nothing, and sent to a channel that stores one it is refused, because a stored reply mode can be changed but never cleared; a caller that wants Claude's default behavior sends `automatic`.
+
+    - `beta_claude_tag_reply_mode_automatic: object`
+
+      Claude reads along and joins in when it can help, and pauses on its own in quiet or busy channels.
+
+      - `type: "automatic"`
+
+    - `beta_claude_tag_reply_mode_mention_only: object`
+
+      Claude replies only when it is @-mentioned.
+
+      - `type: "mention_only"`
+
+    - `beta_claude_tag_reply_mode_always_awake: object`
+
+      Like `automatic`, but Claude never pauses on its own. Available where it is enabled for the channel.
+
+      - `type: "always_awake"`
+
+    - `beta_claude_tag_reply_mode_thread: object`
+
+      Every new top-level message in the channel gets its own reply from Claude, in a thread under it. Available where it is enabled for the channel, and only once Claude has been used in the channel.
+
+      - `type: "thread"`
 
 - `--beta: optional array of AnthropicBeta` (header parameter)
 
@@ -31299,6 +32006,8 @@ Change the settings a Slack workspace stores. The update is partial: a setting l
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -31364,6 +32073,34 @@ Change the settings a Slack workspace stores. The update is partial: a setting l
     - `model: string`
 
       The model Claude uses: a model identifier or the name of a model line. The nearest settings level that sets it decides. When none does, Claude uses the product's default model.
+
+    - `reply_mode: BetaClaudeTagReplyModeAutomatic or BetaClaudeTagReplyModeMentionOnly or BetaClaudeTagReplyModeAlwaysAwake or BetaClaudeTagReplyModeThread`
+
+      How Claude takes part in the channel. Only a channel stores one, and no settings level passes one on, so it is always null on a workspace. Null on a channel means the channel stores none yet: Claude then follows the reply mode chosen in Slack, if one was, else `automatic`. A stored reply mode can be changed but never cleared.
+
+      - `beta_claude_tag_reply_mode_automatic: object`
+
+        Claude reads along and joins in when it can help, and pauses on its own in quiet or busy channels.
+
+        - `type: "automatic"`
+
+      - `beta_claude_tag_reply_mode_mention_only: object`
+
+        Claude replies only when it is @-mentioned.
+
+        - `type: "mention_only"`
+
+      - `beta_claude_tag_reply_mode_always_awake: object`
+
+        Like `automatic`, but Claude never pauses on its own. Available where it is enabled for the channel.
+
+        - `type: "always_awake"`
+
+      - `beta_claude_tag_reply_mode_thread: object`
+
+        Every new top-level message in the channel gets its own reply from Claude, in a thread under it. Available where it is enabled for the channel, and only once Claude has been used in the channel.
+
+        - `type: "thread"`
 
   - `slack: object`
 
@@ -31485,6 +32222,10 @@ Change the settings a Slack workspace stores. The update is partial: a setting l
 
       The settings level `model` comes from.
 
+    - `reply_mode: BetaClaudeTagSlackChannelSettingSource or BetaClaudeTagSlackWorkspaceSettingSource or BetaClaudeTagSlackParentChannelSettingSource or 3 more`
+
+      The settings level `reply_mode` comes from: the channel when it stores one. With `include_inherited=true` and no stored mode it is `default`.
+
   - `updated_at: string`
 
     Time Claude Tag's record of the workspace last changed. It moves on every change to a setting, and can also move when something no response holds changes, so a later value says to read the workspace again, not that a setting changed. Attaching or detaching a Bundle does not by itself move it.
@@ -31512,7 +32253,10 @@ ant beta:organization:claude-tag:slack-workspaces update \
       "type": "allow"
     },
     "instructions": "instructions",
-    "model": "model"
+    "model": "model",
+    "reply_mode": {
+      "type": "automatic"
+    }
   },
   "slack": {
     "workspace_id": "workspace_id"
@@ -31537,6 +32281,10 @@ ant beta:organization:claude-tag:slack-workspaces update \
       }
     ],
     "model": {
+      "slack_channel_id": "slack_channel_id",
+      "type": "slack_channel"
+    },
+    "reply_mode": {
       "slack_channel_id": "slack_channel_id",
       "type": "slack_channel"
     }
@@ -31675,6 +32423,8 @@ List the organization's Bundles, newest first by `created_at`. A Bundle that Cla
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -31865,6 +32615,8 @@ Get one Bundle. What the Bundle grants (connectors, repositories and credentials
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -32057,6 +32809,8 @@ List the Slack channels and Slack workspaces a Bundle is attached to, newest fir
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
@@ -32287,6 +33041,8 @@ Attach a Bundle to a Slack channel or a Slack workspace. A Bundle attached to a 
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -32484,6 +33240,8 @@ Get one Bundle Target. Returns 404 when `target_id` is the identifier of another
 
   - `"webhooks-2026-10-07"`
 
+  - `"admin-user-sign-out-2026-10-08"`
+
   - `"message-threads-2026-08-12"`
 
   - `"analytics-usage-cost-2026-08-24"`
@@ -32680,6 +33438,8 @@ Detach a Bundle from a Slack channel or a Slack workspace. A repeated detach ret
   - `"telemetry-destinations-2026-08-11"`
 
   - `"webhooks-2026-10-07"`
+
+  - `"admin-user-sign-out-2026-10-08"`
 
   - `"message-threads-2026-08-12"`
 
