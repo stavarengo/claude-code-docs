@@ -14,7 +14,7 @@ Authenticate from your backend with your OpenAI API key in the `Authorization: B
 
 `session_id` (required path parameter): The ID of the existing session to attach to.
 
-Attaching does not create a session or replay earlier events. The primary connection carries live media; this sideband receives reflected input and output audio. Do not send session.start or session.input_audio.append on this WebSocket.
+Attaching does not create a session. The sideband first replays events from the preceding 3 seconds, including conversation events, call-progress events, and reflected input and output audio, then continues with new events. Older events are not replayed, so attach promptly. Replayed events retain their original event_id when present; deduplicate those events by event_id. Reflected audio events do not have an event_id. The primary connection carries live media. Do not send session.start or session.input_audio.append on this WebSocket.
 
 ## Inputs
 
@@ -41,7 +41,7 @@ For a session using Responses delegation, update its tool choice. The delegation
 
 ## Outputs
 
-A configuration update is acknowledged with session.updated. You also receive subsequent session events; attaching alone does not trigger this event.
+A configuration update is acknowledged with session.updated. Attaching alone does not generate a new session.updated event, but a recent one may be replayed. After replay, you receive new session events as they occur.
 
 ### Example server event · excerpt: session.updated
 
@@ -3694,7 +3694,7 @@ Schema name: `LiveResponseItemCreateParam`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -3709,7 +3709,7 @@ Schema name: `LiveResponseItemCreateParam`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -4881,7 +4881,7 @@ Schema name: `LiveResponseItemCreateParam`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -4896,7 +4896,7 @@ Schema name: `LiveResponseItemCreateParam`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -8078,6 +8078,12 @@ Schema name: `LiveSessionStarted`
 
     Frontend instructions for voice, conversation, interruptions, and when to delegate. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting); put business rules and tool workflows in a separate [backend prompt](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt). Limited to 16,384 client-supplied tokens. Omitted or blank instructions use server defaults. Immutable after startup.
 
+  - `safety_identifier: optional string or null`
+
+    A stable identifier for your end user, used for safety monitoring and abuse detection.
+
+    `maxLength: 128`
+
   - `store: optional boolean`
 
     Whether to store the session for later forking and recording download. Defaults to false for new sessions.
@@ -9423,6 +9429,12 @@ Schema name: `LiveSessionUpdated`
   - `instructions: optional string or null`
 
     Frontend instructions for voice, conversation, interruptions, and when to delegate. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting); put business rules and tool workflows in a separate [backend prompt](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt). Limited to 16,384 client-supplied tokens. Omitted or blank instructions use server defaults. Immutable after startup.
+
+  - `safety_identifier: optional string or null`
+
+    A stable identifier for your end user, used for safety monitoring and abuse detection.
+
+    `maxLength: 128`
 
   - `store: optional boolean`
 
@@ -12085,6 +12097,12 @@ Schema name: `LiveSessionClosed`
   - `instructions: optional string or null`
 
     Frontend instructions for voice, conversation, interruptions, and when to delegate. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting); put business rules and tool workflows in a separate [backend prompt](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt). Limited to 16,384 client-supplied tokens. Omitted or blank instructions use server defaults. Immutable after startup.
+
+  - `safety_identifier: optional string or null`
+
+    A stable identifier for your end user, used for safety monitoring and abuse detection.
+
+    `maxLength: 128`
 
   - `store: optional boolean`
 

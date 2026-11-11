@@ -572,6 +572,17 @@ This example calls the `security_scan` tool on the `my_server` MCP server after 
 
 Claude Code reads the tool's text content the same way it reads command-hook stdout, following the [parsing rule under exit code 0](#exit-code-0). If the tool returns `isError: true`, the hook produces a non-blocking error and execution continues.
 
+If a hook error contains one of these messages, Claude Code couldn't read the tool's answer, so the hook gave no verdict:
+
+```text theme={null}
+MCP tool "security_scan" on server "my_server" gave no answer that could be read, because a message from the server was too large, so this hook gave no verdict. If this keeps happening, the tool must send a smaller answer.
+MCP tool "security_scan" on server "my_server" answered without its text, which happens when a result is too large, so this hook gave no verdict. If this keeps happening, the tool must send a smaller answer.
+```
+
+On `PreToolUse`, Claude Code refuses the tool call the hook was checking. On other events such as `UserPromptSubmit`, `PostToolUse`, and `Stop`, the error is non-blocking.
+
+If the error keeps appearing, return less data from the tool, or change the hook's [`tool` or `input`](#mcp-tool-hook-fields) so the answer is smaller.
+
 ##### When the server is still connecting
 
 On events where a hook can block or change the result, such as `PreToolUse` or `Stop`, Claude Code waits for a connecting server before it calls the tool, for at most [`MCP_TIMEOUT`](https://code.claude.com/docs/en/env-vars) and within the hook's own [`timeout`](#common-fields). On observational events, such as `Notification` or `SessionEnd`, it doesn't wait.
@@ -892,9 +903,14 @@ On `PreToolUse`, a timed-out `command`, `http`, or `mcp_tool` hook doesn't block
 
 #### Hooks that start a background process
 
+A hook can start a long-running program, such as a dev server, and leave it running while the session continues. In the hook's script or [shell form](#exec-form-and-shell-form) command:
+
+* Run the program in the background
+* Redirect its stdout and stderr. For example, the Bash command `npm run dev > dev-server.log 2>&1 &` sends both to a file. If you don't redirect them, a hook that isn't [async](#run-hooks-in-the-background) takes up to 10 seconds to finish after its own process exits.
+
 If your command hook makes its decision in a background process and exits, a deny that process prints after Claude Code has stopped reading doesn't block the tool call. For a hook that isn't [async](#run-hooks-in-the-background), Claude Code finishes reading the hook's output shortly after the hook's own process exits.
 
-Print the decision before you start a background process, and redirect that process's stdout and stderr. If your script prints an allow, then starts a background process without redirecting that process's stdout and stderr, Claude Code blocks the tool call. The hook error includes `refusing to honor the suspect capture`.
+Print the decision before you start a background process, and redirect that process's stdout and stderr. If your script prints an allow, then starts a background process without redirecting that process's stdout and stderr, Claude Code blocks the tool call. The hook error includes `stdio went quiet` and `refusing to honor the suspect capture`.
 
 This `PreToolUse` hook script prints the decision with `policy-check.sh`, then uploads metrics in the background:
 
@@ -1193,7 +1209,7 @@ A few events can also rewrite content rather than only allow or block it:
 
 * `PreToolUse`: `updatedInput` directly under `hookSpecificOutput` replaces a tool's arguments before it runs. See [PreToolUse decision control](#pretooluse-decision-control)
 * `PermissionRequest`: `updatedInput` inside the `decision` object. See [PermissionRequest decision control](#permissionrequest-decision-control)
-* `PostToolUse`: `updatedToolOutput` replaces the tool's result. See [PostToolUse decision control](#posttooluse-decision-control)
+* `PostToolUse`: `updatedToolOutput` replaces the tool's result. In a [Cowork](https://claude.com/docs/cowork/overview) cloud session, Claude Code ignores `updatedToolOutput` when the tool is `AskUserQuestion` or `ExitPlanMode`, and Claude reads the original answer or plan. See [PostToolUse decision control](#posttooluse-decision-control)
 * `UserPromptSubmit`: can't replace the prompt; it only injects `additionalContext` alongside it
 
 For redaction or transformation use cases, intercept at `PreToolUse` for outbound tool inputs and `PostToolUse` for inbound tool results.
@@ -2297,8 +2313,8 @@ Before v2.1.319, the hooks didn't start after you interrupted the turn with a me
 | `reason` | Explanation shown to Claude when `decision` is `"block"` |
 | `additionalContext` | String added to Claude's context alongside the tool result. See [Add context for Claude](#add-context-for-claude) |
 | `classifierContext` | Short note about this call's result for the [auto mode](./permission-modes.md#eliminate-prompts-with-auto-mode) classifier rather than for Claude. See [Annotate a result for the auto mode classifier](#annotate-a-result-for-the-auto-mode-classifier). Requires Claude Code v2.1.236 or later |
-| `updatedToolOutput` | Replaces the tool's output with the provided value before it is sent to Claude. The value must match the tool's output shape |
-| `updatedMCPToolOutput` | Replaces the output for [MCP tools](#match-mcp-tools) only. Prefer `updatedToolOutput`, which works for all tools |
+| `updatedToolOutput` | Replaces the tool's output with the provided value before it is sent to Claude. The value must match the tool's output shape. In a [Cowork](https://claude.com/docs/cowork/overview) cloud session, Claude Code ignores this field when the tool is `AskUserQuestion` or `ExitPlanMode`, and Claude reads the original answer or plan |
+| `updatedMCPToolOutput` | Replaces the output for [MCP tools](#match-mcp-tools) only. Prefer `updatedToolOutput`, which also works for built-in tools |
 
 The example below replaces the output of a `Bash` call. The replacement value matches the `Bash` tool's output shape:
 

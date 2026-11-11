@@ -1275,11 +1275,61 @@ Schema name: `SessionEventAgentSessionCreated`
 
     - `"agent.session"`
 
-  - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
+  - `required_actions: array of McpApprovalRequest { request, request_id, turn_id, type }  or ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
 
     `minItems: 0`, `maxItems: 2000`
+
+    - `McpApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to an MCP tool-call approval request.
+
+      - `request: object { arguments, message, name, 2 more }`
+
+        Information for presenting an MCP approval.
+
+        - `arguments: unknown`
+
+          The tool arguments as JSON, or null when CCA does not provide them.
+
+        - `message: string`
+
+          `minLength: 0`
+
+        - `name: string or null`
+
+          The tool name, or null when CCA does not provide it.
+
+          `minLength: 0`
+
+        - `server_label: string`
+
+          `minLength: 0`
+
+        - `type: "mcp_tool_call" (default: "mcp_tool_call")`
+
+          The type of the object. Always `mcp_tool_call`.
+
+          - `"mcp_tool_call"`
+
+      - `request_id: string`
+
+        The opaque approval ID to echo when responding.
+
+        `minLength: 0`
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+        `minLength: 0`
+
+      - `type: "mcp_approval_request" (default: "mcp_approval_request")`
+
+        The type of the object. Always `mcp_approval_request`.
+
+        - `"mcp_approval_request"`
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -1570,30 +1620,15 @@ Schema name: `SessionEventAgentSessionCreated`
     "status": "idle",
     "required_actions": [
       {
-        "type": "computer_use_approval_request",
+        "type": "mcp_approval_request",
         "turn_id": "turn_id",
         "request_id": "request_id",
         "request": {
-          "type": "browser_authentication",
-          "reason": "reason",
-          "credential_origin": "credential_origin",
-          "fields": [
-            {
-              "id": "id",
-              "label": "label",
-              "type": "type",
-              "required": true
-            }
-          ],
-          "options": [
-            {
-              "id": "id",
-              "label": "label",
-              "field_ids": [
-                "string"
-              ]
-            }
-          ]
+          "type": "mcp_tool_call",
+          "server_label": "server_label",
+          "name": "name",
+          "arguments": {},
+          "message": "message"
         }
       }
     ],
@@ -5172,11 +5207,61 @@ Schema name: `SessionEventAgentSessionIdle`
 
     - `"agent.session"`
 
-  - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
+  - `required_actions: array of McpApprovalRequest { request, request_id, turn_id, type }  or ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
 
     `minItems: 0`, `maxItems: 2000`
+
+    - `McpApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to an MCP tool-call approval request.
+
+      - `request: object { arguments, message, name, 2 more }`
+
+        Information for presenting an MCP approval.
+
+        - `arguments: unknown`
+
+          The tool arguments as JSON, or null when CCA does not provide them.
+
+        - `message: string`
+
+          `minLength: 0`
+
+        - `name: string or null`
+
+          The tool name, or null when CCA does not provide it.
+
+          `minLength: 0`
+
+        - `server_label: string`
+
+          `minLength: 0`
+
+        - `type: "mcp_tool_call" (default: "mcp_tool_call")`
+
+          The type of the object. Always `mcp_tool_call`.
+
+          - `"mcp_tool_call"`
+
+      - `request_id: string`
+
+        The opaque approval ID to echo when responding.
+
+        `minLength: 0`
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+        `minLength: 0`
+
+      - `type: "mcp_approval_request" (default: "mcp_approval_request")`
+
+        The type of the object. Always `mcp_approval_request`.
+
+        - `"mcp_approval_request"`
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -5467,30 +5552,15 @@ Schema name: `SessionEventAgentSessionIdle`
     "status": "idle",
     "required_actions": [
       {
-        "type": "computer_use_approval_request",
+        "type": "mcp_approval_request",
         "turn_id": "turn_id",
         "request_id": "request_id",
         "request": {
-          "type": "browser_authentication",
-          "reason": "reason",
-          "credential_origin": "credential_origin",
-          "fields": [
-            {
-              "id": "id",
-              "label": "label",
-              "type": "type",
-              "required": true
-            }
-          ],
-          "options": [
-            {
-              "id": "id",
-              "label": "label",
-              "field_ids": [
-                "string"
-              ]
-            }
-          ]
+          "type": "mcp_tool_call",
+          "server_label": "server_label",
+          "name": "name",
+          "arguments": {},
+          "message": "message"
         }
       }
     ],
@@ -6294,11 +6364,61 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     - `"agent.session"`
 
-  - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
+  - `required_actions: array of McpApprovalRequest { request, request_id, turn_id, type }  or ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
 
     `minItems: 0`, `maxItems: 2000`
+
+    - `McpApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to an MCP tool-call approval request.
+
+      - `request: object { arguments, message, name, 2 more }`
+
+        Information for presenting an MCP approval.
+
+        - `arguments: unknown`
+
+          The tool arguments as JSON, or null when CCA does not provide them.
+
+        - `message: string`
+
+          `minLength: 0`
+
+        - `name: string or null`
+
+          The tool name, or null when CCA does not provide it.
+
+          `minLength: 0`
+
+        - `server_label: string`
+
+          `minLength: 0`
+
+        - `type: "mcp_tool_call" (default: "mcp_tool_call")`
+
+          The type of the object. Always `mcp_tool_call`.
+
+          - `"mcp_tool_call"`
+
+      - `request_id: string`
+
+        The opaque approval ID to echo when responding.
+
+        `minLength: 0`
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+        `minLength: 0`
+
+      - `type: "mcp_approval_request" (default: "mcp_approval_request")`
+
+        The type of the object. Always `mcp_approval_request`.
+
+        - `"mcp_approval_request"`
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -6589,30 +6709,15 @@ Schema name: `SessionEventAgentSessionInProgress`
     "status": "idle",
     "required_actions": [
       {
-        "type": "computer_use_approval_request",
+        "type": "mcp_approval_request",
         "turn_id": "turn_id",
         "request_id": "request_id",
         "request": {
-          "type": "browser_authentication",
-          "reason": "reason",
-          "credential_origin": "credential_origin",
-          "fields": [
-            {
-              "id": "id",
-              "label": "label",
-              "type": "type",
-              "required": true
-            }
-          ],
-          "options": [
-            {
-              "id": "id",
-              "label": "label",
-              "field_ids": [
-                "string"
-              ]
-            }
-          ]
+          "type": "mcp_tool_call",
+          "server_label": "server_label",
+          "name": "name",
+          "arguments": {},
+          "message": "message"
         }
       }
     ],
@@ -7416,11 +7521,61 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     - `"agent.session"`
 
-  - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
+  - `required_actions: array of McpApprovalRequest { request, request_id, turn_id, type }  or ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
 
     `minItems: 0`, `maxItems: 2000`
+
+    - `McpApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to an MCP tool-call approval request.
+
+      - `request: object { arguments, message, name, 2 more }`
+
+        Information for presenting an MCP approval.
+
+        - `arguments: unknown`
+
+          The tool arguments as JSON, or null when CCA does not provide them.
+
+        - `message: string`
+
+          `minLength: 0`
+
+        - `name: string or null`
+
+          The tool name, or null when CCA does not provide it.
+
+          `minLength: 0`
+
+        - `server_label: string`
+
+          `minLength: 0`
+
+        - `type: "mcp_tool_call" (default: "mcp_tool_call")`
+
+          The type of the object. Always `mcp_tool_call`.
+
+          - `"mcp_tool_call"`
+
+      - `request_id: string`
+
+        The opaque approval ID to echo when responding.
+
+        `minLength: 0`
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+        `minLength: 0`
+
+      - `type: "mcp_approval_request" (default: "mcp_approval_request")`
+
+        The type of the object. Always `mcp_approval_request`.
+
+        - `"mcp_approval_request"`
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -7711,30 +7866,15 @@ Schema name: `SessionEventAgentSessionRequiresAction`
     "status": "idle",
     "required_actions": [
       {
-        "type": "computer_use_approval_request",
+        "type": "mcp_approval_request",
         "turn_id": "turn_id",
         "request_id": "request_id",
         "request": {
-          "type": "browser_authentication",
-          "reason": "reason",
-          "credential_origin": "credential_origin",
-          "fields": [
-            {
-              "id": "id",
-              "label": "label",
-              "type": "type",
-              "required": true
-            }
-          ],
-          "options": [
-            {
-              "id": "id",
-              "label": "label",
-              "field_ids": [
-                "string"
-              ]
-            }
-          ]
+          "type": "mcp_tool_call",
+          "server_label": "server_label",
+          "name": "name",
+          "arguments": {},
+          "message": "message"
         }
       }
     ],
@@ -8538,11 +8678,61 @@ Schema name: `SessionEventAgentSessionFailed`
 
     - `"agent.session"`
 
-  - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
+  - `required_actions: array of McpApprovalRequest { request, request_id, turn_id, type }  or ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
 
     `minItems: 0`, `maxItems: 2000`
+
+    - `McpApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to an MCP tool-call approval request.
+
+      - `request: object { arguments, message, name, 2 more }`
+
+        Information for presenting an MCP approval.
+
+        - `arguments: unknown`
+
+          The tool arguments as JSON, or null when CCA does not provide them.
+
+        - `message: string`
+
+          `minLength: 0`
+
+        - `name: string or null`
+
+          The tool name, or null when CCA does not provide it.
+
+          `minLength: 0`
+
+        - `server_label: string`
+
+          `minLength: 0`
+
+        - `type: "mcp_tool_call" (default: "mcp_tool_call")`
+
+          The type of the object. Always `mcp_tool_call`.
+
+          - `"mcp_tool_call"`
+
+      - `request_id: string`
+
+        The opaque approval ID to echo when responding.
+
+        `minLength: 0`
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+        `minLength: 0`
+
+      - `type: "mcp_approval_request" (default: "mcp_approval_request")`
+
+        The type of the object. Always `mcp_approval_request`.
+
+        - `"mcp_approval_request"`
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -8833,30 +9023,15 @@ Schema name: `SessionEventAgentSessionFailed`
     "status": "idle",
     "required_actions": [
       {
-        "type": "computer_use_approval_request",
+        "type": "mcp_approval_request",
         "turn_id": "turn_id",
         "request_id": "request_id",
         "request": {
-          "type": "browser_authentication",
-          "reason": "reason",
-          "credential_origin": "credential_origin",
-          "fields": [
-            {
-              "id": "id",
-              "label": "label",
-              "type": "type",
-              "required": true
-            }
-          ],
-          "options": [
-            {
-              "id": "id",
-              "label": "label",
-              "field_ids": [
-                "string"
-              ]
-            }
-          ]
+          "type": "mcp_tool_call",
+          "server_label": "server_label",
+          "name": "name",
+          "arguments": {},
+          "message": "message"
         }
       }
     ],

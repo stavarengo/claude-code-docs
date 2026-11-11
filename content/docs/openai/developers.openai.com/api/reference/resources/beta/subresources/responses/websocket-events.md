@@ -2381,7 +2381,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -2396,7 +2396,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -3657,7 +3657,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -3672,7 +3672,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -7005,7 +7005,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
       `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
       `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
       `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-      `gpt-image-2`.
+      `gpt-image-2.6-sunburst`.
 
       `gpt-image-1` was shut down on October 23, 2026. Use
       `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -7020,7 +7020,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
         `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-        `gpt-image-2`.
+        `gpt-image-2.6-sunburst`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
         `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -7533,6 +7533,8 @@ Schema name: `BetaResponsesClientEventResponseCreate`
   - `auto`: If the input to this Response exceeds
     the model's context window size, the model will truncate the
     response to fit the context window by dropping items from the beginning of the conversation.
+    On some models, trimming can begin earlier because the API subtracts the model's
+    maximum output allowance from its input limit, even if you set a lower `max_output_tokens`.
   - `disabled` (default): If the input size will exceed the context window
     size for a model, the request will fail with a 400 error.
 
@@ -10177,7 +10179,7 @@ Schema name: `BetaResponseInjectEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -10192,7 +10194,7 @@ Schema name: `BetaResponseInjectEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -11453,7 +11455,7 @@ Schema name: `BetaResponseInjectEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -11468,7 +11470,7 @@ Schema name: `BetaResponseInjectEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -16501,7 +16503,7 @@ Schema name: `BetaResponseInjectFailedEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -16516,7 +16518,7 @@ Schema name: `BetaResponseInjectFailedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -17777,7 +17779,7 @@ Schema name: `BetaResponseInjectFailedEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -17792,7 +17794,7 @@ Schema name: `BetaResponseInjectFailedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -22147,7 +22149,7 @@ Schema name: `BetaResponseCreatedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -22162,7 +22164,7 @@ Schema name: `BetaResponseCreatedEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -23423,7 +23425,7 @@ Schema name: `BetaResponseCreatedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -23438,7 +23440,7 @@ Schema name: `BetaResponseCreatedEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -27169,7 +27171,7 @@ Schema name: `BetaResponseCreatedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -27184,7 +27186,7 @@ Schema name: `BetaResponseCreatedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -28309,7 +28311,7 @@ Schema name: `BetaResponseCreatedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -28324,7 +28326,7 @@ Schema name: `BetaResponseCreatedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -30698,7 +30700,7 @@ Schema name: `BetaResponseCreatedEvent`
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
         `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-        `gpt-image-2`.
+        `gpt-image-2.6-sunburst`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
         `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -30713,7 +30715,7 @@ Schema name: `BetaResponseCreatedEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -31808,6 +31810,8 @@ Schema name: `BetaResponseCreatedEvent`
     - `auto`: If the input to this Response exceeds
       the model's context window size, the model will truncate the
       response to fit the context window by dropping items from the beginning of the conversation.
+      On some models, trimming can begin earlier because the API subtracts the model's
+      maximum output allowance from its input limit, even if you set a lower `max_output_tokens`.
     - `disabled` (default): If the input size will exceed the context window
       size for a model, the request will fail with a 400 error.
 
@@ -34335,7 +34339,7 @@ Schema name: `BetaResponseInProgressEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -34350,7 +34354,7 @@ Schema name: `BetaResponseInProgressEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -35611,7 +35615,7 @@ Schema name: `BetaResponseInProgressEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -35626,7 +35630,7 @@ Schema name: `BetaResponseInProgressEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -39357,7 +39361,7 @@ Schema name: `BetaResponseInProgressEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -39372,7 +39376,7 @@ Schema name: `BetaResponseInProgressEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -40497,7 +40501,7 @@ Schema name: `BetaResponseInProgressEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -40512,7 +40516,7 @@ Schema name: `BetaResponseInProgressEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -42886,7 +42890,7 @@ Schema name: `BetaResponseInProgressEvent`
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
         `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-        `gpt-image-2`.
+        `gpt-image-2.6-sunburst`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
         `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -42901,7 +42905,7 @@ Schema name: `BetaResponseInProgressEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -43996,6 +44000,8 @@ Schema name: `BetaResponseInProgressEvent`
     - `auto`: If the input to this Response exceeds
       the model's context window size, the model will truncate the
       response to fit the context window by dropping items from the beginning of the conversation.
+      On some models, trimming can begin earlier because the API subtracts the model's
+      maximum output allowance from its input limit, even if you set a lower `max_output_tokens`.
     - `disabled` (default): If the input size will exceed the context window
       size for a model, the request will fail with a 400 error.
 
@@ -46523,7 +46529,7 @@ Schema name: `BetaResponseCompletedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -46538,7 +46544,7 @@ Schema name: `BetaResponseCompletedEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -47799,7 +47805,7 @@ Schema name: `BetaResponseCompletedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -47814,7 +47820,7 @@ Schema name: `BetaResponseCompletedEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -51545,7 +51551,7 @@ Schema name: `BetaResponseCompletedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -51560,7 +51566,7 @@ Schema name: `BetaResponseCompletedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -52685,7 +52691,7 @@ Schema name: `BetaResponseCompletedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -52700,7 +52706,7 @@ Schema name: `BetaResponseCompletedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -55074,7 +55080,7 @@ Schema name: `BetaResponseCompletedEvent`
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
         `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-        `gpt-image-2`.
+        `gpt-image-2.6-sunburst`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
         `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -55089,7 +55095,7 @@ Schema name: `BetaResponseCompletedEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -56184,6 +56190,8 @@ Schema name: `BetaResponseCompletedEvent`
     - `auto`: If the input to this Response exceeds
       the model's context window size, the model will truncate the
       response to fit the context window by dropping items from the beginning of the conversation.
+      On some models, trimming can begin earlier because the API subtracts the model's
+      maximum output allowance from its input limit, even if you set a lower `max_output_tokens`.
     - `disabled` (default): If the input size will exceed the context window
       size for a model, the request will fail with a 400 error.
 
@@ -58735,7 +58743,7 @@ Schema name: `BetaResponseFailedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -58750,7 +58758,7 @@ Schema name: `BetaResponseFailedEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -60011,7 +60019,7 @@ Schema name: `BetaResponseFailedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -60026,7 +60034,7 @@ Schema name: `BetaResponseFailedEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -63757,7 +63765,7 @@ Schema name: `BetaResponseFailedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -63772,7 +63780,7 @@ Schema name: `BetaResponseFailedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -64897,7 +64905,7 @@ Schema name: `BetaResponseFailedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -64912,7 +64920,7 @@ Schema name: `BetaResponseFailedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -67286,7 +67294,7 @@ Schema name: `BetaResponseFailedEvent`
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
         `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-        `gpt-image-2`.
+        `gpt-image-2.6-sunburst`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
         `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -67301,7 +67309,7 @@ Schema name: `BetaResponseFailedEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -68396,6 +68404,8 @@ Schema name: `BetaResponseFailedEvent`
     - `auto`: If the input to this Response exceeds
       the model's context window size, the model will truncate the
       response to fit the context window by dropping items from the beginning of the conversation.
+      On some models, trimming can begin earlier because the API subtracts the model's
+      maximum output allowance from its input limit, even if you set a lower `max_output_tokens`.
     - `disabled` (default): If the input size will exceed the context window
       size for a model, the request will fail with a 400 error.
 
@@ -70927,7 +70937,7 @@ Schema name: `BetaResponseIncompleteEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -70942,7 +70952,7 @@ Schema name: `BetaResponseIncompleteEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -72203,7 +72213,7 @@ Schema name: `BetaResponseIncompleteEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -72218,7 +72228,7 @@ Schema name: `BetaResponseIncompleteEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -75949,7 +75959,7 @@ Schema name: `BetaResponseIncompleteEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -75964,7 +75974,7 @@ Schema name: `BetaResponseIncompleteEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -77089,7 +77099,7 @@ Schema name: `BetaResponseIncompleteEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -77104,7 +77114,7 @@ Schema name: `BetaResponseIncompleteEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -79478,7 +79488,7 @@ Schema name: `BetaResponseIncompleteEvent`
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
         `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-        `gpt-image-2`.
+        `gpt-image-2.6-sunburst`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
         `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -79493,7 +79503,7 @@ Schema name: `BetaResponseIncompleteEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -80588,6 +80598,8 @@ Schema name: `BetaResponseIncompleteEvent`
     - `auto`: If the input to this Response exceeds
       the model's context window size, the model will truncate the
       response to fit the context window by dropping items from the beginning of the conversation.
+      On some models, trimming can begin earlier because the API subtracts the model's
+      maximum output allowance from its input limit, even if you set a lower `max_output_tokens`.
     - `disabled` (default): If the input size will exceed the context window
       size for a model, the request will fail with a 400 error.
 
@@ -82897,7 +82909,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -82912,7 +82924,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -84165,7 +84177,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -84180,7 +84192,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -88014,7 +88026,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -88029,7 +88041,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -89282,7 +89294,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -89297,7 +89309,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -96077,7 +96089,7 @@ Schema name: `BetaResponseQueuedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -96092,7 +96104,7 @@ Schema name: `BetaResponseQueuedEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -97353,7 +97365,7 @@ Schema name: `BetaResponseQueuedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -97368,7 +97380,7 @@ Schema name: `BetaResponseQueuedEvent`
                 `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
                 `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
                 `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-                `gpt-image-2`.
+                `gpt-image-2.6-sunburst`.
 
                 `gpt-image-1` was shut down on October 23, 2026. Use
                 `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -101099,7 +101111,7 @@ Schema name: `BetaResponseQueuedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -101114,7 +101126,7 @@ Schema name: `BetaResponseQueuedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -102239,7 +102251,7 @@ Schema name: `BetaResponseQueuedEvent`
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -102254,7 +102266,7 @@ Schema name: `BetaResponseQueuedEvent`
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -104628,7 +104640,7 @@ Schema name: `BetaResponseQueuedEvent`
         `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
         `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
         `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-        `gpt-image-2`.
+        `gpt-image-2.6-sunburst`.
 
         `gpt-image-1` was shut down on October 23, 2026. Use
         `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -104643,7 +104655,7 @@ Schema name: `BetaResponseQueuedEvent`
           `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
           `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
           `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-          `gpt-image-2`.
+          `gpt-image-2.6-sunburst`.
 
           `gpt-image-1` was shut down on October 23, 2026. Use
           `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -105738,6 +105750,8 @@ Schema name: `BetaResponseQueuedEvent`
     - `auto`: If the input to this Response exceeds
       the model's context window size, the model will truncate the
       response to fit the context window by dropping items from the beginning of the conversation.
+      On some models, trimming can begin earlier because the API subtracts the model's
+      maximum output allowance from its input limit, even if you set a lower `max_output_tokens`.
     - `disabled` (default): If the input size will exceed the context window
       size for a model, the request will fail with a 400 error.
 

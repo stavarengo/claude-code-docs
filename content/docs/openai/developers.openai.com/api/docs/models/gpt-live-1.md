@@ -1,4 +1,4 @@
-# GPT-Live 1
+# GPT-Live-1
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -6,7 +6,7 @@
 
 Model ID: `gpt-live-1`
 
-GPT-Live 1 is a full-duplex voice model for real-time conversations. It can listen and speak at the same time, and delegate reasoning and tool use to a backend agent.
+GPT-Live-1 is a full-duplex voice model for real-time conversations. It can listen and speak at the same time, and delegate reasoning and tool use to a backend agent.
 
 Learn how to [get started with GPT-Live](/api/docs/guides/live), [configure delegation](/api/docs/guides/live-delegation), and [prompt the model](/api/docs/guides/live-prompting).
 

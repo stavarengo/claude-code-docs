@@ -375,9 +375,10 @@ Claude Code replays the run in the order agents start, and each agent either ret
 
   Before v2.1.305, completed agents could also run again when you relaunched an unedited script whose `pipeline()` items or `parallel()` tasks ran more than one agent each. To stop those reruns for new runs, update Claude Code.
 * **Still running when you stopped**: starts over. Stopping the whole run doesn't count any agent as failed.
+* **[Failed at a usage limit](#when-a-run-hits-your-usage-limit) on v2.1.318 or later**: runs again, and agents that completed return their saved results. If your script called another agent after the failure and that agent returned a result, every agent the script starts after the failed one also runs again.
 * **Failed**: runs again, and so does every agent the script starts after it, even ones that completed. Stopping one agent alone, by selecting it in [`/workflows`](#watch-the-run) and pressing `x`, counts as failing.
 
-That last case means a failure in the middle of a fan-out reruns work that already finished. If a script starts A, B, C, and D in that order and B fails, relaunching returns A from cache and runs B, C, and D again.
+That last case means a **Failed** agent in the middle of a fan-out reruns work that already finished. If a script starts A, B, C, and D in that order and B is **Failed**, relaunching returns A from cache and runs B, C, and D again.
 
 If you edit a script that started A, B, C, and D so that it starts A, C, B, and D, the second agent to start is now C, where the previous run started B. Relaunching returns A from cache and runs C, B, and D again.
 
@@ -395,16 +396,21 @@ In local and cloud sessions alike, when Claude relaunches an earlier run and Cla
 
 ### When a run hits your usage limit
 
-When an agent hits your claude.ai [usage limit](./interactive-mode.md#wait-for-a-usage-limit-to-reset), the run pauses rather than failing that agent: the agents that hit the limit wait for the reset, and no new agents start. Shortly after the limit resets, the waiting agents run again and the run continues on its own. Requires Claude Code v2.1.271 or later; on earlier versions, the affected agents fail.
+When an agent hits your claude.ai [usage limit](./interactive-mode.md#wait-for-a-usage-limit-to-reset), the run pauses rather than failing that agent. The agents that hit the limit wait for the reset, and no new agents start. Shortly after the limit resets, the waiting agents run again and the run continues on its own. Requires Claude Code v2.1.271 or later, or [v2.1.319 or later](./desktop.md#claude-code-version-in-the-code-tab) in the Desktop [Code tab](./desktop.md). On earlier versions, the affected agents fail.
 
-While the run waits, its progress line in the task panel and the [`/workflows`](#watch-the-run) header show when the limit resets.
+While the run waits, its progress line in the task panel and the [`/workflows`](#watch-the-run) header show when the limit resets. In the Code tab, the run shows a line such as `Paused at usage limit · continues after 3:45 PM if the app stays open`. Keep the app open.
 
 The run pauses only when all of these hold; when one doesn't, the affected agent fails instead:
 
-* The session is interactive and signed in with a claude.ai subscription. A run doesn't pause in [non-interactive mode](./headless.md) with `claude -p` or the [Agent SDK](./agent-sdk/overview.md), in a [background session](./agent-view.md), or in a [Remote Control](./remote-control.md) or [agent team](./agent-teams.md) teammate session.
+* The session is signed in with a claude.ai subscription without [usage-based billing](./interactive-mode.md#start-a-wait-yourself), and is one of these session types:
+  * An interactive terminal session. A run doesn't pause in [non-interactive mode](./headless.md) with `claude -p` or the [Agent SDK](./agent-sdk/overview.md), in a [background session](./agent-view.md), or in a [Remote Control](./remote-control.md) or [agent team](./agent-teams.md) teammate session.
+  * A local session you started in the Code tab. A run doesn't pause in an SSH, WSL, [Dispatch](./desktop.md#sessions-from-dispatch), or [scheduled task](./desktop-scheduled-tasks.md) session, in one started from Remote Control or through a [corporate launcher](./corporate-launcher.md), or while [`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`](https://code.claude.com/docs/en/env-vars#variables) is set.
 * [`autoContinueAtUsageLimit`](https://code.claude.com/docs/en/settings-reference#autocontinueatusagelimit) is on, the same setting that lets the session itself [wait for a usage limit to reset](./interactive-mode.md#wait-for-a-usage-limit-to-reset). If you turn it off during a wait, the wait ends and the waiting agents fail.
+* In the Code tab, the **Auto-continue when limits reset** checkbox on a [session-limit card](./errors.md#youve-hit-your-session-limit) is checked, as it is by default. If you uncheck it, runs in your Code tab sessions stop pausing, unless managed settings set `autoContinueAtUsageLimit` to `true`.
 * The limit resets within 24 hours. A weekly limit can reset further out.
 * The run hasn't already waited twice. When it hits the limit a third time, the agent fails.
+
+To finish a run whose agents failed at the limit, ask Claude to [relaunch the workflow](#which-agents-run-again) after the limit resets.
 
 ### When an agent stalls and restarts
 

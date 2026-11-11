@@ -1845,7 +1845,7 @@ Returns a list of input items for a given response.
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -1860,7 +1860,7 @@ Returns a list of input items for a given response.
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -3024,7 +3024,7 @@ Returns a list of input items for a given response.
             `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
             `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
             `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-            `gpt-image-2`.
+            `gpt-image-2.6-sunburst`.
 
             `gpt-image-1` was shut down on October 23, 2026. Use
             `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -3039,7 +3039,7 @@ Returns a list of input items for a given response.
               `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
               `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`,
               `gpt-image-2.6-flare`, or `chatgpt-image-latest`. Default:
-              `gpt-image-2`.
+              `gpt-image-2.6-sunburst`.
 
               `gpt-image-1` was shut down on October 23, 2026. Use
               `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.

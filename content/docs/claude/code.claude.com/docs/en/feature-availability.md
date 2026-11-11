@@ -93,7 +93,7 @@ These features work in the local CLI but depend on a server-side capability that
       <td>✓ (Opus 5 and 4.8 need provisioning)</td>
       <td>✗</td>
       <td>✗</td>
-      <td>✗</td>
+      <td>✓ ([Fable 5.2, with conditions](./fast-mode.md#use-fast-mode-on-agent-platform))</td>
       <td>✗</td>
     </tr>
 
@@ -112,7 +112,7 @@ These features work in the local CLI but depend on a server-side capability that
       <td>✓</td>
       <td>✓</td>
       <td>✗</td>
-      <td>✗</td>
+      <td>✓ (Claude Code v2.1.300 or later)</td>
       <td>✗</td>
       <td>✗</td>
     </tr>
@@ -221,7 +221,7 @@ Organization-level controls and usage visibility.
 
 > [!NOTE]
 >
-> If you authenticate through an [LLM gateway](https://code.claude.com/docs/en/llm-gateway), feature availability matches the underlying provider the gateway forwards to, except for the features Claude Code itself turns off. Whenever `ANTHROPIC_BASE_URL` points at a host other than `api.anthropic.com`, Claude Code turns off features such as [Remote Control](./remote-control.md#requirements) and [server-managed settings](./server-managed-settings.md#platform-availability), whatever the gateway forwards. Some Anthropic-only features such as the [Advisor](./advisor.md) work only if the gateway forwards requests intact to the Anthropic API.
+> If you authenticate through an [LLM gateway](https://code.claude.com/docs/en/llm-gateway), feature availability matches the underlying provider the gateway forwards to, except for the features Claude Code itself turns off. Whenever `ANTHROPIC_BASE_URL` points at a host other than `api.anthropic.com`, Claude Code turns off features such as [Remote Control](./remote-control.md#requirements) and [server-managed settings](./server-managed-settings.md#platform-availability), whatever the gateway forwards. Some features, such as the [Advisor](./advisor.md#requirements), work only if the gateway forwards requests intact.
 >
 > For how the requests Claude Code sends differ between an Amazon Bedrock- or Agent Platform-format gateway, an `ANTHROPIC_BASE_URL` gateway, and a Claude apps gateway sign-in, see [client behavior by connection method](./llm-gateway-protocol.md#how-the-connection-method-changes-client-behavior).
 
@@ -244,9 +244,9 @@ Each tab lists what is unavailable or partially supported on that provider, with
 
 > [tab] Claude Platform on AWS
 >
-> **Not available:** all [features that require a Claude subscription](#features-that-require-a-claude-subscription), plus [fast mode](./fast-mode.md), [Advisor](./advisor.md), [Channels](./channels.md), [GitHub Actions](./github-actions.md), the [analytics dashboard](./analytics.md), [server-managed settings](./server-managed-settings.md), and the [`/design-sync` and `/import` commands](https://code.claude.com/docs/en/commands#all-commands).
+> **Not available:** all [features that require a Claude subscription](#features-that-require-a-claude-subscription), plus [fast mode](./fast-mode.md), [Channels](./channels.md), [GitHub Actions](./github-actions.md), the [analytics dashboard](./analytics.md), [server-managed settings](./server-managed-settings.md), and the [`/design-sync` and `/import` commands](https://code.claude.com/docs/en/commands#all-commands).
 >
-> **Available where Amazon Bedrock is not:** [web search](./tools-reference.md#websearch-tool-behavior).
+> **Available here, not on Amazon Bedrock:** [web search](./tools-reference.md#websearch-tool-behavior), plus the [Advisor](./advisor.md) in Claude Code v2.1.300 or later.
 >
 > **Partial support:**
 >
@@ -256,12 +256,13 @@ Each tab lists what is unavailable or partially supported on that provider, with
 
 > [tab] Google Cloud's Agent Platform
 >
-> **Not available:** all [features that require a Claude subscription](#features-that-require-a-claude-subscription), plus [fast mode](./fast-mode.md), [Advisor](./advisor.md), [Channels](./channels.md), the [analytics dashboard](./analytics.md), [server-managed settings](./server-managed-settings.md), and the [`/design-sync` and `/import` commands](https://code.claude.com/docs/en/commands#all-commands).
+> **Not available:** all [features that require a Claude subscription](#features-that-require-a-claude-subscription), plus [Advisor](./advisor.md), [Channels](./channels.md), the [analytics dashboard](./analytics.md), [server-managed settings](./server-managed-settings.md), and the [`/design-sync` and `/import` commands](https://code.claude.com/docs/en/commands#all-commands).
 >
 > **Partial support:**
 >
 > * [Desktop](./desktop.md): via [managed settings](https://claude.com/docs/third-party/claude-desktop/configuration) or [Claude Desktop on 3P](https://claude.com/docs/third-party/claude-desktop/overview)
 > * [Web search](./tools-reference.md#websearch-tool-behavior): Opus 4, Sonnet 4, Haiku 4.5, and later models
+> * [Fast mode](./fast-mode.md#use-fast-mode-on-agent-platform): Fable 5.2 in the `global`, `us`, and `eu` regions, or standard speed if Agent Platform refuses fast mode
 > * [Auto mode](./auto-mode-config.md): Sonnet 5 or later, Opus 4.7 or later, Haiku 5.5, and Fable models only
 > * [Cross-session messaging](./cross-session-messaging.md): between your sessions on this machine only <sup>[5](#fn5)</sup>
 > * [Zero Data Retention](./zero-data-retention.md): subject to your Google Cloud agreement

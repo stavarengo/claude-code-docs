@@ -6,7 +6,7 @@
 
 Model ID: `gpt-image-2.6-flare`
 
-GPT Image 2.6 Flare generates and edits images from text and image inputs. Use it for interactive image generation and editing workflows. Learn about the complexity setting, markup-guided edits, SVG output, and animated GIF output in the [image generation guide](/api/docs/guides/image-generation#gpt-image-26).
+GPT-Image-2.6 Flare generates and edits images from text and image inputs. Use it for interactive image generation and editing workflows. Learn about the complexity setting, markup-guided edits, SVG output, and animated GIF output in the [image generation guide](/api/docs/guides/image-generation#gpt-image-26).
 
 ## Model details
 

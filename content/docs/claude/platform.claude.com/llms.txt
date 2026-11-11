@@ -20,18 +20,18 @@ The latest version of each Claude Platform SDK and of the ant CLI is at https://
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 893 pages - /docs - Content included below
-- German (Deutsch) (de) - 313 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 313 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 313 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 313 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 313 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 313 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 313 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 313 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 313 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 313 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 313 pages - /docs/id - Visit website for content
+- English (en) - 900 pages - /docs - Content included below
+- German (Deutsch) (de) - 320 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 320 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 320 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 320 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 320 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 320 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 320 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 320 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 320 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 320 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 320 pages - /docs/id - Visit website for content
 
 ---
 
@@ -185,12 +185,14 @@ The full documentation is available in the following languages on https://platfo
 
 ### Admin
 
+- [Overview](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/overview.md) - Security posture in the Compliance API
 - [Overview](https://platform.claude.com/docs/en/manage-claude/access-transparency.md) - Access Transparency
 - [Admin API](https://platform.claude.com/docs/en/manage-claude/cmek-admin-api.md) - Add and attach an encryption key with the Admin API
 - [Admin API](https://platform.claude.com/docs/en/manage-claude/admin-api.md)
 - [Analytics APIs](https://platform.claude.com/docs/en/manage-claude/analytics-api.md)
 - [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention.md)
 - [App Attest](https://platform.claude.com/docs/en/manage-claude/app-attest.md) - App Attest for iOS and macOS apps
+- [Check events against results](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/check-events-against-results.md) - Check stored Security posture events against current results
 - [Claude Code Analytics API](https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api.md)
 - [Claude Tag API](https://platform.claude.com/docs/en/manage-claude/claude-tag-api.md)
 - [Data retention and ZDR](https://platform.claude.com/docs/en/manage-claude/cmek-data-retention.md) - CMEK, data retention, and ZDR
@@ -201,6 +203,7 @@ The full documentation is available in the following languages on https://platfo
 - [Overview](https://platform.claude.com/docs/en/manage-claude/cmek.md) - Customer-managed encryption keys
 - [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency.md)
 - [Design your integration](https://platform.claude.com/docs/en/manage-claude/compliance-integration-patterns.md) - Design your compliance integration
+- [Detect changes](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/detect-changes.md) - Detect changes in Security posture
 - [Build an integration](https://platform.claude.com/docs/en/manage-claude/inference-hooks-endpoint.md) - Develop an Inference hooks integration
 - [Errors](https://platform.claude.com/docs/en/manage-claude/compliance-errors.md) - Handle Compliance API errors
 - [How it works](https://platform.claude.com/docs/en/manage-claude/cmek-how-it-works.md) - How CMEK works
@@ -209,6 +212,7 @@ The full documentation is available in the following languages on https://platfo
 - [Limit key to workspaces](https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms-workspaces.md) - Limit an AWS KMS key to specific workspaces
 - [Organizations, users, roles, groups, and settings](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, groups, and settings
 - [Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md)
+- [Map events to OCSF](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/ocsf-mapping.md) - Map Security posture events to OCSF
 - [Overview](https://platform.claude.com/docs/en/manage-claude/opentelemetry.md) - OpenTelemetry tracing for the Claude API
 - [Organization webhooks (beta)](https://platform.claude.com/docs/en/manage-claude/organization-webhooks.md) - Organization webhooks
 - [Plugins API](https://platform.claude.com/docs/en/manage-claude/plugins-api.md)
@@ -216,7 +220,10 @@ The full documentation is available in the following languages on https://platfo
 - [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api.md)
 - [Chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data.md) - Retrieve and delete chats, files, and projects
 - [Session transcripts](https://platform.claude.com/docs/en/manage-claude/compliance-sessions.md) - Retrieve session transcripts
+- [Events reference](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/events-reference.md) - Security posture events reference
+- [Results reference](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/results-reference.md) - Security posture results reference
 - [Verification Portal links](https://platform.claude.com/docs/en/manage-claude/user-profiles-verification-portal.md) - Send an end customer a link to the Verification Portal
+- [Send events to your SIEM](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/send-events.md) - Send Security posture events to your SIEM
 - [Claude Platform on AWS](https://platform.claude.com/docs/en/manage-claude/cmek-claude-platform-on-aws.md) - Set up CMEK on Claude Platform on AWS
 - [AWS KMS](https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms.md) - Set up CMEK with AWS KMS
 - [Azure Key Vault](https://platform.claude.com/docs/en/manage-claude/cmek-azure-key-vault.md) - Set up CMEK with Azure Key Vault

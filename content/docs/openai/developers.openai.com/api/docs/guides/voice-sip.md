@@ -23,7 +23,9 @@ Use a SIP trunking provider, such as Twilio, to connect a phone number to GPT-Li
 
 1. Open your project in [OpenAI settings](https://platform.openai.com/settings). Under **Webhooks**, create a [webhook endpoint](https://developers.openai.com/api/docs/guides/webhooks) subscribed to `live.transport.incoming`.
 2. Find your project ID under **General**. It starts with `proj_`; use the same project that owns the webhook.
-3. Point your provider's SIP trunk at `sip:$PROJECT_ID@sip.api.openai.com;transport=tls`. For European data residency, use `sip:$PROJECT_ID@sip-eu.api.openai.com;transport=tls` instead.
+3. Point your provider's SIP trunk at the global SIP URI, `sip:$PROJECT_ID@sip.api.openai.com;transport=tls`, or use one of these regional endpoints:
+   - For European data residency, use `sip:$PROJECT_ID@sip-eu.api.openai.com;transport=tls`.
+   - For SIP hosts physically located in India, use `sip:$PROJECT_ID@sip-in.api.openai.com;transport=tls`.
 
 Confirm that GPT-Live SIP support is enabled for your project and that your
   provider's SIP trunk is routed to that project before using this flow.
@@ -169,7 +171,7 @@ Attach your backend to `wss://api.openai.com/v1/live/sessions/{session_id}/attac
 | `transport.answered` | The call has been answered and media is established.                                      |
 | `transport.failed`   | Call setup failed after session initialization. Inspect `error.code` and `error.message`. |
 
-Each call-progress event includes `event_id` and `session_id`. Attach immediately after creation: the sideband only replays events from the preceding 3 seconds, so a later attachment can miss earlier call progress. Replayed events retain their original event IDs. Deduplicate events by `event_id`.
+Each call-progress event includes `event_id` and `session_id`. Attach immediately after creation: the sideband first replays events from the preceding 3 seconds, then continues with new events, so a later attachment can miss earlier call progress. This replay window also applies to conversation events and reflected audio. Replayed call-progress events retain their original event IDs. Deduplicate them by `event_id`. See [Replay on attachment](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live#replay-on-attachment) for details.
 
 Once connected, use the [active call controls](#manage-an-active-call) to send keypad tones, transfer the call, or hang up. Keep the sideband open for `session.closed` and final usage as described in [Usage and graceful close](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close).
 
@@ -205,9 +207,10 @@ Keep the sideband open until `session.closed` supplies final usage. See [Usage a
 
 GPT-Live SIP calls use separate network paths for signaling and media. Configure your network to allow both:
 
-- **SIP signaling:** `sip.api.openai.com` and `sip-eu.api.openai.com` are GeoIP-routed endpoints. Allow outbound TCP/TLS traffic to the addresses returned by DNS on port `5061`.
+- **SIP signaling:** `sip.api.openai.com` and `sip-eu.api.openai.com` are GeoIP-routed endpoints. The India endpoint, `sip-in.api.openai.com`, routes to SIP hosts in India. Allow outbound TCP/TLS traffic to the addresses returned by DNS for your chosen endpoint on port `5061`.
 - **SRTP media:** The API specifies a separate media IP address and UDP port in the negotiated SDP. Allow bidirectional SRTP traffic over UDP to and from the following CIDRs:
   - `13.79.45.80/28`
+  - `20.204.17.112/28`
   - `23.98.140.64/28`
   - `40.67.149.176/28`
   - `40.83.204.240/28`
@@ -238,9 +241,12 @@ to IP traffic. After you purchase a phone number from your SIP trunking
 provider, follow the instructions below.
 
 Start by creating a [webhook](https://developers.openai.com/api/docs/guides/webhooks) for incoming calls, through your **platform.openai.com** [settings](https://platform.openai.com/settings) > Project > **Webhooks**.
-Then, point your SIP trunk at the OpenAI SIP endpoint, using the project ID
-for which you configured the webhook, e.g., `sip:$PROJECT_ID@sip.api.openai.com;transport=tls`.
-For European data residency, use `sip:$PROJECT_ID@sip-eu.api.openai.com;transport=tls` instead.
+Then, point your SIP trunk at the global OpenAI SIP URI, `sip:$PROJECT_ID@sip.api.openai.com;transport=tls`,
+using the project ID for which you configured the webhook. For regional routing, use one of these endpoints:
+
+- For European data residency, use `sip:$PROJECT_ID@sip-eu.api.openai.com;transport=tls`.
+- For SIP hosts physically located in India, use `sip:$PROJECT_ID@sip-in.api.openai.com;transport=tls`.
+
 To find your `$PROJECT_ID`, visit [settings](https://platform.openai.com/settings) > Project > **General**. That page will display the project ID, which
 will have a `proj_` prefix.
 
@@ -414,8 +420,9 @@ configure your network to allow signaling and media traffic as described below.
 
 ### SIP signaling
 
-`sip.api.openai.com` and `sip-eu.api.openai.com` are GeoIP-routed endpoints. Your network must allow
-outbound TCP/TLS traffic to the addresses returned by DNS on port `5061`.
+`sip.api.openai.com` and `sip-eu.api.openai.com` are GeoIP-routed endpoints. The India endpoint,
+`sip-in.api.openai.com`, routes to SIP hosts in India. Your network must allow outbound TCP/TLS
+traffic to the addresses returned by DNS for your chosen endpoint on port `5061`.
 
 ### SRTP media
 
@@ -423,6 +430,7 @@ The API specifies a separate media IP address and UDP port in the negotiated SDP
 allow bidirectional SRTP traffic over UDP to and from the following CIDRs:
 
 - `13.79.45.80/28`
+- `20.204.17.112/28`
 - `23.98.140.64/28`
 - `40.67.149.176/28`
 - `40.83.204.240/28`
