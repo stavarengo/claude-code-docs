@@ -136,7 +136,7 @@ The following examples opt in to `agent.message` previews and reconcile them wit
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 

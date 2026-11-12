@@ -42,7 +42,7 @@ For speed-critical applications, **Claude Haiku 5.5** offers the fastest respons
   ```
 </CodeGroup>
 
-For more details about model metrics, see the [models overview](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli) page.
+For more details about model metrics, see [Models overview](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli).
 
 ### 2. Optimize prompt and output length
 
@@ -65,7 +65,7 @@ Here are some tips to help you optimize your prompts and outputs:
 
     `max_tokens`
 
-     tokens, the response will be cut off, perhaps mid-sentence or mid-word, so this is a blunt technique that might require post-processing and is usually most appropriate for multiple choice or short answer responses where the answer comes right at the beginning.
+     tokens, the API cuts it off, perhaps mid-sentence or mid-word. This is a blunt technique that might require post-processing. It’s usually most appropriate for multiple-choice or short-answer responses where the answer comes right at the beginning.
   </Note>
 
 Finding the right balance among prompt clarity, output quality, and token count might require some experimentation.

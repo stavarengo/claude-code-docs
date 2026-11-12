@@ -33,7 +33,7 @@ featureMetadata:
 
 [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl) cuts latency and cost significantly, but only when the beginning of your prompt is byte-for-byte identical to a recent request. A reordered tool, a timestamp interpolated into your system prompt, or an edit to an earlier message can silently invalidate the cache. Without cache diagnostics, the only signal is `usage.cache_read_input_tokens` dropping to zero, with no indication of what changed.
 
-Cache diagnostics closes that gap. Pass the `id` of your previous response, and the API compares the two requests and tells you where they diverged (the model, the system prompt, the tools, or the message history) so you can fix the root cause instead of guessing.
+Cache diagnostics closes that gap. Pass the `id` of your previous response, and the API compares the two requests. It tells you where they diverged (the model, the system prompt, the tools, or the message history), so you can fix the root cause instead of guessing.
 
 ## How cache diagnostics works
 
@@ -45,7 +45,7 @@ Fingerprints contain only hashes and token-count estimates (never raw prompt con
 
 ## Basic usage
 
-Include the `diagnostics` object on every turn. The object is the opt-in: the API stores a fingerprint only for requests that include it. On the first turn, pass `"previous_message_id": null` to opt in without a prior message to compare against. On subsequent turns, pass the `id` from the previous response. The `cache-diagnosis-2026-04-07` beta header is no longer required, and requests that send it work as before.
+Include the `diagnostics` object on every turn. The object is the opt-in: the API stores a fingerprint only for requests that include it. On the first turn, pass `"previous_message_id": null` to opt in without a prior message to compare against. On subsequent turns, pass the `id` from the previous response.
 
 <CodeGroup>
   ```bash cURL
@@ -118,13 +118,11 @@ The `message_start` event carries the full `diagnostics` field; see [Response fo
 
 In a multi-turn conversation, carry the latest response `id` forward as `previous_message_id` on every turn. The first iteration passes `null` to opt in; each subsequent iteration passes the `id` from the previous response.
 
-<Tabs>
-  <Tab title="cURL">
-    <Info>
-      This workflow doesn’t translate well to a one-off shell command. Use the Claude SDK to run the loop; the per-turn HTTP request is identical to [Basic usage](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics?sdk_languages=curl#basic-usage).
-    </Info>
-  </Tab>
-</Tabs>
+<CodeGroup exclude="shell:cURL, shell:CLI">
+  <CodeGroupItem language="cURL">
+    This workflow needs more logic than a single shell command. Use the Anthropic SDK to run the loop. Each turn sends the same HTTP request as in [Basic usage](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics?sdk_languages=curl#basic-usage).
+  </CodeGroupItem>
+</CodeGroup>
 
 ## Response format
 
@@ -166,7 +164,7 @@ When `cache_miss_reason` is non-null, it looks like this:
 | Type                         | What it means                                                                                                                                                                                                                                                                                                                                                                                                                                   | What to change                                                                                                                                                                                                                                                                                                                   |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `model_changed`              | The `model` differs from the previous request (for example, a router, A/B test, or fallback selected a different model). The cache is per-model.                                                                                                                                                                                                                                                                                                | Hold the model constant within a cached conversation.                                                                                                                                                                                                                                                                            |
-| `system_changed`             | The `system` parameter differs. Typically a timestamp, request ID, or other per-request value was interpolated into the system prompt.                                                                                                                                                                                                                                                                                                          | Make the system prompt a byte-stable constant and move dynamic data into the first `user` message after your cache breakpoint.                                                                                                                                                                                                   |
+| `system_changed`             | The `system` parameter differs. Typically a timestamp, request ID, or other per-request value was interpolated into the system prompt.                                                                                                                                                                                                                                                                                                          | Make the system prompt a byte-stable constant and put the changing value in the `user` message you’re about to send.                                                                                                                                                                                                             |
 | `tools_changed`              | The `tools` array differs: tools were added, removed, or reordered between turns, or tool `input_schema` JSON was serialized non-deterministically.                                                                                                                                                                                                                                                                                             | Send the same tool list on every turn in a fixed order with deterministically serialized schemas (for example, sort keys).                                                                                                                                                                                                       |
 | `messages_changed`           | The model, system, and tools all match, but an earlier entry in `messages` was altered, reordered, or removed rather than appended to. Typically conversation history was truncated or edited, or assistant turns and `tool_result` blocks were re-serialized differently on resend.                                                                                                                                                            | Treat the history as append-only; echo assistant `content` and tool results back verbatim.                                                                                                                                                                                                                                       |
 | `previous_message_not_found` | No stored fingerprint exists for the supplied `previous_message_id`. This is not evidence that your request changed. Typically the previous request did not include the `diagnostics` object, it came from a different workspace, or too much time has passed since it was sent.                                                                                                                                                                | Include the `diagnostics` object on every turn and keep consecutive turns close together in time.                                                                                                                                                                                                                                |
@@ -178,7 +176,7 @@ When `cache_miss_reason` is non-null, it looks like this:
 
 ## Reading diagnostics alongside usage
 
-`diagnostics` answers “did my request change?” whereas `usage.cache_read_input_tokens` answers “did the cache hit?” Combining them tells you where to look.
+`diagnostics` tells you whether your request changed, and `usage.cache_read_input_tokens` tells you whether the cache hit. Combining them tells you where to look.
 
 This matrix applies to turns where you passed a real `previous_message_id`. On the first turn (`previous_message_id: null`), `diagnostics` is always `null` and `cache_read_input_tokens` is normally zero because the cache is being written, not read; no troubleshooting is needed. The matrix also does not apply when `cache_miss_reason` is `null` (the comparison is still pending; check the next turn) or when its `type` is `previous_message_not_found` or `unavailable` (no comparison was produced).
 
@@ -191,7 +189,7 @@ This matrix applies to turns where you passed a real `previous_message_id`. On t
 
 ## Limitations
 
-* **Claude API only:** Not available on Claude Models on Google Cloud (Google managed) or Amazon Bedrock.
+* **Claude API only:** Cache diagnostics is available on the Claude API.
 * **Limited retention:** Fingerprints for `previous_message_id` lookup expire after a short period. Run diagnostic comparisons between closely spaced requests.
 * **Same workspace:** The previous request must have run in the same organization and workspace. To check, compare the `anthropic-workspace-id` [response header](https://platform.claude.com/docs/en/api/overview?sdk_languages=curl#response-headers) on the two responses.
 * **Comparison horizon:** For very long conversations where the only change is deep in the message list, the response might be `unavailable` rather than a precise location.

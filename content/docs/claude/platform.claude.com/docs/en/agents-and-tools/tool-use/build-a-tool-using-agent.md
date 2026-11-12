@@ -20,7 +20,7 @@ The request sends a `tools` array alongside the user message. When Claude determ
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -44,7 +44,7 @@ The other change is conversation history. Instead of rebuilding the `messages` a
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -64,7 +64,7 @@ When Claude has multiple independent tool calls to make, it might return several
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -82,7 +82,7 @@ Tools fail. A calendar API might reject an event with too many attendees, or a d
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -102,7 +102,7 @@ The SDK provides a helper that turns an ordinary function into a runnable tool a
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    The tool runner is a helper in the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli). The `ant` CLI has no equivalent.
+    The tool runner is a helper in the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli). The `ant` CLI has no equivalent.
   </CodeGroupItem>
 </CodeGroup>
 

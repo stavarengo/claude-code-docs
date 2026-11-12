@@ -29,9 +29,9 @@ featureMetadata:
     - claude-sonnet-4-5-20250929
   supportedPlatforms:
     Claude API: stable
-    Claude Platform on AWS: stable
     Amazon Bedrock: stable
-    Amazon Bedrock (InvokeModel): stable
+    Amazon Bedrock (bedrock-runtime): stable
+    Claude Platform on AWS: stable
     Claude Models on Google Cloud (Google managed): stable
     Microsoft Foundry: stable
 ---
@@ -106,7 +106,7 @@ Returning search results from your custom tools lets you build dynamic RAG appli
 
 <CodeGroup exclude="shell">
   <CodeGroupItem language="CLI">
-    The tool-calling flow needs search logic in your application, which needs more than a single shell command. Use the Claude SDK for the full flow. For the raw request shape of a tool conversation with search results, see [Combining both methods](https://platform.claude.com/docs/en/build-with-claude/search-results?sdk_languages=cli#combining-both-methods). To provide search results directly in user messages, see [Method 2: Search results as top-level content](https://platform.claude.com/docs/en/build-with-claude/search-results?sdk_languages=cli#method-2-search-results-as-top-level-content).
+    The tool-calling flow needs search logic in your application, which needs more than a single shell command. Use the Anthropic SDK for the full flow. For the raw request shape of a tool conversation with search results, see [Combining both methods](https://platform.claude.com/docs/en/build-with-claude/search-results?sdk_languages=cli#combining-both-methods). To provide search results directly in user messages, see [Method 2: Search results as top-level content](https://platform.claude.com/docs/en/build-with-claude/search-results?sdk_languages=cli#method-2-search-results-as-top-level-content).
   </CodeGroupItem>
 </CodeGroup>
 
@@ -494,9 +494,9 @@ Search results are available on every model and eligible for zero data retention
 * Availability: Available
 * Usage: Send `search_result` blocks in a tool result or directly in a user message.
 
-| Status    | Cloud platforms                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Available | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli), [Amazon Bedrock (InvokeModel)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli), [Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
+| Status    | Cloud platforms                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Available | Claude API, [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli), [Amazon Bedrock (bedrock-runtime)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli), [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
 
 #### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli)
 

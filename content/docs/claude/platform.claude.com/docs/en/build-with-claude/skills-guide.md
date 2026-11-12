@@ -109,7 +109,7 @@ To provide input files for Skills to work on, [upload them with the Files API](h
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -138,7 +138,7 @@ The response’s `container` object carries the container’s `id` and `expires_
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -148,7 +148,7 @@ Skills might perform operations that require multiple turns. Handle `pause_turn`
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -541,7 +541,7 @@ Handle Skill-related errors gracefully:
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 

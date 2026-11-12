@@ -14,24 +14,24 @@ Connect an MCP client to https://platform.claude.com/docs/mcp (Streamable HTTP t
 
 ## SDK versions
 
-The latest version of each Claude Platform SDK and of the ant CLI is at https://platform.claude.com/docs/sdk-versions.json, as JSON.
+The latest version of each Anthropic SDK and of the ant CLI is at https://platform.claude.com/docs/sdk-versions.json, as JSON.
 
 ## Available Languages on Website
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 900 pages - /docs - Content included below
-- German (Deutsch) (de) - 320 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 320 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 320 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 320 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 320 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 320 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 320 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 320 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 320 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 320 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 320 pages - /docs/id - Visit website for content
+- English (en) - 901 pages - /docs - Content included below
+- German (Deutsch) (de) - 321 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 321 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 321 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 321 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 321 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 321 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 321 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 321 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 321 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 321 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 321 pages - /docs/id - Visit website for content
 
 ---
 
@@ -62,11 +62,11 @@ The full documentation is available in the following languages on https://platfo
 - [Build an orchestration mode](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-effort-example.md)
 - [Cache diagnostics](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics.md)
 - [Citations](https://platform.claude.com/docs/en/build-with-claude/citations.md)
-- [Amazon Bedrock (Opus 4.7 and later)](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock.md) - Claude in Amazon Bedrock (Opus 4.7 and later)
+- [Amazon Bedrock (mantle)](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock.md) - Claude in Amazon Bedrock (bedrock-mantle)
 - [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry.md) - Claude in Microsoft Foundry
 - [Anthropic-managed](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed.md) - Claude Models on Google Cloud (Anthropic managed)
 - [Google-managed](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed.md) - Claude Models on Google Cloud (Google managed)
-- [Amazon Bedrock (Opus 4.6 and earlier)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy.md) - Claude on Amazon Bedrock (Opus 4.6 and earlier)
+- [Amazon Bedrock (runtime)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy.md) - Claude on Amazon Bedrock (bedrock-runtime)
 - [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws.md)
 - [Code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool.md)
 - [Keep thinking blocks valid](https://platform.claude.com/docs/en/build-with-claude/compaction-thinking-blocks.md) - Compaction and preserved thinking
@@ -82,7 +82,7 @@ The full documentation is available in the following languages on https://platfo
 - [Define tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools.md)
 - [Deploy with Docker Compose](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/deploy-compose.md) - Deploy MCP tunnels with Docker Compose
 - [Deploy with Helm](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/deploy-helm.md) - Deploy MCP tunnels with Helm
-- [Effort](https://platform.claude.com/docs/en/build-with-claude/effort.md)
+- [Overview](https://platform.claude.com/docs/en/build-with-claude/effort.md) - Effort
 - [Embeddings](https://platform.claude.com/docs/en/build-with-claude/embeddings.md)
 - [Extended thinking (legacy)](https://platform.claude.com/docs/en/build-with-claude/extended-thinking.md) - Extended thinking
 - [Fallback credit](https://platform.claude.com/docs/en/build-with-claude/fallback-credit.md)
@@ -104,6 +104,7 @@ The full documentation is available in the following languages on https://platfo
 - [Multilingual support](https://platform.claude.com/docs/en/build-with-claude/multilingual-support.md)
 - [Parallel tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md)
 - [PDF support](https://platform.claude.com/docs/en/build-with-claude/pdf-support.md)
+- [Per-message effort (beta)](https://platform.claude.com/docs/en/build-with-claude/effort-per-message.md) - Per-message effort
 - [Preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking.md)
 - [Programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling.md)
 - [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md)
@@ -228,8 +229,8 @@ The full documentation is available in the following languages on https://platfo
 - [AWS KMS](https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms.md) - Set up CMEK with AWS KMS
 - [Azure Key Vault](https://platform.claude.com/docs/en/manage-claude/cmek-azure-key-vault.md) - Set up CMEK with Azure Key Vault
 - [Google Cloud KMS](https://platform.claude.com/docs/en/manage-claude/cmek-google-cloud-kms.md) - Set up CMEK with Google Cloud KMS
+- [Get Anthropic SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk.md) - Set up OpenTelemetry with the Anthropic SDK
 - [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api.md) - Set up OpenTelemetry with the Claude API
-- [Get Claude SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk.md) - Set up OpenTelemetry with the Claude SDK
 - [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access.md)
 - [Spend Limits API](https://platform.claude.com/docs/en/manage-claude/spend-limits-api.md)
 - [Troubleshooting](https://platform.claude.com/docs/en/manage-claude/cmek-troubleshooting.md) - Troubleshoot CMEK
@@ -365,6 +366,7 @@ The full documentation is available in the following languages on https://platfo
 ### API reference
 
 - [Features overview](https://platform.claude.com/docs/en/api/overview.md) - API overview
+- [API versions](https://platform.claude.com/docs/en/api/versioning.md)
 - [Beta headers](https://platform.claude.com/docs/en/api/beta-headers.md)
 - [Errors](https://platform.claude.com/docs/en/api/errors.md) - Claude API errors
 - [AWS IAM actions](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions.md) - IAM actions for Claude Platform on AWS
@@ -376,7 +378,6 @@ The full documentation is available in the following languages on https://platfo
 - [Service tiers](https://platform.claude.com/docs/en/api/service-tiers.md)
 - [Supported regions](https://platform.claude.com/docs/en/api/supported-regions.md)
 - [Trigger a routine](https://platform.claude.com/docs/en/api/claude-code/routines-fire.md) - Trigger a routine through the API
-- [Versions](https://platform.claude.com/docs/en/api/versioning.md)
 
 ### Claude API skill
 

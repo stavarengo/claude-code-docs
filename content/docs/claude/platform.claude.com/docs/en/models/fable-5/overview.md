@@ -6,7 +6,7 @@ description: "Claude Fable 5 reference: lifecycle status, model IDs on every pla
 
 **Legacy.** Released June 9, 2026.
 
-Although Claude Fable 5 is still available, you should consider migrating to Claude Fable 5.2. [See Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=cli) · [Migrate to Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/migration-guide?sdk_languages=cli)
+Although Claude Fable 5 is still available, you should consider migrating to Claude Fable 5.2. [See Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=cli) · [Migrate to Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/migration-guide?sdk_languages=cli#migrating-from-claude-fable-5-to-claude-fable-5-2)
 
 Model ID: `claude-fable-5`
 

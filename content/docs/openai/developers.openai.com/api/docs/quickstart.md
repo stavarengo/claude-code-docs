@@ -179,7 +179,7 @@ Java
 
     
 
-OpenAI provides an API helper for the Java programming language, currently in beta. You can include the Maven dependency using the following configuration:
+OpenAI provides an API helper for the Java programming language. You can include the Maven dependency using the following configuration:
 
 ```xml
 <dependency>
@@ -191,7 +191,7 @@ OpenAI provides an API helper for the Java programming language, currently in be
 
 
 
-A simple API request to [Responses API](https://developers.openai.com/api/reference/resources/responses) would look like this:
+An API request to the [Responses API](https://developers.openai.com/api/reference/resources/responses) looks like this:
 
 Test a basic API request
 

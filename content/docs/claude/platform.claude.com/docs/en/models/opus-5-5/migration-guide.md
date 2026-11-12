@@ -16,7 +16,7 @@ Let Claude Code migrate your code for you
 
 This page lists the code changes for moving to Claude Opus 5.5 from [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#migrating-from-claude-opus-5), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#migrating-from-claude-opus-4-8), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#migrating-from-claude-opus-47), [Claude Opus 4.6 and earlier Opus models](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#migrating-from-claude-opus-46), or [Claude Sonnet 5](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#migrating-from-claude-sonnet-5). Every reader needs [What every request to Claude Opus 5.5 must satisfy](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#request-requirements) and [Handle thinking in every response](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#thinking-in-every-response). Then go to the section for your current model: its first sentence names the other sections that apply to you. The [migration checklist](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#migration-checklist) lists every change by starting model.
 
-Claude Opus 5.5 costs less than Claude Opus 5 ($4 / $20 USD per million input / output tokens, compared with $5 / $25 USD; see [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli)). For feature support, see [What’s new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5?sdk_languages=cli#feature-support). For behavioral differences and model-specific prompting patterns, see [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5?sdk_languages=cli).
+Claude Opus 5.5 costs less than Claude Opus 5 ($4 / $20 USD per million input / output tokens, compared with $5 / $25 USD; see [Pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli)). For feature support, see [What’s new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5?sdk_languages=cli#feature-support). For behavioral differences and model-specific prompting patterns, see [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5?sdk_languages=cli).
 
 ## What every request to Claude Opus 5.5 must satisfy
 
@@ -29,7 +29,7 @@ Whichever model you are coming from, a request to `claude-opus-5-5` must meet th
 * **Sampling parameters:** Omit `temperature`, `top_p`, and `top_k`. Use prompting to guide the model’s behavior.
 * **Prefill:** Don’t end `messages` with a prefilled assistant turn: it is rejected. Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli) or system prompt instructions instead.
 * **Computer use:** Declare computer use as the `computer_toolset_20260801` toolset. On Amazon Bedrock, `computer_20251124` also works. See the [computer use breaking change](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#computer-use-toolset).
-* **Context window:** No context-window beta header is needed. The [1M token context window](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=cli) is the default, and a header sent for older models has no effect.
+* **Context window:** The [1M token context window](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=cli) is the default. A context-window beta header sent for older models has no effect.
 
 The following request satisfies every item in the list: effort is set, and there is no `thinking` field. Where the example prints text, it finds the text block by its type, because `thinking` blocks come first.
 
@@ -114,10 +114,10 @@ Work down the groups and stop after the one that names your current model: every
 * Remove `thinking: {"type": "disabled"}` and `thinking: {"type": "enabled", ...}`; choose an effort level instead.
 * Set `effort` explicitly: the default is `medium`, where Claude Opus 5’s is `high`.
 * Replace `tool_choice` types `any` and `tool` with `auto` plus strict tool use or structured outputs.
-* If you use an earlier computer use tool version, declare `computer_toolset_20260801` (no beta header) instead and update your agent loop for the toolset. On Amazon Bedrock, `computer_20251124` also works.
-* If a router or fallback can move a conversation from Claude Opus 5.5 to another model, expect that model to run without Claude Opus 5.5’s thinking blocks. Claude Fable 5.1 and Claude Mythos 5.1 on the Claude API are the exception and keep them. So do Claude Fable 5.2 and Claude Mythos 5.2 there. On Claude Models on Google Cloud (Google managed), Claude Fable 5.2 and Claude Mythos 5.2 read the same blocks as on the Claude API. Claude Opus 5.5 itself reads thinking from Claude Opus 5 and from earlier Opus, Sonnet, and Haiku models. On the Claude API and Claude Models on Google Cloud (Google managed), it also reads thinking from Claude Sonnet 5.5 and Claude Haiku 5.5. It doesn’t read thinking from Claude Fable or Claude Mythos models.
+* If you use an earlier computer use tool version, declare `computer_toolset_20260801` instead, drop that version’s beta header, and update your agent loop for the toolset. On Amazon Bedrock, `computer_20251124` also works. See the [computer use breaking change](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#computer-use-toolset).
+* If a router or fallback can move a conversation off Claude Opus 5.5, expect the new model to run without Claude Opus 5.5’s thinking blocks. Claude Fable 5.1 and Claude Mythos 5.1 keep them on the Claude API. Claude Fable 5.2 and Claude Mythos 5.2 keep them on the Claude API and Claude Models on Google Cloud (Google managed). Claude Opus 5.5 itself reads thinking from Claude Opus 5 and from earlier Opus, Sonnet, and Haiku models. On the Claude API and Claude Models on Google Cloud (Google managed), it also reads thinking from Claude Sonnet 5.5 and Claude Haiku 5.5. It doesn’t read thinking from Claude Fable or Claude Mythos models.
 * Read content blocks by `type`, and pass `thinking` blocks back unmodified in tool-use loops.
-* If your interface renders text between tool calls, set `display: "updates"` (beta) or `"summarized"` and render the non-empty `thinking` blocks.
+* If your interface renders text between tool calls, set `display: "updates"` (in beta) or `"summarized"` and render the non-empty `thinking` blocks.
 * If your code edits earlier turns, the `system` prompt, or `tools` mid-conversation, follow [Preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking?sdk_languages=cli).
 * Handle `stop_reason: "refusal"` and configure fallback.
 * Re-baseline cost and latency at your chosen effort level.
@@ -130,7 +130,7 @@ Work down the groups and stop after the one that names your current model: every
 * Review prompts near the caching minimum: prompts of 512 tokens or more can create cache entries.
 * If your organization has a [Priority Tier](https://platform.claude.com/docs/en/api/service-tiers?sdk_languages=cli#supported-models) commitment, plan capacity separately: Priority Tier is not supported on Claude Opus 5.5.
 * If you run at `xhigh` or `max` effort, raise `max_tokens` to at least 64k as a starting point.
-* For agentic workloads, consider [task budgets](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli) (beta) and mid-conversation tool changes (beta).
+* For agentic workloads, consider [task budgets](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli) and mid-conversation tool changes. Both are in beta.
 
 ### Claude Opus 4.7 or earlier
 
@@ -138,7 +138,7 @@ Work down the groups and stop after the one that names your current model: every
 * Remove any context-window beta header.
 * If you rebuild conversation history to update instructions, consider switching to a mid-conversation system message to preserve prompt cache hits.
 * Verify your stop-reason handling reads `stop_details` on refusals.
-* If you want fast mode, which Claude Opus 4.7 rejects, set `speed: "fast"` on your Claude API requests. Claude Opus 5.5 doesn’t need a beta header.
+* If you want fast mode, which Claude Opus 4.7 rejects, set `speed: "fast"` on your Claude API requests.
 
 ### Claude Opus 4.6 or earlier
 
@@ -286,7 +286,11 @@ After:
 
 #### Thinking blocks are tied to the model and the conversation
 
-On the Claude API, Claude Fable 5.1 and Claude Mythos 5.1 read Claude Opus 5.5 thinking blocks. So do Claude Fable 5.2 and Claude Mythos 5.2 on the Claude API. On Claude Models on Google Cloud (Google managed), Claude Fable 5.2 and Claude Mythos 5.2 read the same blocks as on the Claude API. No other model does. A router or fallback that moves a conversation from Claude Opus 5.5 to any other model runs those turns without them. In the other direction, Claude Opus 5.5 reads thinking blocks from Claude Opus 5 and from earlier Opus, Sonnet, and Haiku models. On the Claude API and Claude Models on Google Cloud (Google managed), it also reads them from Claude Sonnet 5.5 and Claude Haiku 5.5. It doesn’t read them from Claude Fable or Claude Mythos models. Keep the conversation append-only (no edits to the `system` prompt, `tools`, or earlier messages mid-conversation) so the blocks stay valid; Claude Code, claude.ai, Claude Managed Agents, and the Claude Agent SDK already do. On accounts created on or after August 31, 2026, 00:00 UTC, on the Claude API and on cloud platforms, a request that replays a thinking block after such an edit and leaves `thinking.block_binding.prefix_mismatch_behavior` unset gets a 400 error. There is no code change for append-only integrations. See [Thinking blocks are tied to the model and the conversation](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5?sdk_languages=cli#thinking-blocks-are-tied-to-the-model-that-produced-them) and [Preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking?sdk_languages=cli).
+Claude Fable 5.1 and Claude Mythos 5.1 read Claude Opus 5.5 thinking blocks on the Claude API. Claude Fable 5.2 and Claude Mythos 5.2 read them on the Claude API and Claude Models on Google Cloud (Google managed). No other model does. A router or fallback that moves a conversation from Claude Opus 5.5 to any other model runs those turns without them.
+
+In the other direction, Claude Opus 5.5 reads thinking blocks from Claude Opus 5 and from earlier Opus, Sonnet, and Haiku models. On the Claude API and Claude Models on Google Cloud (Google managed), it also reads them from Claude Sonnet 5.5 and Claude Haiku 5.5. It doesn’t read them from Claude Fable or Claude Mythos models.
+
+Keep the conversation append-only (no edits to the `system` prompt, `tools`, or earlier messages mid-conversation) so the blocks stay valid. Claude Code, claude.ai, Claude Managed Agents, and the Claude Agent SDK already do. If a request replays a thinking block after such an edit, with `thinking.block_binding.prefix_mismatch_behavior` unset, it gets a 400 error. This applies to accounts created on or after August 31, 2026, 00:00 UTC. [Preserved thinking availability](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking?sdk_languages=cli#feature-availability) lists the platforms where this applies. There is no code change for append-only integrations. See [Thinking blocks are tied to the model and the conversation](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5?sdk_languages=cli#thinking-blocks-are-tied-to-the-model-that-produced-them) and [Preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking?sdk_languages=cli).
 
 #### Some computer use tool versions are not supported
 
@@ -298,17 +302,18 @@ Before. Claude Opus 5 accepts this request, and Claude Opus 5.5 rejects it with 
 
 <CodeGroup>
   ```bash CLI
-  ant beta:messages create \
-    --model claude-opus-5 \
-    --max-tokens 4096 \
-    --beta computer-use-2025-11-24 \
-    --tool '{
-      type: computer_20251124,
-      name: computer,
-      display_width_px: 1024,
+  ant beta:messages create --beta computer-use-2025-11-24 <<'YAML'
+  model: claude-opus-5
+  max_tokens: 4096
+  tools:
+    - type: computer_20251124
+      name: computer
+      display_width_px: 1024
       display_height_px: 768
-    }' \
-    --message '{role: user, content: "Open the display settings."}'
+  messages:
+    - role: user
+      content: Open the display settings.
+  YAML
   ```
 </CodeGroup>
 
@@ -335,7 +340,7 @@ Claude Opus 5.5 can return `stop_reason: "refusal"` with a `stop_details` catego
 
 ### Recommended changes
 
-1. **Re-run your effort sweep.** Effort is the only thinking control on Claude Opus 5.5, and its default is `medium` where Claude Opus 5’s is `high`, so a request that omits `effort` now runs at `medium`. Step down where quality holds, and step up for the most demanding work. See [Effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli).
+1. **Re-run your effort sweep.** Effort is the only thinking control on Claude Opus 5.5, and its default is `medium` where Claude Opus 5’s is `high`, so a request that omits `effort` runs at `medium`. Step down where quality holds, and step up for the most demanding work. See [Effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli).
 2. **Re-evaluate model-specific prompt instructions.** Instructions tuned for Claude Opus 5’s behavior might no longer be needed; see [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5?sdk_languages=cli). If you ran with thinking disabled, also see [Prompts written for thinking disabled](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5?sdk_languages=cli#prompts-written-for-thinking-disabled).
 3. **Test in a development environment** before switching production traffic.
 
@@ -359,7 +364,7 @@ This section adds what changed between Claude Opus 4.8 and Claude Opus 5. For a 
 
 ### Recommended changes
 
-These are not required but will improve your experience:
+These changes are optional, and they can improve your experience:
 
 1. **Consider task budgets (beta):** For agentic workloads, [task budgets](https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli) tell the model how many tokens it has for a full agentic loop. They require the `task-budgets-2026-03-13` beta header.
 
@@ -377,13 +382,13 @@ None of these items adds a breaking change to those in the earlier sections; the
 
 1. **Effort levels recalibrated:** The token allocation behind each effort level changes on Claude Opus 5.5 compared to Claude Opus 4.7. The default is `medium`, where Claude Opus 4.7’s is `high`. Run a fresh effort sweep on your own evals rather than carrying over a setting tuned for Claude Opus 4.7. See [Effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli).
 
-2. **1M context window is the default:** Claude Opus 5.5 serves the full 1M token [context window](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=cli) by default with no beta header. If your client passes a context-window beta header for compatibility with older models, remove it.
+2. **1M context window is the default:** Claude Opus 5.5 serves the full 1M token [context window](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=cli) by default. If your client passes a context-window beta header for compatibility with older models, remove it.
 
 3. **Mid-conversation system messages:** On the Claude API, Amazon Bedrock, Claude Platform on AWS, Claude Models on Google Cloud (Anthropic managed), and Claude Models on Google Cloud (Google managed), Claude Opus 5.5 accepts `role: "system"` messages immediately after a user turn in the `messages` array (subject to [placement rules](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages?sdk_languages=cli#limitations)). Use the top-level `system` field for instructions that apply from the start. Claude Opus 4.7 rejects `role: "system"` in `messages` with a 400 error. If you maintain code paths that rebuild the full message history to update instructions, you can simplify them and preserve [prompt cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) hits on earlier turns.
 
-4. **Refusal stop details:** When the model declines a request, Claude Opus 5.5 returns a `stop_details` object that names the category of refusal, alongside the `refusal` stop reason. Claude Opus 4.7 returns the same object, so this matters only if your stop-reason handling does not read it yet. No beta header is required, and there is no opt-out. If your stop-reason handling doesn’t read it yet, see [Handling stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons?sdk_languages=cli). Claude Opus 5.5 declines in more categories; see [Safety classifiers and fallback](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#safety-classifiers-and-fallback).
+4. **Refusal stop details:** When the model declines a request, Claude Opus 5.5 returns a `stop_details` object that names the category of refusal, alongside the `refusal` stop reason. Claude Opus 4.7 returns the same object, so this matters only if your stop-reason handling does not read it yet; if so, see [Stop reasons and fallback](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons?sdk_languages=cli). There is no opt-out. Claude Opus 5.5 declines in more categories; see [Safety classifiers and fallback](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#safety-classifiers-and-fallback).
 
-5. **Fast mode:** Claude Opus 5.5 supports [fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=cli) on the Claude API. Fast mode is not available on Claude Opus 4.7, where requests with `speed: "fast"` return an error. Set `speed: "fast"` on your requests. Claude Opus 5.5 doesn’t need a beta header.
+5. **Fast mode:** Claude Opus 5.5 supports [fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=cli) on the Claude API. Fast mode is not available on Claude Opus 4.7, where requests with `speed: "fast"` return an error. Set `speed: "fast"` on your requests.
 
 6. **Computer use toolset and browser use tool:** Claude Opus 5.5 supports [computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli) as the `computer_toolset_20260801` toolset and the [browser use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli) for tasks inside webpages. Claude Opus 4.7 supports neither. To move a `computer_20251124` integration to the toolset, see the [computer use breaking change](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#computer-use-toolset).
 
@@ -456,7 +461,7 @@ Claude Opus 4.7 introduced behavioral differences from Claude Opus 4.6 that are 
 
 3. **High-resolution image support:** Claude Opus 4.7 is the first Claude model with high-resolution image support. Maximum image resolution is 2,576 pixels on the long edge, up from 1,568 pixels on prior models. This unlocks gains on vision-heavy workloads and is particularly valuable for computer use, screenshot understanding, and document analysis.
 
-   High-resolution support is automatic and requires no beta header or client-side opt-in. Two things to plan for:
+   High-resolution support is automatic. Plan for two things:
 
    * Full-resolution images can use up to approximately 3x more image tokens than on prior models (up to 4,784 tokens for each image, compared to the previous cap of roughly 1,600 tokens). Re-budget `max_tokens` and cost expectations for image-heavy workloads, or downsample before sending if you do not need the additional fidelity.
    * Pointing and bounding-box coordinates returned by the model are 1:1 with actual image pixels on Claude Opus 4.7, so no scale-factor conversion is required.
@@ -491,7 +496,10 @@ The first item is required on Claude Opus 5.5; the rest are recommended.
 
 ### Migrating from Claude 4.1 or earlier
 
-If you’re migrating from Claude Opus 4.1 or earlier models directly to Claude Opus 5.5, first apply everything in [Migrating from Claude Opus 4.5 or earlier](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#migrating-from-claude-opus-45). That subsection starts with every earlier section, so in effect you read this page from the top. Then apply the additional changes in this subsection.
+To migrate from Claude Opus 4.1 or earlier models directly to Claude Opus 5.5:
+
+1. Work through this page from the top, in page order, up to and including [Migrating from Claude Opus 4.5 or earlier](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#migrating-from-claude-opus-45).
+2. Apply the additional changes in this subsection.
 
 #### Additional breaking changes
 
@@ -563,10 +571,10 @@ If you’re migrating from Claude Opus 4.1 or earlier models directly to Claude 
 
      ```ruby Ruby
      # Before
-     legacy_tools = [{type: "text_editor_20250124", name: "str_replace_editor"}]
+     legacy_tools = [{ type: "text_editor_20250124", name: "str_replace_editor" }]
 
      # After
-     tools = [{type: "text_editor_20250728", name: "str_replace_based_edit_tool"}]
+     tools = [{ type: "text_editor_20250728", name: "str_replace_based_edit_tool" }]
      ```
    </CodeGroup>
 

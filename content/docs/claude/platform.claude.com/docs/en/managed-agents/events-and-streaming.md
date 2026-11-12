@@ -75,7 +75,7 @@ To reconnect to an existing session without missing events, combine a new stream
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -132,7 +132,7 @@ The following example answers each call as it arrives:
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -146,7 +146,7 @@ The following example approves every pending call:
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 

@@ -45,43 +45,11 @@ When targeting `/v1/moderations`, include an `input` field in every request body
 
 #### Moderation input examples
 
-Text-only request:
+This input file contains a text-only request followed by a request with text and image input:
 
 ```jsonl
-{
-  "custom_id": "moderation-text-1",
-  "method": "POST",
-  "url": "/v1/moderations",
-  "body": {
-    "model": "omni-moderation-latest",
-    "input": "This is a harmless test sentence."
-  }
-}
-```
-
-Request with text and image input:
-
-```jsonl
-{
-  "custom_id": "moderation-mm-1",
-  "method": "POST",
-  "url": "/v1/moderations",
-  "body": {
-    "model": "omni-moderation-latest",
-    "input": [
-      {
-        "type": "text",
-        "text": "Describe this image"
-      },
-      {
-        "type": "image_url",
-        "image_url": {
-          "url": "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg"
-        }
-      }
-    ]
-  }
-}
+{"custom_id": "moderation-text-1", "method": "POST", "url": "/v1/moderations", "body": {"model": "omni-moderation-latest", "input": "This is a harmless test sentence."}}
+{"custom_id": "moderation-mm-1", "method": "POST", "url": "/v1/moderations", "body": {"model": "omni-moderation-latest", "input": [{"type": "text", "text": "Describe this image"}, {"type": "image_url", "image_url": {"url": "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg"}}]}}
 ```
 
 Prefer referencing remote assets with `image_url` (instead of base64 blobs) to
@@ -508,7 +476,7 @@ The following output is abbreviated to show the ID mapping and generated text. R
 {"id": "batch_req_1", "custom_id": "request-1", "response": {"status_code": 200, "request_id": "req_1", "body": {"id": "resp_1", "object": "response", "status": "completed", "output": [{"type": "message", "role": "assistant", "content": [{"type": "output_text", "text": "blue"}]}]}}, "error": null}
 ```
 
-The output file will automatically be deleted 30 days after the batch is complete.
+By default, batch output and error files expire 30 days after file creation. Set `output_expires_after` in the [batch creation request](https://developers.openai.com/api/reference/resources/batches/methods/create) to choose an expiration period from 1 hour to 30 days, measured from file creation.
 
 ### 6. Cancel a batch
 

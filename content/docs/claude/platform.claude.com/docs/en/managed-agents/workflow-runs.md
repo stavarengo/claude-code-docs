@@ -197,7 +197,7 @@ This sample follows a session from your message to the agent’s answer. It open
 
 <CodeGroup exclude="shell">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 

@@ -28,9 +28,9 @@ featureMetadata:
     - claude-sonnet-4-6
   supportedPlatforms:
     Claude API: beta
-    Claude Platform on AWS: beta
     Amazon Bedrock: beta
-    Amazon Bedrock (InvokeModel): beta
+    Amazon Bedrock (bedrock-runtime): beta
+    Claude Platform on AWS: beta
     Claude Models on Google Cloud (Google managed): beta
     Microsoft Foundry: beta
 ---
@@ -107,7 +107,7 @@ Configure when compaction triggers using the `trigger` parameter:
   max_tokens: 4096
   messages:
     - role: user
-      content: Hello, Claude
+      content: Help me build a website
   context_management:
     edits:
       - type: compact_20260112
@@ -120,7 +120,7 @@ Configure when compaction triggers using the `trigger` parameter:
 
 ### Custom summarization instructions
 
-The default summarization prompt varies by model. Each default instructs Claude to write a summary inside `<summary></summary>` tags with the information needed to continue the task in a future context window. For example, some models use the following prompt:
+The default summarization prompt varies by model. Each default instructs Claude to write a summary inside `<summary></summary>` tags with the information needed to continue the task in a future context window. For example, this is one of the default prompts:
 
 ```text wrap
 You have written a partial transcript for the initial task above. Please write a summary of the transcript. The purpose of this summary is to provide continuity so you can continue to make progress towards solving the task in a future context, where the raw history above may not be accessible and will be replaced with this summary. Write down anything that would be helpful, including the state, next steps, learnings etc. You must wrap your summary in a <summary></summary> block.
@@ -135,7 +135,7 @@ You can provide custom instructions through the `instructions` parameter. Custom
   max_tokens: 4096
   messages:
     - role: user
-      content: Hello, Claude
+      content: Help me build a website
   context_management:
     edits:
       - type: compact_20260112
@@ -146,7 +146,7 @@ You can provide custom instructions through the `instructions` parameter. Custom
   ```
 </CodeGroup>
 
-On Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5, a request with custom `instructions` summarizes from the visible conversation only: earlier thinking blocks are not part of the summarizer’s input.
+On some models, a request with custom `instructions` summarizes from the visible conversation only, without earlier thinking blocks. Those models are Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5.
 
 ### Pausing after compaction
 
@@ -157,15 +157,14 @@ When enabled, the API returns a message with the `compaction` stop reason after 
 <CodeGroup>
   ```bash CLI
   # pause_after_compaction stops the response right after the compaction
-  # summary so you can adjust the messages before continuing. The continue
-  # step doesn't translate well to a one-off CLI command; see the SDK tabs
-  # for the full pause-and-continue flow. Single paused request:
-  ant beta:messages create --beta compact-2026-01-12 --format jsonl <<'YAML'
+  # summary so you can adjust the messages before continuing. Continuing
+  # needs more logic than a one-off CLI command. Single paused request:
+  ant beta:messages create --beta compact-2026-01-12 <<'YAML'
   model: claude-opus-5-5
   max_tokens: 4096
   messages:
     - role: user
-      content: Hello, Claude
+      content: Help me build a website
   context_management:
     edits:
       - type: compact_20260112
@@ -180,291 +179,12 @@ The API pauses even if no summary is generated. The `compaction` block’s `cont
 
 When a model works on long tasks with many tool-use iterations, total token consumption can grow significantly. You can combine `pause_after_compaction` with a compaction counter to estimate cumulative usage and gracefully conclude the task once a budget is reached.
 
-This example appears in the SDK languages only: its value is the budget-tracking logic around the request. The raw request combines the `trigger` from [Trigger configuration](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold?sdk_languages=cli#trigger-configuration) with `pause_after_compaction` from [Pausing after compaction](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold?sdk_languages=cli#pausing-after-compaction).
+The request combines the `trigger` from [Trigger configuration](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold?sdk_languages=cli#trigger-configuration) with `pause_after_compaction` from [Pausing after compaction](https://platform.claude.com/docs/en/build-with-claude/compaction-threshold?sdk_languages=cli#pausing-after-compaction).
 
-<CodeGroup exclude="shell">
-  ```python Python
-  client = anthropic.Anthropic()
-  messages = [{"role": "user", "content": "Hello, Claude"}]
-  TRIGGER_THRESHOLD = 100_000
-  TOTAL_TOKEN_BUDGET = 3_000_000
-  n_compactions = 0
-
-  response = client.beta.messages.create(
-      betas=["compact-2026-01-12"],
-      model="claude-opus-5-5",
-      max_tokens=4096,
-      messages=messages,
-      context_management={
-          "edits": [
-              {
-                  "type": "compact_20260112",
-                  "trigger": {"type": "input_tokens", "value": TRIGGER_THRESHOLD},
-                  "pause_after_compaction": True,
-              }
-          ]
-      },
-  )
-
-  if response.stop_reason == "compaction":
-      n_compactions += 1
-      messages.append({"role": "assistant", "content": response.content})
-
-      # Estimate total tokens consumed; prompt wrap-up if over budget
-      if n_compactions * TRIGGER_THRESHOLD >= TOTAL_TOKEN_BUDGET:
-          messages.append(
-              {
-                  "role": "user",
-                  "content": "Please wrap up your current work and summarize the final state.",
-              }
-          )
-  ```
-
-  ```typescript TypeScript
-  const client = new Anthropic();
-  const messages: Anthropic.Beta.Messages.BetaMessageParam[] = [
-    { role: "user", content: "Hello, Claude" }
-  ];
-  const TRIGGER_THRESHOLD = 100_000;
-  const TOTAL_TOKEN_BUDGET = 3_000_000;
-  let compactionCount = 0;
-
-  const response = await client.beta.messages.create({
-    betas: ["compact-2026-01-12"],
-    model: "claude-opus-5-5",
-    max_tokens: 4096,
-    messages,
-    context_management: {
-      edits: [
-        {
-          type: "compact_20260112",
-          trigger: { type: "input_tokens", value: TRIGGER_THRESHOLD },
-          pause_after_compaction: true
-        }
-      ]
-    }
-  });
-
-  if (response.stop_reason === "compaction") {
-    compactionCount += 1;
-    messages.push({ role: "assistant", content: response.content });
-
-    // Estimate total tokens consumed; prompt wrap-up if over budget
-    if (compactionCount * TRIGGER_THRESHOLD >= TOTAL_TOKEN_BUDGET) {
-      messages.push({
-        role: "user",
-        content: "Please wrap up your current work and summarize the final state."
-      });
-    }
-  }
-  ```
-
-  ```csharp C#
-  AnthropicClient client = new();
-  List<BetaMessageParam> messages = [new BetaUserMessageParam { Content = "Hello, Claude" }];
-
-  const int TriggerThreshold = 100_000;
-  const int TotalTokenBudget = 3_000_000;
-  int compactionCount = 0;
-
-  var response = await client.Beta.Messages.Create(new()
-  {
-      Betas = ["compact-2026-01-12"],
-      Model = Model.ClaudeOpus5_5,
-      MaxTokens = 4096,
-      Messages = messages,
-      ContextManagement = new BetaContextManagementConfig
-      {
-          Edits = [new BetaCompact20260112Edit
-          {
-              Trigger = new BetaInputTokensTrigger(TriggerThreshold),
-              PauseAfterCompaction = true
-          }]
-      }
-  });
-
-  if (response.StopReason == BetaStopReason.Compaction)
-  {
-      compactionCount += 1;
-      messages.Add(new BetaAssistantMessageParam
-      {
-          Content = response.Content.Select(block => new BetaContentBlockParam(block.Json)).ToList()
-      });
-
-      // Estimate total tokens consumed; prompt wrap-up if over budget
-      if (compactionCount * TriggerThreshold >= TotalTokenBudget)
-      {
-          messages.Add(new BetaUserMessageParam
-          {
-              Content = "Please wrap up your current work and summarize the final state."
-          });
-      }
-  }
-
-  Console.WriteLine(response);
-  ```
-
-  ```go Go
-  client := anthropic.NewClient()
-  messages := []anthropic.BetaMessageParam{anthropic.NewBetaUserMessage(anthropic.NewBetaTextBlock("Hello, Claude"))}
-
-  const triggerThreshold = 100_000
-  const totalTokenBudget = 3_000_000
-  compactionCount := 0
-
-  response, err := client.Beta.Messages.New(context.TODO(), anthropic.BetaMessageNewParams{
-  	Model:     anthropic.ModelClaudeOpus5_5,
-  	MaxTokens: 4096,
-  	Messages:  messages,
-  	ContextManagement: anthropic.BetaContextManagementConfigParam{
-  		Edits: []anthropic.BetaContextManagementConfigEditUnionParam{
-  			{OfCompact20260112: &anthropic.BetaCompact20260112EditParam{
-  				Trigger:              anthropic.BetaInputTokensTriggerParam{Value: triggerThreshold},
-  				PauseAfterCompaction: anthropic.Bool(true),
-  			}},
-  		},
-  	},
-  	Betas: []anthropic.AnthropicBeta{"compact-2026-01-12"},
-  })
-  if err != nil {
-  	log.Fatal(err)
-  }
-
-  if response.StopReason == "compaction" {
-  	compactionCount++
-  	messages = append(messages, response.ToParam())
-
-  	// Estimate total tokens consumed; prompt wrap-up if over budget
-  	if compactionCount*triggerThreshold >= totalTokenBudget {
-  		messages = append(messages, anthropic.NewBetaUserMessage(anthropic.NewBetaTextBlock("Please wrap up your current work and summarize the final state.")))
-  	}
-  }
-
-  fmt.Println(response)
-  ```
-
-  ```java Java
-  import com.anthropic.models.beta.messages.BetaContextManagementConfig;
-  import com.anthropic.models.beta.messages.BetaCompact20260112Edit;
-  import com.anthropic.models.beta.messages.BetaInputTokensTrigger;
-  import com.anthropic.models.beta.messages.BetaStopReason;
-  // ...
-          AnthropicClient client = AnthropicOkHttpClient.fromEnv();
-
-          long triggerThreshold = 100_000;
-          long totalTokenBudget = 3_000_000;
-          int compactionCount = 0;
-
-          List<BetaMessageParam> messages = new ArrayList<>();
-          messages.add(BetaMessageParam.ofUser("Hello, Claude"));
-
-          MessageCreateParams params = MessageCreateParams.builder()
-              .addBeta("compact-2026-01-12")
-              .model(Model.CLAUDE_OPUS_5_5)
-              .maxTokens(4096L)
-              .messages(messages)
-              .contextManagement(BetaContextManagementConfig.builder()
-                  .addEdit(BetaCompact20260112Edit.builder()
-                      .trigger(BetaInputTokensTrigger.builder()
-                          .value(triggerThreshold)
-                          .build())
-                      .pauseAfterCompaction(true)
-                      .build())
-                  .build())
-              .build();
-
-          BetaMessage response = client.beta().messages().create(params);
-
-          if (response.stopReason().isPresent()
-                  && response.stopReason().get().equals(BetaStopReason.COMPACTION)) {
-              compactionCount += 1;
-              messages.add(response.toParam());
-
-              // Estimate total tokens consumed; prompt wrap-up if over budget
-              if (compactionCount * triggerThreshold >= totalTokenBudget) {
-                  messages.add(BetaMessageParam.ofUser(
-                      "Please wrap up your current work and summarize the final state."));
-              }
-          }
-
-          System.out.println(response);
-  ```
-
-  ```php PHP
-  $client = new Client();
-
-  $triggerThreshold = 100_000;
-  $totalTokenBudget = 3_000_000;
-  $compactionCount = 0;
-
-  $messages = [['role' => 'user', 'content' => 'Hello, Claude']];
-
-  $response = $client->beta->messages->create(
-      maxTokens: 4096,
-      messages: $messages,
-      model: 'claude-opus-5-5',
-      betas: ['compact-2026-01-12'],
-      contextManagement: [
-          'edits' => [
-              [
-                  'type' => 'compact_20260112',
-                  'trigger' => ['type' => 'input_tokens', 'value' => $triggerThreshold],
-                  'pause_after_compaction' => true
-              ]
-          ]
-      ]
-  );
-
-  if ($response->stopReason === 'compaction') {
-      $compactionCount += 1;
-      $messages[] = ['role' => 'assistant', 'content' => $response->content];
-
-      // Estimate total tokens consumed; prompt wrap-up if over budget
-      if ($compactionCount * $triggerThreshold >= $totalTokenBudget) {
-          $messages[] = [
-              'role' => 'user',
-              'content' => 'Please wrap up your current work and summarize the final state.'
-          ];
-      }
-  }
-  ```
-
-  ```ruby Ruby
-  client = Anthropic::Client.new
-  messages = [{ role: "user", content: "Hello, Claude" }]
-  TRIGGER_THRESHOLD = 100_000
-  TOTAL_TOKEN_BUDGET = 3_000_000
-  compaction_count = 0
-
-  response = client.beta.messages.create(
-    betas: ["compact-2026-01-12"],
-    model: Anthropic::Model::CLAUDE_OPUS_5_5,
-    max_tokens: 4096,
-    messages: messages,
-    context_management: {
-      edits: [
-        {
-          type: "compact_20260112",
-          trigger: { type: "input_tokens", value: TRIGGER_THRESHOLD },
-          pause_after_compaction: true
-        }
-      ]
-    }
-  )
-
-  if response.stop_reason == :compaction
-    compaction_count += 1
-    messages << { role: "assistant", content: response.content }
-
-    # Estimate total tokens consumed; prompt wrap-up if over budget
-    if compaction_count * TRIGGER_THRESHOLD >= TOTAL_TOKEN_BUDGET
-      messages << {
-        role: "user",
-        content: "Please wrap up your current work and summarize the final state."
-      }
-    end
-  end
-  ```
+<CodeGroup exclude="shell:cURL, shell:CLI">
+  <CodeGroupItem language="CLI">
+    This workflow needs more logic than a single shell command. Use the Anthropic SDK to run it.
+  </CodeGroupItem>
 </CodeGroup>
 
 ## Working with compaction blocks
@@ -494,11 +214,9 @@ You must pass the `compaction` block back to the API on subsequent requests to c
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
-
-In Python, use `client.beta.messages`, as the samples on this page do. If you call `client.messages` and serialize blocks yourself, a plain `model_dump()` adds `text: null` and `citations: null` to the `compaction` block. The API then rejects the request with a 400 error (`Extra inputs are not permitted`). Use `to_dict()` or `model_dump(exclude_none=True)` instead. [Continue from the summary](https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand?sdk_languages=cli#continue-from-the-summary) gives the same advice for on-demand compaction.
 
 When the API receives a `compaction` block, all content blocks before it are ignored. You can either:
 
@@ -523,7 +241,7 @@ The compaction block streams differently from text blocks. You receive a `conten
   max_tokens: 4096
   messages:
     - role: user
-      content: Hello, Claude
+      content: Help me build a website
   context_management:
     edits:
       - type: compact_20260112
@@ -573,7 +291,7 @@ To maximize cache hit rates, add a `cache_control` breakpoint at the end of your
         type: ephemeral
   messages:
     - role: user
-      content: Hello, Claude
+      content: Help me build a website
   context_management:
     edits:
       - type: compact_20260112
@@ -613,7 +331,7 @@ The `iterations` array shows usage for each sampling iteration. When compaction 
 <Note>
   The top-level `input_tokens` and `output_tokens` do not include compaction iteration usage. They reflect the sum of all non-compaction iterations. To calculate total tokens consumed and billed for a request, sum across all entries in the `usage.iterations` array.
 
-  If you previously relied on `usage.input_tokens` and `usage.output_tokens` for cost tracking or auditing, you’ll need to update your tracking logic to aggregate across `usage.iterations` when compaction is enabled. With the compaction beta enabled, every response includes `usage.iterations`, even if no compaction occurred. A `compaction` entry appears only when a new compaction is triggered during the request. Re-applying a previous `compaction` block incurs no additional compaction cost, and the top-level usage fields remain accurate in that case.
+  To track cost or audit usage when compaction is enabled, aggregate across `usage.iterations` instead of reading only `usage.input_tokens` and `usage.output_tokens`. With the compaction beta enabled, every response includes `usage.iterations`, even if no compaction occurred. A `compaction` entry appears only when a new compaction is triggered during the request. Re-applying a previous `compaction` block incurs no additional compaction cost, and the top-level usage fields remain accurate in that case.
 </Note>
 
 ## Combining with other features
@@ -632,7 +350,7 @@ The token counting endpoint (`/v1/messages/count_tokens`) applies existing `comp
   model: claude-opus-5-5
   messages:
     - role: user
-      content: Hello, Claude
+      content: Help me build a website
   context_management:
     edits:
       - type: compact_20260112
@@ -646,17 +364,25 @@ Here’s a complete example of a long-running conversation with compaction:
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 
-On Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5, thinking blocks in any assistant turn you reinsert after the compaction block fail the [prefix check](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#preserved-in-conversation), because they were produced when the full history was present. Strip the `thinking` and `redacted_thinking` blocks from those turns. Alternatively, send `thinking.block_binding.prefix_mismatch_behavior: "drop_block"` with the `thinking-binding-controls-2026-08-01` [beta header](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=cli). The preserved text and tool blocks can stay as they are. Letting the API summarize everything, without reinserting earlier turns, avoids this. On Claude Sonnet 5.5 and Claude Haiku 5.5, `block_binding` works only with `thinking: {"type": "adaptive"}`. With any other thinking setting on those models, strip the blocks.
+When you reinsert an earlier assistant turn after the compaction block, that turn’s thinking blocks fail the [prefix check](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#preserved-in-conversation) on some models. Those models are Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5. The blocks fail because they were produced when the full history was present.
+
+To avoid the failure, do one of the following:
+
+* **Strip the blocks:** Remove the `thinking` and `redacted_thinking` blocks from the turns you reinsert. The preserved text and tool blocks can stay as they are.
+* **Have the API drop the blocks:** Send `thinking.block_binding.prefix_mismatch_behavior: "drop_block"`. This needs the `thinking-binding-controls-2026-08-01` beta header (see [Beta headers](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=cli)).
+* **Don’t reinsert earlier turns:** Let the API summarize everything.
+
+On Claude Sonnet 5.5 and Claude Haiku 5.5, `block_binding` works only with `thinking: {"type": "adaptive"}`. With any other thinking setting on those two models, strip the blocks.
 
 Here’s an example that uses `pause_after_compaction` to preserve the prior exchange and the current user message (three messages total) instead of summarizing them. It keeps their text and tool blocks unchanged, removes the `thinking` and `redacted_thinking` blocks from the preserved assistant turn, and drops that turn if nothing else is left:
 
 <CodeGroup exclude="shell:cURL, shell:CLI">
   <CodeGroupItem language="CLI">
-    This workflow needs more logic than a single shell command. Use the [Claude SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
+    This workflow needs more logic than a single shell command. Use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) to run it.
   </CodeGroupItem>
 </CodeGroup>
 
@@ -697,9 +423,10 @@ Threshold compaction is in beta on select models and eligible for zero data rete
 * Availability: Available
 * Usage: Opt in with a `compact_20260112` edit in `context_management.edits`. Compaction starts when input tokens reach the trigger, 150,000 by default and at least 50,000.
 
-| Status | Cloud platforms                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Models                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Beta   | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli), [Amazon Bedrock (InvokeModel)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli), [Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) | [Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=cli), [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=cli), [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli), [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli), [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli), [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli), Claude Mythos Preview, [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli), [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli), [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli), [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli), [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli), [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=cli), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=cli) |
+| Status | Cloud platforms                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Models                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Beta   | Claude API, [Amazon Bedrock (bedrock-runtime)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli), [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) | [Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=cli), [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=cli), [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli), [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli), [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli), [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli), Claude Mythos Preview, [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli), [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli), [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli), [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli), [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli), [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=cli), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=cli) |
+| Beta   | [Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock?sdk_languages=cli)                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli), [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli), [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli), [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli), [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli), [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli), [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli), [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli), [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli)                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 
 #### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli)
 
