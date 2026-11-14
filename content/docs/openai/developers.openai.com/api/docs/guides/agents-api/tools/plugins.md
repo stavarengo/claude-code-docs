@@ -60,7 +60,7 @@ Copy the plugin to `/workspace/plugins/docs-helper` and add that absolute path t
 
 Register a plugin
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const client = new OpenAI();
 

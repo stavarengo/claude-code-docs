@@ -50,7 +50,7 @@ If your settings file already has a `hooks` key, add `Notification` as a sibling
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
-        "hooks": [{ "type": "command", "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write" }]
+        "hooks": [{ "type": "command", "command": "f=$(jq -r '.tool_input.file_path') && npx prettier --write --ignore-unknown \"$f\"" }]
       }
     ],
     "Notification": [
@@ -221,7 +221,7 @@ This hook uses the `PostToolUse` event with an `Edit|Write` matcher, so it runs 
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write"
+            "command": "f=$(jq -r '.tool_input.file_path') && npx prettier --write --ignore-unknown \"$f\""
           }
         ]
       }
@@ -242,7 +242,7 @@ To reformat a specific file however it changes, including when a `Bash` command 
 
 ### Block edits to protected files
 
-Prevent Claude from modifying sensitive files like `.env`, `package-lock.json`, or anything in `.git/`. Claude receives feedback explaining why the edit was blocked, so it can adjust its approach.
+Stop Claude's `Edit` and `Write` tools from modifying sensitive files like `.env`, `package-lock.json`, or anything in `.git/`. Claude receives feedback explaining why the edit was blocked, so it can adjust its approach.
 
 This example uses a separate script file that the hook calls. The script checks the target file path against a list of protected patterns and exits with code 2 to block the edit.
 
@@ -306,6 +306,10 @@ Add a `PreToolUse` hook to `.claude/settings.json` that runs the script before a
 
 Ask Claude to add a comment to your `.env` file. Claude Code blocks the edit before it runs and passes the script's `Blocked:` message to Claude as feedback.
 
+Claude can still change the protected files with shell commands. To block some of those commands, add an [`Edit` deny rule](https://code.claude.com/docs/en/permissions#what-read-and-edit-rules-cover) per path under `permissions.deny` in `.claude/settings.json`, like `Edit(/.env)` for the project root's `.env`.
+
+Even with those rules, Claude can change `.env` in other ways. To limit which files commands can write to, see [Configure sandboxing](./sandboxing.md#configure-sandboxing).
+
 ### Re-inject context after compaction
 
 When Claude's context window fills up, compaction summarizes the conversation to free space. This can lose important details. Use a `SessionStart` hook with a `compact` matcher to re-inject critical context after every compaction.
@@ -336,7 +340,7 @@ You can replace the `echo` with any command that produces dynamic output, like `
 
 Track when settings or skills files change during a session. The `ConfigChange` event fires when an external process or editor modifies a configuration file, so you can log changes for compliance or block unauthorized modifications.
 
-This example appends each change to an audit log. Add this to `~/.claude/settings.json`:
+This example appends each event to an audit log. Add this to `~/.claude/settings.json`:
 
 ```json theme={null}
 {
@@ -925,7 +929,7 @@ This example posts every tool use to a local logging service:
 Your endpoint responds with a JSON body in the same [output format](./hooks.md#json-output) as command hooks, and Claude Code also checks the response status:
 
 * **2xx status**: to block a tool call, return the appropriate `hookSpecificOutput` fields in the body.
-* **Any other status, or the request fails**: Claude Code reports a [non-blocking error](./hooks.md#exit-code-output) and lets the action continue. To make a failed endpoint block the action, set [`onFailure: "block"`](https://code.claude.com/docs/en/hooks#block-the-action-when-a-hook-fails) on the hook.
+* **Any other status, or the request fails**: Claude Code reports a [non-blocking error](./hooks.md#exit-code-output) and lets the action continue, unless the hook is one [whose failure blocks the action](./hooks.md#block-the-action-when-a-hook-fails). To make a failed endpoint block the action, set [`onFailure: "block"`](https://code.claude.com/docs/en/hooks#block-the-action-when-a-hook-fails) on the hook.
 
 Header values support environment variable interpolation using `$VAR_NAME` or `${VAR_NAME}` syntax. Only variables listed in the `allowedEnvVars` array are resolved; all other `$VAR` references remain empty.
 

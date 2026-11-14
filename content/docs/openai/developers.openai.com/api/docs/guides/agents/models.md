@@ -14,7 +14,7 @@ In production, prefer explicit model choice over whichever runtime default your 
 
 Set models per agent and per run
 
-```javascript
+```typescript
 import { Agent, Runner } from "@openai/agents";
 
 const fastAgent = new Agent({

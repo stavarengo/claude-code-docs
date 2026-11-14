@@ -34,7 +34,7 @@ Here's an example request:
 
 Generate spoken audio from input text
 
-```javascript
+```typescript
 import fs from "fs";
 import path from "path";
 import OpenAI from "openai";
@@ -233,7 +233,7 @@ The Speech API provides support for realtime audio streaming using [chunk transf
 
 Stream spoken audio from input text directly to your speakers
 
-```javascript
+```typescript
 import OpenAI from "openai";
 import { playAudio } from "openai/helpers/audio";
 

@@ -206,7 +206,7 @@ Use the following resources and reference to complete your integration.
 
 ChatKit emits `CustomEvent` instances from the Web Component. Listen for lifecycle events and read payload data from `event.detail`:
 
-```javascript
+```typescript
 chatkit.addEventListener("chatkit.error", (event) => {
   console.error(event.detail.error);
 });

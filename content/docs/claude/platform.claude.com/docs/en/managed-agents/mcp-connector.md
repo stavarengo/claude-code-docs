@@ -10,7 +10,7 @@ featureMetadata:
   betaHeader: managed-agents-2026-04-01
   zdr:
     eligibility: not-eligible
-    note: Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes.
+    note: Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them.
   supportedModels:
     - claude-fable-5-2
     - claude-mythos-5-2
@@ -42,13 +42,13 @@ Claude Managed Agents supports connecting [Model Context Protocol (MCP)](https:/
 MCP configuration is split across two steps:
 
 1. **Agent creation** declares which MCP servers the agent connects to, by name and URL.
-2. **Session creation** supplies authentication for those servers by referencing a pre-registered vault (see [Authenticate with vaults](https://platform.claude.com/docs/en/managed-agents/vaults?sdk_languages=cli)).
+2. **Session creation** supplies authentication for those servers by referencing a preregistered vault (see [Authenticate with vaults](https://platform.claude.com/docs/en/managed-agents/vaults?sdk_languages=cli)).
 
 This separation keeps secrets out of reusable agent definitions while letting each session authenticate with its own credentials.
 
 ## Declare MCP servers on the agent
 
-Specify MCP servers in the `mcp_servers` array when creating an agent. Each server has a `type` of `url`, a unique `name`, and a `url`. No authentication tokens are provided at this stage.
+Specify MCP servers in the `mcp_servers` array when creating an agent. Each server has a `type` of `url`, a unique `name`, and a `url`. You don’t provide authentication tokens at this stage.
 
 Each declared server also needs a matching `mcp_toolset` entry in the `tools` array. The toolset’s `mcp_server_name` must match the server’s `name`.
 
@@ -100,7 +100,7 @@ Constraints:
 
 The `mcp_toolset` entry supports a `default_config` object and a `configs` array, applied to the tools the MCP server exposes. Each `configs` entry accepts only `name`, `enabled`, and `permission_policy`. Unlike entries in the built-in agent toolset, MCP tool entries do not take a `type` field, and the [web settings](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli#settings) available on `web_search` and `web_fetch` do not apply to MCP tools. The `name` in each `configs` entry is the bare tool name as reported by the server.
 
-By default all tools exposed by the MCP server are enabled. To enable only specific tools, set `default_config.enabled` to `false` and explicitly enable the tools you want:
+By default, all tools that the MCP server exposes are enabled. To enable only specific tools, set `default_config.enabled` to `false` and explicitly enable the tools you want:
 
 ```json
 {
@@ -127,7 +127,7 @@ To disable specific tools while keeping the rest enabled, omit `default_config` 
 }
 ```
 
-See [configuring the toolset](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#configuring-the-toolset) for the general `default_config` / `configs` pattern, and [MCP toolset permissions](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli#mcp-toolset-permissions) for setting `permission_policy` on MCP tools and handling confirmation requests.
+See [Configuring the toolset](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#configuring-the-toolset) for the general `default_config` / `configs` pattern, and [MCP toolset permissions](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli#mcp-toolset-permissions) for setting `permission_policy` on MCP tools and handling confirmation requests.
 
 ### MCP tool output handling
 
@@ -137,7 +137,7 @@ When an MCP tool output exceeds 100,000 characters (about 25,000 tokens), it is 
 
 When starting a session, pass `vault_ids` to provide credentials for your MCP servers. Vaults are collections of credentials that you register once and reference by ID. See [Authenticate with vaults](https://platform.claude.com/docs/en/managed-agents/vaults?sdk_languages=cli) for how to create vaults and manage credentials.
 
-With a `limited` [environment](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking), session creation fails with a 400 error when the agent declares an MCP server whose host is not in `allowed_hosts`. Setting `allow_mcp_servers` to `true` in the environment’s networking turns this check off.
+With `limited` networking, session creation fails with a 400 error when the agent declares an MCP server whose host is not in `allowed_hosts`. Setting `allow_mcp_servers` to `true` in the environment’s networking turns this check off. See [Networking](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking) in Cloud environment setup.
 
 <CodeGroup>
   ```bash CLI
@@ -152,7 +152,7 @@ Credentials are matched by URL, so the vault must contain a credential whose `mc
 
 ### Handle connection and authentication failures
 
-Session creation does not validate MCP connectivity or credentials. It does check each declared server’s host against the environment’s networking: with a `limited` environment, session creation fails with a 400 error when a host is not allowed, as described under [Provide authentication at session creation](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli#provide-authentication-at-session-creation). If an MCP server is unreachable or rejects the supplied credential, the session still starts and interaction remains possible. A [`session.error`](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types) event is emitted with the `mcp_server_name` of the affected server and a `retry_status`:
+Session creation does not validate MCP connectivity or credentials. It does check each declared server’s host against the environment’s networking. With `limited` networking, session creation fails with a 400 error when a host is not allowed, as described under [Provide authentication at session creation](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli#provide-authentication-at-session-creation). If an MCP server is unreachable or rejects the supplied credential, the session still starts, and you can still interact with it. The session emits a [`session.error`](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types) event with the `mcp_server_name` of the affected server and a `retry_status`:
 
 | Error type                        | Meaning                                                                                                                                                                                                                 |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

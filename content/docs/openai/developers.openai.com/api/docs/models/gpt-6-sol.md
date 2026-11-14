@@ -13,7 +13,7 @@ See [GPT-6.1 Sol](/api/docs/models/gpt-6.1-sol) for the newer Sol model.
 Use the Responses API for built-in tools and function calling. Chat Completions supports function calling only with `reasoning_effort` set to `none`.
 
 EU data residency is available with Standard, Flex, and Batch processing. EU data residency is not available with Fast processing.
-See [data residency eligibility](/api/docs/guides/your-data#which-models-and-features-are-eligible-for-data-residency).
+See [data residency eligibility](/api/docs/guides/data-residency#which-models-and-features-are-eligible-for-data-residency).
 
 ## Model details
 

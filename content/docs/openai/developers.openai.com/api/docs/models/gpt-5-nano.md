@@ -8,7 +8,7 @@ Model ID: `gpt-5-nano`
 
 Status: Deprecated
 
-GPT-5 Nano is our fastest, cheapest version of GPT-5. It's great for
+GPT-5 nano is our fastest, cheapest version of GPT-5. It's great for
 summarization and classification tasks. For most new speed- and
 cost-sensitive workloads, we recommend starting with
 [GPT-5.6 Luna](/api/docs/models/gpt-5.6-luna). Learn more in our
@@ -86,7 +86,7 @@ Tools supported by this model when using the Responses API.
 | --- | ---: | ---: | ---: |
 | GPT-5 nano | $0.05 | $0.005 | $0.4 |
 | GPT-5.4 nano | $0.2 | $0.02 | $1.25 |
-| GPT-5.4 Mini | $0.75 | $0.075 | $4.5 |
+| GPT-5.4 mini | $0.75 | $0.075 | $4.5 |
 
 ## Snapshots
 

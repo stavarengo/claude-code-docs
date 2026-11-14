@@ -24,7 +24,7 @@ This example explicitly requests two subagents in the user input. Each reviews o
 
 Compare release notes
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -207,7 +207,7 @@ This example creates a session for work in your own environment:
 
 Enable delegation with your own environment
 
-```javascript
+```typescript
 const result = await client.beta.agents.sessions.create({
   agent: {
     model: "gpt-6-astra",
@@ -355,7 +355,7 @@ Given a command item and its session ID, retrieve the command's turn to identify
 
 Identify the agent that ran a command
 
-```javascript
+```typescript
 // Use the saved session ID and command execution item from your application.
 const turn = await client.beta.agents.sessions.turns.retrieve(
   command.turn_id,

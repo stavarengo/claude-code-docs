@@ -263,7 +263,7 @@ Verify the available retention policies for your model and organization before s
 
 Cached states live on individual machines, where traffic above 15 requests per minute can lead to overflow routing. A request can reuse a cached prefix only if it reaches a machine holding a matching entry that has not expired. Routing requests to the right machine is therefore important for cache reuse.
 
-Caches are not shared across organizations and cannot be reused across [regional processing boundaries](https://developers.openai.com/api/docs/guides/your-data#data-residency-controls).
+Caches are not shared across organizations and cannot be reused across [regional processing boundaries](https://developers.openai.com/api/docs/guides/data-residency).
 
 OpenAI handles routing automatically. Within an organization and processing region, routing for a given model depends on:
 
@@ -649,10 +649,13 @@ The following helper uses one cache-write multiplier for all writes. Use `1.25` 
 
 Calculate input cost with one cache-write rate
 
-```javascript
+```typescript
 function calculateInputCost(
-  usage,
-  inputPricePerMillion,
+  usage: {
+    input_tokens: number;
+    input_tokens_details: { cached_tokens: number; cache_write_tokens: number };
+  },
+  inputPricePerMillion: number,
   cacheInputMultiplier = 0.1,
   cacheWriteMultiplier = 1.25
 ) {
@@ -1116,4 +1119,4 @@ All prompt caching features are compatible with [Zero Data Retention (ZDR)](http
 
 The prompt cache stores key-value (KV) tensors rather than the original prompt text. These tensors may be stored as encrypted application state in GPU-local storage, with a maximum retention period of 24 hours. See [Cache lifetime](#cache-lifetime) for model-specific cache lifetimes and refresh behavior.
 
-Caches are not shared across organizations and cannot be reused across [regional processing boundaries](https://developers.openai.com/api/docs/guides/your-data#data-residency-controls). For details about data handling and ZDR eligibility across API features, see [Your data](https://developers.openai.com/api/docs/guides/your-data).
+Caches are not shared across organizations and cannot be reused across [regional processing boundaries](https://developers.openai.com/api/docs/guides/data-residency). For details about data handling and ZDR eligibility across API features, see [Your data](https://developers.openai.com/api/docs/guides/your-data).

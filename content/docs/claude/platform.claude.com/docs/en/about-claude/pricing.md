@@ -444,6 +444,8 @@ Browser use follows the standard [tool use pricing in the tool use overview](htt
 
 [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli) is billed on two dimensions: tokens and session runtime.
 
+For pricing of [self-hosted Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/self-hosted?sdk_languages=cli), contact your Anthropic account team.
+
 ### Tokens
 
 All tokens consumed by a Claude Managed Agents session are billed at the rates shown in [Model pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#model-pricing). [Prompt caching multipliers](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#prompt-caching) apply identically. Web search triggered inside a session incurs the standard $10 USD per 1,000 searches. On Claude Platform on AWS, session token and runtime charges convert to Claude Consumption Units at the standard rate (see [Claude Platform on AWS pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#claude-platform-on-aws-pricing)). [Fast mode premium pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#fast-mode-pricing) applies when an agent’s `model.speed` is set to `"fast"`.

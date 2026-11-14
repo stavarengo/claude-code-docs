@@ -147,7 +147,7 @@ Use the [unified WebRTC connection flow](https://developers.openai.com/api/docs/
 
 This application server supports standard WebRTC and WARP. The comment marked `WARP only` identifies the `dcid` forwarding needed for WARP:
 
-```javascript
+```typescript
 import express from "express";
 
 const app = express();
@@ -256,7 +256,7 @@ func handler(client openai.Client) http.Handler {
 
 After enabling the optimizations available in your browser, set `useWarp` to `true`. Choose any available data-channel ID and pass the same ID to the server. Comments marked `WARP only` identify the configuration and signaling that aren't needed for standard WebRTC:
 
-```javascript
+```typescript
 // WARP only: set to true after enabling the supported WARP optimizations.
 const useWarp = false;
 

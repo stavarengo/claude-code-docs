@@ -10,7 +10,7 @@ featureMetadata:
   betaHeader: managed-agents-2026-04-01
   zdr:
     eligibility: not-eligible
-    note: Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes.
+    note: Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them.
   supportedModels:
     - claude-fable-5-2
     - claude-mythos-5-2
@@ -69,7 +69,7 @@ Use a unique, descriptive `name` so you can tell environments apart. This exampl
 
 ## Use the environment in a session
 
-Pass the environment ID as a string when [creating a session](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli).
+Pass the environment ID as a string when you create a session (see [Start a session](https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli)).
 
 <CodeGroup>
   ```bash CLI
@@ -81,7 +81,7 @@ Pass the environment ID as a string when [creating a session](https://platform.c
 
 ### Packages
 
-The `packages` field pre-installs packages into the sandbox before the agent starts. Packages are installed by their respective package managers and cached across sessions that share the same environment. When multiple package managers are specified, they run in alphabetical order (apt, cargo, gem, go, npm, pip). You can optionally pin specific versions. Unpinned packages install the latest version. If the environment uses `limited` [networking](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking), also set `allow_package_managers` in `networking` to `true`; otherwise the request is rejected with a 400 error.
+The `packages` field installs packages into the sandbox before the agent uses it. Package managers run in alphabetical order (apt, cargo, gem, go, npm, pip). You can pin specific versions. If the environment uses `limited` [networking](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#networking), also set `allow_package_managers` in `networking` to `true`; otherwise, the API rejects the request with a 400 error.
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
@@ -162,16 +162,16 @@ The following example creates an environment with `limited` networking:
 </CodeGroup>
 
 <Info>
-  Use `limited` networking with an explicit `allowed_hosts` list. Follow the principle of least privilege by granting only the minimum network access your agent requires, and regularly audit your allowed domains.
+  Use `limited` networking with an explicit `allowed_hosts` list. Follow the principle of least privilege by granting only the minimum network access your agent requires, and regularly audit your allowed hosts.
 </Info>
 
 With `limited` networking and no other fields set, no hosts are allowed. Files, memory stores, and GitHub repositories that you attach to the session stay available. When a request from the sandbox on port 80 or 443 is refused because its host is not allowed, the response is a 403 that names the blocked host.
 
 When using `limited` networking:
 
-* `allowed_hosts` specifies domains the sandbox can reach. Specify bare hostnames or wildcard patterns (such as `*.example.com`). Do not include a URL scheme, port, or path. A bare hostname matches that exact host: `example.com` does not match `www.example.com`. `*.example.com` matches every subdomain of `example.com`, but not `example.com` itself.
+* `allowed_hosts` specifies hosts the sandbox can reach. Specify bare hostnames or wildcard patterns (such as `*.example.com`). Do not include a URL scheme, port, or path. A bare hostname matches that exact host: `example.com` does not match `www.example.com`. `*.example.com` matches every subdomain of `example.com`, but not `example.com` itself.
 * `allow_mcp_servers` allows outbound access to MCP server endpoints configured on the agent, beyond those listed in the `allowed_hosts` array. Defaults to `false`. While it is `false`, session creation fails with a 400 error if the agent declares an MCP server whose host is not in `allowed_hosts`. The same applies to [an agent it can delegate to](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli). To fix it, add the host to `allowed_hosts` or set `allow_mcp_servers` to `true`.
-* `allow_package_managers` allows outbound access to a set of public package registries and code hosts beyond those listed in the `allowed_hosts` array. See [Package manager hosts](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#package-manager-hosts) for the list. Defaults to `false`. Set it to `true` whenever the environment specifies `packages`; otherwise the request is rejected with a 400 error, even if the registry hosts are listed in `allowed_hosts`.
+* `allow_package_managers` allows outbound access to a set of public package registries and code hosts beyond those listed in the `allowed_hosts` array. See [Package manager hosts](https://platform.claude.com/docs/en/managed-agents/environments?sdk_languages=cli#package-manager-hosts) for the list. Defaults to `false`. Set it to `true` whenever the environment specifies `packages`. Otherwise, the API rejects the request with a 400 error, even if `allowed_hosts` lists the registry hosts.
 
 #### Package manager hosts
 
@@ -222,7 +222,7 @@ Use `unrestricted` only when the agent must reach sites you cannot list in advan
 
 ## Environment lifecycle
 
-* Environments persist until explicitly archived or deleted.
+* Environments persist until you archive or delete them.
 * Each session gets its own sandbox instance, even when multiple sessions reference the same environment. Sessions do not share filesystem state.
 * Environments are not versioned. If you update an environment frequently, keep your own record of the changes so you can tell which configuration each session used.
 
@@ -244,15 +244,15 @@ Use `unrestricted` only when the agent must reach sites you cannot list in advan
   ```
 </CodeGroup>
 
-## Pre-installed runtimes
+## Preinstalled runtimes
 
-Cloud sandboxes include common language runtimes, databases, and command-line tools out of the box. See [Cloud sandbox reference](https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference?sdk_languages=cli) for the full list.
+Cloud sandboxes include common language runtimes, databases, and command-line tools. See [Cloud sandbox reference](https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference?sdk_languages=cli) for the full list.
 
 ## Next steps
 
 <CardGroup cols={2}>
   <Card title="Cloud sandbox reference" icon="book" href="https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference?sdk_languages=cli">
-    Pre-installed packages, databases, and utilities available in cloud sandboxes.
+    Preinstalled packages, databases, and utilities available in cloud sandboxes.
   </Card>
 
   <Card title="Start a session" icon="play" href="https://platform.claude.com/docs/en/managed-agents/sessions?sdk_languages=cli">
@@ -286,10 +286,10 @@ Beta headers allow you to access experimental features and new model capabilitie
 
 [Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
 
-| Item    | Zero data retention                                                                                                                                      | HIPAA                                                                        |
-| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Status  | Not eligible                                                                                                                                             | Not eligible                                                                 |
-| Details | Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes. | Applies to all Managed Agents sub-features, including Self-hosted sandboxes. |
+| Item    | Zero data retention                                                                                                                                                                                                                                                           | HIPAA                                                               |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Status  | Not eligible                                                                                                                                                                                                                                                                  | Not eligible                                                        |
+| Details | Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them. [Learn more](https://platform.claude.com/docs/en/managed-agents/self-hosted-data-and-access?sdk_languages=cli#how-long-data-is-kept) | Not eligible for HIPAA. Applies to all Managed Agents sub-features. |
 
 Applicable endpoints:
 

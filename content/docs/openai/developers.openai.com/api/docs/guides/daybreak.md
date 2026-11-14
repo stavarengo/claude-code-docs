@@ -54,7 +54,7 @@ GPT-6 Astra
 GPT-5.5-Cyber (existing access only)
 
             
-GPT-5.6-Cyber
+GPT-5.6 Cyber
 
           
 
@@ -88,7 +88,7 @@ GPT-5.6-Cyber
         </td>
       </tr>
       <tr>
-        <td>GPT-6-Cyber</td>
+        <td>GPT-6 Cyber</td>
         <td>Red + additional model approval</td>
         <td>
           `daybreak_red`
@@ -171,17 +171,17 @@ When available, `access_programs.cyber` records the selected program. This parti
 
 When no program is specified and the request uses standard safeguards, `access_programs` is `null`. For a `-latest` alias, inspect `model` to see which model served the request. Alias resolution can change and depends on your approved access.
 
-## Set up GPT-6-Cyber
+## Set up GPT-6 Cyber
 
-Confirm with your account team that your organization has Daybreak Red access and approval for [GPT-6-Cyber](https://developers.openai.com/api/docs/models/gpt-6-cyber).
+Confirm with your account team that your organization has Daybreak Red access and approval for [GPT-6 Cyber](https://developers.openai.com/api/docs/models/gpt-6-cyber).
 
 **Project access.** Ask an organization owner to [enable Daybreak Red](https://help.openai.com/en/articles/20001531-openai-daybreak-set-up-access-for-your-team) for the project that will send requests. With project-level controls, use a non-default project and a key from that project.
 
-**IP allowlisting.** To use GPT-6-Cyber through the API, [configure an IP allowlist](https://developers.openai.com/api/docs/guides/ip-allowlist) for the public IPs your application sends requests from. If you have received approval to embed the model in a product, end users without direct model access don’t need to allowlist their own IPs.
+**IP allowlisting.** To use GPT-6 Cyber through the API, [configure an IP allowlist](https://developers.openai.com/api/docs/guides/ip-allowlist) for the public IPs your application sends requests from. If you have received approval to embed the model in a product, end users without direct model access don’t need to allowlist their own IPs.
 
 **Zero Data Retention.** If the project uses ZDR, [configure Private Safety Processing](https://developers.openai.com/api/docs/guides/private-safety-processing) (PSP). Check that storage shows “Validated” and that the project’s retention policy is “Zero Data Retention with Private Safety Processing.” PSP applies to all API traffic in that project.
 
-### Send a GPT-6-Cyber request
+### Send a GPT-6 Cyber request
 
 Set `OPENAI_API_KEY` to a key from the approved project. Replace the sample safety identifier with a stable, pseudonymous identifier for the user making the request.
 

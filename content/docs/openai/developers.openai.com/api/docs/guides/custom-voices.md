@@ -126,7 +126,7 @@ Replace `voice_123` with the ID returned by your creation request:
 
 For [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live), include this configuration in the JSON `session` field alongside `transport`. For [WebSockets](https://developers.openai.com/api/docs/guides/voice-websockets?api=live), include it in the first `session.start` event. Follow the connection guide to send audio and hear the voice. Choose the voice at startup; start a new session to try a different voice.
 
-Voice creation through `/v1/audio/voices`, including creation from recordings, isn't compatible with Zero Data Retention. GPT-Live speech generations are eligible for Zero Data Retention when it's enabled for your organization or project. Stored session recordings, recording downloads, and session forking aren't available with Zero Data Retention. See the [data controls](https://developers.openai.com/api/docs/guides/your-data#v1livesessions) for session storage and retention requirements.
+Voice creation through `/v1/audio/voices`, including creation from recordings, isn't compatible with Zero Data Retention. GPT-Live speech generations are eligible for Zero Data Retention when it's enabled for your organization or project. Stored session recordings, recording downloads, and session forking aren't available with Zero Data Retention. See the [data controls](https://developers.openai.com/api/docs/guides/data-residency#v1livesessions) for session storage and retention requirements.
 
 ### Refine and reuse
 
@@ -247,7 +247,7 @@ Use `gpt-realtime-2.1-mini` with the [Realtime API](https://developers.openai.co
 
 Use the following request body when [creating a Realtime client secret](https://developers.openai.com/api/reference/resources/realtime/subresources/client_secrets/methods/create), then follow the [WebRTC connection guide](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime) to connect with that secret. Replace `voice_123abc` with the ID returned by your voice creation request:
 
-```javascript
+```typescript
 const sessionConfig = JSON.stringify({
   session: {
     type: "realtime",

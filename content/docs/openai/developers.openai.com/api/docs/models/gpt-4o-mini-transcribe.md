@@ -2,13 +2,13 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Speech-to-text model powered by GPT-4o Mini
+> Speech-to-text model powered by GPT-4o mini
 
 Model ID: `gpt-4o-mini-transcribe`
 
 Status: Deprecated
 
-GPT-4o Mini Transcribe is a speech-to-text model that uses GPT-4o Mini to transcribe audio.
+GPT-4o Mini Transcribe is a speech-to-text model that uses GPT-4o mini to transcribe audio.
 It offers improvements to word error rate and better language recognition and accuracy compared to original Whisper models. Use it for more accurate transcripts.
 
 ## Model details

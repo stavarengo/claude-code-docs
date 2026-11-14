@@ -103,7 +103,7 @@ You can provide file inputs by linking external URLs.
 
 Use an external file URL
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const client = new OpenAI();
 
@@ -325,7 +325,7 @@ The following example uploads a file with the [Files API](https://developers.ope
 
 Upload a file
 
-```javascript
+```typescript
 import fs from "fs";
 import OpenAI from "openai";
 const client = new OpenAI();
@@ -593,7 +593,7 @@ You can also send file inputs as Base64-encoded file data.
 
 Send a Base64-encoded file
 
-```javascript
+```typescript
 import fs from "fs";
 import OpenAI from "openai";
 const client = new OpenAI();

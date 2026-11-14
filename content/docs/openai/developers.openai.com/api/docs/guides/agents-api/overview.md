@@ -80,7 +80,7 @@ Check the [quickstart prerequisites](https://developers.openai.com/api/docs/guid
 
 Configure managed-harness capabilities
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();

@@ -28,7 +28,7 @@ curl https://api.openai.com/v1/responses \
   }'
 ```
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const client = new OpenAI();
 
@@ -190,7 +190,7 @@ curl https://api.openai.com/v1/responses \
   }'
 ```
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const client = new OpenAI();
 

@@ -8,7 +8,7 @@ Model ID: `gpt-4o-mini-realtime-preview`
 
 Status: Shut down
 
-This is a preview release of the GPT-4o-Mini Realtime model, capable of responding to audio and text inputs in realtime over WebRTC or a WebSocket interface.
+This preview of GPT-4o mini in the Realtime API can respond to audio and text inputs over WebRTC or a WebSocket interface.
 
 ## Model details
 

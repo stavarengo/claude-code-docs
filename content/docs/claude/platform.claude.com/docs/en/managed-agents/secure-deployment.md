@@ -10,7 +10,7 @@ featureMetadata:
   betaHeader: managed-agents-2026-04-01
   zdr:
     eligibility: not-eligible
-    note: Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes.
+    note: Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them.
   supportedModels:
     - claude-fable-5-2
     - claude-mythos-5-2
@@ -120,7 +120,7 @@ The `allow_package_managers` and `allow_mcp_servers` settings add no hosts for w
 Leave `allow_mcp_servers` off, which is the default, and list the host of each MCP server you operate or trust in `allowed_hosts`. Each host you list is also open to code in the sandbox. With `allow_mcp_servers` off, a check at session creation rejects the request if an MCP server’s host is not listed. See [Provide authentication at session creation](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli#provide-authentication-at-session-creation). The same check runs when a session update changes `mcp_servers`.
 
 <Warning>
-  Network access is granted by host, not by operation. The sandbox can send any request to an allowed host, including uploads such as `git push` and package publishing. It can also use any credential the command supplies, even one that someone hid in text the agent reads.
+  The environment grants network access by host, not by operation. The sandbox can send any request to an allowed host, including uploads such as `git push` and package publishing. It can also use any credential the command supplies, even one that someone hid in text the agent reads.
 </Warning>
 
 When you choose hosts for `allowed_hosts`, follow these two rules:
@@ -208,7 +208,7 @@ A domain list on `web_fetch` does not limit the `bash` tool. [Limit the network]
 
 ## Approve risky actions
 
-Set `auto` on `bash`, `write`, `edit`, and `web_fetch`, and on MCP tools that only read data. Use `always_ask` instead on a tool if you cannot undo its changes outside the sandbox. Also use it on a tool that should not run just because end-user text you relay asks for it. A [permission policy](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli) determines whether a tool call runs, waits for your approval, or is evaluated by the server.
+Set `auto` on `bash`, `write`, `edit`, `web_fetch`, and MCP tools that only read data. Use `always_ask` instead on a tool if you cannot undo its changes outside the sandbox. Also use it on a tool if end-user text that you relay should not be enough to make the tool run. A [permission policy](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli) determines whether the server allows a tool call, holds it for your approval, or evaluates it.
 
 | Tool                          | Recommended policy                                                                                                                           | Why                                                                                                  |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
@@ -331,7 +331,7 @@ When an agent must read untrusted input and also act, this guide recommends one 
 
 * **Split reading from acting.** In one multiagent session, a [lead agent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#list-the-subagents) gives tasks to a fetcher, which reads the web, and a writer, which changes files or records.
 * **Give the agent one narrow custom tool.** Your application runs the tool, checks its input, and holds the credential. The support agent uses this design, not the split. See [Answer tool calls that pause the session](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#answer-tool-calls-that-pause-the-session).
-* **Keep a person in the loop.** Use `always_ask` on the powerful tool so a person approves each call.
+* **Require a person’s approval.** Use `always_ask` on the powerful tool so a person approves each call.
 
 The split uses three agents:
 
@@ -341,7 +341,7 @@ The split uses three agents:
 | Fetcher                                | Webpages and search results                       | `web_fetch` and `web_search` only, each with `allowed_domains`                                       | Short results, in a format you ask for in its system prompt |
 | Writer                                 | The task from the lead                            | The tools that write files, run commands, or change records, on `auto` or `always_ask`. No web tools | Its result                                                  |
 
-The fetcher’s results are built from untrusted pages, and the lead can pass their text on to the writer. Keep `auto` or `always_ask` on the writer’s tools. The fetcher can still send some of what it reads to the sites on its `web_fetch` list, and to the search provider in its queries.
+The fetcher builds its results from untrusted pages, and the lead can pass their text on to the writer. Keep `auto` or `always_ask` on the writer’s tools. The fetcher can still send some of what it reads to the sites on its `web_fetch` list, and to the search provider in its queries.
 
 Agents in one multiagent session [share the sandbox](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#how-it-works), its files, and the vault credentials, so this split separates only their tools and conversations. For a stronger split, use two sessions with separate environments and vaults. Have your application pass only fixed fields, such as an order ID, between the two sessions.
 

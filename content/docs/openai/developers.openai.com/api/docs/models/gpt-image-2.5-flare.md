@@ -6,7 +6,7 @@
 
 Model ID: `gpt-image-2.5-flare`
 
-GPT Image 2.5 Flare is our fastest model for high-quality, everyday image generation. It accepts text and image inputs and produces image outputs. It supports `low`, `medium`, `high`, `xhigh`, `max`, and `auto` quality settings. Select it directly in the Image API or as the model of the Responses API image generation tool. Learn more in the [image generation guide](/api/docs/guides/image-generation).
+GPT-Image-2.5 Flare is our fastest model for high-quality, everyday image generation. It accepts text and image inputs and produces image outputs. It supports `low`, `medium`, `high`, `xhigh`, `max`, and `auto` quality settings. Select it directly in the Image API or as the model of the Responses API image generation tool. Learn more in the [image generation guide](/api/docs/guides/image-generation).
 
 ## Model details
 
@@ -34,7 +34,7 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 | Output | $30 | 1M tokens |
 
 - Image output costs $30 per million tokens with Standard processing or $15 with Batch processing. Text output is not billed because this model outputs images, not text.
-- Token rates match GPT Image 2. The GPT Image 2 calculator does not estimate GPT Image 2.5 token consumption.
+- Token rates match GPT Image 2. The GPT Image 2 calculator does not estimate GPT-Image-2.5 token consumption.
 
 ## Endpoints
 

@@ -6,7 +6,7 @@
 
 Model ID: `gpt-live-transcribe`
 
-GPT Live Transcribe is a streaming speech-to-text model for applications that need low-latency transcript deltas from live audio. It supports tunable latency, unstructured context, keyword hints, and multiple language hints.
+GPT-Live-Transcribe is a streaming speech-to-text model for applications that need low-latency transcript deltas from live audio. It supports tunable latency, unstructured context, keyword hints, and multiple language hints.
 
 ## Model details
 

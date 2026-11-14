@@ -680,7 +680,7 @@ We recommend doing tool call response truncation as follows to be as in-distribu
 - Limit to 10k tokens. You can cheaply approximate this by computing `num_bytes/4`.
 - If you hit the truncation limit, you should use half of the budget for the beginning, half for the end, and truncate in the middle with `…3 tokens truncated…`
 
-### New features in GPT-5.3 Codex
+### New features in GPT-5.3-Codex
 
 #### Preamble messages
 

@@ -16,7 +16,7 @@ To use Flex processing, set the `service_tier` parameter to `flex` in your API r
 
   Flex processing example
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const client = new OpenAI({
   timeout: 15 * 1000 * 60, // Increase default timeout to 15 minutes
@@ -163,7 +163,7 @@ curl https://api.openai.com/v1/responses \
 Due to slower processing speeds with Flex processing, request timeouts are more likely. Here are some considerations for handling timeouts:
 
 - **Default timeout**: The default timeout is **10 minutes** when making API requests with an official OpenAI SDK. You may need to increase this timeout for lengthy prompts or complex tasks.
-- **Configuring timeouts**: Each SDK will provide a parameter to increase this timeout. In the Python and JavaScript SDKs, this is `timeout` as shown in the code samples above.
+- **Configuring timeouts**: Each SDK will provide a parameter to increase this timeout. In the Python and TypeScript SDKs, this is `timeout` as shown in the code samples above.
 - **Automatic retries**: The OpenAI SDKs automatically retry requests that result in a `408 Request Timeout` error code twice before throwing an exception.
 
 ## Resource unavailable errors

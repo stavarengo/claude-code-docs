@@ -359,7 +359,7 @@ and other client events to control the call, and listen for server events to
 track progress. See [Webhooks and server-side controls](https://developers.openai.com/api/docs/guides/voice-server-controls?api=realtime)
 for more information.
 
-```javascript
+```typescript
 import WebSocket from "ws";
 
 const callId = "rtc_u1_9c6574da8b8a41a18da9308f4ad974ce";

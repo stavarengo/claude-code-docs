@@ -26,7 +26,7 @@ For developers using GPT-5, we have seen strong success with customers who follo
 3. **Coding agents:** If you’re working on a coding agent, migrate your `apply_patch` tool to our new, named implementation.
 4. **Instruction following:** For other behavior issues, GPT-5.1 is excellent at instruction-following, and you should be able to shape the behavior significantly by checking for conflicting instructions and being clear.
 
-We also released GPT-5.1-Codex. That model behaves differently from GPT-5.1; see the [Codex prompting guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) for more information. For guidance on a later Codex model in the API, see [Using GPT-5.3 Codex](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.3-codex).
+We also released GPT-5.1-Codex. That model behaves differently from GPT-5.1; see the [Codex prompting guide](https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide) for more information. For guidance on a later Codex model in the API, see [Using GPT-5.3-Codex](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-5.3-codex).
 
 ## Model, API, and feature updates
 
@@ -313,7 +313,7 @@ The apply_patch tool lets GPT-5.1 create, update, and delete files in your codeb
 
 With GPT-5.1, you can use apply_patch as a new tool type without writing custom descriptions for the tool. The description and handling are managed via the Responses API. Under the hood, this implementation uses a freeform function call rather than a JSON format. In testing, the named function decreased apply_patch failure rates by 35%.
 
-```javascript
+```typescript
 const response = await client.responses.create({
   model: "gpt-5.1",
   input: "Update the README title and fix the failing test.",

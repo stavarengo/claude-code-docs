@@ -24,7 +24,7 @@ Set `OPENAI_ADMIN_KEY`, then initialize the SDK for your language.
 
 Set up the SDK with an Admin API key
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI({
@@ -80,7 +80,7 @@ Use project model permissions to set an allowlist or deny list for a project. Se
 
 Set a project model allowlist/denylist
 
-```javascript
+```typescript
 const modelPermissions =
   await client.admin.organization.projects.modelPermissions.update("proj_abc", {
     mode: "allow_list",
@@ -173,7 +173,7 @@ Use project spend alerts to notify your team when project spend reaches a thresh
 
 Create a project spend limit alert
 
-```javascript
+```typescript
 const spendAlert = await client.admin.organization.projects.spendAlerts.create(
   "proj_abc",
   {
@@ -280,7 +280,7 @@ Use project data retention controls to override or inherit the organization's re
 
 Set project data retention
 
-```javascript
+```typescript
 const dataRetention =
   await client.admin.organization.projects.dataRetention.update("proj_abc", {
     retention_type: "organization_default",
@@ -350,7 +350,7 @@ Use the Invites endpoint to send an organization invitation to an email address.
 
 Invite a user by email
 
-```javascript
+```typescript
 const invite = await client.admin.organization.invites.create({
   email: "user@example.com",
   role: "reader",
@@ -416,7 +416,7 @@ Use the Audit Logs endpoint to list recent user actions and configuration change
 
 Retrieve audit logs
 
-```javascript
+```typescript
 const auditLogs = await client.admin.organization.auditLogs.list({
   limit: 10,
 });

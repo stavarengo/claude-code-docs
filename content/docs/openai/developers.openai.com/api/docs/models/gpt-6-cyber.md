@@ -1,4 +1,4 @@
-# GPT-6-Cyber
+# GPT-6 Cyber
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -6,7 +6,7 @@
 
 Model ID: `gpt-6-cyber`
 
-Your organization needs Daybreak Red access and approval to use GPT-6-Cyber. Your account team can confirm access. The standard rate limits below apply to approved organizations and may differ if your organization has custom limits.
+Your organization needs Daybreak Red access and approval to use GPT-6 Cyber. Your account team can confirm access. The standard rate limits below apply to approved organizations and may differ if your organization has custom limits.
 
 [Set up your organization and project](/api/docs/guides/daybreak#set-up-gpt-6-cyber) before sending your first request.
 
@@ -86,7 +86,7 @@ Tools supported by this model when using the Responses API.
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-6-Cyber.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-6 Cyber.
 
 - `gpt-6-cyber`
 

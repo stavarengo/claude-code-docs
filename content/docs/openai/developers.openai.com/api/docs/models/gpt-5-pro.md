@@ -1,4 +1,4 @@
-# GPT-5 Pro
+# GPT-5 pro
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -8,15 +8,15 @@ Model ID: `gpt-5-pro`
 
 Status: Deprecated
 
-GPT-5 Pro uses more compute to think harder and provide consistently better answers.
+GPT-5 pro uses more compute to think harder and provide consistently better answers.
 
- GPT-5 Pro is available in the [Responses API only](/api/docs/api-reference/responses)
+ GPT-5 pro is available in the [Responses API only](/api/docs/api-reference/responses)
  to enable support for multi-turn model interactions before responding to API
- requests, and other advanced API features in the future. Since GPT-5 Pro is designed
+ requests, and other advanced API features in the future. Since GPT-5 pro is designed
  to tackle tough problems, some requests may take several minutes to finish.
  To avoid timeouts, try using [background mode](/api/docs/guides/background). 
- As our most advanced reasoning model, GPT-5 Pro defaults to (and only supports) `reasoning.effort: high`.
- GPT-5 Pro does not support code interpreter.
+ As our most advanced reasoning model, GPT-5 pro defaults to (and only supports) `reasoning.effort: high`.
+ GPT-5 pro does not support code interpreter.
 
 ## Model details
 
@@ -86,13 +86,13 @@ Tools supported by this model when using the Responses API.
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-5 Pro | $15 | - | $120 |
+| GPT-5 pro | $15 | - | $120 |
 | GPT-5 | $1.25 | $0.125 | $10 |
 | o3-pro | $20 | - | $80 |
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5 Pro.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5 pro.
 
 - `gpt-5-pro-2025-10-06` — Deprecated
 

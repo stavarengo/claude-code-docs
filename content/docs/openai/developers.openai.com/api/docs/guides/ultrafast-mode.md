@@ -19,7 +19,7 @@ Install your language's SDK and WebSocket dependencies as described in [Connect 
 
 Use Ultrafast across turns on one WebSocket
 
-```javascript
+```typescript
 // Install: npm install openai ws
 // Set OPENAI_API_KEY in your environment.
 
@@ -268,7 +268,7 @@ Ultrafast also supports HTTP requests through the SDK. For agentic applications 
 
 Create an Ultrafast response over HTTP
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();

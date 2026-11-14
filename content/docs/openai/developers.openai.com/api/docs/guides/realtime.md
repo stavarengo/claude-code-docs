@@ -19,7 +19,7 @@ The usual browser flow is:
 
 Start a realtime voice session
 
-```javascript
+```typescript
 import { RealtimeAgent, RealtimeSession } from "@openai/agents/realtime";
 
 const ephemeralKey = process.env.OPENAI_REALTIME_EPHEMERAL_KEY;

@@ -59,7 +59,7 @@ You can set the hyperparameters as shown below:
 
 Setting hyperparameters
 
-```javascript
+```typescript
 const fineTune = await openai.fineTuning.jobs.create({
   training_file: "file-abc123",
   model: "gpt-4o-mini-2024-07-18",

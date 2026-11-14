@@ -61,7 +61,7 @@ Replace `OPENAI_WEBHOOK_SECRET` with the signing secret returned by OpenAI, then
 
 Check Worker health
 
-```javascript
+```typescript
 // Replace the illustrative IDs and URLs below with your own resource values.
 
 const response = await fetch(
@@ -169,7 +169,7 @@ When the application no longer needs the sandbox, call the reference Worker's au
 
 Clean up the Worker sandbox
 
-```javascript
+```typescript
 // Replace the illustrative IDs and URLs below with your own resource values.
 
 const response = await fetch("https://worker.example.com/executors/sess_123", {

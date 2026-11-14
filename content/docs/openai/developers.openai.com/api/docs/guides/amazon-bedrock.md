@@ -37,7 +37,7 @@ These examples use the OpenAI SDK with the Mantle endpoint. Select the AWS
 Region and model ID for your deployment:
 
 - Client libraries with a Bedrock provider derive a regional Mantle base URL
-  from the AWS Region. The JavaScript, Python, Go, and Java providers use
+  from the AWS Region. The TypeScript, Python, Go, and Java providers use
   `https://bedrock-mantle.us-east-2.api.aws/openai/v1` for this guide's
   `us-east-2` examples. The Ruby examples configure this `/openai/v1`
   endpoint directly because the provider's default `/v1` route doesn't
@@ -66,7 +66,7 @@ Install the optional Java Bedrock provider before using either Java example:
 
 Send a Responses API request through Amazon Bedrock
 
-```javascript
+```typescript
 import OpenAI from "openai";
 import { bedrock } from "openai/providers/bedrock";
 
@@ -229,7 +229,7 @@ curl "https://bedrock-mantle.us-east-2.api.aws/openai/v1/responses" \
 
 
 For long-running applications, prefer the standard AWS credential chain instead
-of a static bearer token. The JavaScript, Python, Go, Java, and Ruby SDK
+of a static bearer token. The TypeScript, Python, Go, Java, and Ruby SDK
 providers resolve fresh AWS credentials and sign each request attempt with
 SigV4. The chain can include credentials configured with `aws login`, shared
 profiles, workload roles, and instance or container credentials.
@@ -251,7 +251,7 @@ AWS credential chain.
 
 Send a request with AWS-managed Bedrock credentials
 
-```javascript
+```typescript
 import OpenAI from "openai";
 import { defaultProvider } from "@aws-sdk/credential-provider-node";
 import { bedrock } from "openai/providers/bedrock/aws";

@@ -33,7 +33,7 @@ Responses API
 
     Providing a safety identifier with the Responses API
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -136,7 +136,7 @@ Chat Completions API
 
     Providing a safety identifier with the Chat Completions API
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();

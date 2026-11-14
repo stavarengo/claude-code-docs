@@ -24,7 +24,7 @@ For the Ruby examples, install the required dependencies with
 
 Webhooks server
 
-```javascript
+```typescript
 import OpenAI from "openai";
 import express from "express";
 
@@ -165,7 +165,7 @@ curl https://api.openai.com/v1/responses \
 }'
 ```
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const client = new OpenAI();
 
@@ -341,7 +341,7 @@ The simplest way to verify webhook signatures is by using the `unwrap()` method 
 
 Signature verification with the OpenAI SDK
 
-```javascript
+```typescript
 const client = new OpenAI();
 const webhook_secret = process.env.OPENAI_WEBHOOK_SECRET;
 if (!webhook_secret) throw new Error("Set OPENAI_WEBHOOK_SECRET.");

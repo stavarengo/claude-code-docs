@@ -10,7 +10,7 @@ featureMetadata:
   betaHeader: managed-agents-2026-04-01
   zdr:
     eligibility: not-eligible
-    note: Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes.
+    note: Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them.
   supportedModels:
     - claude-fable-5-2
     - claude-mythos-5-2
@@ -41,7 +41,7 @@ This page collects reference material for Claude Managed Agents. For task-orient
 
 ## Event types
 
-Persisted event type strings follow a `{domain}.{action}` naming convention; the stream-only event deltas (see the **Event deltas** tab) are the exception. See [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli) for sending, streaming, and listing events. Webhook event types are listed separately in [Subscribe to webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli#supported-event-types), and some of their names differ from the stream’s (for example, `session.status_idled` rather than `session.status_idle`).
+Persisted event type strings follow a `{domain}.{action}` naming convention; the stream-only event deltas (see the **Event deltas** tab) are the exception. See [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli) for sending, streaming, and listing events. [Subscribe to webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli#supported-event-types) lists webhook event types separately, and some of their names differ from the stream’s (for example, `session.status_idled` rather than `session.status_idle`).
 
 <Tabs>
   <Tab title="User events">
@@ -60,16 +60,16 @@ Persisted event type strings follow a `{domain}.{action}` naming convention; the
     | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
     | `agent.message`                  | Agent response content blocks.                                                                                                                                                                                                                                                                                   |
     | `agent.thinking`                 | Signals the agent is making forward progress through extended thinking. This is a progress signal only and does not carry the thinking content.                                                                                                                                                                  |
-    | `agent.tool_use`                 | Agent calls a pre-built agent tool (bash, file operations, and so on). Carries `evaluated_permission` and, usually, `evaluation` (see [how each call was evaluated](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli#see-how-each-call-was-evaluated)).                  |
-    | `agent.tool_result`              | Result of a pre-built agent tool execution.                                                                                                                                                                                                                                                                      |
+    | `agent.tool_use`                 | Agent calls a prebuilt agent tool (bash, file operations, and so on). Carries `evaluated_permission` and, usually, `evaluation` (see [how each call was evaluated](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli#see-how-each-call-was-evaluated)).                   |
+    | `agent.tool_result`              | Result of running a prebuilt agent tool.                                                                                                                                                                                                                                                                         |
     | `agent.mcp_tool_use`             | Agent calls an MCP server tool. Carries `evaluated_permission` and, usually, `evaluation` (see [how each call was evaluated](https://platform.claude.com/docs/en/managed-agents/permission-policies?sdk_languages=cli#see-how-each-call-was-evaluated)).                                                         |
-    | `agent.mcp_tool_result`          | Result of an MCP tool execution.                                                                                                                                                                                                                                                                                 |
+    | `agent.mcp_tool_result`          | Result of running an MCP tool.                                                                                                                                                                                                                                                                                   |
     | `agent.custom_tool_use`          | Agent calls one of your custom tools. Respond with a `user.custom_tool_result` event.                                                                                                                                                                                                                            |
     | `agent.thread_context_compacted` | Conversation history was compacted to fit the context window.                                                                                                                                                                                                                                                    |
-    | `agent.thread_message_received`  | In a [multiagent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli) session, a message from another thread arrived on the thread whose stream carries this event; on the primary thread, an agent sent a report or question to the agent that the session runs.     |
-    | `agent.thread_message_sent`      | In a [multiagent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli) session, the thread whose stream carries this event sent a message to another thread; on the primary thread, the agent that the session runs sent a task or follow-up message to another agent. |
+    | `agent.thread_message_received`  | In a [multiagent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli) session, a message from another thread arrived on the thread whose stream carries this event. On the primary thread, an agent sent a report or question to the agent that the session runs.     |
+    | `agent.thread_message_sent`      | In a [multiagent](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli) session, the thread whose stream carries this event sent a message to another thread. On the primary thread, the agent that the session runs sent a task or follow-up message to another agent. |
 
-    Message content in these events can include a `redacted` content block, `{"type": "redacted"}`: a placeholder for content withheld by Anthropic model policy. The block carries no other fields. Redacted blocks appear only in content the platform emits; a user event that includes one is rejected with a 400 error.
+    Message content in these events can include a `redacted` content block, `{"type": "redacted"}`: a placeholder for content withheld by Anthropic model policy. The block carries no other fields. Redacted blocks appear only in content the platform emits. If a user event includes one, the API rejects it with a 400 error.
   </Tab>
 
   <Tab title="Session events">
@@ -79,7 +79,7 @@ Persisted event type strings follow a `{domain}.{action}` naming convention; the
     | `session.status_idle`               | Agent finished its current task and is waiting for input. Includes a `stop_reason` indicating why the agent stopped.                                                                                                                                                                                                                             |
     | `session.status_rescheduled`        | A transient error occurred and the session is retrying automatically.                                                                                                                                                                                                                                                                            |
     | `session.status_terminated`         | Session ended, either because of an unrecoverable error or because it was archived.                                                                                                                                                                                                                                                              |
-    | `session.deleted`                   | Session was deleted. Ends any active event stream; no further events are emitted for this session.                                                                                                                                                                                                                                               |
+    | `session.deleted`                   | Session was deleted. Ends any active event stream. The session emits no further events.                                                                                                                                                                                                                                                          |
     | `session.updated`                   | Session update request changed at least one field. Includes only the fields that changed. Updates apply on the next turn.                                                                                                                                                                                                                        |
     | `session.error`                     | An error occurred during processing. Includes a typed `error` object with a `retry_status`.                                                                                                                                                                                                                                                      |
     | `session.usage`                     | Snapshot of the session’s cumulative usage and tracked list cost. Carries the session’s usage totals and, if the session has one, its [budget](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli).                                                                                                                    |
@@ -91,15 +91,15 @@ Persisted event type strings follow a `{domain}.{action}` naming convention; the
 
     In a session whose agent has [dynamic workflows](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#dynamic-workflows) turned on, these `workflow_run.*` events arrive on the session’s stream:
 
-    | Type                          | Description                                                                                                                                                                                                                                                                                                                        |
-    | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | `workflow_run.created`        | A workflow run was created. Includes `workflow_run_id`, the run’s `name` and `description`, and `phases`, the phases declared for the run. A status event follows, though after an interrupt it might not.                                                                                                                         |
-    | `workflow_run.status_running` | A workflow run is running. Sent when the run starts to execute, which can be a while after `workflow_run.created`, and again when it resumes after a pause at the budget. A resume after an interrupt might not send it. A run that is idle from the start might get `workflow_run.status_idle` first. Includes `workflow_run_id`. |
-    | `workflow_run.status_idle`    | A workflow run went idle: it was paused, for example at the session’s budget. A pause after an interrupt might not send it. Includes `workflow_run_id`.                                                                                                                                                                            |
-    | `workflow_run.status_ended`   | A workflow run ended. Includes `workflow_run_id` and `result`, whose `type` says how the run ended.                                                                                                                                                                                                                                |
-    | `workflow_run.error`          | An error of a workflow run, or a start that the server refused. A run that ends in error gets it, with the same error, before its `workflow_run.status_ended`. Includes `error` and `workflow_run_id`, which is `null` when no run was created.                                                                                    |
-    | `workflow_run.phase_started`  | A workflow run entered one of its phases. Includes `workflow_run_id` and `workflow_run_phase_id`.                                                                                                                                                                                                                                  |
-    | `workflow_run.phase_ended`    | A workflow run left a phase. Includes `workflow_run_id`, `workflow_run_phase_id`, and `phase_started_id`.                                                                                                                                                                                                                          |
+    | Type                          | Description                                                                                                                                                                                                                                                                                                             |
+    | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | `workflow_run.created`        | A workflow run was created. Includes `workflow_run_id`, the run’s `name` and `description`, and `phases`, the phases declared for the run. A status event follows, though after an interrupt it might not.                                                                                                              |
+    | `workflow_run.status_running` | A workflow run is running. Sent when the run starts, which can be a while after `workflow_run.created`, and again when it resumes after a pause at the budget. A resume after an interrupt might not send it. A run that is idle from the start might get `workflow_run.status_idle` first. Includes `workflow_run_id`. |
+    | `workflow_run.status_idle`    | A workflow run went idle: it was paused, for example at the session’s budget. A pause after an interrupt might not send it. Includes `workflow_run_id`.                                                                                                                                                                 |
+    | `workflow_run.status_ended`   | A workflow run ended. Includes `workflow_run_id` and `result`, whose `type` says how the run ended.                                                                                                                                                                                                                     |
+    | `workflow_run.error`          | An error of a workflow run, or a start that the server refused. A run that ends in error gets it, with the same error, before its `workflow_run.status_ended`. Includes `error` and `workflow_run_id`, which is `null` when no run was created.                                                                         |
+    | `workflow_run.phase_started`  | A workflow run entered one of its phases. Includes `workflow_run_id` and `workflow_run_phase_id`.                                                                                                                                                                                                                       |
+    | `workflow_run.phase_ended`    | A workflow run left a phase. Includes `workflow_run_id`, `workflow_run_phase_id`, and `phase_started_id`.                                                                                                                                                                                                               |
   </Tab>
 
   <Tab title="Span events">
@@ -115,13 +115,13 @@ Persisted event type strings follow a `{domain}.{action}` naming convention; the
   </Tab>
 
   <Tab title="System events">
-    | Type             | Description                                                                                                                                                                                                                                                                                                                                                                            |
-    | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | `system.message` | Append privileged system-level context that applies to the accompanying turn and all subsequent turns. For the models that accept it, see [Supported models](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#supported-models). On an unsupported primary model the event is rejected with `model_does_not_support_mid_conversation_system`. |
+    | Type             | Description                                                                                                                                                                                                                                                                                                                                                                                 |
+    | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | `system.message` | Append privileged system-level context that applies to the accompanying turn and all subsequent turns. For the models that accept it, see [Supported models](https://platform.claude.com/docs/en/managed-agents/events-and-streaming?sdk_languages=cli#supported-models). On an unsupported primary model, the API rejects the event with `model_does_not_support_mid_conversation_system`. |
   </Tab>
 
   <Tab title="Event deltas">
-    Event deltas are stream-only preview events. They are emitted on stream connections (session-level or per-thread) that opt in with the `--event-delta` (cli: `--event-delta`) parameter, and they are never persisted to the session’s event history. See [Preview responses with event deltas](https://platform.claude.com/docs/en/managed-agents/event-deltas?sdk_languages=cli) for opting in, accumulating, and reconciling them.
+    Event deltas are stream-only preview events. The server emits them on stream connections (session-level or per-thread) that opt in with the `--event-delta` (cli: `--event-delta`) parameter. The server never persists them to the session’s event history. See [Preview responses with event deltas](https://platform.claude.com/docs/en/managed-agents/event-deltas?sdk_languages=cli) for opting in, accumulating, and reconciling them.
 
     | Type          | Description                                                                                                              |
     | ------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -132,11 +132,11 @@ Persisted event type strings follow a `{domain}.{action}` naming convention; the
 
 ## Self-hosted worker
 
-See [Self-hosted worker reference](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference?sdk_languages=cli) for the `ant beta:worker` CLI flags, environment variables, filesystem paths, and SDK helper options of the pre-built workers that drive a `self_hosted` environment.
+See [Self-hosted worker reference](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference?sdk_languages=cli) for the prebuilt workers that drive a `self_hosted` environment. It covers their `ant beta:worker` CLI flags, environment variables, filesystem paths, and SDK helper options.
 
 ## Supported MCP server types
 
-Claude Managed Agents connects to [remote MCP servers](https://platform.claude.com/docs/en/agents-and-tools/remote-mcp-servers?sdk_languages=cli) that expose an HTTP endpoint, or to private MCP servers through [MCP tunnels](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview?sdk_languages=cli). The server should support the MCP protocol’s streamable HTTP transport; servers that only support the deprecated SSE transport still work through an automatic fallback. See [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli) for declaring servers on an agent.
+Claude Managed Agents connects to [remote MCP servers](https://platform.claude.com/docs/en/agents-and-tools/remote-mcp-servers?sdk_languages=cli) that expose an HTTP endpoint, or to private MCP servers through [MCP tunnels](https://platform.claude.com/docs/en/agents-and-tools/mcp-tunnels/overview?sdk_languages=cli). The server should support MCP’s streamable HTTP transport; servers that only support the deprecated SSE transport still work through an automatic fallback. See [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli) for declaring servers on an agent.
 
 For more information on MCP and building MCP servers, see the [MCP documentation](https://modelcontextprotocol.io).
 
@@ -153,7 +153,7 @@ Organization-level [spend limits and usage-tier rate limits](https://platform.cl
 
 ## Branding guidelines
 
-For partners integrating Claude Managed Agents, use of Claude branding is optional. When referencing Claude in your product:
+For partners integrating Claude Managed Agents, use of Claude branding is optional. When you reference Claude in your product, follow these rules:
 
 **Allowed:**
 
@@ -161,7 +161,7 @@ For partners integrating Claude Managed Agents, use of Claude branding is option
 * “Claude” (when within a menu already labeled “Agents”)
 * “\{YourAgentName} Powered by Claude” (if you have an existing agent name)
 
-**Not permitted:**
+**Not allowed:**
 
 * “Claude Code” or “Claude Code Agent”
 * “Claude Cowork” or “Claude Cowork Agent”

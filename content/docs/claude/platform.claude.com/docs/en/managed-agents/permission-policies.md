@@ -10,7 +10,7 @@ featureMetadata:
   betaHeader: managed-agents-2026-04-01
   zdr:
     eligibility: not-eligible
-    note: Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes.
+    note: Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them.
   supportedModels:
     - claude-fable-5-2
     - claude-mythos-5-2
@@ -37,7 +37,7 @@ featureMetadata:
     Claude Models on Google Cloud (Anthropic managed): beta
 ---
 
-Permission policies control whether server-executed tools (the pre-built agent toolset and MCP toolset) run automatically, wait for your approval, or have each call evaluated by the server. Custom tools are run by your application and controlled by you, so they are not governed by permission policies.
+Permission policies apply to server-executed tools: the prebuilt agent toolset and MCP toolsets. A policy determines whether a tool’s calls run automatically, wait for your approval, or go to the server, which evaluates each call. Custom tools run in your application, under your control, so permission policies don’t apply to custom tools.
 
 ## Permission policy types
 
@@ -149,11 +149,11 @@ Use the `configs` array to override the default for individual tools. The `name`
   </CodeGroupItem>
 </CodeGroup>
 
-Pass this `tools` configuration in the agent create request (the CLI tab shows the complete command). MCP toolsets support the same per-tool overrides, with `name` set to the tool name reported by the MCP server. See [Configure which MCP tools are available](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli#configure-which-mcp-tools-are-available).
+Pass this `tools` configuration when you create the agent. MCP toolsets support the same per-tool overrides, with `name` set to the tool name reported by the MCP server. See [Configure which MCP tools are available](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli#configure-which-mcp-tools-are-available).
 
 ## Let the server evaluate each call with `auto`
 
-With the `auto` permission policy, the server evaluates each call before it runs. Because the evaluation considers the tool, the call’s input, and the session’s content up to that point, the server can treat two calls to the same tool differently. Each call has one of three outcomes:
+With the `auto` permission policy, the server evaluates each call before it runs. The evaluation considers context such as the tool, the call’s input, the agent’s earlier calls, and your intent, meaning what you have asked for. As a result, the server can treat two calls to the same tool differently. Each call has one of three outcomes:
 
 * **The call runs.** When the server determines that the call is safe, the tool runs as it would under `always_allow`.
 * **The call is denied.** When the server evaluates the call as high-risk, the tool does not run. The agent receives an error tool result with the content `Permission to use {tool_name} has been denied.` and `is_error: true`. The session keeps running, and your client cannot override the denial.
@@ -198,7 +198,7 @@ The following example sets `auto` as the default for the agent toolset and for t
   </CodeGroupItem>
 </CodeGroup>
 
-What you post in `user.message` events counts as your intent, and it can lead the server to allow a call it would otherwise deny. The server does not read intent from a tool result, a fetched webpage, an MCP server’s response, or a message between [session threads](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli#tool-permissions-and-custom-tools). It assesses that content but does not take instructions from it. The server evaluates some calls as high-risk no matter who asks. If you relay untrusted end-user input in `user.message` events, the server reads that input as your intent too, and it can get a call allowed. Configure `always_ask` on the tools you would not let that end user run without review.
+What you post in `user.message` events counts as your intent, and it can lead the server to allow a call it would otherwise deny. The server does not read intent from a tool result, a fetched webpage, an MCP server’s response, or a message between [session threads](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli#tool-permissions-and-custom-tools). The server evaluates some calls as high-risk no matter who asks. If you relay untrusted end-user input in `user.message` events, the server reads that input as your intent too, and it can get a call allowed. Configure `always_ask` on the tools you would not let that end user run without review.
 
 <Warning>
   `auto` is not a human checkpoint. If the server determines that a call is safe, the call runs before anyone sees it, and its effects might not be reversible. If a person must review a tool’s calls before they run, configure `always_ask` on that tool.
@@ -283,14 +283,13 @@ In the following examples, the tool-use event IDs come from the `stop_reason.eve
   ```bash CLI
   # Allow the tool to run
   ant beta:sessions:events send \
-    --session-id "$SESSION_ID" \
-    --event "{type: user.tool_confirmation, tool_use_id: $AGENT_TOOL_USE_EVENT_ID, result: allow}"
+    --session-id sesn_011CZkZAtmR3yMPDzynEDxu7 \
+    --event '{type: user.tool_confirmation, tool_use_id: sevt_011CZkZbMpR8aS3Wtv5Yq2Ln, result: allow}'
 
-  # Or deny it with an explanation
+  # Deny another call with an explanation
   ant beta:sessions:events send \
-    --session-id "$SESSION_ID" \
-    --event "{type: user.tool_confirmation, tool_use_id: $MCP_TOOL_USE_EVENT_ID, result: deny,
-      deny_message: Don't create issues in the production project. Use the staging project.}"
+    --session-id sesn_011CZkZAtmR3yMPDzynEDxu7 \
+    --event '{type: user.tool_confirmation, tool_use_id: sevt_011CZkZcNqT9bT4Xuw6Zr3Mo, result: deny, deny_message: "Do not create issues in the production project. Use the staging project."}'
   ```
 </CodeGroup>
 
@@ -336,10 +335,10 @@ Beta headers allow you to access experimental features and new model capabilitie
 
 [Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
 
-| Item    | Zero data retention                                                                                                                                      | HIPAA                                                                        |
-| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Status  | Not eligible                                                                                                                                             | Not eligible                                                                 |
-| Details | Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes. | Applies to all Managed Agents sub-features, including Self-hosted sandboxes. |
+| Item    | Zero data retention                                                                                                                                                                                                                                                           | HIPAA                                                               |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Status  | Not eligible                                                                                                                                                                                                                                                                  | Not eligible                                                        |
+| Details | Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them. [Learn more](https://platform.claude.com/docs/en/managed-agents/self-hosted-data-and-access?sdk_languages=cli#how-long-data-is-kept) | Not eligible for HIPAA. Applies to all Managed Agents sub-features. |
 
 Applicable endpoints:
 

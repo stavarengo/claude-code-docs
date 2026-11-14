@@ -60,7 +60,7 @@ Start by calling `POST /videos` with a text prompt and the required parameters. 
 
 Create a video
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const openai = new OpenAI();
@@ -205,7 +205,7 @@ Typical states are `queued`, `in_progress`, `completed`, and `failed`. Poll at a
 
 Poll the status endpoint
 
-```javascript
+```typescript
 import OpenAI from "openai";
 import { setTimeout as sleep } from "node:timers/promises";
 
@@ -370,7 +370,7 @@ Once the job reaches status `completed`, fetch the MP4 with `GET /videos/{video_
 
 Download the MP4
 
-```javascript
+```typescript
 import { writeFileSync } from "node:fs";
 
 import OpenAI from "openai";

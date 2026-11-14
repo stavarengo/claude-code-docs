@@ -31,7 +31,7 @@ In most applications, pick one strategy per conversation. Mixing local replay wi
 
 Persist multi-turn state with sessions
 
-```javascript
+```typescript
 import { Agent, MemorySession, run } from "@openai/agents";
 
 const agent = new Agent({
@@ -88,7 +88,7 @@ Sessions are the best default when you want durable memory, resumable approval f
 
 Continue with server-managed state
 
-```javascript
+```typescript
 import { Agent, run } from "@openai/agents";
 import OpenAI from "openai";
 
@@ -150,7 +150,7 @@ Streaming uses the same agent loop and the same state strategies. The only diffe
 
 Stream a run as text arrives
 
-```javascript
+```typescript
 import { Agent, run } from "@openai/agents";
 
 const agent = new Agent({

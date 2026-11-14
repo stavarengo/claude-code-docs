@@ -73,7 +73,7 @@ Run this example in your application, outside the environment. If you already ha
 
 Create a session with your own environment
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const client = new OpenAI();
 

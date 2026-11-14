@@ -22,7 +22,7 @@ Claude Code skills follow the [Agent Skills](https://agentskills.io) open standa
 
 Claude Code includes a set of bundled skills, such as `/doctor`, `/code-review`, `/batch`, `/debug`, `/loop`, and `/claude-api`. Bundled skills are prompt-based: they give Claude detailed instructions and let it orchestrate the work using its tools. Most built-in commands instead execute fixed logic directly.
 
-You invoke a bundled skill by typing `/` followed by the skill name. Claude invokes some bundled skills automatically when relevant; others, including [`/verify`](#run-and-verify-your-app), run only when you invoke them.
+You invoke a bundled skill by typing `/` followed by the skill name. Claude invokes some bundled skills automatically when relevant.
 
 Most bundled skills are available in every session. A few depend on a specific feature: `/workflow-authoring`, for example, is available only when [dynamic workflows](./workflows.md) are enabled.
 
@@ -320,7 +320,9 @@ Claude Code watches skill directories for file changes, except in [bare mode](./
 
 If you create a top-level skills directory that didn't exist when the session started, run [`/reload-skills`](https://code.claude.com/docs/en/commands#all-commands) to pick up the skills you put there. Claude Code isn't watching that directory yet, so run `/reload-skills` again after each later change there.
 
-Live change detection covers `SKILL.md` text only. For a skill folder that is also a [plugin](./plugins/loading.md#plugins-shared-through-a-repository), changes to `hooks/`, `.mcp.json`, `agents/`, and `output-styles/` need `/reload-plugins` to take effect.
+> [!NOTE]
+>
+> Live change detection covers `SKILL.md` text. For a skill folder that is also a [plugin](./plugins/loading.md#plugins-shared-through-a-repository), changes to `.mcp.json`, `agents/`, and `output-styles/` need `/reload-plugins` to take effect. Changes to `hooks/` need it too, except a [mod](./plugins/mods/overview.md)'s module file when it [reloads on its own](./env-vars.md).
 
 ### Remove a skill
 
@@ -787,7 +789,11 @@ With the default `bash` shell, append `|| true` to any other command you expect 
 
 Injected commands never prompt for permission while the skill renders. Claude Code checks each one against your [permission rules](./permissions.md) first. A command a deny rule matches aborts the invocation with `Shell command permission check failed for pattern "..."`.
 
-Outside [auto mode](./permission-modes.md#eliminate-prompts-with-auto-mode), when a command's permission check returns anything other than allow, Claude Code aborts the invocation with the same error. This includes a rule that would normally ask you. To keep an unmatched command from aborting here, pre-approve it with [`allowed-tools`](#pre-approve-tools-for-a-skill). If your organization restricts permission rules to managed settings, see [When only managed permission rules apply](#when-only-managed-permission-rules-apply). Deny and ask rules still override `allowed-tools`. See [Manage permissions](./permissions.md#manage-permissions).
+Outside [auto mode](./permission-modes.md#eliminate-prompts-with-auto-mode), when a command's permission check returns anything other than allow, Claude Code aborts the invocation. To keep an unmatched command from aborting, pre-approve it with [`allowed-tools`](#pre-approve-tools-for-a-skill), within these limits:
+
+* **Deny and ask rules**: a command that one of them matches still aborts. To find the rule, see [Manage permissions](./permissions.md#manage-permissions).
+* **Managed-only rules**: if `/status` in the session lists the skill under `allowed-tools ignored this session`, see [When only managed permission rules apply](#when-only-managed-permission-rules-apply).
+* **Bare repository folders**: a folder looks bare when it holds a `HEAD` file directly beside `refs` or `commondir`. When the closest repository at or above the working directory looks bare, Claude Code ignores `allowed-tools` for a Bash command that contains `git` or that Claude Code can't parse. If you trust that folder, allow the command with [`/permissions`](https://code.claude.com/docs/en/permissions#manage-permissions) in the session.
 
 In auto mode, a command that would otherwise need your approval doesn't abort the invocation. The skill loads with an instruction telling Claude to run the command first, and Claude's own call then goes through [auto mode's usual checks](./permission-modes.md#how-the-classifier-evaluates-actions). The invocation still aborts in a [forked skill](#run-skills-in-a-subagent) that sets `agent`, and in a session where Claude doesn't have the [shell tool that runs injected commands](#how-injected-commands-run).
 

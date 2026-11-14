@@ -104,7 +104,7 @@ The example below shows how to configure a DPO fine-tuning job using the OpenAI 
 
 Create a fine-tuning job with DPO
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const openai = new OpenAI();

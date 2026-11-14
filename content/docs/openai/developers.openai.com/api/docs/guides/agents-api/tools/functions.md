@@ -67,7 +67,7 @@ For each pending `get_customer` call, run your lookup and return its result. Her
 
 Return a function result
 
-```javascript
+```typescript
 const result = {
   turn_id: action.turn_id,
   call_id: action.call_id,

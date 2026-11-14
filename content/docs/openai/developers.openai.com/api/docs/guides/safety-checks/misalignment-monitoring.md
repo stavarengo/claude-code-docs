@@ -63,7 +63,7 @@ curl "https://api.openai.com/v1/safety/alerts/alert_0123456789abcdef0123456789ab
 
 Retrieve a project safety alert
 
-```javascript
+```typescript
 // Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 

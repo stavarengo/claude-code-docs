@@ -151,7 +151,7 @@ Keep this key outside the sandbox. Use a version of your
 
 Create summary.json
 
-```javascript
+```typescript
 import OpenAI from "openai";
 import { agentFileDestination } from "openai/helpers/beta/agents/filesystem";
 

@@ -62,7 +62,7 @@ curl --fail-with-body "$PROJECT_URL/locations/global/publishers/openai/v1/respon
   }'
 ```
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const projectId = "your-project-id";

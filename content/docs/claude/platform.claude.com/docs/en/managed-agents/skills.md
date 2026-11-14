@@ -10,7 +10,7 @@ featureMetadata:
   betaHeader: managed-agents-2026-04-01
   zdr:
     eligibility: not-eligible
-    note: Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes.
+    note: Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them.
   supportedModels:
     - claude-fable-5-2
     - claude-mythos-5-2
@@ -50,7 +50,7 @@ To learn how to author custom skills, see [Agent Skills](https://platform.claude
 
 A custom skill is a directory containing a `SKILL.md` file plus any supporting files, uploaded to your workspace as a zip archive or as individual files. Creating the skill returns the `skill_*` ID you reference when attaching it to an agent. Anthropic pre-built skills are already available in every workspace and don’t require this step. To use only pre-built skills, skip to [Attach skills to an agent](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli#attach-skills-to-an-agent).
 
-These examples omit the optional `display_name` field, so the skill’s display name is derived from the `name` field in `SKILL.md`. An explicit `display_name` can be up to 255 characters and doesn’t need to be unique within your workspace.
+These examples omit the optional `display_name` field, so the skill’s display name comes from the `name` field in `SKILL.md`. An explicit `display_name` can be up to 255 characters and doesn’t need to be unique within your workspace.
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>
@@ -120,7 +120,7 @@ Each entry in the `skills` array uses the following fields:
 
 ## Load skills from a GitHub repository
 
-Skills can also live in your code base. When a session mounts a repository through the [`github_repository` resource](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli), the repository’s root `.claude/skills` directory is scanned at session start, and each skill found there becomes available to the agent. No upload and no entry in the agent’s `skills` array are required. The agent receives each discovered skill’s name, description, and path in the sandbox, and reads the skill’s `SKILL.md` when a task matches, including any scripts and resources the skill ships. Discovery relies on the agent’s `read` tool from the [agent toolset](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli), which is enabled by default; an agent with `read` disabled doesn’t load repository skills.
+Skills can also live in your code base. When a session mounts a repository through the [`github_repository` resource](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli), a scan of the repository’s root `.claude/skills` directory runs at session start. Each skill found there becomes available to the agent. You don’t need to upload these skills or add them to the agent’s `skills` array. The agent receives each discovered skill’s name, description, and path in the sandbox. When a task matches, the agent reads the skill’s `SKILL.md`, including any scripts and resources the skill ships. Discovery relies on the agent’s `read` tool from the [agent toolset](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli), which is enabled by default; an agent with `read` disabled doesn’t load repository skills.
 
 <Warning>
   Repository skills are agent instructions, so a mounted repository is part of your agent’s trust boundary. Anyone who can commit to the repository (a merged external pull request, a compromised dependency, a contributor) can add or change a skill. The platform loads that skill at session start without a review step, and session tools such as `bash` and `web_fetch` give its instructions real reach. Mount only repositories you trust, and review `.claude/skills` before mounting a repository that accepts outside contributions.
@@ -179,7 +179,7 @@ For private repositories, the resource’s `authorization_token` must have acces
 
 Discovered skills follow the checked-out state of the repository: the `checkout` branch or commit when the resource sets one, otherwise the repository’s default branch. The scan runs once, when the session starts. Commits pushed mid-session are not picked up; to load updated skills, start a new session.
 
-Repository skills work alongside skills attached through the agent’s `skills` array. If a repository skill shares a name with an attached skill, or with a skill from another mounted repository, both are available; each is announced with its own path.
+Repository skills work alongside skills attached through the agent’s `skills` array. If a repository skill shares a name with an attached skill, or with a skill from another mounted repository, both are available. The agent receives each one with its own path.
 
 ## Next steps
 

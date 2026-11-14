@@ -17,7 +17,7 @@ Pass these settings in `agent` when you create a session. This example supplies 
 
 Configure an agent for one session
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const client = new OpenAI();
 
@@ -165,7 +165,7 @@ Save an agent to reuse its configuration across sessions. Create it once, then p
 
 Reuse an agent
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -308,7 +308,7 @@ Replace the illustrative `agent_123` value with the saved agent's ID before runn
 
 Override an agent for one session
 
-```javascript
+```typescript
 // Replace the illustrative IDs and URLs below with your own resource values.
 import OpenAI from "openai";
 const client = new OpenAI();

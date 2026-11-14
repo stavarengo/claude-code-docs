@@ -210,7 +210,7 @@ working context during the run.
 
 Load skills
 
-```javascript
+```typescript
 import {
   Capabilities,
   SandboxAgent,
@@ -290,7 +290,7 @@ interpreter is available.
 
 Run a Unix-local sandbox agent
 
-```javascript
+```typescript
 import { run } from "@openai/agents";
 import { Manifest, SandboxAgent, file, shell } from "@openai/agents/sandbox";
 import { UnixLocalSandboxClient } from "@openai/agents/sandbox/local";
@@ -405,7 +405,7 @@ the same pattern with their own client classes and options.
 
 Switch to Docker
 
-```javascript
+```typescript
 import { run } from "@openai/agents";
 import { SandboxAgent } from "@openai/agents/sandbox";
 import { DockerSandboxClient } from "@openai/agents/sandbox/local";
@@ -504,7 +504,7 @@ run:
 
 Serialize and resume sandbox state
 
-```javascript
+```typescript
 import { run } from "@openai/agents";
 import { Manifest, SandboxAgent } from "@openai/agents/sandbox";
 import { UnixLocalSandboxClient } from "@openai/agents/sandbox/local";
@@ -633,7 +633,7 @@ guidance about work that happened in the workspace.
 
 Enable sandbox memory
 
-```javascript
+```typescript
 import {
   Manifest,
   SandboxAgent,

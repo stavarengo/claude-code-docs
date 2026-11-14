@@ -53,7 +53,7 @@ environment variable:
 
 Verify an image
 
-```javascript
+```typescript
 import { createReadStream } from "node:fs";
 import OpenAI, { toStreamingFile } from "openai";
 

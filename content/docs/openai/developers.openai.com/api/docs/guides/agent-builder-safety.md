@@ -36,7 +36,7 @@ Prompt injections often rely on the model freely generating unexpected text or c
 
 Agent workflows may do something you don't want due to hallucination, misunderstanding, ambiguous user input, etc. For example, an agent may offer a refund it's not supposed to or delete information it shouldn't. The best way to mitigate this risk is to strengthen your prompts with good documentation of your desired policies and clear examples. Anticipate unintended scenarios and provide examples so the agent knows what to do in these cases.
 
-## Use GPT-5 or GPT-5-mini
+## Use GPT-5 or GPT-5 mini
 
 These models are more disciplined about following developer instructions and exhibit stronger robustness against jailbreaks and indirect prompt injections. Configure these models at the agent node level for a more resilient default posture, especially for higher-risk workflows.
 

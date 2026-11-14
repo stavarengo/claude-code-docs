@@ -56,7 +56,7 @@ With reasoning effort set to `none`, prompting is important. To improve the mode
 
 Reasoning effort set to none
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const openai = new OpenAI();
 
@@ -198,7 +198,7 @@ When generating code with GPT-5.2, `medium` and `high` verbosity levels yield lo
 
 Control verbosity
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const openai = new OpenAI();
 
@@ -739,8 +739,10 @@ For guidance on when and how to compact in production, see the [Conversation Sta
 
 Here is an example:
 
-```javascript
-const input = [
+```typescript
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
+
+const input: OpenAI.Responses.ResponseInput = [
   { role: "user", content: "write a very long poem about a dog." },
 ];
 const response = await client.responses.create({ model: "gpt-5.2", input });
@@ -749,7 +751,7 @@ if (response.status !== "completed") {
 }
 const compacted = await client.responses.compact({
   model: "gpt-5.2",
-  input: [...input, ...response.output],
+  input: [...input, ...toResponseInputItems(response.output)],
 });
 console.log(JSON.stringify(compacted, null, 2));
 ```

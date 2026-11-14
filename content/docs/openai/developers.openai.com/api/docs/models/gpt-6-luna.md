@@ -12,7 +12,7 @@ GPT-6 Luna is our most efficient model for focused, high-volume tasks.
 Use the Responses API for built-in tools and function calling. Chat Completions supports function calling only with `reasoning_effort` set to `none`.
 
 EU data residency is available with Standard, Fast, Flex, and Batch processing.
-See [data residency eligibility](/api/docs/guides/your-data#which-models-and-features-are-eligible-for-data-residency).
+See [data residency eligibility](/api/docs/guides/data-residency#which-models-and-features-are-eligible-for-data-residency).
 
 ## Model details
 

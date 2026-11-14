@@ -102,7 +102,7 @@ Use this as a starting map, then validate against the repository's workload:
 | Nano model, classification, extraction, routing, high-volume, or strict-latency route | `gpt-5.6-luna`                                                         | Luna is the nano-like tier.                                    |
 | GPT-4.1 or GPT-4o latency-sensitive flow                                              | Evaluate Luna and Terra first; use Sol only if quality requires it     | A flagship replacement can change latency and cost materially. |
 | Reasoning-heavy or hardest quality-first flow                                         | Start with Sol at the old effective effort                             | Preserve the reasoning contract before tuning.                 |
-| Old Pro usage                                                                         | Sol plus `reasoning.mode: "pro"`, only if the user wants Pro behavior  | GPT-5.6 Pro is a mode, not a separate model slug.              |
+| Old Pro usage                                                                         | Sol plus `reasoning.mode: "pro"`, only if the user wants Pro behavior  | Pro mode uses the GPT-5.6 Sol model ID.                        |
 | Router, fallback, or model picker                                                     | Add the family by role                                                 | Do not collapse a multi-model design into Sol.                 |
 | Third-party or provider-specific model                                                | Leave unchanged unless the user explicitly requests provider migration | Model-name similarity is not a safe mapping.                   |
 
@@ -282,7 +282,7 @@ Do not fix a failing migration by weakening a schema, deleting required behavior
 
 Do not enable Pro mode during a baseline migration unless the old usage was Pro-like or the user explicitly asks for it.
 
-GPT-5.6 Pro uses the base model with a reasoning mode:
+To use Pro mode with GPT-5.6 Sol, set `reasoning.mode` to `pro`.
 
 ```json
 {

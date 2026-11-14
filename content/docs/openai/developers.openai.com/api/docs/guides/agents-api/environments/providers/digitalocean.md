@@ -82,7 +82,7 @@ Use this path when your application owns session creation and sandbox provisioni
 
 Create a self-hosted session
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const client = new OpenAI();
 

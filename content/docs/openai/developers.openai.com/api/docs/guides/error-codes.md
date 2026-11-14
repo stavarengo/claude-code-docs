@@ -373,7 +373,7 @@ Our support team will investigate the issue and get back to you as soon as possi
 
 We advise you to programmatically handle errors returned by the API. To do so, you may want to use a code snippet like below:
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();

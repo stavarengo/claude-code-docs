@@ -38,7 +38,7 @@ audit logs, and fail closed when review is unavailable. See
 Application-level tool review and Codex product-side sandboxing are separate
 from the API cybersecurity safeguards described on this page.
 
-For GPT-6-Cyber, [configure your project and IP allowlist](https://developers.openai.com/api/docs/guides/daybreak#set-up-gpt-6-cyber) before sending requests.
+For GPT-6 Cyber, [configure your project and IP allowlist](https://developers.openai.com/api/docs/guides/daybreak#set-up-gpt-6-cyber) before sending requests.
 
 ## Safeguard actions for non-ZDR Organizations
 

@@ -1,4 +1,4 @@
-# GPT-5.1-Codex Mini
+# GPT-5.1-Codex-Mini
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -8,7 +8,7 @@ Model ID: `gpt-5.1-codex-mini`
 
 Status: Shut down
 
-GPT-5.1-Codex Mini is a smaller, more cost-effective, less-capable version of GPT-5.1-Codex.
+GPT-5.1-Codex-Mini is a smaller, more cost-effective, less-capable version of GPT-5.1-Codex.
 
 ## Model details
 
@@ -76,13 +76,13 @@ Tools supported by this model when using the Responses API.
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-5.1-Codex Mini | $0.25 | $0.025 | $2 |
+| GPT-5.1-Codex-Mini | $0.25 | $0.025 | $2 |
 | GPT-5-Codex | $1.25 | $0.125 | $10 |
-| GPT-5.1-Codex Mini | $0.25 | $0.025 | $2 |
+| GPT-5.1-Codex-Mini | $0.25 | $0.025 | $2 |
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.1-Codex Mini.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-5.1-Codex-Mini.
 
 - `gpt-5.1-codex-mini` — Shut down
 

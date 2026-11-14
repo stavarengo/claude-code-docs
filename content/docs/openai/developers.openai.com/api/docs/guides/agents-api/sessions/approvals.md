@@ -179,7 +179,7 @@ template IDs with your own.
 
 Run npm install with automatic review
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -312,7 +312,7 @@ turns off automatic review. Replace `sess_123` with the session ID returned abov
 
 Turn off automatic review
 
-```javascript
+```typescript
 const updatedSession = await client.beta.agents.sessions.update("sess_123", {
   review: "none",
 });

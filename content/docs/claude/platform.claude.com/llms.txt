@@ -20,18 +20,18 @@ The latest version of each Anthropic SDK and of the ant CLI is at https://platfo
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 901 pages - /docs - Content included below
-- German (Deutsch) (de) - 321 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 321 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 321 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 321 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 321 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 321 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 321 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 321 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 321 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 321 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 321 pages - /docs/id - Visit website for content
+- English (en) - 916 pages - /docs - Content included below
+- German (Deutsch) (de) - 336 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 336 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 336 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 336 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 336 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 336 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 336 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 336 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 336 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 336 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 336 pages - /docs/id - Visit website for content
 
 ---
 
@@ -61,6 +61,7 @@ The full documentation is available in the following languages on https://platfo
 - [Browser use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool.md)
 - [Build an orchestration mode](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-effort-example.md)
 - [Cache diagnostics](https://platform.claude.com/docs/en/build-with-claude/cache-diagnostics.md)
+- [Change tools or instructions](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking/change-tools-or-instructions.md) - Change tools or instructions without failing the prefix check
 - [Citations](https://platform.claude.com/docs/en/build-with-claude/citations.md)
 - [Amazon Bedrock (mantle)](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock.md) - Claude in Amazon Bedrock (bedrock-mantle)
 - [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry.md) - Claude in Microsoft Foundry
@@ -89,6 +90,7 @@ The full documentation is available in the following languages on https://platfo
 - [Fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode.md)
 - [Files API](https://platform.claude.com/docs/en/build-with-claude/files.md)
 - [Fine-grained tool streaming](https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming.md)
+- [Fix the 400 error](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking/fix-bound-to-a-different-conversation.md) - Fix a thinking block bound to a different conversation
 - [Get your API key](https://platform.claude.com/docs/en/get-api-key.md) - Get your Claude API key
 - [Streaming refusals](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/handle-streaming-refusals.md) - Handle streaming refusals
 - [Handle tool calls](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.md)
@@ -105,7 +107,8 @@ The full documentation is available in the following languages on https://platfo
 - [Parallel tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use.md)
 - [PDF support](https://platform.claude.com/docs/en/build-with-claude/pdf-support.md)
 - [Per-message effort (beta)](https://platform.claude.com/docs/en/build-with-claude/effort-per-message.md) - Per-message effort
-- [Preserved thinking](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking.md)
+- [Prefix checks](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking/prefix-checks.md) - Prefix checks on thinking blocks
+- [Overview](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking.md) - Preserved thinking
 - [Programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling.md)
 - [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching.md)
 - [Refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback.md)
@@ -144,18 +147,26 @@ The full documentation is available in the following languages on https://platfo
 
 - [Overview](https://platform.claude.com/docs/en/managed-agents/overview.md) - Claude Managed Agents overview
 - [Quickstart](https://platform.claude.com/docs/en/managed-agents/quickstart.md) - Get started with Claude Managed Agents
+- [Quickstart](https://platform.claude.com/docs/en/managed-agents/self-hosted/quickstart.md) - Get started with self-hosted Claude Managed Agents
 - [Access GitHub](https://platform.claude.com/docs/en/managed-agents/github.md) - Accessing GitHub
 - [Attach and download files](https://platform.claude.com/docs/en/managed-agents/files.md) - Adding files
+- [Agent identity and credentials](https://platform.claude.com/docs/en/managed-agents/self-hosted/agent-identity.md)
 - [Authenticate with vaults](https://platform.claude.com/docs/en/managed-agents/vaults.md)
 - [Build in Console](https://platform.claude.com/docs/en/managed-agents/onboarding.md)
+- [Call the API](https://platform.claude.com/docs/en/managed-agents/self-hosted/call-the-api.md) - Call the API on a self-hosted server
 - [Choose an environment](https://platform.claude.com/docs/en/managed-agents/choosing-an-environment.md) - Choosing an agent environment
 - [Cloud environment setup](https://platform.claude.com/docs/en/managed-agents/environments.md)
 - [Cloud sandbox reference](https://platform.claude.com/docs/en/managed-agents/cloud-sandboxes-reference.md)
+- [Configuration reference](https://platform.claude.com/docs/en/managed-agents/self-hosted/configuration-reference.md)
 - [Custom tools and MCP servers](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools.md) - Custom tools in self-hosted sandboxes
+- [Data and access](https://platform.claude.com/docs/en/managed-agents/self-hosted-data-and-access.md) - Data and access in self-hosted Claude Managed Agents
 - [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes.md)
 - [Agent setup](https://platform.claude.com/docs/en/managed-agents/agent-setup.md) - Define your agent
+- [Deploy on Kubernetes](https://platform.claude.com/docs/en/managed-agents/self-hosted/kubernetes.md)
 - [Deploy workers](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-workers.md) - Deploy self-hosted workers
+- [Differences from hosted](https://platform.claude.com/docs/en/managed-agents/self-hosted/differences.md) - Differences from the hosted service
 - [Dreams](https://platform.claude.com/docs/en/managed-agents/dreams.md)
+- [Inference provider](https://platform.claude.com/docs/en/managed-agents/self-hosted/inference-provider.md)
 - [Inspect and track usage](https://platform.claude.com/docs/en/managed-agents/session-observability.md) - Inspect sessions and track usage
 - [MCP connector](https://platform.claude.com/docs/en/managed-agents/mcp-connector.md)
 - [Memory stores](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory.md) - Memory stores in self-hosted sandboxes
@@ -171,16 +182,20 @@ The full documentation is available in the following languages on https://platfo
 - [Secure your deployment](https://platform.claude.com/docs/en/managed-agents/secure-deployment.md) - Secure your Managed Agents deployment
 - [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security.md)
 - [Risks and boundaries](https://platform.claude.com/docs/en/managed-agents/secure-deployment-risks.md) - Security risks and sandbox boundaries
+- [Overview](https://platform.claude.com/docs/en/managed-agents/self-hosted.md) - Self-hosted Claude Managed Agents
 - [Overview and quickstart](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes.md) - Self-hosted sandboxes
 - [Worker reference](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference.md) - Self-hosted worker reference
 - [Session budgets](https://platform.claude.com/docs/en/managed-agents/budgets.md)
 - [Session event stream](https://platform.claude.com/docs/en/managed-agents/events-and-streaming.md)
 - [Session operations](https://platform.claude.com/docs/en/managed-agents/session-operations.md)
 - [Session threads](https://platform.claude.com/docs/en/managed-agents/session-threads.md)
+- [Single sign-on](https://platform.claude.com/docs/en/managed-agents/self-hosted/configure.md)
 - [Agent Skills](https://platform.claude.com/docs/en/managed-agents/skills.md) - Skills
 - [Start a session](https://platform.claude.com/docs/en/managed-agents/sessions.md)
 - [Subscribe to webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks.md)
 - [Tools](https://platform.claude.com/docs/en/managed-agents/tools.md)
+- [Upgrade](https://platform.claude.com/docs/en/managed-agents/self-hosted/upgrade.md) - Upgrade self-hosted Claude Managed Agents
+- [Console](https://platform.claude.com/docs/en/managed-agents/self-hosted/console.md) - Use the console on your server
 - [Memory stores](https://platform.claude.com/docs/en/managed-agents/memory.md) - Using agent memory
 - [Workflow runs](https://platform.claude.com/docs/en/managed-agents/workflow-runs.md)
 

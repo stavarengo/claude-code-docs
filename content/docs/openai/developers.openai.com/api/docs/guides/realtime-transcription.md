@@ -40,7 +40,7 @@ This example uses 24 kHz PCM audio. In `gpt-live-transcribe` transcription sessi
 
 Send audio chunks with `input_audio_buffer.append`:
 
-```javascript
+```typescript
 ws.send(
   JSON.stringify({
     type: "input_audio_buffer.append",
@@ -52,7 +52,7 @@ ws.send(
 
 Send `input_audio_buffer.commit` at the end of each audio turn to receive the final transcript:
 
-```javascript
+```typescript
 ws.send(
   JSON.stringify({
     type: "input_audio_buffer.commit",
@@ -67,7 +67,7 @@ Use client-side VAD to detect the end of speech, then send `input_audio_buffer.c
 
 Listen for incremental transcript deltas and completion events:
 
-```javascript
+```typescript
 ws.on("message", (data) => {
   const event = JSON.parse(data);
 

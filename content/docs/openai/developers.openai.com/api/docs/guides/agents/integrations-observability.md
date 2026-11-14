@@ -20,7 +20,7 @@ Use hosted MCP tools when the remote server should run through the model surface
 
 Attach a hosted MCP server
 
-```javascript
+```typescript
 import { Agent, hostedMcpTool } from "@openai/agents";
 
 const agent = new Agent({
@@ -59,7 +59,7 @@ Use local transports when your application should connect to the MCP server dire
 
 Connect a local MCP server
 
-```javascript
+```typescript
 import { Agent, MCPServerStdio, run } from "@openai/agents";
 
 const server = new MCPServerStdio({
@@ -140,7 +140,7 @@ If you need less tracing, use the SDK-level or per-run tracing controls rather t
 
 Wrap multiple runs in one trace
 
-```javascript
+```typescript
 import { Agent, run, withTrace } from "@openai/agents";
 
 const agent = new Agent({

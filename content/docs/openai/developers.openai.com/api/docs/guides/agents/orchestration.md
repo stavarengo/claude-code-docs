@@ -17,7 +17,7 @@ Handoffs are the clearest fit when a specialist should own the next response rat
 
 Delegate with handoffs
 
-```javascript
+```typescript
 import { Agent, handoff } from "@openai/agents";
 
 const billingAgent = new Agent({ name: "Billing agent" });
@@ -56,7 +56,7 @@ Use `agent.asTool()` in TypeScript or `agent.as_tool()` in Python when the main 
 
 Call a specialist as a tool
 
-```javascript
+```typescript
 import { Agent } from "@openai/agents";
 
 const summarizer = new Agent({

@@ -8,7 +8,7 @@ Model ID: `gpt-4o-mini-audio-preview`
 
 Status: Shut down
 
-This is a preview release of the smaller GPT-4o Audio Mini model. It's designed to input audio or create audio outputs via the REST API.
+This preview brings GPT-4o mini to the Chat Completions API for audio. It's designed to input audio or create audio outputs via the REST API.
 
 ## Model details
 

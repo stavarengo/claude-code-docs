@@ -1,4 +1,4 @@
-# o1 Preview
+# o1-preview
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -67,13 +67,13 @@ Pricing is based on the number of tokens used, or other metrics based on the mod
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| o1 Preview | $15 | $7.5 | $60 |
+| o1-preview | $15 | $7.5 | $60 |
 | o1 | $15 | $7.5 | $60 |
 | o3-mini | $1.1 | $0.55 | $4.4 |
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for o1 Preview.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for o1-preview.
 
 - `o1-preview-2024-09-12` — Shut down
 

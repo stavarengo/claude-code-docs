@@ -10,7 +10,7 @@ featureMetadata:
   betaHeader: managed-agents-2026-04-01
   zdr:
     eligibility: not-eligible
-    note: Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes.
+    note: Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them.
   supportedModels:
     - claude-fable-5-2
     - claude-mythos-5-2
@@ -50,7 +50,7 @@ The session `status` is an aggregation of all agent activity; if at least one th
 A [session budget](https://platform.claude.com/docs/en/managed-agents/budgets?sdk_languages=cli) is a single shared cap across all of a session’s threads. As the cap is reached, threads pause independently, and each thread’s cost is priced at the thread’s own served model.
 
 <Note>
-  A session can have at most 25 child threads at a time. Idle threads count until you archive them, and the primary thread doesn’t count. The primary thread’s agent can call multiple copies of a single subagent, creating multiple threads associated with one `agent`. [Advisor](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#give-the-session-an-advisor) consultation threads are exempt from this limit. So are a [workflow run](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli)’s threads.
+  A session can have at most 25 child threads at a time. Idle threads count until you archive them, and the primary thread doesn’t count. The primary thread’s agent can call multiple copies of a single subagent, creating multiple threads associated with one `agent`. [Advisor consultation threads](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#give-the-session-an-advisor) are exempt from this limit. So are a [workflow run](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli)’s threads.
 </Note>
 
 ## List threads
@@ -93,7 +93,7 @@ Optionally archive a session thread when it has completed its work. Archiving a 
   ```
 </CodeGroup>
 
-Archive only succeeds if the thread is `idle`. A thread parked on `requires_action` counts as idle, so you can archive it directly. To archive a running thread, interrupt it first:
+Archiving succeeds only if the thread is `idle`. A thread that waits on `requires_action` counts as idle, so you can archive it directly. To archive a running thread, interrupt it first:
 
 <CodeGroup>
   ```bash CLI
@@ -111,23 +111,23 @@ Archive only succeeds if the thread is `idle`. A thread parked on `requires_acti
 
 These events surface multiagent activity on the primary thread at `/v1/sessions/{session_id}/events/stream`. Message-direction events are named relative to the thread whose stream they appear on: `agent.thread_message_received` means a message arrived on this thread from another thread, and `agent.thread_message_sent` means this thread sent one. The task that the primary thread’s agent delegates, for example, arrives on the child’s own stream as an `agent.thread_message_received` event.
 
-| Type                               | Description                                                                                                                                                                                |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `session.thread_created`           | A thread was created. Includes `session_thread_id` and `agent_name`.                                                                                                                       |
-| `session.thread_status_running`    | A thread started activity.                                                                                                                                                                 |
-| `session.thread_status_idle`       | The agent associated with the thread is awaiting input. Includes a `stop_reason` indicating why the agent stopped.                                                                         |
-| `session.thread_status_terminated` | A thread terminated and accepts no further input, for example because it was archived or encountered an unrecoverable error. An advisor thread also terminates when its consultation ends. |
-| `agent.thread_message_received`    | On the primary thread, a subagent sent the primary thread’s agent a report or question. Includes `from_session_thread_id`, `from_agent_name`, and `content`.                               |
-| `agent.thread_message_sent`        | On the primary thread, the primary thread’s agent sent a subagent a task or follow-up message. Includes `to_session_thread_id`, `to_agent_name`, and `content`.                            |
+| Type                               | Description                                                                                                                                                                                 |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `session.thread_created`           | A thread was created. Includes `session_thread_id` and `agent_name`.                                                                                                                        |
+| `session.thread_status_running`    | A thread started activity.                                                                                                                                                                  |
+| `session.thread_status_idle`       | The agent associated with the thread is awaiting input. Includes a `stop_reason` indicating why the agent stopped.                                                                          |
+| `session.thread_status_terminated` | A thread terminated and accepts no further input, for example, because it was archived or encountered an unrecoverable error. An advisor thread also terminates when its consultation ends. |
+| `agent.thread_message_received`    | On the primary thread, a subagent sent the primary thread’s agent a report or question. Includes `from_session_thread_id`, `from_agent_name`, and `content`.                                |
+| `agent.thread_message_sent`        | On the primary thread, the primary thread’s agent sent a subagent a task or follow-up message. Includes `to_session_thread_id`, `to_agent_name`, and `content`.                             |
 
-Advisor consultations emit these same thread events under the reserved name `anthropic.advisor` (as `agent_name` on the thread lifecycle events and `from_agent_name` on the advice delivery); see [Give the session an advisor](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#give-the-session-an-advisor) for the sequence.
+Advisor consultations emit these same thread events under the reserved name `anthropic.advisor`. The name appears as `agent_name` on the thread lifecycle events and as `from_agent_name` on the advice delivery. See [Give the session an advisor](https://platform.claude.com/docs/en/managed-agents/multiagent-orchestration?sdk_languages=cli#give-the-session-an-advisor) for the sequence.
 
 A [workflow run](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli)’s threads show on the primary stream as follows:
 
 * **Lifecycle events:** Each run thread sends `session.thread_created`, with the run’s `workflow_run_id`, and its `session.thread_status_running`, `session.thread_status_idle`, and `session.thread_status_terminated` events.
 * **Message events:** A run thread’s prompt, an `agent.thread_message_received` event, stays on its own stream.
 * **Run events:** `workflow_run.*` events also arrive on this stream; see [Run events](https://platform.claude.com/docs/en/managed-agents/workflow-runs?sdk_languages=cli#run-events).
-* **Tool calls that wait on you:** A run thread’s tool calls that need your client are cross-posted to this stream, as for any child thread. See [Tool permissions and custom tools](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli#tool-permissions-and-custom-tools).
+* **Tool calls that wait on you:** The server cross-posts a run thread’s tool calls that need your client to this stream, as for any child thread. See [Tool permissions and custom tools](https://platform.claude.com/docs/en/managed-agents/session-threads?sdk_languages=cli#tool-permissions-and-custom-tools).
 
 ## Session thread events
 
@@ -222,10 +222,10 @@ Beta headers allow you to access experimental features and new model capabilitie
 
 [Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
 
-| Item    | Zero data retention                                                                                                                                      | HIPAA                                                                        |
-| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Status  | Not eligible                                                                                                                                             | Not eligible                                                                 |
-| Details | Sessions are stateful resources; transcripts persist until you delete them. Applies to all Managed Agents sub-features, including Self-hosted sandboxes. | Applies to all Managed Agents sub-features, including Self-hosted sandboxes. |
+| Item    | Zero data retention                                                                                                                                                                                                                                                           | HIPAA                                                               |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Status  | Not eligible                                                                                                                                                                                                                                                                  | Not eligible                                                        |
+| Details | Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them. [Learn more](https://platform.claude.com/docs/en/managed-agents/self-hosted-data-and-access?sdk_languages=cli#how-long-data-is-kept) | Not eligible for HIPAA. Applies to all Managed Agents sub-features. |
 
 Applicable endpoints:
 

@@ -29,7 +29,7 @@ This example shows how you can use the [Responses API](https://developers.openai
 
 Default model for most coding tasks
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const openai = new OpenAI();
 

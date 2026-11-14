@@ -27,7 +27,7 @@ The token counting API handles all of these. Use the same payload you would send
 
 Simple text input
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -129,7 +129,7 @@ openai responses:input-tokens count \
 
 Multi-turn conversation
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -289,7 +289,7 @@ YAML
 
 Input with system instructions
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -402,7 +402,7 @@ Images consume tokens based on size and detail level. The token counting API ret
 
 Input with an image
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -585,7 +585,7 @@ Tool definitions (function schemas, MCP servers, etc.) add tokens to the context
 
 Input with function tools
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();

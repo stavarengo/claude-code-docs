@@ -34,7 +34,7 @@ Each invocation records an attempt to send a task to a session. Inspect its stat
 
 Automate sessions on a cron schedule
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -242,7 +242,7 @@ curl https://api.openai.com/v1/agents/automations \
 
     Enable agents to create automations
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -393,7 +393,7 @@ curl https://api.openai.com/v1/agents/sessions \
 
     Monitor automation invocations
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -569,7 +569,7 @@ Follow progress and collect the result.
 
 ### Restaurant reservations
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -712,7 +712,7 @@ curl https://api.openai.com/v1/agents/automations \
 
 ### Monthly spending
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -920,7 +920,7 @@ curl https://api.openai.com/v1/agents/automations \
 
 ### Daily actions
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -1166,7 +1166,7 @@ Here's an example of how to create an automation to start a new session for 10 A
 
 Schedule daily suggestions
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -1383,7 +1383,7 @@ The same approach works for a monthly spending review. Give the saved agent acce
 
 Schedule a monthly spending review
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -1615,7 +1615,7 @@ Here's how to check for restaurant reservations every two hours in that session:
 
 Check restaurant reservations
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -1769,7 +1769,7 @@ Schedule a check at **January 1, 2027, at 9 AM UTC**:
 
 Schedule an agent to run once
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -1913,7 +1913,7 @@ Add `automations` to the agent's tools so it can schedule work requested by the 
 
 Let agents schedule tasks
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -2081,7 +2081,7 @@ Your application can also create schedules in response to its own events. For ex
 
 Schedule an onboarding follow-up
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -2240,7 +2240,7 @@ For an overview of past runs, list the automation's invocations:
 
 Monitor automation invocations
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();
@@ -2340,7 +2340,7 @@ Update the cron expression to move a recurring check to 11 AM:
 
 Change a schedule
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();

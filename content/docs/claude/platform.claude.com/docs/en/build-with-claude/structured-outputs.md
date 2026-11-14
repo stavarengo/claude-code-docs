@@ -55,7 +55,7 @@ Without structured outputs, Claude can generate malformed JSON responses or inva
 
 Structured outputs guarantee schema-compliant responses through constrained decoding:
 
-* **Always valid:** No more `JSON.parse()` errors
+* **Always valid:** No JSON parsing errors
 * **Type safe:** Guaranteed field types and required fields
 * **Reliable:** No retries needed for schema violations
 
@@ -209,7 +209,7 @@ To use a JSON schema from a file, an OpenAPI spec, or code that builds it at run
           "messages": [
             {
               "role": "user",
-              "content": "Extract invoice data from: Invoice #12345, Date: 2024-01-15, Total: $500.00"
+              "content": "Extract invoice data from: Invoice #12345, Date: 2024-01-15, Customer: Acme Corp, 2 widgets at $150.00 each, 1 setup fee at $200.00, Total: $500.00"
             }
           ],
           "output_config": {
@@ -223,7 +223,16 @@ To use a JSON schema from a file, an OpenAPI spec, or code that builds it at run
                   "total_amount": {"type": "number"},
                   "line_items": {
                     "type": "array",
-                    "items": {"type": "object", "additionalProperties": false}
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "description": {"type": "string"},
+                        "quantity": {"type": "number"},
+                        "unit_price": {"type": "number"}
+                      },
+                      "required": ["description", "quantity", "unit_price"],
+                      "additionalProperties": false
+                    }
                   },
                   "customer_name": {"type": "string"}
                 },
@@ -291,7 +300,7 @@ To use a JSON schema from a file, an OpenAPI spec, or code that builds it at run
           "messages": [
             {
               "role": "user",
-              "content": "Process this request: ..."
+              "content": "Write an API response: request req_2abc3def has an invalid email."
             }
           ],
           "output_config": {
@@ -301,12 +310,30 @@ To use a JSON schema from a file, an OpenAPI spec, or code that builds it at run
                 "type": "object",
                 "properties": {
                   "status": {"type": "string"},
-                  "data": {"type": "object", "additionalProperties": false},
+                  "data": {
+                    "type": "object",
+                    "properties": {"message": {"type": "string"}},
+                    "required": ["message"],
+                    "additionalProperties": false
+                  },
                   "errors": {
                     "type": "array",
-                    "items": {"type": "object", "additionalProperties": false}
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "code": {"type": "string"},
+                        "detail": {"type": "string"}
+                      },
+                      "required": ["code", "detail"],
+                      "additionalProperties": false
+                    }
                   },
-                  "metadata": {"type": "object", "additionalProperties": false}
+                  "metadata": {
+                    "type": "object",
+                    "properties": {"request_id": {"type": "string"}},
+                    "required": ["request_id"],
+                    "additionalProperties": false
+                  }
                 },
                 "required": ["status", "data", "metadata"],
                 "additionalProperties": false
@@ -396,7 +423,7 @@ When using structured outputs, Claude automatically receives an additional syste
 
 * Your input token count is slightly higher.
 * The injected prompt costs you tokens like any other system prompt.
-* Changing the `output_config.format` parameter will invalidate any [prompt cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl) for that conversation thread.
+* Changing the `output_config.format` parameter invalidates any [prompt cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl) for that conversation thread.
 
 ### JSON Schema limitations
 
@@ -421,7 +448,7 @@ Structured outputs support standard JSON Schema with some limitations. Both JSON
   * Numerical constraints (such as `minimum`, `maximum`, `multipleOf`)
   * String constraints (`minLength`, `maxLength`)
   * Array constraints beyond `minItems` of 0 or 1
-  * `additionalProperties` set to anything other than `false`
+  * `additionalProperties` set to anything other than `false` (see [Objects with arbitrary keys](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#objects-with-arbitrary-keys))
 
   If you use an unsupported feature, you’ll receive a 400 error with details.
 </Accordion>
@@ -448,6 +475,29 @@ Structured outputs support standard JSON Schema with some limitations. Both JSON
   SDK helpers can transform schemas with [constraints not supported by the API](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#json-schema-limitations). See [How SDK transformation works](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#how-sdk-transformation-works).
 </Tip>
 
+#### Objects with arbitrary keys
+
+List every key of an object, either in `properties` or as a field of the class or schema you pass to the SDK. Because `additionalProperties` must be `false`, Claude can only return the keys you list.
+
+The API accepts an object with empty or missing `properties`, but Claude can only return `{}` for it. A map, dictionary, or record type lists no keys, so the Python and TypeScript SDKs send it as an object with empty `properties`. The Java and Ruby SDKs raise an error instead.
+
+If you don’t know the keys in advance, use an array instead. Give each item a `key` and a `value`, as in this schema:
+
+```json
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "key": { "type": "string" },
+      "value": { "type": "string" }
+    },
+    "required": ["key", "value"],
+    "additionalProperties": false
+  }
+}
+```
+
 ### Property ordering
 
 When using structured outputs, properties in objects maintain their defined ordering from your schema, with one important caveat: **required properties appear first, followed by optional properties**.
@@ -468,7 +518,7 @@ For example, given this schema:
 }
 ```
 
-The output will order properties as:
+The output orders properties as:
 
 1. `name` (required, in schema order)
 2. `email` (required, in schema order)
@@ -539,7 +589,7 @@ The following limits apply to all requests with `output_config.format` or `stric
 | Parameters with union types | 16    | Total parameters that use `anyOf` or type arrays (for example, `"type": ["string", "null"]`) across all strict schemas. These are especially expensive because they create exponential compilation cost. |
 
 <Note>
-  These limits apply to the combined total across all strict schemas in a single request. For example, if you have 4 strict tools with 6 optional parameters each, you’ll reach the 24-parameter limit even though no single tool seems complex.
+  These limits apply to the combined total across all strict schemas in a single request. For example, if you have four strict tools with six optional parameters each, you’ll reach the 24-parameter limit even though no single tool seems complex.
 </Note>
 
 #### Additional internal limits
@@ -566,7 +616,7 @@ For persistent issues with valid schemas, [contact support](https://support.clau
 
 The `output_format` parameter has moved to `output_config.format`, and beta headers are no longer required. The `output_format` parameter is deprecated. To use it anyway, add the `structured-outputs-2025-11-13` beta header. Without it, the API returns a 400 error.
 
-The Python SDK (v1.0 and later) does not accept `output_format={...}` on `client.beta.messages.create()` or `count_tokens()` and raises a `TypeError`. Use `output_config` instead. See [Using a raw JSON schema](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#using-a-raw-json-schema) for the updated API shape.
+In the Python SDK (v1.0 and later), a schema dictionary passed as `output_format={...}` raises a `TypeError`. Use `output_config` instead. A Pydantic model passed as `output_format=Model` to `parse()` or `stream()` works with no change and no beta header, because the SDK sends it as `output_config`. See [Using a raw JSON schema](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#using-a-raw-json-schema) for the updated API shape.
 
 ## Feature compatibility
 

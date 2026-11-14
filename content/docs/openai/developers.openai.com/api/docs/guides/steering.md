@@ -53,7 +53,7 @@ The .NET SDK does not provide a Responses WebSocket client, so a C# SDK variant 
 
 Update a project plan while it runs
 
-```javascript
+```typescript
 // Set OPENAI_API_KEY before running this example.
 // Install the SDK and WebSocket transport: npm install openai ws
 

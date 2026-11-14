@@ -87,7 +87,7 @@ The handlers verify signatures and listen on port 8000. Set `PORT` to change the
 
 Webhook handler
 
-```javascript
+```typescript
 import express from "express";
 import OpenAI from "openai";
 

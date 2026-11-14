@@ -34,7 +34,7 @@ To implement this use case, you can use either the [Chat Completions API](https:
 
   Categorize IT support tickets
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const client = new OpenAI();
 
@@ -217,7 +217,7 @@ Let's set up an eval to test this behavior [via API](https://developers.openai.c
 
 Create an eval
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const openai = new OpenAI();
 
@@ -497,7 +497,7 @@ Next, let's upload our test data file to the OpenAI platform so we can reference
 
 Upload a test data file
 
-```javascript
+```typescript
 import fs from "fs";
 import OpenAI from "openai";
 
@@ -613,7 +613,7 @@ Make sure to replace `YOUR_EVAL_ID` and `YOUR_FILE_ID` with the unique IDs of th
 
   Create an eval run
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const openai = new OpenAI();
 
@@ -848,7 +848,7 @@ Depending on the size of your dataset, the eval run may take some time to comple
 
 Retrieve eval run status
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const openai = new OpenAI();
 

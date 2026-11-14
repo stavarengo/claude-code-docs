@@ -1,4 +1,4 @@
-# GPT-Audio Mini
+# GPT-Audio mini
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -66,7 +66,7 @@ Tools supported by this model when using the Responses API.
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Audio Mini.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-Audio mini.
 
 - `gpt-audio-mini-2025-10-06` — Shut down
 - `gpt-audio-mini-2025-12-15` — Deprecated

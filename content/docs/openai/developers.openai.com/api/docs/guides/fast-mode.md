@@ -19,7 +19,7 @@ To opt in to Fast mode for an individual request, set the [`service_tier` parame
 
 Create a response with Fast mode
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const openai = new OpenAI();

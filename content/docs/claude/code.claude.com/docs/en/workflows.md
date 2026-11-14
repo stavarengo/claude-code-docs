@@ -75,8 +75,6 @@ Claude Code includes `/deep-research` as a built-in workflow:
 | :- | :- |
 | `/deep-research <question>` | Fans out web searches on a question across several angles, fetches and cross-checks the sources it finds, votes on each claim, and returns a cited report with claims that didn't survive cross-checking filtered out. Requires the [WebSearch tool](./tools-reference.md#websearch-tool-behavior) to be available |
 
-`/deep-research` runs only when you invoke it.
-
 [Workflows you save](#save-the-workflow-for-reuse) yourself become commands the same way and appear in `/` autocomplete alongside the bundled ones.
 
 ### Watch the run
@@ -456,7 +454,7 @@ To control the model cost:
 * Check `/model` before a large run if you usually switch to a smaller model for routine work
 * Ask Claude to use a smaller model for stages that don't need the strongest one when you describe the task
 
-When your organization's [`availableModels` allowlist](https://code.claude.com/docs/en/model-config#restrict-model-selection) blocks a model the script requests for an agent, that agent runs on a substituted model instead, following the same [substitution rules as subagents](./sub-agents.md#choose-a-model).
+When your organization's [`availableModels` allowlist](https://code.claude.com/docs/en/model-config#restrict-model-selection) blocks a model the script requests for an agent, that agent runs on a substituted model instead, following the same [substitution rules as subagents](./sub-agents.md#when-an-allowlist-blocks-a-subagent-model).
 
 ### Set a size guideline
 

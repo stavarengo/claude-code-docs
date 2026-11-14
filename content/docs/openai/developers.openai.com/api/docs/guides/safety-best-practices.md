@@ -64,7 +64,7 @@ requests with the `safety_identifier` parameter:
 
 Example: Providing a safety identifier
 
-```javascript
+```typescript
 import OpenAI from "openai";
 
 const client = new OpenAI();

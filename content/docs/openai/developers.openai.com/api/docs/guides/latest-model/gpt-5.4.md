@@ -59,7 +59,7 @@ With reasoning effort set to `none`, prompting is important. To improve the mode
 
 Reasoning effort set to none
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const openai = new OpenAI();
 
@@ -201,7 +201,7 @@ When generating code with GPT-5.4, `medium` and `high` verbosity levels yield lo
 
 Control verbosity
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const openai = new OpenAI();
 
@@ -458,7 +458,7 @@ prompting guide](https://developers.openai.com/api/docs/guides/latest-model?mode
 
 Round-trip assistant phase values
 
-```javascript
+```typescript
 import OpenAI from "openai";
 const client = new OpenAI();
 

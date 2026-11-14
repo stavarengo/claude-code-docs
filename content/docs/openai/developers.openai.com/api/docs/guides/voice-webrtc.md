@@ -36,13 +36,13 @@ Creating a WebRTC session with `POST /v1/live/sessions` bills 15 seconds of voic
 
 ### Create the application server
 
-Save the server example in a new directory and set `OPENAI_API_KEY` in its environment. For Node.js, use `server.mjs` and install `openai` and `express` with `npm install openai express`. For Python, install `openai`. This example binds to `127.0.0.1`, accepts session requests from `http://localhost:3000`, and serves `index.html` from the directory where you run it.
+Save the server example in a new directory and set `OPENAI_API_KEY` in its environment. For TypeScript, use Node.js 22.6 or later, save the example as `server.ts`, and run `npm install openai express` followed by `npm pkg set type=module`. For Python, install `openai`. This example binds to `127.0.0.1`, accepts session requests from `http://localhost:3000`, and serves `index.html` from the directory where you run it.
 
 For Go, save the example as `main.go`, initialize a module with `go mod init live-demo`, and install `github.com/openai/openai-go/v3@v3.85.1` with `go get`. Run `go run .` with Go 1.26 or later. For Java, use Java 17 or later, add the Maven dependency `com.openai:openai-java:4.95.0`, and run the `LiveConnectionWebrtcExample` class. For Ruby 3.3 or later, install `openai` 0.110.0 and `webrick` with `gem install openai -v 0.110.0` and `gem install webrick`, save the example as `server.rb`, and run `ruby server.rb`.
 
 Choose a server language below; each variant serves `index.html` and the same `/api/session` endpoint on port 3000. Use an SDK version with Live support. Run only one variant at a time.
 
-```javascript
+```typescript
 import express from "express";
 import OpenAI from "openai";
 import { readFile } from "node:fs/promises";
@@ -480,16 +480,16 @@ Create `index.html` in the directory where you run the server:
   </head>
   <body>
     <script type="module">
-      // Paste the browser code below here.
+      // Paste the compiled contents of browser.js here.
     </script>
   </body>
 </html>
 ```
 
 
-Paste the following code inside the module script. It adds start and end controls, connects the microphone and output audio, and handles session events. `/api/session` is a route on your application server.
+Save the following TypeScript code as `browser.ts`. It adds start and end controls, connects the microphone and output audio, and handles session events. `/api/session` is a route on your application server.
 
-```javascript
+```typescript
 const start = document.createElement("button");
 start.textContent = "Start conversation";
 const stop = document.createElement("button");
@@ -501,13 +501,13 @@ audio.autoplay = true;
 audio.controls = true;
 document.body.append(start, stop, status, audio);
 
-let peer;
+let peer: RTCPeerConnection;
 
-let events;
+let events: RTCDataChannel | undefined;
 
-let microphone;
+let microphone: MediaStream;
 
-let closeTimeout;
+let closeTimeout: ReturnType<typeof setTimeout> | undefined;
 let ready = false;
 let finalized = false;
 
@@ -626,7 +626,15 @@ stop.addEventListener("click", () => {
 ```
 
 
-Run your chosen server (`node server.mjs` or `python server.py`), open `http://localhost:3000`, and select **Start conversation**. After the status changes to **Connected**, ask a question that needs current information to exercise hosted search. Use the audio controls if your browser blocks autoplay.
+Compile `browser.ts`, then replace the placeholder in the module script with the contents of the generated `browser.js` file:
+
+```bash
+npm install --save-dev esbuild
+npx esbuild browser.ts --format=esm --outfile=browser.js
+```
+
+
+Run your chosen server (`node --experimental-strip-types server.ts` or `python server.py`), open `http://localhost:3000`, and select **Start conversation**. After the status changes to **Connected**, ask a question that needs current information to exercise hosted search. Use the audio controls if your browser blocks autoplay.
 
 ### Read the session response
 
@@ -684,7 +692,7 @@ To create a realtime API session via the unified interface, you will need to bui
 
 Create a Realtime API session from your application server:
 
-```javascript
+```typescript
 import express from "express";
 
 const app = express();
@@ -783,7 +791,7 @@ browser.
 
 In the browser, you can use standard WebRTC APIs to connect to the Realtime API via your application server. The client sends its SDP data to your server in a `POST` request.
 
-```javascript
+```typescript
 // Create a peer connection
 const pc = new RTCPeerConnection();
 
@@ -837,7 +845,7 @@ To create an ephemeral token to use on the client-side, you will need to build a
 
 Create an ephemeral API key from your application server using the REST API:
 
-```javascript
+```typescript
 import express from "express";
 
 const app = express();
@@ -927,7 +935,7 @@ identifier when it later connects with that token.
 
 In the browser, you can use standard WebRTC APIs to connect to the Realtime API with an ephemeral token. The client first fetches a token from your server endpoint, and then sends its SDP data (with the ephemeral token) to the Realtime API in a `POST` request.
 
-```javascript
+```typescript
 // Get a session token for OpenAI Realtime API
 const tokenResponse = await fetch("/token");
 const data = await tokenResponse.json();
@@ -985,7 +993,7 @@ When connecting to a Realtime model via WebRTC, you don't have to handle audio e
 
 To send and receive other client and server events, you can use the WebRTC peer connection's [data channel](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Using_data_channels).
 
-```javascript
+```typescript
 // Reuse dc from the preceding browser connection example.
 
 // Listen for server events

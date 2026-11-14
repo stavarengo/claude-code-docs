@@ -1,4 +1,4 @@
-# GPT-4o Mini
+# GPT-4o mini
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -8,9 +8,9 @@ Model ID: `gpt-4o-mini`
 
 Status: Deprecated
 
-GPT-4o Mini (“o” for “omni”) is a fast, affordable small model for focused tasks.
+GPT-4o mini (“o” for “omni”) is a fast, affordable small model for focused tasks.
 It accepts both text and image inputs, and produces text outputs (including Structured Outputs). 
-It is ideal for fine-tuning, and model outputs from a larger model like GPT-4o can be distilled to GPT-4o-Mini to produce similar results at lower cost and latency.
+It is ideal for fine-tuning, and model outputs from a larger model like GPT-4o can be distilled to GPT-4o mini to produce similar results at lower cost and latency.
 
 ## Model details
 
@@ -83,13 +83,13 @@ Tools supported by this model when using the Responses API.
 
 | Model | Input | Cached input | Output |
 | --- | ---: | ---: | ---: |
-| GPT-4o Mini | $0.15 | $0.075 | $0.6 |
+| GPT-4o mini | $0.15 | $0.075 | $0.6 |
 | GPT-4o | $2.5 | $1.25 | $10 |
 | o3-mini | $1.1 | $0.55 | $4.4 |
 
 ## Snapshots
 
-Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o Mini.
+Snapshots let you lock in a specific version of the model so that performance and behavior remain consistent. Below is a list of all available snapshots and aliases for GPT-4o mini.
 
 - `gpt-4o-mini-2024-07-18` — Deprecated
 
