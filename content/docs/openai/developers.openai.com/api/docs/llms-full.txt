@@ -10444,6 +10444,8 @@ For a given input file, the parameters in each line's `body` field are the same 
 
 When targeting `/v1/moderations`, include an `input` field in every request body. Batch accepts plain-text inputs and content arrays with text or image inputs using `omni-moderation-latest`. The Batch worker rejects requests that set `stream=true`, matching the synchronous moderation endpoint.
 
+The Batch API doesn't support `omni-moderation-csam-latest`. Approved organizations can use the [CSAM classifier](https://developers.openai.com/api/docs/guides/csam-classifier) with a synchronous request.
+
 ```jsonl
 {"custom_id": "request-1", "method": "POST", "url": "/v1/responses", "body": {"model": "gpt-6-luna", "input": "Reply with the word blue.", "reasoning": {"effort": "none"}, "max_output_tokens": 64}}
 {"custom_id": "request-2", "method": "POST", "url": "/v1/responses", "body": {"model": "gpt-6-luna", "input": "Reply with the word green.", "reasoning": {"effort": "none"}, "max_output_tokens": 64}}
@@ -14217,11 +14219,44 @@ For stateless input-array chaining, append output items as usual. If you are
 using `previous_response_id`, pass only the new user message each turn. In both
 cases, the compaction item carries context needed for the next window.
 
+When the conversation contains earlier `configuration_update` items, the API
+emits one fresh `configuration_update` immediately after the `compaction` item.
+It carries the latest explicitly set value for each updated field:
+`reasoning.effort` and `text.format`. For example, a format-only update preserves
+an earlier effort change. If the conversation has no configuration updates, the
+API omits this item.
+
+Replay the returned output items in order, including the fresh update when present.
+
 Latency tip: After appending output items to the previous input items, you can
 drop items that came before the most recent compaction item to keep requests
 smaller and reduce long-tail latency. The latest compaction item carries the
 necessary context to continue the conversation. If you use
 `previous_response_id` chaining, do not manually prune.
+
+### Developer-added tools
+
+A developer can [add tools mid-conversation](https://developers.openai.com/api/docs/guides/prompt-caching#manage-tools-with-append-only-updates)
+with an `additional_tools` input item. Automatic compaction saves these
+declarations in order inside the encrypted `compaction` item. For example, if
+you added a function named `lookup_ticket`, the model can call it as soon as
+generation continues, or on a later turn when you replay the item or use
+`previous_response_id`. The declarations survive repeated automatic compaction.
+
+A tool declaration alone adds no extra item to `response.output`. If you also
+changed the reasoning effort or output format, replay the `compaction` item
+and the following `configuration_update` in order. To change a tool's schema
+later, append a new `additional_tools` item for that tool. Supply tools you
+defined only in the request-level `tools` array again on turns that need them.
+
+- **Tool selection.** You can select restored functions, custom tools, and tools
+  in a namespace. Naming an unavailable function in `tool_choice` returns HTTP 400.
+- **Client tool search.** Restored client tool search can discover a function with
+  `defer_loading: true`. Answer the `tool_search_call` with a `tool_search_output`
+  using the same `call_id`. Client tool search alone cannot satisfy
+  `tool_choice: "required"`.
+- **Hosted MCP servers.** Automatic compaction saves the `server_label`. Supply
+  the current endpoint and credentials under that label on the next request.
 
 ## User journey
 
@@ -14462,6 +14497,415 @@ end
 ```
 
 
+## Request compaction with an explicit trigger
+
+To compact now, append `{"type": "compaction_trigger"}` as the last input item
+in a `POST /v1/responses` request. Leave earlier `configuration_update` items in
+place. Their settings apply while the model produces the summary. The API
+returns a `compaction` item without a fresh `configuration_update`.
+
+To keep your settings, append one fresh `configuration_update` after the
+summary and before the next user message. Include the latest value of each
+field you changed. With `previous_response_id`, the summary is already in
+stored history, so send the new update followed by the user message.
+
+The explicit trigger's compaction item doesn't carry earlier `additional_tools`
+declarations. If you resume from that item, supply the tools you need in the
+request's `tools` array or append a new developer `additional_tools` item
+before the user message.
+
+### Example user flow
+
+```typescript
+import OpenAI from "openai";
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
+
+const client = new OpenAI();
+const model = "gpt-6-astra";
+const lookupTicket: OpenAI.Responses.FunctionTool = {
+  type: "function",
+  name: "lookup_ticket",
+  description: "Look up a ticket by ID.",
+  parameters: {
+    type: "object",
+    properties: { id: { type: "string" } },
+    required: ["id"],
+    additionalProperties: false,
+  },
+  strict: true,
+};
+const reasoning = { effort: "high" } as const;
+const text = {
+  format: {
+    type: "json_schema",
+    name: "trip_destination",
+    strict: true,
+    schema: {
+      type: "object",
+      properties: { city: { type: "string" } },
+      required: ["city"],
+      additionalProperties: false,
+    },
+  },
+} as const;
+
+const compacted = await client.responses.create({
+  model,
+  reasoning: { effort: "low" },
+  input: [
+    { role: "user", content: "Plan a trip to Kyoto." },
+    { type: "additional_tools", role: "developer", tools: [lookupTicket] },
+    { type: "configuration_update", reasoning },
+    { type: "configuration_update", text },
+    { type: "compaction_trigger" },
+  ],
+  store: false,
+});
+
+const response = await client.responses.create({
+  model,
+  reasoning: { effort: "low" },
+  tools: [lookupTicket],
+  input: [
+    ...toResponseInputItems(compacted.output),
+    { type: "configuration_update", reasoning, text },
+    { role: "user", content: "Which city is my trip to?" },
+  ],
+  store: false,
+});
+console.log(response.output_text);
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+model = "gpt-6-astra"
+lookup_ticket = {
+    "type": "function",
+    "name": "lookup_ticket",
+    "description": "Look up a ticket by ID.",
+    "parameters": {
+        "type": "object",
+        "properties": {"id": {"type": "string"}},
+        "required": ["id"],
+        "additionalProperties": False,
+    },
+    "strict": True,
+}
+reasoning = {"effort": "high"}
+text = {
+    "format": {
+        "type": "json_schema",
+        "name": "trip_destination",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "properties": {"city": {"type": "string"}},
+            "required": ["city"],
+            "additionalProperties": False,
+        },
+    }
+}
+compacted = client.responses.create(
+    model=model,
+    reasoning={"effort": "low"},
+    input=[
+        {"role": "user", "content": "Plan a trip to Kyoto."},
+        {"type": "additional_tools", "role": "developer", "tools": [lookup_ticket]},
+        {"type": "configuration_update", "reasoning": reasoning},
+        {"type": "configuration_update", "text": text},
+        {"type": "compaction_trigger"},
+    ],
+    store=False,
+)
+response = client.responses.create(
+    model=model,
+    reasoning={"effort": "low"},
+    tools=[lookup_ticket],
+    input=[
+        *compacted.output,
+        {"type": "configuration_update", "reasoning": reasoning, "text": text},
+        {"role": "user", "content": "Which city is my trip to?"},
+    ],
+    store=False,
+)
+print(response.output_text)
+```
+
+```go
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/openai/openai-go/v3/shared"
+)
+
+func main() {
+	client := openai.NewClient()
+	ctx := context.Background()
+	model := shared.ResponsesModel("gpt-6-astra")
+	lookupTicket := responses.ToolUnionParam{OfFunction: &responses.FunctionToolParam{
+		Name: "lookup_ticket", Description: openai.String("Look up a ticket by ID."),
+		Parameters: map[string]any{
+			"type": "object", "properties": map[string]any{"id": map[string]any{"type": "string"}},
+			"required": []string{"id"}, "additionalProperties": false,
+		},
+		Strict: openai.Bool(true),
+	}}
+	reasoning := responses.ResponseConfigurationUpdateItemParamReasoning{Effort: shared.ReasoningEffortHigh}
+	text := responses.ResponseConfigurationUpdateItemParamText{
+		Format: responses.ResponseConfigurationUpdateItemParamTextFormatUnion{OfJSONSchema: &responses.ResponseFormatTextJSONSchemaConfigParam{
+			Name: "trip_destination", Strict: openai.Bool(true),
+			Schema: map[string]any{
+				"type": "object", "properties": map[string]any{"city": map[string]any{"type": "string"}},
+				"required": []string{"city"}, "additionalProperties": false,
+			},
+		}},
+	}
+	compacted, err := client.Responses.New(ctx, responses.ResponseNewParams{
+		Model: model, Reasoning: shared.ReasoningParam{Effort: shared.ReasoningEffortLow},
+		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
+			responses.ResponseInputItemParamOfMessage("Plan a trip to Kyoto.", responses.EasyInputMessageRoleUser),
+			responses.ResponseInputItemParamOfAdditionalTools([]responses.ToolUnionParam{lookupTicket}),
+			{OfConfigurationUpdate: &responses.ResponseConfigurationUpdateItemParam{Reasoning: reasoning}},
+			{OfConfigurationUpdate: &responses.ResponseConfigurationUpdateItemParam{Text: text}},
+			{OfCompactionTrigger: &responses.ResponseInputItemCompactionTriggerParam{}},
+		}},
+		Store: openai.Bool(false),
+	})
+	if err != nil {
+		panic(err)
+	}
+	nextInput := outputAsInput(compacted.Output)
+	nextInput = append(nextInput,
+		responses.ResponseInputItemUnionParam{OfConfigurationUpdate: &responses.ResponseConfigurationUpdateItemParam{Reasoning: reasoning, Text: text}},
+		responses.ResponseInputItemParamOfMessage("Which city is my trip to?", responses.EasyInputMessageRoleUser),
+	)
+	response, err := client.Responses.New(ctx, responses.ResponseNewParams{
+		Model: model, Reasoning: shared.ReasoningParam{Effort: shared.ReasoningEffortLow},
+		Tools: []responses.ToolUnionParam{lookupTicket},
+		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: nextInput},
+		Store: openai.Bool(false),
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(response.OutputText())
+}
+
+func outputAsInput(output []responses.ResponseOutputItemUnion) responses.ResponseInputParam {
+	input := make(responses.ResponseInputParam, 0, len(output))
+	for _, item := range output {
+		var converted responses.ResponseInputItemUnion
+		if err := json.Unmarshal([]byte(item.RawJSON()), &converted); err != nil {
+			panic(err)
+		}
+		input = append(input, converted.ToParam())
+	}
+	return input
+}
+```
+
+```java
+import com.openai.core.JsonValue;
+import com.openai.models.Reasoning;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.FunctionTool;
+import com.openai.models.responses.ResponseConfigurationUpdateItemParam;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+String model = "gpt-6-astra";
+var tool =
+    FunctionTool.builder()
+        .name("lookup_ticket")
+        .description("Look up a ticket by ID.")
+        .parameters(
+            JsonValue.from(
+                    Map.of(
+                        "type",
+                        "object",
+                        "properties",
+                        Map.of("id", Map.of("type", "string")),
+                        "required",
+                        List.of("id"),
+                        "additionalProperties",
+                        false))
+                .convert(FunctionTool.Parameters.class))
+        .strict(true)
+        .build();
+var reasoning =
+    ResponseConfigurationUpdateItemParam.Reasoning.builder()
+        .effort(ReasoningEffort.HIGH)
+        .build();
+var format =
+    ResponseFormatTextJsonSchemaConfig.builder()
+        .name("trip_destination")
+        .strict(true)
+        .schema(
+            JsonValue.from(
+                    Map.of(
+                        "type",
+                        "object",
+                        "properties",
+                        Map.of("city", Map.of("type", "string")),
+                        "required",
+                        List.of("city"),
+                        "additionalProperties",
+                        false))
+                .convert(ResponseFormatTextJsonSchemaConfig.Schema.class))
+        .build();
+var text = ResponseConfigurationUpdateItemParam.Text.builder().format(format).build();
+var compacted =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model(model)
+                .reasoning(Reasoning.builder().effort(ReasoningEffort.LOW).build())
+                .inputOfResponse(
+                    List.of(
+                        ResponseInputItem.ofEasyInputMessage(
+                            EasyInputMessage.builder()
+                                .role(EasyInputMessage.Role.USER)
+                                .content("Plan a trip to Kyoto.")
+                                .build()),
+                        ResponseInputItem.ofAdditionalTools(
+                            ResponseInputItem.AdditionalTools.builder().addTool(tool).build()),
+                        ResponseInputItem.ofConfigurationUpdate(
+                            ResponseConfigurationUpdateItemParam.builder()
+                                .reasoning(reasoning)
+                                .build()),
+                        ResponseInputItem.ofConfigurationUpdate(
+                            ResponseConfigurationUpdateItemParam.builder().text(text).build()),
+                        ResponseInputItem.ofCompactionTrigger()))
+                .store(false)
+                .build());
+var input = new ArrayList<ResponseInputItem>();
+for (var item : compacted.output())
+  input.add(JsonValue.from(item).convert(ResponseInputItem.class));
+input.add(
+    ResponseInputItem.ofConfigurationUpdate(
+        ResponseConfigurationUpdateItemParam.builder()
+            .reasoning(reasoning)
+            .text(text)
+            .build()));
+input.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Which city is my trip to?")
+            .build()));
+var response =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model(model)
+                .reasoning(Reasoning.builder().effort(ReasoningEffort.LOW).build())
+                .addTool(tool)
+                .inputOfResponse(input)
+                .store(false)
+                .build());
+response.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(value -> System.out.println(value.text()));
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+model = "gpt-6-astra"
+lookup_ticket = {
+  type: :function,
+
+  name: "lookup_ticket",
+
+  description: "Look up a ticket by ID.",
+  parameters: {
+    type: "object",
+
+    properties: { id: { type: "string" } },
+    required: ["id"],
+
+    additionalProperties: false
+  },
+  strict: true
+}
+reasoning = { effort: :high }
+text = {
+  format: {
+    type: :json_schema,
+
+    name: "trip_destination",
+
+    strict: true,
+    schema: {
+      type: "object",
+      properties: { city: { type: "string" } },
+      required: ["city"],
+      additionalProperties: false
+    }
+  }
+}
+compacted = client.responses.create(
+  model: model, reasoning: { effort: :low },
+  input: [
+    {
+      role: :user,
+      content: "Plan a trip to Kyoto."
+    },
+    {
+      type: :additional_tools,
+      role: :developer,
+      tools: [lookup_ticket]
+    },
+    {
+      type: :configuration_update,
+      reasoning: reasoning
+    },
+    {
+      type: :configuration_update,
+      text: text
+    },
+    { type: :compaction_trigger }
+  ],
+  store: false
+)
+response = client.responses.create(
+  model: model, reasoning: { effort: :low }, tools: [lookup_ticket],
+  input: [
+    *compacted.output,
+    {
+      type: :configuration_update,
+      reasoning: reasoning,
+      text: text
+    },
+    {
+      role: :user,
+      content: "Which city is my trip to?"
+    }
+  ],
+  store: false
+)
+puts(response.output_text)
+```
+
+
 ## Standalone compact endpoint
 
 For explicit control, use the
@@ -14695,6 +15139,278 @@ response = client.responses.create(
   store: false
 )
 puts(response.output_text)
+```
+
+
+### Continue with configuration updates and tools
+
+`POST /v1/responses/compact` rejects histories containing
+`configuration_update` items, including updates inherited through
+`previous_response_id`. If your history contains updates:
+
+1. Start from your full history of input and output items. Save the latest
+   explicit `reasoning.effort` and `text.format` separately. Send the remaining
+   items to the compact endpoint in their original order, omitting only the
+   configuration updates.
+2. Keep the entire returned window. Append one fresh `configuration_update`
+   with the fields you saved, then append the next user message. Keep the
+   original request-level settings on the next `/v1/responses` call.
+3. If you previously added tools with `additional_tools`, supply the definitions
+   the next turn needs in `tools`, or append a new developer declaration before
+   the user message. The standalone summary doesn't restore these tools.
+
+In this example, the conversation started with low effort and plain text. One
+update raised effort to high and a later update supplied a JSON schema.
+`compactAndContinue` restores both in a single item. Pass the tools needed for
+the next turn in `nextTools`.
+
+```typescript
+import OpenAI from "openai";
+import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
+
+const client = new OpenAI();
+
+async function compactAndContinue(
+  model: string,
+  history: OpenAI.Responses.ResponseInput,
+  nextMessage: string,
+  nextTools: OpenAI.Responses.Tool[]
+) {
+  const input: OpenAI.Responses.ResponseInput = [];
+  const latest: OpenAI.Responses.ResponseConfigurationUpdateItemParam = {
+    type: "configuration_update",
+  };
+  for (const item of history) {
+    if (item.type === "configuration_update") {
+      if (item.reasoning?.effort != null) latest.reasoning = item.reasoning;
+      if (item.text?.format) latest.text = item.text;
+    } else {
+      input.push(item);
+    }
+  }
+
+  const compacted = await client.responses.compact({ model, input });
+  const nextInput = toResponseInputItems(compacted.output);
+  if (latest.reasoning || latest.text) nextInput.push(latest);
+  nextInput.push({ role: "user", content: nextMessage });
+
+  return client.responses.create({
+    model,
+    reasoning: { effort: "low" },
+    tools: nextTools,
+    input: nextInput,
+    store: false,
+  });
+}
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
+
+def compact_and_continue(model, history, next_message, next_tools):
+    compact_input = []
+    latest = {"type": "configuration_update"}
+    for item in history:
+        data = item if isinstance(item, dict) else item.model_dump(exclude_unset=True)
+        if data.get("type") == "configuration_update":
+            if (data.get("reasoning") or {}).get("effort") is not None:
+                latest["reasoning"] = data["reasoning"]
+            if (data.get("text") or {}).get("format") is not None:
+                latest["text"] = data["text"]
+        else:
+            compact_input.append(item)
+
+    compacted = client.responses.compact(model=model, input=compact_input)
+    next_input = list(compacted.output)
+    if len(latest) > 1:
+        next_input.append(latest)
+    next_input.append({"role": "user", "content": next_message})
+    return client.responses.create(
+        model=model,
+        reasoning={"effort": "low"},
+        tools=next_tools,
+        input=next_input,
+        store=False,
+    )
+```
+
+```go
+func compactAndContinue(
+	ctx context.Context,
+	client *openai.Client,
+	model string,
+	history responses.ResponseInputParam,
+	nextMessage string,
+	nextTools []responses.ToolUnionParam,
+) (*responses.Response, error) {
+	input := responses.ResponseInputParam{}
+	latest := responses.ResponseConfigurationUpdateItemParam{}
+	for _, item := range history {
+		if _, overridden := item.Overrides(); overridden {
+			raw, err := json.Marshal(item)
+			if err != nil {
+				return nil, err
+			}
+			var normalized responses.ResponseInputItemUnionParam
+			if err := json.Unmarshal(raw, &normalized); err != nil {
+				return nil, err
+			}
+			if normalized.OfConfigurationUpdate != nil {
+				item = normalized
+			}
+		}
+		if update := item.OfConfigurationUpdate; update != nil {
+			if update.Reasoning.Effort != "" {
+				latest.Reasoning = update.Reasoning
+			}
+			if update.Text.Format.OfText != nil || update.Text.Format.OfJSONSchema != nil {
+				latest.Text = update.Text
+			}
+		} else {
+			input = append(input, item)
+		}
+	}
+
+	compacted, err := client.Responses.Compact(ctx, responses.ResponseCompactParams{
+		Model: responses.ResponseCompactParamsModel(model),
+		Input: responses.ResponseCompactParamsInputUnion{OfResponseInputItemArray: input},
+	})
+	if err != nil {
+		return nil, err
+	}
+	nextInput := outputAsInput(compacted.Output)
+	if latest.Reasoning.Effort != "" || latest.Text.Format.OfText != nil || latest.Text.Format.OfJSONSchema != nil {
+		nextInput = append(nextInput, responses.ResponseInputItemUnionParam{OfConfigurationUpdate: &latest})
+	}
+	nextInput = append(nextInput, responses.ResponseInputItemParamOfMessage(nextMessage, responses.EasyInputMessageRoleUser))
+
+	return client.Responses.New(ctx, responses.ResponseNewParams{
+		Model:     shared.ResponsesModel(model),
+		Reasoning: shared.ReasoningParam{Effort: shared.ReasoningEffortLow},
+		Tools:     nextTools,
+		Input:     responses.ResponseNewParamsInputUnion{OfInputItemList: nextInput},
+		Store:     openai.Bool(false),
+	})
+}
+
+func outputAsInput(output []responses.ResponseOutputItemUnion) responses.ResponseInputParam {
+	input := make(responses.ResponseInputParam, 0, len(output))
+	for _, item := range output {
+		var converted responses.ResponseInputItemUnion
+		if err := json.Unmarshal([]byte(item.RawJSON()), &converted); err != nil {
+			panic(err)
+		}
+		input = append(input, converted.ToParam())
+	}
+	return input
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.core.JsonValue;
+import com.openai.models.Reasoning;
+import com.openai.models.ReasoningEffort;
+import com.openai.models.responses.EasyInputMessage;
+import com.openai.models.responses.FunctionTool;
+import com.openai.models.responses.Response;
+import com.openai.models.responses.ResponseCompactParams;
+import com.openai.models.responses.ResponseConfigurationUpdateItemParam;
+import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
+import com.openai.models.responses.ResponseInputItem;
+import com.openai.models.responses.Tool;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+static Response compactAndContinue(
+    OpenAIClient client,
+    String model,
+    List<ResponseInputItem> history,
+    String nextMessage,
+    List<Tool> nextTools) {
+  var input = new ArrayList<ResponseInputItem>();
+  var latest = ResponseConfigurationUpdateItemParam.builder();
+  boolean hasUpdate = false;
+  for (var item : history) {
+    if (item.configurationUpdate().isPresent()) {
+      var update = item.configurationUpdate().get();
+      if (update.reasoning().isPresent() && update.reasoning().get().effort().isPresent()) {
+        latest.reasoning(update.reasoning().get());
+        hasUpdate = true;
+      }
+      if (update.text().isPresent()) {
+        latest.text(update.text().get());
+        hasUpdate = true;
+      }
+    } else {
+      input.add(item);
+    }
+  }
+  var compacted =
+      client
+          .responses()
+          .compact(
+              ResponseCompactParams.builder()
+                  .model(model)
+                  .inputOfResponseInputItems(input)
+                  .build());
+  var nextInput = new ArrayList<ResponseInputItem>();
+  for (var item : compacted.output()) {
+    nextInput.add(JsonValue.from(item).convert(ResponseInputItem.class));
+  }
+  if (hasUpdate) nextInput.add(ResponseInputItem.ofConfigurationUpdate(latest.build()));
+  nextInput.add(
+      ResponseInputItem.ofEasyInputMessage(
+          EasyInputMessage.builder()
+              .role(EasyInputMessage.Role.USER)
+              .content(nextMessage)
+              .build()));
+  return client
+      .responses()
+      .create(
+          ResponseCreateParams.builder()
+              .model(model)
+              .reasoning(Reasoning.builder().effort(ReasoningEffort.LOW).build())
+              .tools(nextTools)
+              .inputOfResponse(nextInput)
+              .store(false)
+              .build());
+}
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+
+def compact_and_continue(client, model, history, next_message, next_tools)
+  input = []
+  latest = { type: :configuration_update }
+  history.each do |item|
+    if item[:type].to_s == "configuration_update"
+      latest[:reasoning] = item[:reasoning] unless item[:reasoning]&.[](:effort).nil?
+      latest[:text] = item[:text] unless item[:text]&.[](:format).nil?
+    else
+      input << item
+    end
+  end
+
+  compacted = client.responses.compact(model: model, input: input)
+  next_input = compacted.output.dup
+  next_input << latest if latest.size > 1
+  next_input << {
+    role: :user,
+    content: next_message
+  }
+  client.responses.create(
+    model: model, reasoning: { effort: :low }, tools: next_tools, input: next_input, store: false
+  )
+end
 ```
 
 ---
@@ -32743,8 +33459,8 @@ Match `source_event_id` to the transcript delta. Live can combine pending deltas
 
 # Content provenance
 
-Use the Content Provenance API to check whether an image or audio file contains
-supported OpenAI provenance signals. Send a file to
+Use the Content Provenance API to check whether an image, audio file, or PDF
+contains supported OpenAI provenance signals. Send a file to
 `POST /v1/content_provenance_checks` to receive the completed verification
 results in the same response. Use these signals in content review,
 fact-checking, labeling, and trust and safety workflows.
@@ -32774,12 +33490,17 @@ Content provenance checks supported files for the following signals:
 
 | Signal                   | Applies to       | What it checks                                   |
 | ------------------------ | ---------------- | ------------------------------------------------ |
-| C2PA Content Credentials | Images           | Signed metadata with issuer and AI-use details   |
+| C2PA Content Credentials | Images and PDFs  | Signed metadata with issuer and AI-use details   |
 | SynthID                  | Images and audio | A watermark embedded directly in supported media |
 
 C2PA metadata provides more context about a file's origin. Editing, converting,
 or sharing a file can remove its metadata. A SynthID watermark is part of the
 image or audio itself and may survive some transformations.
+
+Supported PDF exports from ChatGPT and the Responses API include embedded C2PA
+metadata. These exports can include PDFs you upload and download again without
+changing their contents. Upload the exported PDF to the Content Provenance API
+to check its metadata.
 
 The API checks for supported OpenAI signals. It isn't a general-purpose AI
 detector and doesn't identify content generated by every AI system. Visible
@@ -32788,9 +33509,9 @@ API.
 
 ## Verify a file
 
-Send an image or audio file as the `file` field with the OpenAI SDK. The SDK
-builds the multipart request and reads your API key from the `OPENAI_API_KEY`
-environment variable:
+Send an image, audio file, or PDF as the `file` field with the OpenAI SDK. The
+SDK builds the multipart request and reads your API key from the
+`OPENAI_API_KEY` environment variable:
 
 Verify an image
 
@@ -32899,6 +33620,9 @@ curl https://api.openai.com/v1/content_provenance_checks \
   -F "file=@./example.opus;type=audio/ogg"
 ```
 
+To verify a PDF with the same command, use the path to your PDF and set the
+`file` part's media type to `application/pdf`.
+
 The response contains the completed result. For example, an image returns:
 
 ```json
@@ -32926,9 +33650,9 @@ The response contains the completed result. For example, an image returns:
 
 The `object` field identifies the response, and `created_at` is the check's
 creation time as a Unix timestamp in seconds. The entries in `results` depend on
-the uploaded file: images include C2PA and SynthID results, and audio includes a
-SynthID result. The API omits checks that don't apply instead of returning
-`not_detected`.
+the uploaded file. Images include C2PA and SynthID results, audio includes a
+SynthID result, and PDFs include a C2PA result. The API omits checks that don't
+apply instead of returning `not_detected`.
 
 The API completes verification before it returns. You don't need to create a
 background job, poll another endpoint, or upload the file to the Files API.
@@ -32941,13 +33665,13 @@ see [API error codes](https://developers.openai.com/api/docs/guides/error-codes)
 
 ## Understand verification results
 
-Read each applicable entry in `results` independently. Image results include
-C2PA and SynthID entries, while audio results include a SynthID entry. The
-response doesn't include a top-level `outcome`.
+Read each applicable entry in `results` independently. The response doesn't
+include a top-level `outcome`.
 
 ### C2PA results
 
-A C2PA result describes the state of an image's Content Credentials:
+A C2PA result describes the state of the Content Credentials in an image or PDF.
+This example shows an image result.
 
 ```json
 {
@@ -32962,24 +33686,33 @@ A C2PA result describes the state of an image's Content Credentials:
 
 Use the fields as follows:
 
-- `outcome` indicates whether OpenAI-issued AI-generation credentials were
-  `detected` or `not_detected`.
+- `outcome` indicates whether a supported OpenAI C2PA signal was `detected`
+  or `not_detected`.
 - `validation_state` indicates whether the manifest is `trusted`, `valid`,
   `invalid`, or `not_present`.
 - `issuer` identifies the manifest issuer when that information is available.
-- `model` identifies the generating model when that information is available.
+- `model` identifies the model recorded in the provenance signal, when
+  available.
 - `generated_at` identifies the content's generation time when that information
   is available.
 
-The outcome is `detected` only when a `trusted` or `valid` manifest identifies
-OpenAI as its issuer and includes an AI-generation action. A third-party
+For images, the outcome is `detected` only when a `trusted` or `valid` manifest
+identifies OpenAI as its issuer and includes an AI-generation action. A third-party
 manifest, a manifest without an AI-generation action, an `invalid` manifest, or
 a `not_present` manifest produces `not_detected`. The `issuer` and
 `validation_state` can still describe a manifest even when the outcome is
 `not_detected`.
 
+For PDFs, a `detected` outcome requires a `trusted` OpenAI manifest with a
+supported provenance signal. A [trusted manifest](https://spec.c2pa.org/specifications/specifications/2.5/specs/C2PA_Specification.html#_trusted_manifest)
+meets the requirements for a [valid manifest](https://spec.c2pa.org/specifications/specifications/2.5/specs/C2PA_Specification.html#_valid_manifest)
+and has a signer certificate chain that leads to an accepted trust anchor.
+A detected PDF signal indicates that an OpenAI tool processed the file. The
+signal alone cannot establish whether, or to what extent, the tool generated
+or edited its contents.
+
 Don't treat an `invalid` manifest as reliable provenance evidence. A
-`not_present` result means the image has no available C2PA manifest.
+`not_present` result means the file has no available C2PA manifest.
 
 ### SynthID results
 
@@ -33007,20 +33740,30 @@ By default, the API supports the following file formats:
 
 - **Images:** PNG, JPEG, WebP, and GIF.
 - **Audio:** MP3, Opus, AAC, FLAC, WAV, and PCM.
+- **Documents:** PDF.
 
 Limit each uploaded file to 50 MiB. Audio must be 60 seconds or shorter after
 decoding.
 
 Set the uploaded `file` part's media type. Use `image/gif` for a GIF, `image/png`
-for a PNG image, or `audio/ogg` for Opus audio. Don't add a separate `type` field or
-manually set the `multipart/form-data` request header. The `curl` `-F` option
-sets the request content type and multipart boundary. Send one file per request.
+for a PNG image, `audio/ogg` for Opus audio, or `application/pdf` for a PDF.
+Don't add a separate `type` field or manually set the `multipart/form-data`
+request header. The `curl` `-F` option sets the request content type and multipart
+boundary. Send one file per request.
 
-## Rate limits
+<a id="rate-limits"></a>
+
+## Rate limits and Zero Data Retention (ZDR)
+
+The public Content Provenance API is eligible for
+[Zero Data Retention (ZDR)](https://developers.openai.com/api/docs/guides/your-data#zero-data-retention)
+when you verify images or audio at default rate limits.
 
 Strict rate limits help protect the API against misuse. Organizations can
 [apply for higher limits](https://openai.com/form/content-provenance-api/), and
 OpenAI reviews each application on a case-by-case basis.
+
+Access with higher rate limits is ineligible for ZDR.
 
 If the API returns `429 rate_limit_exceeded`, reduce your request rate and
 honor the `Retry-After` header when present. See
@@ -33034,7 +33777,8 @@ Use verification results as evidence in a broader review process:
   history of a file.
 - Treat `not_detected` as an absence of detected evidence, not proof that the
   content is human-created or wasn't generated with OpenAI.
-- Check the C2PA issuer before attributing an image to a particular provider.
+- Check the C2PA issuer before attributing an image or PDF to a particular
+  provider.
 - Verify the original file when possible. Compression, cropping, screenshots,
   metadata removal, and format conversions can erase or weaken a signal.
 - Account for the originating product, model, file format, and creation date.
@@ -35030,6 +35774,109 @@ The response includes `input_tokens` (integer) and `object: "response.input_toke
 
 ---
 
+# CSAM classifier
+
+The OpenAI CSAM Image Classifier helps reviewers prioritize images that may contain child sexual abuse material (CSAM), including AI-generated material.
+
+The classifier is available to approved organizations at no cost. .
+
+## How it works
+
+The classifier takes one image as input and returns signals for two categories: potential CSAM and potential AI-generated CSAM. To use the classifier, set the model to `omni-moderation-csam-latest`.
+
+For general moderation, use `omni-moderation-latest`. It can flag sexual content in images, but its `sexual/minors` category applies only to text.
+
+## Classify an image
+
+Follow your organization's approved input-handling process. Do not submit known CSAM.
+
+- Set `OPENAI_API_KEY` to an API key for an approved organization.
+- Send a standalone [Create moderation](https://developers.openai.com/api/reference/resources/moderations/methods/create) request (`POST /v1/moderations`).
+- Send exactly one still image of up to 20 MB (20,000,000 bytes) in the `input` array with `type: "image_url"`. Set `image_url.url` to an HTTP or HTTPS image URL or a base64-encoded image data URL. The classifier doesn't support text classification.
+
+The following example sends an image of soap to the classifier.
+
+Classify an image
+
+```bash
+curl https://api.openai.com/v1/moderations \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -d '{
+    "model": "omni-moderation-csam-latest",
+    "input": [
+      {
+        "type": "image_url",
+        "image_url": {
+          "url": "https://cdn.openai.com/API/docs/images/soap.png"
+        }
+      }
+    ]
+  }'
+```
+
+
+Here’s an example response:
+
+```json
+{
+  "id": "modr_example",
+  "model": "omni-moderation-csam-latest",
+  "results": [
+    {
+      "flagged": false,
+      "categories": {
+        "likely-csam": false,
+        "likely-csam/gen-ai": false
+      },
+      "category_scores": {
+        "likely-csam": 0.12,
+        "likely-csam/gen-ai": 0.01
+      },
+      "category_applied_input_types": {
+        "likely-csam": ["image"],
+        "likely-csam/gen-ai": ["image"]
+      }
+    }
+  ]
+}
+```
+
+## Interpret the result
+
+Read the classification result at `results[0]`. Start with `flagged`, then check the individual category flags.
+
+| Response field                 | Description                                                                                                                                                                                                                                  |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `flagged`                      | Whether the classifier flagged the image.                                                                                                                                                                                                    |
+| `categories`                   | A boolean flag for each category, based on its configured decision threshold.                                                                                                                                                                |
+| `category_scores`              | A score from 0 to 1 for each category, with no units. Higher scores signal a stronger match within the same category and model snapshot. Do not interpret these scores as calibrated probabilities or assume `0.5` is a universal threshold. |
+| `category_applied_input_types` | The input types evaluated for each category. Each value is `["image"]`.                                                                                                                                                                      |
+
+### Understand the categories
+
+| Category             | Signal                                  |
+| -------------------- | --------------------------------------- |
+| `likely-csam`        | Signal for potential CSAM.              |
+| `likely-csam/gen-ai` | Signal for potential AI-generated CSAM. |
+
+A category flag doesn't establish that an image is CSAM, and the classifier doesn't automatically report content to authorities. Follow your organization's review, escalation, and reporting processes. See the [CSAM guidance](https://developers.openai.com/api/docs/guides/csam-guidance) for recommendations on handling flagged content.
+
+## Troubleshoot a request
+
+If a request fails, check that you selected `omni-moderation-csam-latest`, used an API key for an approved organization, and sent one image within the size limit.
+
+The classifier doesn't support [inline moderation](https://developers.openai.com/api/docs/guides/moderation#moderate-generated-content) or the [Batch API](https://developers.openai.com/api/docs/guides/batch).
+
+For rate-limit errors, consult your organization's limits and the [rate-limit guidance](https://developers.openai.com/api/docs/guides/rate-limits).
+
+## Access
+
+To request access, submit the .
+
+---
+
 # CSAM guidance
 
 {"OpenAI developed this resource with expert input from the "}
@@ -35149,6 +35996,11 @@ Use accessible CSAM detection tools:
       requires minimal technical expertise to integrate.
 - **Novel CSAM detection classifiers.** These tools can detect unknown or unseen
   CSAM.
+  - The [OpenAI CSAM Image Classifier](https://developers.openai.com/api/docs/guides/csam-classifier) helps approved organizations review images
+    for potential child sexual abuse material (CSAM), including AI-generated
+    material. Access is available at no cost and requires approval. To request
+    access, submit the and complete the Persona verification flow. Access also requires completing
+    the program onboarding process and accepting the applicable terms.
   - offers
     classifiers intended to identify potentially novel CSAM in images and
     videos, as well as relevant text-based exploitation signals.
@@ -35188,22 +36040,23 @@ Local laws and reporting obligations may vary by jurisdiction.
   policy, escalation path, and the limits of any automated system.
 - **Use the tools you need to moderate content or respond to abuse.** Other
   tools can help you address child safety risks and harms:
-  - The [Moderation API](https://developers.openai.com/api/docs/guides/moderation) detects potentially harmful
-    content in text and images. Learn more about the
-    [`omni-moderation-latest`](https://developers.openai.com/api/docs/models/omni-moderation-latest) model.
-    This isn't a substitute for dedicated CSAM detection. It still includes a
-    `sexual/minors` category covering sexual content involving people
-    under 18; this category is text-only. Use results to:
+  - The [standard moderation model](https://developers.openai.com/api/docs/models/omni-moderation-latest) detects
+    potentially harmful content in text and images. Its `sexual/minors` category
+    covers text only. For image-based CSAM detection, see [Detect](#detect).
+    Use [moderation results](https://developers.openai.com/api/docs/guides/moderation) to:
     - Block or filter content.
     - Send content for human review.
     - Intervene on an account.
     - Add friction to repeated misuse and apply product- or service-specific
       enforcement.
-  - Consider other moderation tools that could help. For example, is an open-source review console for
-    triaging potential policy violations in text, multimedia, and profiles. It
-    supports human and automated review, takes a wellness-oriented approach for
-    reviewers, and enables end-to-end moderation workflows, including
-    NCMEC CyberTipline reporting.
+  - Consider other moderation tools that could help. combines AI-powered moderation with human review, configurable workflows,
+    case management, and audit trails to help teams detect and respond to policy
+    violations. is an open-source review console for triaging potential policy violations in
+    text, multimedia, and profiles. It supports human and automated review, takes
+    a wellness-oriented approach for reviewers, and enables end-to-end moderation
+    workflows, including NCMEC CyberTipline reporting. offers content moderation tools through Safer Enterprise for reviewing
+    suspected child sexual abuse material (CSAM), with built-in reviewer wellness
+    features and NCMEC reporting workflows.
 
 When you are ready to do more, consider other response and reporting
 measures:
@@ -36055,7 +36908,7 @@ The complete, unfiltered regional support table follows. Model snapshots for eac
 | Australia\*                | `au.api.openai.com` |       Yes        |         Yes         |                                                               —                                                               | Text, Audio, Voice, Image   | `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech`<br />`/v1/batches`<br />`/v1/chat/completions`<br />`/v1/decisions`<br />`/v1/embeddings`<br />`/v1/files`<br />`/v1/fine_tuning/jobs`<br />`/v1/images/edits`<br />`/v1/images/generations`<br />`/v1/moderations`<br />`/v1/responses`<br />`/v1/responses File Search`<br />`/v1/responses Web Search`<br />`/v1/vector_stores`<br />`Code Interpreter tool`<br />`File Search`<br />`File Uploads`<br />`Remote MCP server tool`<br />`Scale Tier`<br />`Structured Outputs (excluding schema)`<br />`Supported input modalities`                                                                                                                                           | `/v1/chat/completions` (`gpt-6-luna`)<br />`/v1/responses` (`gpt-6-luna`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Canada\*                   | `ca.api.openai.com` |       Yes        |         No          |                                                               —                                                               | Text, Audio, Voice, Image   | `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech`<br />`/v1/batches`<br />`/v1/chat/completions`<br />`/v1/decisions`<br />`/v1/embeddings`<br />`/v1/files`<br />`/v1/fine_tuning/jobs`<br />`/v1/images/edits`<br />`/v1/images/generations`<br />`/v1/moderations`<br />`/v1/responses`<br />`/v1/responses File Search`<br />`/v1/responses Web Search`<br />`/v1/vector_stores`<br />`Code Interpreter tool`<br />`File Search`<br />`File Uploads`<br />`Remote MCP server tool`<br />`Scale Tier`<br />`Structured Outputs (excluding schema)`<br />`Supported input modalities`                                                                                                                                           | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | Japan\*                    | `jp.api.openai.com` |       Yes        |         Yes         |                                                               —                                                               | Text, Audio, Voice, Image   | `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech`<br />`/v1/batches`<br />`/v1/chat/completions`<br />`/v1/decisions`<br />`/v1/embeddings`<br />`/v1/files`<br />`/v1/fine_tuning/jobs`<br />`/v1/images/edits`<br />`/v1/images/generations`<br />`/v1/moderations`<br />`/v1/responses`<br />`/v1/responses File Search`<br />`/v1/responses Web Search`<br />`/v1/vector_stores`<br />`Code Interpreter tool`<br />`File Search`<br />`File Uploads`<br />`Remote MCP server tool`<br />`Scale Tier`<br />`Structured Outputs (excluding schema)`<br />`Supported input modalities`                                                                                                                                           | `/v1/chat/completions` (`gpt-6-luna`)<br />`/v1/responses` (`gpt-6-luna`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| India\*                    | `in.api.openai.com` |       Yes        |         Yes         | [Contact sales](https://openai.com/contact-sales/) to access this region | Text, Audio, Voice, Image   | `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech`<br />`/v1/batches`<br />`/v1/chat/completions`<br />`/v1/decisions`<br />`/v1/embeddings`<br />`/v1/files`<br />`/v1/fine_tuning/jobs`<br />`/v1/images/edits`<br />`/v1/images/generations`<br />`/v1/moderations`<br />`/v1/responses`<br />`/v1/responses File Search`<br />`/v1/responses Web Search`<br />`/v1/vector_stores`<br />`Code Interpreter tool`<br />`File Search`<br />`File Uploads`<br />`Remote MCP server tool`<br />`Scale Tier`<br />`Structured Outputs (excluding schema)`<br />`Supported input modalities`                                                                                                                                           | `/v1/chat/completions` (`gpt-6-luna`)<br />`/v1/responses` (`gpt-6-luna`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| India\*                    | `in.api.openai.com` |       Yes        |         Yes         |                                                               —                                                               | Text, Audio, Voice, Image   | `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech`<br />`/v1/batches`<br />`/v1/chat/completions`<br />`/v1/decisions`<br />`/v1/embeddings`<br />`/v1/files`<br />`/v1/fine_tuning/jobs`<br />`/v1/images/edits`<br />`/v1/images/generations`<br />`/v1/moderations`<br />`/v1/responses`<br />`/v1/responses File Search`<br />`/v1/responses Web Search`<br />`/v1/vector_stores`<br />`Code Interpreter tool`<br />`File Search`<br />`File Uploads`<br />`Remote MCP server tool`<br />`Scale Tier`<br />`Structured Outputs (excluding schema)`<br />`Supported input modalities`                                                                                                                                           | `/v1/chat/completions` (`gpt-6-luna`)<br />`/v1/responses` (`gpt-6-luna`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Singapore\*                | `sg.api.openai.com` |       Yes        |         No          |                                                               —                                                               | Text, Audio, Voice, Image   | `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech`<br />`/v1/batches`<br />`/v1/chat/completions`<br />`/v1/decisions`<br />`/v1/embeddings`<br />`/v1/files`<br />`/v1/fine_tuning/jobs`<br />`/v1/images/edits`<br />`/v1/images/generations`<br />`/v1/moderations`<br />`/v1/responses`<br />`/v1/responses File Search`<br />`/v1/responses Web Search`<br />`/v1/vector_stores`<br />`Code Interpreter tool`<br />`File Search`<br />`File Uploads`<br />`Remote MCP server tool`<br />`Scale Tier`<br />`Structured Outputs (excluding schema)`<br />`Supported input modalities`                                                                                                                                           | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | South Korea\*              | `kr.api.openai.com` |       Yes        |         No          |                                                               —                                                               | Text, Audio, Voice, Image   | `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech`<br />`/v1/batches`<br />`/v1/chat/completions`<br />`/v1/decisions`<br />`/v1/embeddings`<br />`/v1/files`<br />`/v1/fine_tuning/jobs`<br />`/v1/images/edits`<br />`/v1/images/generations`<br />`/v1/moderations`<br />`/v1/responses`<br />`/v1/responses File Search`<br />`/v1/responses Web Search`<br />`/v1/vector_stores`<br />`Code Interpreter tool`<br />`File Search`<br />`File Uploads`<br />`Remote MCP server tool`<br />`Scale Tier`<br />`Structured Outputs (excluding schema)`<br />`Supported input modalities`                                                                                                                                           | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | United Kingdom\*           | `gb.api.openai.com` |       Yes        |         No          |                                                               —                                                               | Text, Audio, Voice, Image   | `/v1/audio/transcriptions, /v1/audio/translations, /v1/audio/speech`<br />`/v1/batches`<br />`/v1/chat/completions`<br />`/v1/decisions`<br />`/v1/embeddings`<br />`/v1/files`<br />`/v1/fine_tuning/jobs`<br />`/v1/images/edits`<br />`/v1/images/generations`<br />`/v1/moderations`<br />`/v1/responses`<br />`/v1/responses File Search`<br />`/v1/responses Web Search`<br />`/v1/vector_stores`<br />`Code Interpreter tool`<br />`File Search`<br />`File Uploads`<br />`Remote MCP server tool`<br />`Scale Tier`<br />`Structured Outputs (excluding schema)`<br />`Supported input modalities`                                                                                                                                           | None                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
@@ -36078,6 +36931,7 @@ The complete, unfiltered regional support table follows. Model snapshots for eac
 | `/v1/images/edits`                                                   | Images           | All listed regions                        | United States, Europe (EEA + Switzerland)                                                | `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | None                                                                                                                                                  | —                                                                                                                                                                                                                                         |
 | `/v1/images/generations`                                             | Images           | All listed regions                        | United States, Europe (EEA + Switzerland)                                                | `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | None                                                                                                                                                  | —                                                                                                                                                                                                                                         |
 | `/v1/moderations`                                                    | Moderation       | All listed regions                        | United States, Europe (EEA + Switzerland)                                                | `omni-moderation-latest`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | None                                                                                                                                                  | —                                                                                                                                                                                                                                         |
+| `/v1/moderations` (CSAM classifier)                                  | Moderation       | Not specified                             | Not specified                                                                            | `omni-moderation-csam-latest`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | —                                                                                                                                                     | Available to approved organizations. Regional processing coverage is not specified for this model.                                                                                                                                        |
 | `/v1/live/sessions`                                                  | GPT-Live         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                                                | `gpt-live-1`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | None                                                                                                                                                  | —                                                                                                                                                                                                                                         |
 | `/v1/realtime`                                                       | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                                                | `gpt-realtime`, `gpt-realtime-1.5`, `gpt-realtime-mini`, `gpt-realtime-2`, `gpt-realtime-2.1`, `gpt-realtime-2.1-mini`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | None                                                                                                                                                  | —                                                                                                                                                                                                                                         |
 | `/v1/realtime/transcription_sessions`                                | Realtime         | United States, Europe (EEA + Switzerland) | United States, Europe (EEA + Switzerland)                                                | `gpt-realtime-whisper`, `gpt-live-transcribe`, `gpt-transcribe`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | None                                                                                                                                                  | —                                                                                                                                                                                                                                         |
@@ -48717,7 +49571,7 @@ To ensure these models are used responsibly, you may need to complete the [API
 
 ### GPT-Image-2.6
 
-GPT-Image-2.6 includes [Sunburst](https://developers.openai.com/api/docs/models/gpt-image-2.6-sunburst) for detailed visual work and [Flare](https://developers.openai.com/api/docs/models/gpt-image-2.6-flare) for fast iteration. Both models support complexity control, markup-guided edits, SVG output, and animated GIF output through the Image API. The existing examples below use GPT-Image-2.5.
+GPT-Image-2.6 includes [Sunburst](https://developers.openai.com/api/docs/models/gpt-image-2.6-sunburst) for detailed visual work and [Flare](https://developers.openai.com/api/docs/models/gpt-image-2.6-flare) for fast iteration. Both models support complexity control, markup-guided edits, SVG output, and animated GIF output through the Image API. Explore [Sunburst examples and their generation settings](https://developers.openai.com/api/docs/guides/image-generation?gallery=open).
 
 #### Set image complexity
 
@@ -51245,7 +52099,7 @@ openai images edit \
 
 ### Guide an edit with markup
 
-Use the Image API’s `POST /v1/images/edits` endpoint for markup-guided edits with supported GPT-Image-2.5 and GPT-Image-2.6 models. For regional edits with the Responses API, use a [mask](#edit-an-image-using-a-mask). Use an annotation layer to show where a change should happen and describe the change in `prompt`.
+For markup-guided edits with supported GPT-Image-2.5 and GPT-Image-2.6 models, use the `POST /v1/images/edits` endpoint in the Image API. For regional edits with the Responses API, use a [mask](#edit-an-image-using-a-mask). Use an annotation layer to show where a change should happen and describe the change in `prompt`.
 
 For example, download the [kitchen photo](https://developers.openai.com/images/platform/guides/image-prompting/kitchen.webp) and [transparent overlay](https://developers.openai.com/images/platform/guides/image-prompting/markup-vase-overlay-gpt-image-2-6.png) into the same directory. The overlay circles the vase to recolor.
 
@@ -51958,16 +52812,16 @@ You can configure the following output options:
 
 ### Size and quality options
 
-`gpt-image-2.5-sunburst` and `gpt-image-2.5-flare` add `xhigh` and `max` quality settings. Both default to `auto`. Earlier GPT Image models support quality settings up to `high`.
+Sunburst and Flare in GPT-Image-2.6 and GPT-Image-2.5 support `xhigh` and `max` quality settings and default to `auto`. Earlier GPT Image models support quality settings up to `high`.
 
 | Setting           | Options                                                               |
 | ----------------- | --------------------------------------------------------------------- |
 | Recommended sizes | `1024x1024` (square), `1536x1024` (landscape), `1024x1536` (portrait) |
 | Quality           | `low`, `medium`, `high`, `xhigh`, `max`, `auto`                       |
 
-Both models also support custom dimensions as `WIDTHxHEIGHT` strings, such as `1536x864`. Width and height must be multiples of 16, the aspect ratio must be between 1:3 and 3:1, and neither edge may exceed 3840 pixels. The total pixel count must be between 655,360 and 8,294,400 (4K). Resolutions above `2560x1440` are experimental.
+Sunburst and Flare also support custom dimensions as `WIDTHxHEIGHT` strings, such as `1536x864`. Width and height must be multiples of 16, the aspect ratio must be between 1:3 and 3:1, and neither edge may exceed 3840 pixels. The total pixel count must be between 655,360 and 8,294,400 (4K). For GPT-Image-2.5, resolutions above `2560x1440` are experimental.
 
-For transparent backgrounds with either model, set `background: "transparent"` and use `output_format: "png"` or `"webp"`.
+For transparent backgrounds, set `background: "transparent"` and use `output_format: "png"` or `"webp"`.
 
 Use `quality: "low"` for quick drafts. For final assets, compare higher quality settings to find the right balance of detail, latency, and cost.
 
@@ -58500,7 +59354,7 @@ Each JSON file includes a `creationTime` and a `prefixes` array. The ranges can 
 
 In agentic and multi-turn applications, our models work best when [thinking is preserved](https://developers.openai.com/api/docs/guides/reasoning?api-mode=responses#preserve-reasoning-across-calls) across API requests, where new actions and instructions are always appended to the model’s context. Keeping the prefix intact has long been a best practice for [prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching). The cache matches requests from the beginning, so a change to the prefix can cut cache reuse from that point onward. Appending changes keeps more of the conversation eligible for cache reuse, which can substantially **lower input costs and speed up responses**.
 
-Starting with newer frontier models, the API **will drop reasoning items** that follow a prefix change as part of our anti-distillation safeguards. When reasoning items are dropped, the model may have to redo some reasoning, which can increase token usage, cost, and latency. If the model can't recover the lost reasoning, output quality may also drop.
+Starting with newer frontier models, the API **will drop reasoning items** that follow a prefix change as part of our safeguards. When reasoning items are dropped, the model may have to redo some reasoning, which can increase token usage, cost, and latency. If the model can't recover the lost reasoning, output quality may also drop.
 
 To get the best performance from our models, we recommend avoiding changes to the prefix and adopting an append-only integration pattern as far as possible.
 
@@ -58520,7 +59374,7 @@ The table below shows common ways integrations change the prefix and how to achi
 | Changing structured output schemas                             | Instead of changing the `text.format` parameter in the Responses API, append a [`configuration_update` item](https://developers.openai.com/api/docs/guides/structured-outputs#change-the-response-format-mid-conversation) with the new schema to the input items list. Keep the original request-level setting the same.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | Changing the tools available to the agent                      | Instead of changing the `tools` parameter in the Responses API, use an [`additional_tools` item](https://developers.openai.com/api/docs/guides/prompt-caching#manage-tools-with-append-only-updates) to add tools, or `tool_choice` with `allowed_tools` to restrict which tools the model can call on a turn. Keep existing tool definitions in order. Append `additional_tools` with the `developer` role and a `tools` array, and replay it in its original position.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | Updating developer instructions                                | Instead of editing the original developer message, append a new `developer` message asking the model to ignore older instructions and follow the new ones you provide. For instructions scoped to a single turn, place an [explicit cache breakpoint](https://developers.openai.com/api/docs/guides/prompt-caching#how-prefix-matching-works) immediately before the latest developer message so the reusable prefix ends before that message.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Compaction                                                     | Compaction changes the prefix, so cache misses are difficult to avoid in these cases.<br /><br />**OpenAI compaction:** If you use [OpenAI compaction](https://developers.openai.com/api/docs/guides/compaction) via `/responses/compact` or `context_management`, our systems retain subsequent reasoning items despite the prefix being changed. An OpenAI compaction item can appear anywhere in context. When calling `/responses/compact`, omit `instructions` and pass the returned window to the next request in its original order. If your history contains `configuration_update` items, follow the [configuration-update compaction requirements](https://developers.openai.com/api/docs/guides/reasoning#change-reasoning-mid-conversation).<br /><br />**Custom compaction:** If you use a different or home-grown compaction strategy, place the compacted item at the end of the model’s context, instead of before recent turns. Alternatively, you can accept the trade-off and have the reasoning items from the original history that follow it dropped. |
+| Compaction                                                     | Compaction changes the prefix, so cache misses are difficult to avoid in these cases.<br /><br />**OpenAI compaction:** If you use [OpenAI compaction](https://developers.openai.com/api/docs/guides/compaction) via `/responses/compact` or `context_management`, our systems retain subsequent reasoning items despite the prefix being changed. An OpenAI compaction item can appear anywhere in context. When calling `/responses/compact`, omit `instructions` and pass the returned window to the next request in its original order. `context_management` carries forward configuration updates and developer-added tools. For explicit compaction, [restore them on the next request](https://developers.openai.com/api/docs/guides/compaction).<br /><br />**Custom compaction:** If you use a different or home-grown compaction strategy, place the compacted item at the end of the model’s context, instead of before recent turns. Alternatively, you can accept the trade-off and have the reasoning items from the original history that follow it dropped. |
 | Shortening past tool outputs or downsizing past files / images | Some integrations truncate past items, such as tool outputs, files, or images, instead of using compaction. These modifications change the prefix. We strongly recommend either using compaction, or shortening long tool outputs and downsizing images or files before they’re sent to the model for the first time.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 ## Auditing your integration for prefix changes
@@ -67732,7 +68586,7 @@ Use OpenAI moderation models to detect harmful content in text and images. You c
 
 The `omni-moderation-latest` model accepts text and image inputs. It doesn't classify audio. The moderation endpoint is free to use, and image files can be up to 20 MB.
 
-**Child safety:** Do not send known or suspected child sexual abuse material (CSAM) to the Moderation API. The API is not designed for CSAM detection or handling and is not a substitute for dedicated child-safety safeguards. See our [CSAM guidance](https://developers.openai.com/api/docs/guides/csam-guidance) for steps to prevent, detect, respond to, and report CSAM.
+**Child safety:** Never submit known child sexual abuse material (CSAM). Do not send suspected CSAM to `omni-moderation-latest`. Approved organizations can use the [OpenAI CSAM Image Classifier](https://developers.openai.com/api/docs/guides/csam-classifier) to check images for potential CSAM. See our [CSAM guidance](https://developers.openai.com/api/docs/guides/csam-guidance) for prevention, detection, and reporting practices.
 
 ## Choose a moderation workflow
 
@@ -67748,6 +68602,8 @@ The `omni-moderation-latest` model accepts text and image inputs. It doesn't cla
 When your application needs generated text and moderation scores together, pass a top-level `moderation` object in the generation request. The API returns moderation scores for the model input and generated output without a separate moderation request.
 
 The model still generates normally. Review the moderation results before you show the output to a user or take downstream actions.
+
+The Responses and Chat Completions APIs don't support `omni-moderation-csam-latest` for inline moderation. See the [CSAM classifier guide](https://developers.openai.com/api/docs/guides/csam-classifier) for a standalone image request.
 
 
 
@@ -68404,8 +69260,8 @@ Categories marked as "Text only" do not support image inputs. If you send only
     <td>
       Content that expresses, incites, or promotes hate based on race, gender,
       ethnicity, religion, nationality, sexual orientation, disability status,
-      or caste. Hateful content aimed at non-protected groups (e.g., chess
-      players) is harassment.
+      or caste. Hateful content aimed at non-protected groups (for example,
+      chess players) is harassment.
     </td>
     <td>Text only</td>
   </tr>
@@ -92964,7 +93820,7 @@ Preserve updates with `previous_response_id`, or replay them in their original p
 
 You can set `reasoning.effort` and [`text.format`](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=responses#change-the-response-format-mid-conversation) in the same `configuration_update` item. An update to either setting alone preserves the other.
 
-Do not combine configuration updates with automatic compaction or automatic truncation. The standalone `/responses/compact` endpoint also rejects histories containing these updates.
+You can combine configuration updates with automatic compaction through `context_management`. If earlier updates exist, the API emits a fresh update after the compaction item with the latest effort and output format. Automatic truncation and the standalone `/responses/compact` endpoint still reject histories containing updates. See the [Compaction guide](https://developers.openai.com/api/docs/guides/compaction#continue-with-configuration-updates-and-tools) for how to prepare a standalone request.
 
 You can still explicitly compact history by including a `compaction_trigger` item in a `/responses` request. After compaction, add a fresh `configuration_update` before the next user message. Restate each setting you changed, including the format if you changed it.
 
@@ -116436,15 +117292,15 @@ Never say the migration is complete merely because model strings changed. It is 
 
 # Use Daybreak in the Responses API
 
-Use `access_programs.cyber` to select a cybersecurity access program for a Responses API request. The [Daybreak Blue and Daybreak Red programs](https://help.openai.com/en/articles/20001258-trusted-access-for-cyber) provide approved access for cybersecurity work. Other [API cybersecurity safeguards](https://developers.openai.com/api/docs/guides/safety-checks/cybersecurity) continue to apply.
+Set `access_programs.cyber` in a Responses API request to select [Daybreak Blue or Daybreak Red](https://help.openai.com/en/articles/20001258-trusted-access-for-cyber). Other [API cybersecurity safeguards](https://developers.openai.com/api/docs/guides/safety-checks/cybersecurity) still apply.
 
-Before using Daybreak, complete [organization approval and project setup](https://help.openai.com/en/articles/20001261-enterprise-daybreak-onboarding). Your project needs access to both the program and the model. Use an API key from that project. The request parameter selects behavior within your approved access; it doesn't grant access.
+Before sending a request, complete [organization approval and project setup](https://help.openai.com/en/articles/20001261-enterprise-daybreak-onboarding). Use an API key from a project with access to both the program and the model. The parameter doesn't grant access.
 
 All Daybreak Red organizations must [require SSO](https://help.openai.com/en/articles/9534785-single-sign-on-sso-setup-for-openai-products) for the API organization that holds Cyber access and enforce MFA through your identity provider. If you use a separate Cyber organization, verify its domain and test SSO there.
 
 ## Choose the model and access program
 
-The `model` field selects the model. The `access_programs.cyber` field selects a supported access program for that request: `standard`, `daybreak_blue`, or `daybreak_red`.
+Choose a `model` and a compatible `access_programs.cyber` value: `standard`, `daybreak_blue`, or `daybreak_red`.
 
 Only organizations with existing access can use `gpt-5.5-cyber-preview`. It
   retires on **February 1, 2027**. Requests that use this model will fail after
@@ -116533,17 +117389,16 @@ GPT-5.6 Cyber
 
 
 
-Match the request value to the model, not your organization's approval level. For example, when using `gpt-6-sol` with Daybreak, send `daybreak_blue` even if your organization has Daybreak Red approval. Sending `daybreak_red` with this model returns `invalid_access_program`.
+Use the value listed for the model even if your organization has a higher approval level. For example, `gpt-6-sol` accepts `daybreak_blue`, but returns `invalid_access_program` for `daybreak_red`.
 
-Reduced refusals on `gpt-6-astra` and `gpt-6.1-sol` require Daybreak Red
-  access, but the request value is `daybreak_blue`. Both models reject
-  `daybreak_red`. Daybreak Blue approval alone doesn't authorize reduced
-  refusals on either model. Your project must also have the required access
-  enabled.
+For reduced refusals on `gpt-6-astra` and `gpt-6.1-sol`, your organization
+  needs Daybreak Red approval and your project needs the required access
+  enabled. Send `daybreak_blue`. Both models reject `daybreak_red`, and Blue
+  approval alone isn't sufficient.
 
 ## Send a request
 
-To get started with Daybreak Blue approval, explicitly select `daybreak_blue` with a Daybreak-eligible model, such as `gpt-6-sol`:
+With Daybreak Blue approval, send `daybreak_blue` with an eligible model such as `gpt-6-sol`:
 
 ```bash
 curl https://api.openai.com/v1/responses \
@@ -116579,15 +117434,15 @@ Both `access_programs` and `cyber` are optional, but neither accepts `null` in a
 
 ## Understand defaults when omitted
 
-Starting with `gpt-6.1-terra`, omitting the `access_programs.cyber` parameter results in `standard` request treatment instead of defaulting to the highest available Daybreak tier.
+Starting with `gpt-6.1-terra`, requests that omit `access_programs.cyber` default to `standard` instead of the highest available Daybreak tier.
 
-For the models listed below, omitting `access_programs.cyber` uses the following defaults:
+These models use the following defaults when you omit the parameter:
 
 - **Mainline models such as `gpt-6-sol`:** Daybreak Blue treatment when your organization and project have the required access; otherwise, standard safeguards.
 - **Red models such as `gpt-5.6-cyber`:** The API selects `daybreak_red`. The request fails if the required access is missing.
 - **`gpt-6-astra` and `gpt-6.1-sol`:** Reduced refusals for eligible callers with Daybreak Red access enabled for their project; otherwise, standard safeguards.
 
-Model permissions still apply. To turn Daybreak off and request standard safeguards on a compatible model, set `access_programs.cyber` to `standard`, even if you have Daybreak access. An explicit Daybreak selection fails if it's incompatible with the model or you don't have the required access.
+Set `access_programs.cyber` to `standard` to use standard safeguards on a compatible model. An explicit Daybreak selection fails if the model is incompatible or you lack the required access. Model permissions still apply.
 
 ## Check the response
 
@@ -116641,7 +117496,7 @@ If the request fails, check the project associated with the key, the active allo
 | `400 unsupported_access_program` | Switch to a model that supports Daybreak, or set `access_programs.cyber` to `standard` to keep using this model with standard safeguards.                                                                                                                     |
 | `403 access_program_not_enabled` | Check that your API key belongs to a project with the required program enabled. If organization approval is missing, request the Daybreak level named in the error. If project access is missing, ask your organization administrator to enable that program. |
 
-Unknown fields, invalid values, and request-side `null` values fail validation. Model permissions are checked separately. A selected Daybreak program doesn't guarantee that every safety check or prompt will succeed. For more help, see [Daybreak troubleshooting](https://help.openai.com/en/articles/20001259).
+Unknown fields, invalid values, and request-side `null` values fail validation. Model permissions and cybersecurity safeguards still apply. For more help, see [Daybreak troubleshooting](https://help.openai.com/en/articles/20001259).
 
 ---
 
@@ -136221,7 +137076,7 @@ OpenAI provides an API helper for the Java programming language. You can include
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.105.0</version>
+  <version>4.106.0</version>
 </dependency>
 ```
 
@@ -138416,7 +139271,7 @@ OpenAI provides an API helper for the Java programming language. You can include
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.105.0</version>
+  <version>4.106.0</version>
 </dependency>
 ```
 

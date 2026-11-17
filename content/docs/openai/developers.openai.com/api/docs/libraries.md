@@ -177,7 +177,7 @@ OpenAI provides an API helper for the Java programming language. You can include
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.105.0</version>
+  <version>4.106.0</version>
 </dependency>
 ```
 

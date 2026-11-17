@@ -87,11 +87,12 @@ work more autonomously.
 - [Configuring workload identity federation for Oracle Cloud Infrastructure](https://developers.openai.com/api/docs/guides/workload-identity-federation/oracle-cloud.md): Configure Oracle Cloud Infrastructure instance principals as a workload identity federation token provider.
 - [Configuring workload identity federation for SPIFFE](https://developers.openai.com/api/docs/guides/workload-identity-federation/spiffe.md): Configure SPIFFE JWT-SVIDs as workload identity federation subject tokens.
 - [Connect voice to Decisions](https://developers.openai.com/api/docs/guides/decisions-voice.md): Use the native Decisions integration in GPT-Live to choose an action or react to an input or output transcript.
-- [Content provenance](https://developers.openai.com/api/docs/guides/content-provenance.md): Learn how to verify images and audio and use provenance results responsibly.
+- [Content provenance](https://developers.openai.com/api/docs/guides/content-provenance.md): Learn how to verify images, audio, and PDFs and use provenance results responsibly.
 - [Conversation state](https://developers.openai.com/api/docs/guides/conversation-state.md): Learn how to manage conversation state during a model interaction with the OpenAI API.
 - [Cost optimization](https://developers.openai.com/api/docs/guides/cost-optimization.md): Lower your OpenAI model costs by trying our tools and strategies.
 - [Cost optimization](https://developers.openai.com/api/docs/guides/voice-latency-cost.md): Understand voice usage and manage costs for GPT-Live and the Realtime API.
 - [Counting tokens](https://developers.openai.com/api/docs/guides/token-counting.md): Use the Responses API to count input tokens for text, images, files, tools, and more—without estimation or tiktoken.
+- [CSAM classifier](https://developers.openai.com/api/docs/guides/csam-classifier.md): Submit an image to the Moderation API and interpret results from the dedicated CSAM classifier.
 - [CSAM guidance](https://developers.openai.com/api/docs/guides/csam-guidance.md): Learn practical guidance for addressing CSAM risks in products built with OpenAI.
 - [Custom voices](https://developers.openai.com/api/docs/guides/custom-voices.md): Create a voice from a text prompt for GPT-Live, or use an approved recording for speech generation and voice agents.
 - [Cybersecurity checks](https://developers.openai.com/api/docs/guides/safety-checks/cybersecurity.md): Learn about API cybersecurity safeguards, authorized access, request-level checks, access restrictions, and appeals.
@@ -231,7 +232,7 @@ work more autonomously.
 - [Upgrading to GPT-5.4](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p4.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.4.
 - [Upgrading to GPT-5.5](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p5.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.5.
 - [Upgrading to GPT-5.6 Sol](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p6-sol.md): Machine-readable guidance for migrating OpenAI API integrations to GPT-5.6 Sol and the GPT-5.6 family.
-- [Use Daybreak in the Responses API](https://developers.openai.com/api/docs/guides/daybreak.md): Choose compatible models and Daybreak access programs, understand default behavior, and handle errors in the Responses API.
+- [Use Daybreak in the Responses API](https://developers.openai.com/api/docs/guides/daybreak.md): Select a compatible model and access program, check defaults, and handle Responses API errors.
 - [Using GPT-4.1](https://developers.openai.com/api/docs/guides/latest-model/gpt-4.1.md): Learn how to use, migrate to, and prompt GPT-4.1 in the OpenAI API.
 - [Using GPT-5](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.md): Learn how to use, migrate to, and prompt GPT-5 in the OpenAI API.
 - [Using GPT-5.1](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.1.md): Learn how to use, migrate to, and prompt GPT-5.1 in the OpenAI API.

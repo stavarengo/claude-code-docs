@@ -371,5 +371,5 @@ asyncio.run(main())
 
 * [Agent SDK reference - TypeScript](./typescript.md): the options, types, and tool schemas for the TypeScript SDK, including the Task tool input and output types
 * [Agent SDK reference - Python](./python.md): the options, types, and tool documentation for the Python SDK
-* [Streaming Input](./streaming-vs-single-mode.md): the two input modes, and when to use streaming input instead of the single-shot calls these examples use
+* [Send messages to a running agent](./streaming-vs-single-mode.md): use streaming input in place of the single-shot calls these examples use
 * [Give Claude custom tools](./custom-tools.md): define your own tools with the SDK's in-process MCP server

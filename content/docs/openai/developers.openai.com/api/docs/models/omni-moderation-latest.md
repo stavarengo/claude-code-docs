@@ -10,6 +10,8 @@ Moderation models are free models designed to detect harmful content.
 This model is our most capable moderation model, accepting images as input as well.
 You can find the model card [here](https://cdn.openai.com/API/docs/omni_moderation_information_for_developers.pdf).
 
+For child-safety workflows, approved organizations can use a separate model, `omni-moderation-csam-latest`, to check images for potential child sexual abuse material (CSAM). See the [CSAM classifier guide](/api/docs/guides/csam-classifier) for access and an example request.
+
 ## Model details
 
 - Default snapshot: `omni-moderation-2024-09-26`

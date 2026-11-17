@@ -72,11 +72,13 @@ Content type: `application/json`
 
   - `string`
 
-  - `ModerationModel = "omni-moderation-latest" or "omni-moderation-2024-09-26" or "text-moderation-latest" or "text-moderation-stable"`
+  - `ModerationModel = "omni-moderation-latest" or "omni-moderation-2024-09-26" or "omni-moderation-csam-latest" or 2 more`
 
     - `"omni-moderation-latest"`
 
     - `"omni-moderation-2024-09-26"`
+
+    - `"omni-moderation-csam-latest"`
 
     - `"text-moderation-latest"`
 
@@ -973,11 +975,13 @@ curl https://api.openai.com/v1/moderations \
 
 ### Moderation Model
 
-- `ModerationModel = "omni-moderation-latest" or "omni-moderation-2024-09-26" or "text-moderation-latest" or "text-moderation-stable"`
+- `ModerationModel = "omni-moderation-latest" or "omni-moderation-2024-09-26" or "omni-moderation-csam-latest" or 2 more`
 
   - `"omni-moderation-latest"`
 
   - `"omni-moderation-2024-09-26"`
+
+  - `"omni-moderation-csam-latest"`
 
   - `"text-moderation-latest"`
 

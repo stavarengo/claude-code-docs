@@ -2335,7 +2335,7 @@ Schema name: `ResponseCreatedEvent`
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  An optional list of skills referenced by id or inline data.
+                  An optional list of skills referenced by id or inline data. Across all inline skills in this list, decoded ZIP data must total at most 50 MiB and Base64 text must total at most 70,254,592 characters, including line breaks. Skill references do not count toward these limits.
 
                   `maxItems: 200`
 
@@ -13080,7 +13080,7 @@ Schema name: `ResponseInProgressEvent`
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  An optional list of skills referenced by id or inline data.
+                  An optional list of skills referenced by id or inline data. Across all inline skills in this list, decoded ZIP data must total at most 50 MiB and Base64 text must total at most 70,254,592 characters, including line breaks. Skill references do not count toward these limits.
 
                   `maxItems: 200`
 
@@ -23825,7 +23825,7 @@ Schema name: `ResponseCompletedEvent`
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  An optional list of skills referenced by id or inline data.
+                  An optional list of skills referenced by id or inline data. Across all inline skills in this list, decoded ZIP data must total at most 50 MiB and Base64 text must total at most 70,254,592 characters, including line breaks. Skill references do not count toward these limits.
 
                   `maxItems: 200`
 
@@ -34594,7 +34594,7 @@ Schema name: `ResponseFailedEvent`
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  An optional list of skills referenced by id or inline data.
+                  An optional list of skills referenced by id or inline data. Across all inline skills in this list, decoded ZIP data must total at most 50 MiB and Base64 text must total at most 70,254,592 characters, including line breaks. Skill references do not count toward these limits.
 
                   `maxItems: 200`
 
@@ -45343,7 +45343,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  An optional list of skills referenced by id or inline data.
+                  An optional list of skills referenced by id or inline data. Across all inline skills in this list, decoded ZIP data must total at most 50 MiB and Base64 text must total at most 70,254,592 characters, including line breaks. Skill references do not count toward these limits.
 
                   `maxItems: 200`
 
@@ -55856,7 +55856,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             - `skills: optional array of SkillReference or InlineSkill`
 
-              An optional list of skills referenced by id or inline data.
+              An optional list of skills referenced by id or inline data. Across all inline skills in this list, decoded ZIP data must total at most 50 MiB and Base64 text must total at most 70,254,592 characters, including line breaks. Skill references do not count toward these limits.
 
               `maxItems: 200`
 
@@ -60362,7 +60362,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             - `skills: optional array of SkillReference or InlineSkill`
 
-              An optional list of skills referenced by id or inline data.
+              An optional list of skills referenced by id or inline data. Across all inline skills in this list, decoded ZIP data must total at most 50 MiB and Base64 text must total at most 70,254,592 characters, including line breaks. Skill references do not count toward these limits.
 
               `maxItems: 200`
 
@@ -67296,7 +67296,7 @@ Schema name: `ResponseQueuedEvent`
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  An optional list of skills referenced by id or inline data.
+                  An optional list of skills referenced by id or inline data. Across all inline skills in this list, decoded ZIP data must total at most 50 MiB and Base64 text must total at most 70,254,592 characters, including line breaks. Skill references do not count toward these limits.
 
                   `maxItems: 200`
 
