@@ -10,8 +10,8 @@
 
 Compare capabilities and specifications.
 
-- [GPT-6 Astra](/api/docs/models/gpt-6-astra.md): Our most capable model for the most demanding work.
-- [GPT-6.1 Sol](/api/docs/models/gpt-6.1-sol.md): Near-Astra performance for complex work at a lower cost.
+- [GPT-6.2 Astra](/api/docs/models/gpt-6.2-astra.md): Our most capable model for your hardest projects, from start to finish.
+- [GPT-6.2 Sol](/api/docs/models/gpt-6.2-sol.md): Our go-to model for everyday work, from coding to powering agents at scale.
 - [GPT-6.1 Terra](/api/docs/models/gpt-6.1-terra.md): A fast, efficient model for visual reasoning, precise computer use, and clear, natural writing.
 - [GPT-6 Luna](/api/docs/models/gpt-6-luna.md): Our most efficient model for focused, high-volume tasks.
 
@@ -71,6 +71,8 @@ Models for embedding text into vector representations.
 
 Diverse models for a variety of tasks.
 
+- [GPT-6 Astra](/api/docs/models/gpt-6-astra.md): A reasoning model for complex coding and professional work.
+- [GPT-6.1 Sol](/api/docs/models/gpt-6.1-sol.md): Near-Astra performance for complex work at a lower cost.
 - [GPT-6 Sol](/api/docs/models/gpt-6-sol.md): Built to power complex coding and agentic workflows.
 - [GPT-5.6 Sol](/api/docs/models/gpt-5.6-sol.md): GPT-5.6 flagship model for complex professional work
 - [GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra.md): GPT-5.6 model that balances intelligence and cost

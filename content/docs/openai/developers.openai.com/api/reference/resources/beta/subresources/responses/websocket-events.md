@@ -52,6 +52,26 @@ Schema name: `BetaResponsesClientEventResponseCreate`
   Whether to run the model response in the background.
   [Learn more](https://developers.openai.com/api/docs/guides/background).
 
+- `background_options: optional object { completion_window, continuation_id }`
+
+  Options for background execution on HTTP requests. The `2h` and `8h`
+  completion windows require `background: true`, Standard processing,
+  and `stream: false` or omitted.
+
+  - `completion_window: optional "soonest" or "2h" or "8h"`
+
+    The completion window for background execution. Defaults to `soonest`; `2h` and `8h` select discounted background execution.
+
+    - `"soonest"`
+
+    - `"2h"`
+
+    - `"8h"`
+
+  - `continuation_id: optional string`
+
+    A customer-provided opaque identifier used to prioritize related background requests. It does not add prior history to the input.
+
 - `context_management: optional array of object { type, compact_threshold }  or null`
 
   Context management configuration for this request.
@@ -5606,14 +5626,14 @@ Schema name: `BetaResponsesClientEventResponseCreate`
   Keys are strings with a maximum length of 64 characters. Values are strings
   with a maximum length of 512 characters.
 
-- `model: optional "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more or string`
+- `model: optional "gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more or string`
 
   Model ID used to generate the response, like `gpt-6-astra`. OpenAI
   offers a wide range of models with different capabilities, performance
   characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
   to browse and compare available models.
 
-  - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more`
+  - `"gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
@@ -5622,7 +5642,11 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
     - `"gpt-6-astra"`
 
+    - `"gpt-6.2-astra"`
+
     - `"gpt-6.1-sol"`
+
+    - `"gpt-6.2-sol"`
 
     - `"gpt-6.1-terra"`
 
@@ -5843,6 +5867,8 @@ Schema name: `BetaResponsesClientEventResponseCreate`
     - `"gpt-rosalind-research"`
 
     - `"gpt-6-rosalind"`
+
+    - `"gpt-6.2-astra-law"`
 
   - `string`
 
@@ -25356,14 +25382,14 @@ Schema name: `BetaResponseCreatedEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more`
+    - `"gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -25372,7 +25398,11 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `"gpt-6-astra"`
 
+      - `"gpt-6.2-astra"`
+
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.2-sol"`
 
       - `"gpt-6.1-terra"`
 
@@ -25593,6 +25623,8 @@ Schema name: `BetaResponseCreatedEvent`
       - `"gpt-rosalind-research"`
 
       - `"gpt-6-rosalind"`
+
+      - `"gpt-6.2-astra-law"`
 
     - `string`
 
@@ -37574,14 +37606,14 @@ Schema name: `BetaResponseInProgressEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more`
+    - `"gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -37590,7 +37622,11 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `"gpt-6-astra"`
 
+      - `"gpt-6.2-astra"`
+
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.2-sol"`
 
       - `"gpt-6.1-terra"`
 
@@ -37811,6 +37847,8 @@ Schema name: `BetaResponseInProgressEvent`
       - `"gpt-rosalind-research"`
 
       - `"gpt-6-rosalind"`
+
+      - `"gpt-6.2-astra-law"`
 
     - `string`
 
@@ -49792,14 +49830,14 @@ Schema name: `BetaResponseCompletedEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more`
+    - `"gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -49808,7 +49846,11 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `"gpt-6-astra"`
 
+      - `"gpt-6.2-astra"`
+
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.2-sol"`
 
       - `"gpt-6.1-terra"`
 
@@ -50029,6 +50071,8 @@ Schema name: `BetaResponseCompletedEvent`
       - `"gpt-rosalind-research"`
 
       - `"gpt-6-rosalind"`
+
+      - `"gpt-6.2-astra-law"`
 
     - `string`
 
@@ -62034,14 +62078,14 @@ Schema name: `BetaResponseFailedEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more`
+    - `"gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -62050,7 +62094,11 @@ Schema name: `BetaResponseFailedEvent`
 
       - `"gpt-6-astra"`
 
+      - `"gpt-6.2-astra"`
+
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.2-sol"`
 
       - `"gpt-6.1-terra"`
 
@@ -62271,6 +62319,8 @@ Schema name: `BetaResponseFailedEvent`
       - `"gpt-rosalind-research"`
 
       - `"gpt-6-rosalind"`
+
+      - `"gpt-6.2-astra-law"`
 
     - `string`
 
@@ -74256,14 +74306,14 @@ Schema name: `BetaResponseIncompleteEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more`
+    - `"gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -74272,7 +74322,11 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `"gpt-6-astra"`
 
+      - `"gpt-6.2-astra"`
+
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.2-sol"`
 
       - `"gpt-6.1-terra"`
 
@@ -74493,6 +74547,8 @@ Schema name: `BetaResponseIncompleteEvent`
       - `"gpt-rosalind-research"`
 
       - `"gpt-6-rosalind"`
+
+      - `"gpt-6.2-astra-law"`
 
     - `string`
 
@@ -99436,14 +99492,14 @@ Schema name: `BetaResponseQueuedEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 109 more`
+    - `"gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -99452,7 +99508,11 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `"gpt-6-astra"`
 
+      - `"gpt-6.2-astra"`
+
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.2-sol"`
 
       - `"gpt-6.1-terra"`
 
@@ -99673,6 +99733,8 @@ Schema name: `BetaResponseQueuedEvent`
       - `"gpt-rosalind-research"`
 
       - `"gpt-6-rosalind"`
+
+      - `"gpt-6.2-astra-law"`
 
     - `string`
 

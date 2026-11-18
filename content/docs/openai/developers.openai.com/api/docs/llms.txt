@@ -59,7 +59,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 work more autonomously.
 
 - [AWS Lambda MicroVMs](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/aws.md): Connect an AWS Lambda MicroVM to an Agents API session with runtime credentials from AWS Secrets Manager.
-- [Background mode](https://developers.openai.com/api/docs/guides/background.md): Run long running tasks asynchronously in the background.
+- [Background mode](https://developers.openai.com/api/docs/guides/background.md): Run long-running Responses API requests and multi-turn workflows asynchronously.
 - [Batch API](https://developers.openai.com/api/docs/guides/batch.md): Learn how to use OpenAI's Batch API for processing jobs with asynchronous requests, increased rate limits, and cost efficiency.
 - [Bedrock Managed Agents](https://developers.openai.com/api/docs/guides/agents-api/bedrock-managed-agents.md): Understand how Bedrock Managed Agents uses the Agents API on AWS, and compare execution environments and authentication.
 - [Blaxel](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/blaxel.md): Run an Agents API session in a Blaxel sandbox.
@@ -138,7 +138,7 @@ work more autonomously.
 - [Integrations and observability](https://developers.openai.com/api/docs/guides/agents/integrations-observability.md): Learn how to integrate MCP into Agents SDK workflows and how to trace and debug runs.
 - [IP allowlist](https://developers.openai.com/api/docs/guides/ip-allowlist.md): Configure organization- or project-level IP allowlists for OpenAI API requests.
 - [IP egress ranges](https://developers.openai.com/api/docs/guides/ip-addresses.md): Find the published IP egress ranges used by OpenAI products.
-- [Keep the prefix unchanged](https://developers.openai.com/api/docs/guides/preserved-reasoning.md): Avoid prefix changes for increased intelligence, lower costs, and lower latency.
+- [Keep the prefix unchanged](https://developers.openai.com/api/docs/guides/keep-prefix-unchanged.md): Avoid prefix changes for increased intelligence, lower costs, and lower latency.
 - [Latency optimization](https://developers.openai.com/api/docs/guides/latency-optimization.md): Reduce time to first token and end-to-end latency with model selection, reasoning effort, prompt caching, streaming, and fewer round trips.
 - [Manage permissions in the OpenAI platform](https://developers.openai.com/api/docs/guides/rbac.md): Learn how to use role-based access control to assign permissions, create custom roles, group users, and scope access across both the OpenAI API and dashboard.
 - [Manage projects and access with Terraform](https://developers.openai.com/api/docs/guides/terraform/projects-and-access.md): Create an OpenAI project, define least-privilege roles, and manage group and user access with Terraform.
@@ -227,7 +227,7 @@ work more autonomously.
 - [Trace grading](https://developers.openai.com/api/docs/guides/trace-grading.md): Use trace grading to create datasets, configure graders, and track evaluation runs for your models.
 - [Tracing](https://developers.openai.com/api/docs/guides/agents-api/tracing.md): Inspect agent activity in the dashboard and export session traces as OTLP JSON.
 - [Transcription](https://developers.openai.com/api/docs/guides/transcription.md): Choose between file transcription and realtime transcription, then start with the recommended model for your audio.
-- [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode.md): Use Ultrafast mode with GPT-6 Astra and GPT-6.1 Sol over WebSockets, with SDK examples and an HTTP alternative.
+- [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode.md): Use the Ultrafast API service tier over WebSockets or HTTP with supported GPT models.
 - [Under-18 guidance](https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance.md): Review regulatory standards, safety standards, and best practices for API applications that serve users under 18.
 - [Upgrading to GPT-5.4](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p4.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.4.
 - [Upgrading to GPT-5.5](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p5.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.5.
@@ -242,6 +242,7 @@ work more autonomously.
 - [Using GPT-5.5](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.5.md): Learn how to use and migrate to GPT-5.5 in the OpenAI API.
 - [Using GPT-5.6](https://developers.openai.com/api/docs/guides/latest-model/gpt-5.6.md): Learn how to use and migrate to GPT-5.6, the latest model family in the OpenAI API.
 - [Using GPT-6](https://developers.openai.com/api/docs/guides/latest-model/gpt-6-astra.md): Learn how to use GPT-6 Astra, GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Sol, and GPT-6 Luna for reasoning, coding, professional work, and tool-using workflows, and how to migrate from GPT-5.6.
+- [Using GPT-6.2](https://developers.openai.com/api/docs/guides/latest-model/gpt-6.2-astra.md): Move an existing application to GPT-6.2 Astra, choose reasoning settings, and write prompts that describe the result you need.
 - [Using tools](https://developers.openai.com/api/docs/guides/tools.md): Use powerful tools like remote MCP servers, or built-in tools like web search and file search to extend the model's capabilities.
 - [Vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults.md): Store secrets for MCPs or requests originating from the sandbox.
 - [Vector embeddings](https://developers.openai.com/api/docs/guides/embeddings.md): Learn how to turn text into numbers, unlocking use cases like search, clustering, and more with OpenAI API embeddings.

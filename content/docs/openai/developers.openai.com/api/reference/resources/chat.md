@@ -498,7 +498,7 @@ Content type: `application/json`
 
       - `"function"`
 
-- `model: string or "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 87 more`
+- `model: string or "gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 89 more`
 
   Model ID used to generate the response, like `gpt-6-astra` or `o3`. OpenAI
   offers a wide range of models with different capabilities, performance
@@ -507,7 +507,7 @@ Content type: `application/json`
 
   - `string`
 
-  - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 87 more`
+  - `"gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 89 more`
 
     Model ID used to generate the response, like `gpt-6-astra` or `o3`. OpenAI
     offers a wide range of models with different capabilities, performance
@@ -516,7 +516,11 @@ Content type: `application/json`
 
     - `"gpt-6-astra"`
 
+    - `"gpt-6.2-astra"`
+
     - `"gpt-6.1-sol"`
+
+    - `"gpt-6.2-sol"`
 
     - `"gpt-6.1-terra"`
 

@@ -35,6 +35,26 @@ Content type: `application/json`
   Whether to run the model response in the background.
   [Learn more](/api/docs/guides/background).
 
+- `background_options: optional object { completion_window, continuation_id }`
+
+  Options for background execution on HTTP requests. The `2h` and `8h`
+  completion windows require `background: true`, Standard processing,
+  and `stream: false` or omitted.
+
+  - `completion_window: optional "soonest" or "2h" or "8h"`
+
+    The completion window for background execution. Defaults to `soonest`; `2h` and `8h` select discounted background execution.
+
+    - `"soonest"`
+
+    - `"2h"`
+
+    - `"8h"`
+
+  - `continuation_id: optional string`
+
+    A customer-provided opaque identifier used to prioritize related background requests. It does not add prior history to the input.
+
 - `context_management: optional array of object { type, compact_threshold }  or null`
 
   Context management configuration for this request.
@@ -4961,11 +4981,15 @@ Content type: `application/json`
 
   - `string`
 
-  - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 87 more`
+  - `"gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 89 more`
 
     - `"gpt-6-astra"`
 
+    - `"gpt-6.2-astra"`
+
     - `"gpt-6.1-sol"`
+
+    - `"gpt-6.2-sol"`
 
     - `"gpt-6.1-terra"`
 
@@ -5143,7 +5167,7 @@ Content type: `application/json`
 
     - `"gpt-3.5-turbo-16k-0613"`
 
-  - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 19 more`
+  - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 20 more`
 
     - `"o1-pro"`
 
@@ -5188,6 +5212,8 @@ Content type: `application/json`
     - `"gpt-rosalind-research"`
 
     - `"gpt-6-rosalind"`
+
+    - `"gpt-6.2-astra-law"`
 
 - `moderation: optional object { model, policy }  or null`
 
@@ -11705,11 +11731,15 @@ Content type: `application/json`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6.1-terra" or 87 more`
+    - `"gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 89 more`
 
       - `"gpt-6-astra"`
 
+      - `"gpt-6.2-astra"`
+
       - `"gpt-6.1-sol"`
+
+      - `"gpt-6.2-sol"`
 
       - `"gpt-6.1-terra"`
 
@@ -11887,7 +11917,7 @@ Content type: `application/json`
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 19 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 20 more`
 
       - `"o1-pro"`
 
@@ -11932,6 +11962,8 @@ Content type: `application/json`
       - `"gpt-rosalind-research"`
 
       - `"gpt-6-rosalind"`
+
+      - `"gpt-6.2-astra-law"`
 
   - `object: "response"`
 

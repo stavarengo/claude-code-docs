@@ -15,7 +15,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-6-astra",
+  model: "gpt-6.2-astra",
   input: "Write a one-sentence bedtime story about a unicorn.",
 });
 
@@ -28,7 +28,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-6-astra",
+    model="gpt-6.2-astra",
     input="Write a one-sentence bedtime story about a unicorn.",
 )
 
@@ -50,7 +50,7 @@ func main() {
 	client := openai.NewClient()
 
 	resp, err := client.Responses.New(context.TODO(), responses.ResponseNewParams{
-		Model: "gpt-6-astra",
+		Model: "gpt-6.2-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say this is a test")},
 	})
 	if err != nil {
@@ -72,7 +72,7 @@ public class Main {
     OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
     ResponseCreateParams params =
-        ResponseCreateParams.builder().input("Say this is a test").model("gpt-6-astra").build();
+        ResponseCreateParams.builder().input("Say this is a test").model("gpt-6.2-astra").build();
 
     Response response = client.responses().create(params);
     response.output().stream()
@@ -92,7 +92,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-6-astra",
+    "gpt-6.2-astra",
     "Say 'this is a test.'"
 );
 
@@ -105,7 +105,7 @@ require "openai"
 openai = OpenAI::Client.new
 
 response = openai.responses.create(
-  model: "gpt-6-astra",
+  model: "gpt-6.2-astra",
   input: "Write a one-sentence bedtime story about a unicorn."
 )
 
@@ -114,7 +114,7 @@ puts(response.output_text)
 
 ```bash
 openai responses create \
-  --model "gpt-6-astra" \
+  --model "gpt-6.2-astra" \
   --input "Write a one-sentence bedtime story about a unicorn." \
   --raw-output \
   --transform 'output.#(type=="message").content.0.text'
@@ -125,7 +125,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-6-astra",
+        "model": "gpt-6.2-astra",
         "input": "Write a one-sentence bedtime story about a unicorn."
     }'
 ```
@@ -169,7 +169,7 @@ A key choice to make when generating content through the API is which model you 
 - **GPT models** are fast, cost-efficient, and highly intelligent, but benefit from more explicit instructions around how to accomplish tasks.
 - **Large and small (mini or nano) models** offer trade-offs for speed, cost, and intelligence. Large models are more effective at understanding prompts and solving problems across domains, while small models are generally faster and cheaper to use.
 
-When in doubt, [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) offers a strong default for general-purpose text generation and prompt iteration.
+When in doubt, [`gpt-6.2-astra`](https://developers.openai.com/api/docs/models/gpt-6.2-astra) offers a strong default for general-purpose text generation and prompt iteration.
 
 ## Prompt engineering
 
@@ -177,7 +177,7 @@ When in doubt, [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt
 
 Because the content generated from a model is non-deterministic, prompting to get your desired output is a mix of art and science. However, you can apply techniques and best practices to get good results consistently.
 
-Some prompt engineering techniques work with every model, like using message roles. But different model types (like reasoning versus GPT models) might need to be prompted differently to produce the best results. Even different snapshots of models within the same family could produce different results. So as you build more complex applications, we strongly recommend:
+Some prompt engineering techniques work with every model, like using message roles. But different model types (like reasoning versus GPT models) might need to be prompted differently to produce the best results. Even different snapshots of models within the same family could produce different results. As you build more complex applications, we strongly recommend:
 
 - Pinning your production applications to specific [model snapshots](https://developers.openai.com/api/docs/models) (like `gpt-4.1-2025-04-14` for example) to ensure consistent behavior
 - Building tests and evaluation suites that measure prompt behavior so you can monitor performance as you iterate, or when you change and upgrade model versions
@@ -190,7 +190,7 @@ Now, let's examine some tools and techniques available to you to construct promp
 
 You can provide instructions to the model with [differing levels of authority](https://model-spec.openai.com/2025-02-12.html#chain_of_command) using the `instructions` API parameter or **message roles**.
 
-The `instructions` parameter gives the model high-level instructions on how it should behave while generating a response, including tone, goals, and examples of correct responses. Any instructions provided this way will take priority over a prompt in the `input` parameter.
+The `instructions` parameter gives the model high-level instructions on how it should behave while generating a response, including tone, goals, and examples of correct responses. These instructions take priority over user messages in `input`.
 
 Generate text with instructions
 
@@ -199,7 +199,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-6-astra",
+  model: "gpt-6.2-astra",
   reasoning: { effort: "low" },
   instructions: "Talk like a pirate.",
   input: "Are semicolons optional in JavaScript?",
@@ -214,7 +214,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-6-astra",
+    model="gpt-6.2-astra",
     reasoning={"effort": "low"},
     instructions="Talk like a pirate.",
     input="Are semicolons optional in JavaScript?",
@@ -238,7 +238,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:        "gpt-6-astra",
+		Model:        "gpt-6.2-astra",
 		Instructions: openai.String("Talk like a pirate."),
 		Reasoning: responses.ReasoningParam{
 			Effort: responses.ReasoningEffortLow,
@@ -268,7 +268,7 @@ String semicolonsPrompt = "Are semicolons optional in JavaScript?";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-6-astra")
+        .model("gpt-6.2-astra")
         .input(semicolonsPrompt)
         .instructions(semicolonsDevMsg)
         .reasoning(Reasoning.builder().effort(ReasoningEffort.LOW).build())
@@ -290,7 +290,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-6-astra",
+    Model = "gpt-6.2-astra",
     Instructions = "Talk like a pirate.",
     ReasoningOptions = new ResponseReasoningOptions
     {
@@ -311,7 +311,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-6-astra",
+  model: "gpt-6.2-astra",
   instructions: "Talk like a pirate.",
   reasoning: { effort: :low },
   input: "Are semicolons optional in JavaScript?"
@@ -325,7 +325,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-6-astra",
+        "model": "gpt-6.2-astra",
         "reasoning": {"effort": "low"},
         "instructions": "Talk like a pirate.",
         "input": "Are semicolons optional in JavaScript?"
@@ -333,7 +333,7 @@ curl "https://api.openai.com/v1/responses" \
 ```
 
 
-The example above is roughly equivalent to using the following input messages in the `input` array:
+To use the same guidance across turns, put it in the first `developer` message in `input`.
 
 Generate text with messages using different roles
 
@@ -342,7 +342,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-6-astra",
+  model: "gpt-6.2-astra",
   reasoning: { effort: "low" },
   input: [
     {
@@ -365,7 +365,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-6-astra",
+    model="gpt-6.2-astra",
     reasoning={"effort": "low"},
     input=[
         {"role": "developer", "content": "Talk like a pirate."},
@@ -391,7 +391,7 @@ func main() {
 	client := openai.NewClient()
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "gpt-6-astra",
+		Model: "gpt-6.2-astra",
 		Reasoning: responses.ReasoningParam{
 			Effort: responses.ReasoningEffortLow,
 		},
@@ -432,7 +432,7 @@ String semicolonsPrompt = "Are semicolons optional in JavaScript?";
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-6-astra")
+        .model("gpt-6.2-astra")
         .input(
             ResponseCreateParams.Input.ofResponse(
                 List.of(
@@ -465,7 +465,7 @@ ResponsesClient client = new(key);
 
 CreateResponseOptions options = new()
 {
-    Model = "gpt-6-astra",
+    Model = "gpt-6.2-astra",
     ReasoningOptions = new ResponseReasoningOptions
     {
         ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
@@ -488,7 +488,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-6-astra",
+  model: "gpt-6.2-astra",
   reasoning: { effort: :low },
   input: [
     {
@@ -510,7 +510,7 @@ curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-        "model": "gpt-6-astra",
+        "model": "gpt-6.2-astra",
         "reasoning": {"effort": "low"},
         "input": [
             {
@@ -526,7 +526,7 @@ curl "https://api.openai.com/v1/responses" \
 ```
 
 
-Note that the `instructions` parameter only applies to the current response generation request. If you are [managing conversation state](https://developers.openai.com/api/docs/guides/conversation-state) with the `previous_response_id` parameter, the `instructions` used on previous turns will not be present in the context.
+Use top-level `instructions` for a single turn. When you [chain responses](https://developers.openai.com/api/docs/guides/conversation-state#passing-context-from-the-previous-response) with `previous_response_id`, the initial `developer` message stays in the conversation.
 
 
 
@@ -559,7 +559,7 @@ For new prompt-engineering work:
 
 - Keep prompt builders in a small module near the feature they support.
 - Use typed function arguments or schemas for dynamic values such as customer data, files, or task options.
-- Pass the generated `instructions` and `input` directly to the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create).
+- Pass reusable guidance as the first `developer` message in `input` and use `instructions` for turn-specific guidance in the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create).
 - Add representative fixtures, tests, and evaluation checks before changing production prompts.
 - Roll out prompt changes through your deployment system, using feature flags or configuration when you need staged releases.
 
@@ -620,6 +620,8 @@ var first_name = "Anna";
     
 API request
 
+    Save the example prompt as `prompt.txt`. Install `jq` before running the
+    curl example.
     Send a prompt to generate code through the API
 
 ```typescript
@@ -630,9 +632,14 @@ const client = new OpenAI();
 const instructions = await fs.readFile("fixtures/prompt.txt", "utf-8");
 
 const response = await client.responses.create({
-  model: "gpt-6-astra",
-  instructions,
-  input: "How would I declare a variable for a last name?",
+  model: "gpt-6.2-astra",
+  input: [
+    { role: "developer", content: instructions },
+    {
+      role: "user",
+      content: "How would I declare a variable for a last name?",
+    },
+  ],
 });
 
 console.log(response.output_text);
@@ -647,9 +654,11 @@ with open("prompt.txt", "r", encoding="utf-8") as f:
     instructions = f.read()
 
 response = client.responses.create(
-    model="gpt-6-astra",
-    instructions=instructions,
-    input="How would I declare a variable for a last name?",
+    model="gpt-6.2-astra",
+    input=[
+        {"role": "developer", "content": instructions},
+        {"role": "user", "content": "How would I declare a variable for a last name?"},
+    ],
 )
 
 print(response.output_text)
@@ -676,10 +685,12 @@ func main() {
 	}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:        "gpt-6-astra",
-		Instructions: openai.String(string(instructions)),
+		Model: "gpt-6.2-astra",
 		Input: responses.ResponseNewParamsInputUnion{
-			OfString: openai.String("How would I declare a variable for a last name?"),
+			OfInputItemList: responses.ResponseInputParam{
+				responses.ResponseInputItemParamOfMessage(string(instructions), responses.EasyInputMessageRoleDeveloper),
+				responses.ResponseInputItemParamOfMessage("How would I declare a variable for a last name?", responses.EasyInputMessageRoleUser),
+			},
 		},
 	})
 	if err != nil {
@@ -693,14 +704,28 @@ func main() {
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.EasyInputMessage;
 import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseInputItem;
+import java.util.List;
 
+String instructions =
+    "You are a coding assistant. Answer with concise JavaScript examples and use semicolons.";
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-6-astra")
-        .instructions(
-            "You are a coding assistant. Answer with concise JavaScript examples and use semicolons.")
-        .input("How would I declare a variable for a last name?")
+        .model("gpt-6.2-astra")
+        .inputOfResponse(
+            List.of(
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.DEVELOPER)
+                        .content(instructions)
+                        .build()),
+                ResponseInputItem.ofEasyInputMessage(
+                    EasyInputMessage.builder()
+                        .role(EasyInputMessage.Role.USER)
+                        .content("How would I declare a variable for a last name?")
+                        .build())))
         .build();
 
 client.responses().create(params).output().stream()
@@ -720,9 +745,9 @@ ResponsesClient client = new(key);
 string instructions = await File.ReadAllTextAsync("prompt.txt");
 CreateResponseOptions options = new()
 {
-    Model = "gpt-6-astra",
-    Instructions = instructions,
+    Model = "gpt-6.2-astra",
 };
+options.InputItems.Add(ResponseItem.CreateDeveloperMessageItem(instructions));
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("How would I declare a variable for a last name?")
 );
@@ -737,30 +762,46 @@ require "openai"
 client = OpenAI::Client.new
 instructions = File.read(File.join(__dir__, "prompt.txt"))
 response = client.responses.create(
-  model: "gpt-6-astra",
-  instructions: instructions,
-  input: "How would I declare a variable for a last name?"
+  model: "gpt-6.2-astra",
+  input: [
+    {
+      role: :developer,
+      content: instructions
+    },
+    {
+      role: :user,
+      content: "How would I declare a variable for a last name?"
+    }
+  ]
 )
 
 puts(response.output_text)
 ```
 
 ```bash
-curl https://api.openai.com/v1/responses \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "gpt-6-astra",
-    "instructions": "'"$(< prompt.txt)"'",
-    "input": "How would I declare a variable for a last name?"
-  }'
+set -euo pipefail
+
+request=$(jq -n --rawfile instructions prompt.txt '
+  {
+    model: "gpt-6.2-astra",
+    input: [
+      {role: "developer", content: $instructions},
+      {role: "user", content: "How would I declare a variable for a last name?"}
+    ]
+  }')
+
+curl --fail-with-body --silent --show-error https://api.openai.com/v1/responses \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "$request" |
+  jq -er '[.output[]? | select(.type == "message") | .content[]? | select(.type == "output_text") | .text] | join("")'
 ```
 
 
 
 #### Save on cost and latency with prompt caching
 
-When constructing a message, you should try and keep content that you expect to use over and over in your API requests at the beginning of your prompt, **and** among the first API parameters you pass in the JSON request body to [Chat Completions](https://developers.openai.com/api/reference/resources/chat) or [Responses](https://developers.openai.com/api/reference/resources/responses). This enables you to maximize cost and latency savings from [prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
+Put reusable instructions in the first `developer` message in the Responses `input` array or the Chat Completions `messages` array. Put examples and reference material you reuse before the user’s changing input. This keeps the shared prefix eligible for [prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
 
 ## Few-shot learning
 
@@ -829,7 +870,7 @@ Models have different context window sizes from the low 100k range up to one mil
 
 ## Prompting current models
 
-GPT models like [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) benefit from precise instructions that explicitly provide the logic and data required to complete the task in the prompt. To get the most out of the latest model, start with the current prompting guide.
+GPT models like [`gpt-6.2-astra`](https://developers.openai.com/api/docs/models/gpt-6.2-astra) benefit from precise instructions that explicitly provide the logic and data required to complete the task in the prompt. To get the most out of the latest model, start with the current prompting guide.
 
 [](https://developers.openai.com/api/docs/guides/latest-model)
 
@@ -852,7 +893,7 @@ For the full current treatment, use the [latest model prompting best practices](
 
 #### Coding
 
-Prompting `gpt-6-astra` for coding tasks is most effective when following a few best practices: define the agent's role, enforce structured tool use with examples, require thorough testing for correctness, and set Markdown standards for clean output.
+Prompting `gpt-6.2-astra` for coding tasks is most effective when following a few best practices: define the agent's role, enforce structured tool use with examples, require thorough testing for correctness, and set Markdown standards for clean output.
 
 **Explicit role and workflow guidance**
 Frame the model as a software engineering agent with well-defined responsibilities. Provide clear instructions for using tools like `functions.run` for code tasks, and specify when not to use certain modes—for example, avoid interactive execution unless necessary.
@@ -878,7 +919,7 @@ For detailed guidance and prompt samples specific to coding, see the [latest mod
 
 
 
-[GPT-6 Astra](https://developers.openai.com/api/docs/models/gpt-6-astra)
+[GPT-6.2 Astra](https://developers.openai.com/api/docs/models/gpt-6.2-astra)
 performs well at building front ends from scratch as well as contributing to
 large, established codebases. To get the best results, we recommend using the
 following libraries:
@@ -924,7 +965,7 @@ For detailed guidance and prompt samples specific to frontend development, see t
 
 
 
-For agentic and long-running tasks with `gpt-6-astra`, ask the model to plan the work from start to finish, explain major tool calls before making them, and track progress with a task list tool.
+For agentic and long-running tasks with `gpt-6.2-astra`, ask the model to plan the work from start to finish, explain major tool calls before making them, and track progress with a task list tool.
 
 **Planning and persistence**
 Instruct the model to resolve the full query before yielding control, decomposing it into sub-tasks and reflecting after each tool call to confirm completeness.

@@ -8,7 +8,7 @@ Model ID: `chatgpt-4o-latest`
 
 Status: Shut down
 
-ChatGPT-4o was a model alias for the GPT-4o snapshot used in ChatGPT. It has been deprecated and removed from the API. We recommend using [GPT-6 Astra](/api/docs/models/gpt-6-astra) for most API integrations.
+ChatGPT-4o was a model alias for the GPT-4o snapshot used in ChatGPT. It has been deprecated and removed from the API. We recommend using [GPT-6.2 Astra](/api/docs/models/gpt-6.2-astra) for most API integrations.
 
 ## Model details
 

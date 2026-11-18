@@ -14,6 +14,8 @@ Use the Responses API for built-in tools and function calling. Chat Completions 
 EU data residency is available with Standard, Fast, Flex, and Batch processing.
 See [data residency eligibility](/api/docs/guides/data-residency#which-models-and-features-are-eligible-for-data-residency).
 
+The Responses API supports [discounted background completion windows](/api/docs/guides/background#use-discounted-completion-windows) in public beta.
+
 ## Model details
 
 - Default snapshot: `gpt-6-luna`

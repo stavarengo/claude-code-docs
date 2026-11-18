@@ -39,7 +39,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.responses.create({
-  model: "gpt-5.6-terra",
+  model: "gpt-6.1-terra",
   input: "This is a test",
   safety_identifier: "user_123456",
 });
@@ -53,7 +53,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6-terra",
+    model="gpt-6.1-terra",
     input="This is a test",
     safety_identifier="user_123456",
 )
@@ -73,7 +73,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model:            "gpt-5.6-terra",
+		Model:            "gpt-6.1-terra",
 		Input:            responses.ResponseNewParamsInputUnion{OfString: openai.String("This is a test")},
 		SafetyIdentifier: openai.String("user_123456"),
 	})
@@ -91,7 +91,7 @@ import com.openai.models.responses.ResponseCreateParams;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
-        .model("gpt-5.6-terra")
+        .model("gpt-6.1-terra")
         .input("Help me plan a study schedule.")
         .safetyIdentifier("user_1234")
         .build();
@@ -108,7 +108,7 @@ require "openai"
 
 client = OpenAI::Client.new
 response = client.responses.create(
-  model: "gpt-5.6-terra",
+  model: "gpt-6.1-terra",
   input: "Help me plan a study schedule.",
   safety_identifier: "user_1234"
 )
@@ -121,7 +121,7 @@ curl https://api.openai.com/v1/responses \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-"model": "gpt-5.6-terra",
+"model": "gpt-6.1-terra",
 "input": "This is a test",
 "safety_identifier": "user_123456"
 }'
@@ -142,7 +142,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.chat.completions.create({
-  model: "gpt-5.6-terra",
+  model: "gpt-6.1-terra",
   messages: [{ role: "user", content: "This is a test" }],
   safety_identifier: "user_123456",
 });
@@ -156,7 +156,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.chat.completions.create(
-    model="gpt-5.6-terra",
+    model="gpt-6.1-terra",
     messages=[{"role": "user", "content": "This is a test"}],
     safety_identifier="user_123456",
 )
@@ -175,7 +175,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	response, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
-		Model:            "gpt-5.6-terra",
+		Model:            "gpt-6.1-terra",
 		Messages:         []openai.ChatCompletionMessageParamUnion{openai.UserMessage("This is a test")},
 		SafetyIdentifier: openai.String("user_123456"),
 	})
@@ -193,7 +193,7 @@ import com.openai.models.chat.completions.ChatCompletionCreateParams;
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
-        .model("gpt-5.6-terra")
+        .model("gpt-6.1-terra")
         .addUserMessage("Help me plan a study schedule.")
         .safetyIdentifier("user_1234")
         .build();
@@ -208,7 +208,7 @@ require "openai"
 
 client = OpenAI::Client.new
 completion = client.chat.completions.create(
-  model: "gpt-5.6-terra",
+  model: "gpt-6.1-terra",
   messages: [
     {
       role: :user,
@@ -226,7 +226,7 @@ curl https://api.openai.com/v1/chat/completions \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
-"model": "gpt-5.6-terra",
+"model": "gpt-6.1-terra",
 "messages": [
 {"role": "user", "content": "This is a test"}
 ],

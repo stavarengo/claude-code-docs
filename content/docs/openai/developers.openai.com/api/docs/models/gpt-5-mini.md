@@ -11,7 +11,7 @@ Status: Deprecated
 GPT-5 mini is a faster, more cost-efficient version of GPT-5. It's great for
 well-defined tasks and precise prompts. For most new low-latency,
 high-volume workloads, we recommend starting with
-[GPT-5.6 Terra](/api/docs/models/gpt-5.6-terra).
+[GPT-6.1 Terra](/api/docs/models/gpt-6.1-terra).
 
 ## Model details
 

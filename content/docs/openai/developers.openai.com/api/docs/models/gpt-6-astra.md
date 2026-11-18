@@ -2,12 +2,11 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-> Our most capable model for the most demanding work.
+> A reasoning model for complex coding and professional work.
 
 Model ID: `gpt-6-astra`
 
-GPT-6 Astra is our most capable model for the most demanding work.
-Use it for complex reasoning, coding, computer use, research, and document creation.
+Use GPT-6 Astra for complex reasoning, coding, computer use, research, and document creation.
 `reasoning.effort` supports `low`, `medium`, `high`, `xhigh`, and `max`.
 
 Get started with GPT-6 Astra using the [model guide](/api/docs/guides/latest-model?model=gpt-6-astra).

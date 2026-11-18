@@ -77,6 +77,8 @@ As mentioned already, developers can optionally prompt agents built with GPT-4.1
 
 Below, we share the agentic prompt that we used to achieve our highest score on SWE-bench Verified, which features detailed instructions about workflow and problem-solving strategy. This general pattern can be used for any agentic task.
 
+Send a coding-agent prompt
+
 ```typescript
 const response = await client.responses.create({
   instructions:
@@ -650,6 +652,8 @@ This demonstrates best practices for a fictional customer service agent. Observe
 
 Try running the following notebook cell - you should see both a user message and tool call, and the user message should start with a greeting, then echo back their answer, then mention they're about to call a tool. Try changing the instructions to shape the model behavior, or trying other user messages, to test instruction following performance.
 
+Run a customer service prompt
+
 ```typescript
 const response = await client.responses.create({
   instructions:
@@ -1120,6 +1124,8 @@ Developers have provided us feedback that accurate and well-formed diff generati
 
 See the example below for a prompt that applies our recommended tool call correctly.
 
+Define the patch tool
+
 ```python
 APPLY_PATCH_TOOL_DESC = """This is a custom utility that makes it more convenient to add, remove, move, or edit code files. `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as "input":
 
@@ -1275,6 +1281,8 @@ puts(JSON.generate(tool))
 ### Reference Implementation: apply_patch.py
 
 Here’s a reference implementation of the apply_patch tool that we used as part of model training. You’ll need to make this an executable and available as \`apply_patch\` from the shell where the model will execute commands:
+
+Implement the patch parser
 
 ```python
 #!/usr/bin/env python3
@@ -1804,12 +1812,296 @@ if __name__ == "__main__":
     main()
 ```
 
+```ruby
+#!/usr/bin/env ruby
+require "fileutils"
+require "pathname"
+
+class DiffError < StandardError; end
+PatchChunk = Struct.new(:index, :deleted, :inserted)
+PatchAction = Struct.new(:type, :content, :chunks, :move)
+
+class PatchParser
+  BOUNDARIES = ["*** End Patch", "*** Update File:", "*** Delete File:", "*** Add File:"].freeze
+  attr_reader :actions, :fuzz
+
+  def initialize(text, files)
+    @lines = text.lines(chomp: true)
+    unless @lines.length >= 2 && @lines.first == "*** Begin Patch" && @lines.last == "*** End Patch"
+      raise DiffError, "Invalid patch sentinels"
+    end
+
+    @files = files
+    @position = 1
+    @actions = {}
+    @fuzz = 0
+  end
+
+  def current
+    @lines.fetch(@position) { raise DiffError, "Unexpected end of patch" }
+  end
+
+  def done?(prefixes)
+    @position >= @lines.length || prefixes.any? { |prefix| current.start_with?(prefix) }
+  end
+
+  def read_prefix(prefix)
+    return nil unless current.start_with?(prefix)
+
+    value = current.delete_prefix(prefix)
+    @position += 1
+    value
+  end
+
+  def take_line
+    value = current
+    @position += 1
+    value
+  end
+
+  def parse
+    until done?(["*** End Patch"])
+      if (path = read_prefix("*** Update File: "))
+        check_new_path(path)
+        move = read_prefix("*** Move to: ")
+        raise DiffError, "Missing update file: #{path}" unless @files.key?(path)
+
+        action = parse_update(@files.fetch(path))
+        action.move = move
+        @actions[path] = action
+      elsif (path = read_prefix("*** Delete File: "))
+        check_new_path(path)
+        raise DiffError, "Missing delete file: #{path}" unless @files.key?(path)
+
+        @actions[path] = PatchAction.new(type: :delete)
+      elsif (path = read_prefix("*** Add File: "))
+        check_new_path(path)
+        raise DiffError, "File already exists: #{path}" if @files.key?(path)
+
+        content = []
+        until done?(BOUNDARIES)
+          line = take_line
+          raise DiffError, "Add-file lines must start with +" unless line.start_with?("+")
+
+          content << line.delete_prefix("+")
+        end
+        @actions[path] = PatchAction.new(type: :add, content: content.join("\n"))
+      else
+        raise DiffError, "Unknown patch line: #{current}"
+      end
+    end
+    raise DiffError, "Missing end sentinel" unless current == "*** End Patch"
+    raise DiffError, "Content after end sentinel" unless @position == @lines.length - 1
+
+    self
+  end
+
+  def check_new_path(path)
+    raise DiffError, "Empty file path" if path.empty?
+    raise DiffError, "Duplicate file action: #{path}" if @actions.key?(path)
+  end
+
+  def parse_update(text)
+    lines = text.split("\n", -1)
+    index = 0
+    action = PatchAction.new(type: :update, chunks: [])
+    until done?(BOUNDARIES + ["*** End of File"])
+      anchor = read_prefix("@@ ")
+      bare = (!anchor && current == "@@") ? take_line : nil
+      raise DiffError, "Invalid update section" unless anchor || bare || index.zero?
+
+      if anchor && !anchor.strip.empty?
+        found = false
+        unless lines.take(index).include?(anchor)
+          match = (index...lines.length).find { |i| lines[i] == anchor }
+          if match
+            index = Integer(match) + 1
+            found = true
+          end
+        end
+        unless found || lines.take(index).map(&:strip).include?(anchor.strip)
+          match = (index...lines.length).find { |i| lines[i].strip == anchor.strip }
+          if match
+            index = Integer(match) + 1
+            @fuzz += 1
+          end
+        end
+      end
+      context, chunks, eof = next_section
+      location, fuzz = find_context(lines, context, index, eof)
+      raise DiffError, "Update context not found" if location.negative?
+
+      @fuzz += fuzz
+      chunks.each do |chunk|
+        chunk.index += location
+        action.chunks << chunk
+      end
+      index = Integer(location + context.length)
+    end
+    action
+  end
+
+  def next_section
+    old, deleted, inserted, chunks = [], [], [], []
+    mode = "keep"
+    start = @position
+    until done?(BOUNDARIES + ["@@", "*** End of File"])
+      line = current
+      break if line == "***"
+      raise DiffError, "Invalid patch section" if line.start_with?("***")
+
+      @position += 1
+      line = " " if line.empty?
+      next_mode = {
+        "+" => "add",
+        "-" => "delete",
+        " " => "keep"
+      }[line[0]]
+      raise DiffError, "Invalid context line" unless next_mode
+
+      if next_mode == "keep" && mode != "keep"
+        chunks << PatchChunk.new(index: old.length - deleted.length, deleted: deleted, inserted: inserted) unless deleted.empty? && inserted.empty?
+        deleted, inserted = [], []
+      end
+      mode = String(next_mode)
+      content = line[1..]
+      case mode
+      when "delete"
+        deleted << content
+        old << content
+      when "add"
+        inserted << content
+      when "keep"
+        old << content
+      end
+    end
+    chunks << PatchChunk.new(index: old.length - deleted.length, deleted: deleted, inserted: inserted) unless deleted.empty? && inserted.empty?
+    eof = @position < @lines.length && current == "*** End of File"
+    @position += 1 if eof
+    raise DiffError, "Empty update section" if @position == start
+
+    [old, chunks, eof]
+  end
+end
+
+def find_context_core(lines, context, start)
+  return [start, 0] if context.empty?
+
+  [[0, :itself], [1, :rstrip], [100, :strip]].each do |fuzz, normalize|
+    expected = context.map { |line| line.public_send(normalize) }
+    ([start, 0].max...lines.length).each do |index|
+      actual = lines.slice(index, context.length).map { |line| line.public_send(normalize) }
+      return [index, fuzz] if actual == expected
+    end
+  end
+  [-1, 0]
+end
+
+def find_context(lines, context, start, eof)
+  if eof
+    index, fuzz = find_context_core(lines, context, lines.length - context.length)
+    return [index, fuzz] unless index.negative?
+
+    index, fuzz = find_context_core(lines, context, start)
+    return [index, fuzz + 10_000]
+  end
+  find_context_core(lines, context, start)
+end
+
+def updated_file(text, action)
+  lines = text.split("\n", -1)
+  destination = []
+  cursor = 0
+  action.chunks.each do |chunk|
+    raise DiffError, "Invalid or overlapping chunk" if chunk.index > lines.length || chunk.index < cursor
+
+    destination.concat(lines.slice(cursor, chunk.index - cursor))
+    destination.concat(chunk.inserted)
+    cursor = Integer(chunk.index + chunk.deleted.length)
+  end
+  destination.concat(lines.drop(cursor)).join("\n")
+end
+
+# Patches use relative paths inside the current working directory. Reject
+# traversal and symlink components before reading or changing any files.
+def patch_path(path)
+  pathname = Pathname.new(path)
+  components = pathname.each_filename.to_a
+  if path.empty? || pathname.absolute? || path.include?("\x00") || components.include?("..")
+    raise DiffError, "Patch paths must stay inside the working directory"
+  end
+
+  prefix = Pathname.pwd
+  components.each do |component|
+    prefix = prefix.join(component)
+    raise DiffError, "Symlink paths are not supported" if prefix.symlink?
+  end
+  path
+end
+
+def open_file(path)
+  File.read(patch_path(path), encoding: "UTF-8")
+end
+
+def write_file(path, content)
+  target = patch_path(path)
+  FileUtils.mkdir_p(File.dirname(target))
+  File.write(target, content, encoding: "UTF-8")
+end
+
+def remove_file(path)
+  target = patch_path(path)
+  File.delete(target) if File.exist?(target)
+end
+
+def process_patch(text, open_fn, write_fn, remove_fn)
+  headers = text.lines(chomp: true).filter_map do |line|
+    match = line.match(/\A\*\*\* (Update File|Delete File|Add File|Move to): (.*)\z/)
+    [match[1], patch_path(match[2])] if match
+  end
+  original = headers.filter_map do |kind, path|
+    [path, open_fn.call(path)] if kind == "Update File" || kind == "Delete File"
+  end.to_h
+  parser = PatchParser.new(text, original).parse
+  changes = parser.actions.map do |path, action|
+    target = action.move || path
+    if (action.type == :add || (action.move && target != path)) && File.exist?(target)
+      raise DiffError, "Destination already exists: #{target}"
+    end
+
+    content = (action.type == :update) ? updated_file(original.fetch(path), action) : action.content
+    [path, target, action.type, content]
+  end
+  # Parse and validate every change before applying the first write.
+  changes.each do |path, target, kind, content|
+    if kind == :delete
+      remove_fn.call(path)
+    else
+      write_fn.call(target, content)
+      remove_fn.call(path) if target != path
+    end
+  end
+  "Done!"
+end
+
+if $PROGRAM_NAME == __FILE__
+  begin
+    puts process_patch($stdin.read, method(:open_file), method(:write_file), method(:remove_file))
+  rescue DiffError, SystemCallError => error
+    warn error.message
+    exit 1
+  end
+end
+```
+
 
 ### Other Effective Diff Formats
 
 If you want to try using a different diff format, we found in testing that the SEARCH/REPLACE diff format used in Aider’s polyglot benchmark, as well as a pseudo-XML format with no internal escaping, both had high success rates.
 
 These diff formats share two key aspects: (1) they do not use line numbers, and (2) they provide both the exact code to be replaced, and the exact code with which to replace it, with clear delimiters between the two.
+
+Compare alternative diff formats
 
 ````python
 SEARCH_REPLACE_DIFF_EXAMPLE = """
@@ -1839,4 +2131,34 @@ def search():
 `</new_code>`
 `</edit>`
 """
+````
+
+````ruby
+SEARCH_REPLACE_DIFF_EXAMPLE = <<~DIFF
+  path/to/file.py
+```
+      >>>>>>> SEARCH
+      def search():
+          pass
+      =======
+      def search():
+         raise NotImplementedError()
+      <<<<<<< REPLACE
+DIFF
+
+PSEUDO_XML_DIFF_EXAMPLE = <<~DIFF
+  `<edit>`
+      `<file>`
+      path/to/file.py
+      `</file>`
+      `<old_code>`
+      def search():
+          pass
+      `</old_code>`
+      `<new_code>`
+      def search():
+         raise NotImplementedError()
+      `</new_code>`
+      `</edit>`
+DIFF
 ````

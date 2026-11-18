@@ -780,6 +780,54 @@ func handler(client openai.Client) http.Handler {
 }
 ```
 
+```ruby
+require "openai"
+require "webrick"
+require "json"
+require "uri"
+
+client = OpenAI::Client.new(max_retries: 0)
+server = WEBrick::HTTPServer.new(
+  BindAddress: "127.0.0.1", Port: Integer(ENV.fetch("PORT", "3000")),
+  Logger: WEBrick::Log.new($stderr), AccessLog: []
+)
+server.mount_proc("/session") do |request, response|
+  unless request.request_method == "POST" && request.path == "/session"
+    response.status = 405
+    next
+  end
+  begin
+    options = { extra_headers: { "OpenAI-Safety-Identifier" => "hashed-user-id" } }
+    upstream = client.realtime.calls.create(
+      sdp: request.body.to_s,
+      session: {
+        type: :realtime,
+        model: "gpt-realtime-2.1",
+        audio: { output: { voice: :marin } }
+      },
+      request_options: options
+    )
+    response.status = upstream.status
+    response["Content-Type"] = "application/sdp"
+    # Resolve against the API origin before WEBrick normalizes Location headers.
+    location = upstream.headers["location"]
+    response["Location"] = URI.join(client.base_url.to_s, location).to_s if location
+    response.body = upstream.body.to_a.join
+  rescue OpenAI::Errors::APIError => error
+    response.status = error.status || 502
+    response["Content-Type"] = "application/json"
+    response.body = JSON.generate(error.body)
+  rescue
+    response.status = 500
+    response["Content-Type"] = "application/json"
+    response.body = JSON.generate(error: "Failed to create session")
+  end
+end
+trap("INT") { server.shutdown }
+trap("TERM") { server.shutdown }
+server.start
+```
+
 
 If your application assigns a [safety identifier](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers)
 for each end user, include it as the `OpenAI-Safety-Identifier` header in this
@@ -921,6 +969,52 @@ func handler(client openai.Client) http.Handler {
 	})
 	return mux
 }
+```
+
+```ruby
+require "openai"
+require "webrick"
+require "json"
+require "uri"
+
+client = OpenAI::Client.new(max_retries: 0)
+server = WEBrick::HTTPServer.new(
+  BindAddress: "127.0.0.1", Port: Integer(ENV.fetch("PORT", "3000")),
+  Logger: WEBrick::Log.new($stderr), AccessLog: []
+)
+server.mount_proc("/token") do |request, response|
+  response["Cache-Control"] = "no-store"
+  response["Content-Type"] = "application/json"
+  unless request.request_method == "GET" && request.path == "/token"
+    response.status = 405
+    next
+  end
+  begin
+    token = client.realtime.client_secrets.create(
+      session: {
+        type: :realtime,
+        model: "gpt-realtime-2.1",
+        audio: { output: { voice: :marin } }
+      },
+      request_options: {
+        include_raw_body: true,
+        extra_headers: { "OpenAI-Safety-Identifier" => "hashed-user-id" }
+      }
+    )
+    upstream = token.last_response or raise "Missing token response metadata"
+    response.status = upstream.status
+    response.body = upstream.body or raise "Missing token response body"
+  rescue OpenAI::Errors::APIError => error
+    response.status = error.status || 502
+    response.body = JSON.generate(error.body)
+  rescue
+    response.status = 500
+    response.body = JSON.generate(error: "Failed to generate token")
+  end
+end
+trap("INT") { server.shutdown }
+trap("TERM") { server.shutdown }
+server.start
 ```
 
 

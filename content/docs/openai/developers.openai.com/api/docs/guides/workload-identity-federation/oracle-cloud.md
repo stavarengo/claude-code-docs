@@ -468,7 +468,7 @@ client = OpenAI(
 )
 
 response = client.responses.create(
-    model="gpt-5.6-terra",
+    model="gpt-6.1-terra",
     input="Say hello from Oracle Cloud Infrastructure workload identity federation.",
 )
 
@@ -576,7 +576,7 @@ workload_identity = OpenAI::Auth::WorkloadIdentity.new(
 client = OpenAI::Client.new(workload_identity: workload_identity)
 
 response = client.responses.create(
-  model: "gpt-5.6-terra",
+  model: "gpt-6.1-terra",
   input: "Say hello from Oracle Cloud Infrastructure workload identity federation."
 )
 

@@ -20,18 +20,18 @@ The latest version of each Anthropic SDK and of the ant CLI is at https://platfo
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 916 pages - /docs - Content included below
-- German (Deutsch) (de) - 336 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 336 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 336 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 336 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 336 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 336 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 336 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 336 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 336 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 336 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 336 pages - /docs/id - Visit website for content
+- English (en) - 922 pages - /docs - Content included below
+- German (Deutsch) (de) - 341 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 341 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 341 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 341 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 341 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 341 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 341 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 341 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 341 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 341 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 341 pages - /docs/id - Visit website for content
 
 ---
 
@@ -201,6 +201,7 @@ The full documentation is available in the following languages on https://platfo
 
 ### Admin
 
+- [Overview](https://platform.claude.com/docs/en/manage-claude/oauth-apps/overview.md) - Claude Platform OAuth (EAP)
 - [Overview](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/overview.md) - Security posture in the Compliance API
 - [Overview](https://platform.claude.com/docs/en/manage-claude/access-transparency.md) - Access Transparency
 - [Admin API](https://platform.claude.com/docs/en/manage-claude/cmek-admin-api.md) - Add and attach an encryption key with the Admin API
@@ -208,6 +209,8 @@ The full documentation is available in the following languages on https://platfo
 - [Analytics APIs](https://platform.claude.com/docs/en/manage-claude/analytics-api.md)
 - [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention.md)
 - [App Attest](https://platform.claude.com/docs/en/manage-claude/app-attest.md) - App Attest for iOS and macOS apps
+- [App testing and review](https://platform.claude.com/docs/en/manage-claude/oauth-apps/app-review.md) - App testing and review (EAP)
+- [Branding samples](https://platform.claude.com/docs/en/manage-claude/oauth-apps/branding-samples.md) - Branding samples (EAP)
 - [Check events against results](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/check-events-against-results.md) - Check stored Security posture events against current results
 - [Claude Code Analytics API](https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api.md)
 - [Claude Tag API](https://platform.claude.com/docs/en/manage-claude/claude-tag-api.md)
@@ -226,9 +229,11 @@ The full documentation is available in the following languages on https://platfo
 - [Overview](https://platform.claude.com/docs/en/manage-claude/inference-hooks.md) - Inference hooks
 - [IP allowlisting (beta)](https://platform.claude.com/docs/en/manage-claude/ip-allowlist.md) - IP allowlisting
 - [Limit key to workspaces](https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms-workspaces.md) - Limit an AWS KMS key to specific workspaces
+- [Linked billing](https://platform.claude.com/docs/en/manage-claude/oauth-apps/organization-billing-connections.md) - Linked billing (EAP)
 - [Organizations, users, roles, groups, and settings](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, groups, and settings
 - [Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md)
 - [Map events to OCSF](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/ocsf-mapping.md) - Map Security posture events to OCSF
+- [OAuth reference](https://platform.claude.com/docs/en/manage-claude/oauth-apps/oauth-reference.md) - OAuth reference (EAP)
 - [Overview](https://platform.claude.com/docs/en/manage-claude/opentelemetry.md) - OpenTelemetry tracing for the Claude API
 - [Organization webhooks (beta)](https://platform.claude.com/docs/en/manage-claude/organization-webhooks.md) - Organization webhooks
 - [Plugins API](https://platform.claude.com/docs/en/manage-claude/plugins-api.md)
@@ -917,6 +922,7 @@ The full documentation is available in the following languages on https://platfo
 - [Update Agent (Beta)](https://platform.claude.com/docs/en/api/beta/agents/update.md)
 - [Update API Key](https://platform.claude.com/docs/en/api/organization/api_keys/update.md)
 - [Update API Key (Beta)](https://platform.claude.com/docs/en/api/beta/organization/api_keys/update.md)
+- [Update Bundle (Beta)](https://platform.claude.com/docs/en/api/beta/organization/claude_tag/bundles/update.md)
 - [Update Compliance Settings](https://platform.claude.com/docs/en/api/organization/compliance_settings/update.md)
 - [Update Compliance Settings (Beta)](https://platform.claude.com/docs/en/api/beta/organization/compliance_settings/update.md)
 - [Update Deployment (Beta)](https://platform.claude.com/docs/en/api/beta/deployments/update.md)

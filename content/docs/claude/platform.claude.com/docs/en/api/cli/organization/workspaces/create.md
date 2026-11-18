@@ -177,7 +177,7 @@ Create Workspace
 
 ```bash
 ant organization:workspaces create \
-  --name x
+  --name 'Workspace Name'
 ```
 
 ### Response (200)

@@ -17,6 +17,8 @@ Tool calling requires the Responses API.
 See the [GPT-6 guide](/api/docs/guides/latest-model?model=gpt-6-astra#gpt-61-terra)
 for prompting and migration guidance.
 
+The Responses API supports [discounted background completion windows](/api/docs/guides/background#use-discounted-completion-windows) in public beta.
+
 ## Model details
 
 - Default snapshot: `gpt-6.1-terra`

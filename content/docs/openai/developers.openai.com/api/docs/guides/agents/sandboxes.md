@@ -314,7 +314,7 @@ const manifest = new Manifest({
 
 const agent = new SandboxAgent({
   name: "Renewal Packet Analyst",
-  model: "gpt-6-astra",
+  model: "gpt-6.2-astra",
   instructions:
     "Review the workspace before answering. Keep the response concise, " +
     "business-focused, and cite the file names that support each conclusion.",
@@ -366,7 +366,7 @@ manifest = Manifest(
 
 agent = SandboxAgent(
     name="Renewal Packet Analyst",
-    model="gpt-6-astra",
+    model="gpt-6.2-astra",
     instructions=(
         "Review the workspace before answering. Keep the response concise, "
         "business-focused, and cite the file names that support each conclusion."
@@ -412,7 +412,7 @@ import { DockerSandboxClient } from "@openai/agents/sandbox/local";
 
 const agent = new SandboxAgent({
   name: "Workspace reviewer",
-  model: "gpt-6-astra",
+  model: "gpt-6.2-astra",
   instructions: "Inspect the sandbox workspace before answering.",
 });
 
@@ -515,7 +515,7 @@ const client = new UnixLocalSandboxClient({
 });
 const agent = new SandboxAgent({
   name: "Workspace builder",
-  model: "gpt-6-astra",
+  model: "gpt-6.2-astra",
   instructions: "Inspect the sandbox workspace before answering.",
 });
 

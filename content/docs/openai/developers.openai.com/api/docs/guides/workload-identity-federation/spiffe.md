@@ -521,7 +521,7 @@ const client = new OpenAI({
 });
 
 const response = await client.responses.create({
-  model: "gpt-5.6-terra",
+  model: "gpt-6.1-terra",
   input: "Say hello from SPIFFE workload identity federation.",
 });
 
@@ -557,7 +557,7 @@ client = OpenAI(
 )
 
 response = client.responses.create(
-    model="gpt-5.6-terra",
+    model="gpt-6.1-terra",
     input="Say hello from SPIFFE workload identity federation.",
 )
 
@@ -701,7 +701,7 @@ public final class SpiffeWorkloadIdentityExample {
 
     ResponseCreateParams params =
         ResponseCreateParams.builder()
-            .model("gpt-5.6-terra")
+            .model("gpt-6.1-terra")
             .input("Say hello from SPIFFE workload identity federation.")
             .build();
 
@@ -759,7 +759,7 @@ workload_identity = OpenAI::Auth::WorkloadIdentity.new(
 client = OpenAI::Client.new(workload_identity: workload_identity)
 
 response = client.responses.create(
-  model: "gpt-5.6-terra",
+  model: "gpt-6.1-terra",
   input: "Say hello from SPIFFE workload identity federation."
 )
 

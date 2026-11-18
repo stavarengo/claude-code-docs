@@ -11,7 +11,7 @@ Status: Deprecated
 GPT-5 nano is our fastest, cheapest version of GPT-5. It's great for
 summarization and classification tasks. For most new speed- and
 cost-sensitive workloads, we recommend starting with
-[GPT-5.6 Luna](/api/docs/models/gpt-5.6-luna). Learn more in our
+[GPT-6 Luna](/api/docs/models/gpt-6-luna). Learn more in our
 [Model guidance](/api/docs/guides/latest-model) page.
 
 ## Model details
