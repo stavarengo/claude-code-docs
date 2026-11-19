@@ -377,6 +377,81 @@ for item in response_cfg.output:
         # *** End Patch
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/openai/openai-go/v3/shared"
+)
+
+const applyPatchGrammar = `
+start: begin_patch hunk+ end_patch
+begin_patch: "*** Begin Patch" LF
+end_patch: "*** End Patch" LF?
+
+hunk: add_hunk | delete_hunk | update_hunk
+add_hunk: "*** Add File: " filename LF add_line+
+delete_hunk: "*** Delete File: " filename LF
+update_hunk: "*** Update File: " filename LF change_move? change?
+
+filename: /(.+)/
+add_line: "+" /(.*)/ LF -> line
+
+change_move: "*** Move to: " filename LF
+change: (change_context | change_line)+ eof_line?
+change_context: ("@@" | "@@ " /(.+)/) LF
+change_line: ("+" | "-" | " ") /(.*)/ LF
+eof_line: "*** End of File" LF
+
+%import common.LF`
+
+func main() {
+	client := openai.NewClient()
+	ctx := context.Background()
+	input := "Add a cancel button next to the save button in app/page.tsx.\nCurrent file contents:\nexport default function Page() { return <button>Save</button>; }"
+	params := responses.ResponseNewParams{
+		Model:             "gpt-5.3-codex",
+		Input:             responses.ResponseNewParamsInputUnion{OfString: openai.String(input)},
+		Tools:             []responses.ToolUnionParam{{OfApplyPatch: &responses.ApplyPatchToolParam{}}},
+		ToolChoice:        responses.ResponseNewParamsToolChoiceUnion{OfToolChoiceMode: openai.Opt(responses.ToolChoiceOptionsRequired)},
+		ParallelToolCalls: openai.Bool(false),
+	}
+	response, err := client.Responses.New(ctx, params)
+	if err != nil {
+		panic(err)
+	}
+	if response.Status != "completed" {
+		panic("Response did not complete")
+	}
+	for _, item := range response.Output {
+		if item.Type == "apply_patch_call" {
+			fmt.Println(item.AsApplyPatchCall().Operation.RawJSON())
+		}
+	}
+	params.Tools = []responses.ToolUnionParam{{OfCustom: &responses.CustomToolParam{
+		Name:        "apply_patch",
+		Description: openai.String("Apply a patch to update files."),
+		Format:      shared.CustomToolInputFormatParamOfGrammar(applyPatchGrammar, "lark"),
+	}}}
+	response, err = client.Responses.New(ctx, params)
+	if err != nil {
+		panic(err)
+	}
+	if response.Status != "completed" {
+		panic("Response did not complete")
+	}
+	for _, item := range response.Output {
+		if item.Type == "custom_tool_call" {
+			fmt.Println(item.AsCustomToolCall().Input)
+		}
+	}
+}
+```
+
 ```ruby
 require "openai"
 
@@ -603,6 +678,38 @@ PROMPT_TOOL_USE_DIRECTIVE = (
     "- Strictly avoid raw `cmd`/terminal for Git operations. Use the dedicated "
     "`git` tool instead."
 )
+```
+
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+)
+
+func main() {
+	gitTool := map[string]any{
+		"type":        "function",
+		"name":        "git",
+		"description": "Execute a git command in the repository root. Accepts a full git invocation or just its arguments.",
+		"parameters": map[string]any{
+			"type": "object",
+			"properties": map[string]any{
+				"command":     map[string]any{"type": "string", "description": "The git command or arguments to execute."},
+				"timeout_sec": map[string]any{"type": "integer", "minimum": 1, "maximum": 1800},
+			},
+			"required": []string{"command"},
+		},
+	}
+	tools := []map[string]any{gitTool}
+	promptToolUseDirective := "- Strictly avoid raw cmd/terminal for Git operations. Use the dedicated git tool instead."
+	if err := json.NewEncoder(os.Stdout).Encode(tools); err != nil {
+		panic(err)
+	}
+	fmt.Println(promptToolUseDirective)
+}
 ```
 
 ```ruby

@@ -116,7 +116,7 @@ The response `usage` object includes a `speed` field that indicates which speed 
   "id": "msg_01XFDUDYJgAACzvnptvVoYEL",
   "type": "message",
   "role": "assistant",
-// ...
+  // ...
   "usage": {
     "input_tokens": 8,
     "output_tokens": 12,
@@ -484,11 +484,11 @@ To access fast mode on Claude Opus 5, contact your account manager or [join the 
 * Availability: Available
 * Usage: Set `speed` on the agent’s model object, for example `{"id": "claude-opus-5-5", "speed": "fast"}`.
 
-| Status                 | Cloud platforms | Models                                                                                             |
-| ---------------------- | --------------- | -------------------------------------------------------------------------------------------------- |
-| Available              | Claude API      | [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=curl) |
-| Research preview       | Claude API      | [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=curl)     |
-| Deprecated<sup>1</sup> | Claude API      | [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=curl) |
+| Status                 | Cloud platforms                                                                                                                                                                           | Models                                                                                             |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Available              | Claude API, [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=curl) | [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=curl) |
+| Research preview       | Claude API                                                                                                                                                                                | [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=curl)     |
+| Deprecated<sup>1</sup> | Claude API                                                                                                                                                                                | [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=curl) |
 
 1. Removal date: November 30, 2026. After removal, requests to `claude-opus-4-8` with `speed: "fast"` will return an error. To continue using fast mode, migrate to Claude Opus 5.5. See [Migrating to Claude Opus 5.5 from Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=curl#migrating-from-claude-opus-4-8).
 

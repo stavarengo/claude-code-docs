@@ -1199,6 +1199,88 @@ APPLY_PATCH_TOOL = {
 }
 ```
 
+```go
+package main
+
+import (
+	"encoding/json"
+	"os"
+)
+
+const applyPatchToolDescription = `This is a custom utility that makes it more convenient to add, remove, move, or edit code files. apply_patch effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the apply_patch command, you should pass a message of the following structure as "input":
+
+%%bash
+apply_patch <<"EOF"
+*** Begin Patch
+[YOUR_PATCH]
+*** End Patch
+EOF
+
+Where [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.
+
+*** [ACTION] File: [path/to/file] -> ACTION can be one of Add, Update, or Delete.
+For each snippet of code that needs to be changed, repeat the following:
+[context_before] -> See below for further instructions on context.
+- [old_code] -> Precede the old code with a minus sign.
++ [new_code] -> Precede the new, replacement code with a plus sign.
+[context_after] -> See below for further instructions on context.
+
+For instructions on [context_before] and [context_after]:
+- By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change’s [context_after] lines in the second change’s [context_before] lines.
+- If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:
+@@ class BaseClass
+[3 lines of pre-context]
+- [old_code]
++ [new_code]
+[3 lines of post-context]
+
+- If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple @@ statements to jump to the right context. For instance:
+
+@@ class BaseClass
+@@ 	def method():
+[3 lines of pre-context]
+- [old_code]
++ [new_code]
+[3 lines of post-context]
+
+Note, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as "input" to this function, in order to apply a patch, is shown below.
+
+%%bash
+apply_patch <<"EOF"
+*** Begin Patch
+*** Update File: pygorithm/searching/binary_search.py
+@@ class BaseClass
+@@     def search():
+-          pass
++          raise NotImplementedError()
+
+@@ class Subclass
+@@     def search():
+-          pass
++          raise NotImplementedError()
+
+*** End Patch
+EOF
+`
+
+func main() {
+	tool := map[string]any{
+		"name":        "apply_patch",
+		"description": applyPatchToolDescription,
+		"parameters": map[string]any{
+			"type": "object",
+			"properties": map[string]any{
+				"input": map[string]any{"type": "string", "description": "The apply_patch command to execute."},
+			},
+			"required": []string{"input"},
+		},
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(tool); err != nil {
+		panic(err)
+	}
+}
+```
+
 ```ruby
 require "json"
 
@@ -1280,9 +1362,17 @@ puts(JSON.generate(tool))
 
 ### Reference Implementation: apply_patch.py
 
-Here’s a reference implementation of the apply_patch tool that we used as part of model training. You’ll need to make this an executable and available as \`apply_patch\` from the shell where the model will execute commands:
+The Python tab contains the `apply_patch.py` reference implementation used during model training. The Go and Ruby tabs are independently authored ports, not the training implementation. Make the selected implementation available as `apply_patch` in the shell where the model executes commands.
 
-Implement the patch parser
+
+
+
+The Go port uses the standard library. Save it as `main.go` and build it with `go build -o apply_patch main.go`. Run the resulting executable from the repository you want to modify, supplying a patch on standard input: `./apply_patch < changes.patch`.
+
+
+
+
+Reference patch parser and ports
 
 ```python
 #!/usr/bin/env python3
@@ -1812,6 +1902,318 @@ if __name__ == "__main__":
     main()
 ```
 
+```go
+package main
+
+import (
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"slices"
+	"strings"
+	"unicode"
+)
+
+type chunk struct {
+	index             int
+	deleted, inserted []string
+}
+type change struct{ path, target, kind, content string }
+type parser struct {
+	lines []string
+	pos   int
+}
+
+func (p *parser) current() string {
+	if p.pos >= len(p.lines) {
+		return ""
+	}
+	return p.lines[p.pos]
+}
+func (p *parser) boundary() bool {
+	for _, prefix := range []string{"*** End Patch", "*** Update File:", "*** Delete File:", "*** Add File:"} {
+		if strings.HasPrefix(p.current(), prefix) {
+			return true
+		}
+	}
+	return p.pos >= len(p.lines)
+}
+func (p *parser) prefix(prefix string) (string, bool) {
+	if !strings.HasPrefix(p.current(), prefix) {
+		return "", false
+	}
+	result := strings.TrimPrefix(p.current(), prefix)
+	p.pos++
+	return result, true
+}
+func contextIndex(lines, context []string, start int) int {
+	if len(context) == 0 {
+		return start
+	}
+	for _, normalize := range []func(string) string{func(s string) string { return s }, func(s string) string { return strings.TrimRightFunc(s, unicode.IsSpace) }, strings.TrimSpace} {
+		for i := max(0, start); i+len(context) <= len(lines); i++ {
+			matches := true
+			for j, line := range context {
+				if normalize(lines[i+j]) != normalize(line) {
+					matches = false
+					break
+				}
+			}
+			if matches {
+				return i
+			}
+		}
+	}
+	return -1
+}
+func (p *parser) update(text string) (string, error) {
+	lines := strings.Split(text, "\n")
+	index := 0
+	var chunks []chunk
+	for !p.boundary() {
+		anchor, anchored := p.prefix("@@ ")
+		bare := false
+		if !anchored && p.current() == "@@" {
+			p.pos++
+			bare = true
+		}
+		if !anchored && !bare && index != 0 {
+			return "", fmt.Errorf("invalid update section")
+		}
+		if strings.TrimSpace(anchor) != "" {
+			if !slices.Contains(lines[:index], anchor) {
+				found := -1
+				for i := index; i < len(lines); i++ {
+					if lines[i] == anchor {
+						found = i
+						break
+					}
+				}
+				if found >= 0 {
+					index = found + 1
+				} else {
+					preceding := false
+					for _, line := range lines[:index] {
+						preceding = preceding || strings.TrimSpace(line) == strings.TrimSpace(anchor)
+					}
+					if !preceding {
+						for i := index; i < len(lines); i++ {
+							if strings.TrimSpace(lines[i]) == strings.TrimSpace(anchor) {
+								index = i + 1
+								break
+							}
+						}
+					}
+				}
+			}
+		}
+		var context, deleted, inserted []string
+		var section []chunk
+		start := p.pos
+		flush := func() {
+			if len(deleted)+len(inserted) > 0 {
+				section = append(section, chunk{len(context) - len(deleted), deleted, inserted})
+				deleted, inserted = nil, nil
+			}
+		}
+		for !p.boundary() && !strings.HasPrefix(p.current(), "@@") && p.current() != "*** End of File" {
+			line := p.current()
+			p.pos++
+			if line == "" {
+				line = " "
+			}
+			switch line[0] {
+			case ' ':
+				flush()
+				context = append(context, line[1:])
+			case '-':
+				deleted = append(deleted, line[1:])
+				context = append(context, line[1:])
+			case '+':
+				inserted = append(inserted, line[1:])
+			default:
+				return "", fmt.Errorf("invalid context line")
+			}
+		}
+		flush()
+		if start == p.pos {
+			return "", fmt.Errorf("empty update section")
+		}
+		location := -1
+		if p.current() == "*** End of File" {
+			p.pos++
+			location = contextIndex(lines, context, len(lines)-len(context))
+		}
+		if location < 0 {
+			location = contextIndex(lines, context, index)
+		}
+		if location < index || location+len(context) > len(lines) {
+			return "", fmt.Errorf("update context not found")
+		}
+		for _, c := range section {
+			c.index += location
+			chunks = append(chunks, c)
+		}
+		index = location + len(context)
+	}
+	var result []string
+	cursor := 0
+	for _, c := range chunks {
+		if c.index < cursor || c.index+len(c.deleted) > len(lines) {
+			return "", fmt.Errorf("overlapping update")
+		}
+		result = append(result, lines[cursor:c.index]...)
+		result = append(result, c.inserted...)
+		cursor = c.index + len(c.deleted)
+	}
+	result = append(result, lines[cursor:]...)
+	return strings.Join(result, "\n"), nil
+}
+
+// Reject traversal and symlink components. Root operations also confine writes
+// if another process changes the filesystem after validation.
+func patchPath(root *os.Root, path string) error {
+	if !filepath.IsLocal(path) || strings.ContainsRune(path, 0) {
+		return fmt.Errorf("patch path must stay inside the working directory")
+	}
+	prefix := ""
+	for _, part := range strings.Split(filepath.ToSlash(path), "/") {
+		if part == ".." {
+			return fmt.Errorf("parent paths are not supported")
+		}
+		prefix = filepath.Join(prefix, part)
+		info, err := root.Lstat(prefix)
+		if err != nil && !os.IsNotExist(err) {
+			return err
+		}
+		if err == nil && info.Mode()&os.ModeSymlink != 0 {
+			return fmt.Errorf("symlink paths are not supported")
+		}
+	}
+	return nil
+}
+func processPatch(root *os.Root, text string) error {
+	lines := strings.Split(strings.TrimSuffix(strings.ReplaceAll(text, "\r\n", "\n"), "\n"), "\n")
+	if len(lines) < 2 || lines[0] != "*** Begin Patch" || lines[len(lines)-1] != "*** End Patch" {
+		return fmt.Errorf("invalid patch sentinels")
+	}
+	p := parser{lines: lines, pos: 1}
+	var changes []change
+	reserved := map[string]bool{}
+	for p.current() != "*** End Patch" && p.pos < len(lines) {
+		var kind, path string
+		for _, action := range []string{"Update", "Delete", "Add"} {
+			if value, ok := p.prefix("*** " + action + " File: "); ok {
+				kind, path = action, value
+				break
+			}
+		}
+		if kind == "" {
+			return fmt.Errorf("unknown patch line: %s", p.current())
+		}
+		if err := patchPath(root, path); err != nil {
+			return err
+		}
+		path = filepath.Clean(path)
+		if reserved[path] {
+			return fmt.Errorf("duplicate file action: %s", path)
+		}
+		reserved[path] = true
+		c := change{path: path, target: path, kind: kind}
+		if kind == "Add" {
+			var added []string
+			for !p.boundary() {
+				line, ok := p.prefix("+")
+				if !ok {
+					return fmt.Errorf("add-file lines must start with +")
+				}
+				added = append(added, line)
+			}
+			c.content = strings.Join(added, "\n")
+		} else {
+			data, err := root.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			if kind == "Update" {
+				if target, ok := p.prefix("*** Move to: "); ok {
+					if err := patchPath(root, target); err != nil {
+						return err
+					}
+					c.target = filepath.Clean(target)
+					if c.target != path {
+						if reserved[c.target] {
+							return fmt.Errorf("conflicting destination")
+						}
+						reserved[c.target] = true
+					}
+				}
+				c.content, err = p.update(string(data))
+				if err != nil {
+					return err
+				}
+			}
+		}
+		if kind == "Add" || c.target != path {
+			if _, err := root.Lstat(c.target); err == nil {
+				return fmt.Errorf("destination already exists: %s", c.target)
+			} else if !os.IsNotExist(err) {
+				return err
+			}
+		}
+		changes = append(changes, c)
+	}
+	if p.pos != len(lines)-1 {
+		return fmt.Errorf("content after end sentinel")
+	}
+	// Validate the entire patch before applying any change. Filesystem failures
+	// during writes can still leave a partially applied patch.
+	for _, c := range changes {
+		if c.kind == "Delete" {
+			if err := root.Remove(c.path); err != nil {
+				return err
+			}
+			continue
+		}
+		if err := root.MkdirAll(filepath.Dir(c.target), 0755); err != nil {
+			return err
+		}
+		if err := root.WriteFile(c.target, []byte(c.content), 0644); err != nil {
+			return err
+		}
+		if c.target != c.path {
+			if err := root.Remove(c.path); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+func run() error {
+	text, err := io.ReadAll(os.Stdin)
+	if err != nil {
+		return err
+	}
+	root, err := os.OpenRoot(".")
+	if err != nil {
+		return err
+	}
+	defer root.Close()
+	if err := processPatch(root, string(text)); err != nil {
+		return err
+	}
+	_, err = fmt.Println("Done!")
+	return err
+}
+func main() {
+	if err := run(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+```
+
 ```ruby
 #!/usr/bin/env ruby
 require "fileutils"
@@ -2131,6 +2533,25 @@ def search():
 `</new_code>`
 `</edit>`
 """
+````
+
+````go
+package main
+
+import (
+	"encoding/json"
+	"os"
+)
+
+const searchReplaceDiff = "\n    path/to/file.py\n    ```\n    >>>>>>> SEARCH\n    def search():\n        pass\n    =======\n    def search():\n       raise NotImplementedError()\n    <<<<<<< REPLACE\n    "
+
+const pseudoXMLDiff = "\n    `<edit>`\n    `<file>`\n    path/to/file.py\n    `</file>`\n    `<old_code>`\n    def search():\n        pass\n    `</old_code>`\n    `<new_code>`\n    def search():\n       raise NotImplementedError()\n    `</new_code>`\n    `</edit>`\n    "
+
+func main() {
+	if err := json.NewEncoder(os.Stdout).Encode([]string{searchReplaceDiff, pseudoXMLDiff}); err != nil {
+		panic(err)
+	}
+}
 ````
 
 ````ruby

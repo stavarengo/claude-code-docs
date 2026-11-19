@@ -114,12 +114,12 @@ Each MCP server in the `mcp_servers` array defines the connection details:
 
 ### Field descriptions
 
-| Property              | Type   | Required | Description                                                                                                                                                                                                                                                                                                                              |
-| --------------------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`                | string | Yes      | Currently only `url` is supported.                                                                                                                                                                                                                                                                                                       |
-| `url`                 | string | Yes      | The URL of the MCP server. Must start with `https://`.                                                                                                                                                                                                                                                                                   |
-| `name`                | string | Yes      | A unique identifier for this MCP server. Must be referenced by exactly one MCPToolset in the `tools` array.                                                                                                                                                                                                                              |
-| `authorization_token` | string | No       | OAuth authorization token if required by the MCP server. See [Authentication](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli#authentication) for how to obtain one, or the [MCP specification](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization) for protocol details. |
+| Property              | Type   | Required | Description                                                                                                                                                                                               |
+| --------------------- | ------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`                | string | Yes      | Currently only `url` is supported.                                                                                                                                                                        |
+| `url`                 | string | Yes      | The URL of the MCP server. Must start with `https://`.                                                                                                                                                    |
+| `name`                | string | Yes      | A unique identifier for this MCP server. Must be referenced by exactly one MCPToolset in the `tools` array.                                                                                               |
+| `authorization_token` | string | No       | OAuth authorization token if required by the MCP server. See [Authentication](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli#authentication) for how to obtain one. |
 
 ## MCP toolset configuration
 
@@ -324,7 +324,9 @@ When Claude uses MCP tools, the response includes two new content block types:
 
 ## Pin an MCP server’s tool list (beta)
 
-An MCP server can change its tools at any time. The `mcp-client-2026-09-15` beta header records the tool list each server returns and lets you pin it, so a server that changes its tools doesn’t change what Claude receives partway through a conversation. It includes everything `mcp-client-2025-11-20` does, so send it in place of that header. It’s available on the Claude API.
+An MCP server can change its tools at any time. With the `mcp-client-2026-09-15` beta header, the API records the tool list each server returns, and you can pin that list. That way, a change to a server’s tools doesn’t change what Claude receives partway through a conversation.
+
+This header includes everything `mcp-client-2025-11-20` does. On [platforms that accept it](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli#feature-availability), send it in place of that header.
 
 When the API asks an MCP server for its tools while producing a response, the response starts with an `mcp_tool_listing` block for that server, one block for each server it asked:
 
@@ -769,9 +771,9 @@ Convert MCP tools for use with the SDK’s [tool runner](https://platform.claude
 
   ```go Go
   import (
-  // ...
+  	// ...
 
-  // ...
+  	// ...
   	"github.com/anthropics/anthropic-sdk-go/v2/mcp"
   	mcpsdk "github.com/modelcontextprotocol/go-sdk/mcp"
   )
@@ -1424,10 +1426,10 @@ MCP connector is in beta on every model.
 
 Beta headers allow you to access experimental features and new model capabilities before they become part of the standard API.
 
-| Header                                             | APIs                                                                                                          | Cloud platforms                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `mcp-client-2026-09-15` or `mcp-client-2025-11-20` | [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli) | Claude API                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `mcp-client-2025-11-20`                            | [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli) | [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
+| Header                                             | APIs                                                                                                          | Cloud platforms                                                                                                                                                                                                                                    |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mcp-client-2026-09-15` or `mcp-client-2025-11-20` | [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli) | Claude API, [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli)                                                           |
+| `mcp-client-2025-11-20`                            | [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli) | [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
 
 ### Data handling
 

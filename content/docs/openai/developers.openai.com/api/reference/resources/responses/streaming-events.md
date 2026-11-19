@@ -4994,7 +4994,7 @@ Schema name: `ResponseCreatedEvent`
 
   - `model: ResponsesModel`
 
-    Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+    Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
@@ -10741,7 +10741,7 @@ Schema name: `ResponseCreatedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -15745,7 +15745,7 @@ Schema name: `ResponseInProgressEvent`
 
   - `model: ResponsesModel`
 
-    Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+    Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
@@ -21492,7 +21492,7 @@ Schema name: `ResponseInProgressEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "output": [],
     "parallel_tool_calls": true,
     "previous_response_id": null,
@@ -26496,7 +26496,7 @@ Schema name: `ResponseCompletedEvent`
 
   - `model: ResponsesModel`
 
-    Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+    Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
@@ -32244,7 +32244,7 @@ Schema name: `ResponseCompletedEvent`
     "input": [],
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "output": [
       {
         "id": "msg_123",
@@ -37271,7 +37271,7 @@ Schema name: `ResponseFailedEvent`
 
   - `model: ResponsesModel`
 
-    Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+    Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
@@ -43021,7 +43021,7 @@ Schema name: `ResponseFailedEvent`
     "incomplete_details": null,
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -48026,7 +48026,7 @@ Schema name: `ResponseIncompleteEvent`
 
   - `model: ResponsesModel`
 
-    Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+    Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
@@ -53775,7 +53775,7 @@ Schema name: `ResponseIncompleteEvent`
     },
     "instructions": null,
     "max_output_tokens": null,
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "output": [],
     "previous_response_id": null,
     "reasoning_effort": null,
@@ -69985,7 +69985,7 @@ Schema name: `ResponseQueuedEvent`
 
   - `model: ResponsesModel`
 
-    Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+    Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
@@ -75730,7 +75730,7 @@ Schema name: `ResponseQueuedEvent`
     "error": null,
     "incomplete_details": null,
     "instructions": null,
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "output": [],
     "parallel_tool_calls": true,
     "temperature": 1,

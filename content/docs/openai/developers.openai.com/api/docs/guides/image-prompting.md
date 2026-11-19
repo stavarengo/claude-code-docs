@@ -1391,6 +1391,73 @@ cutout = client.images.edit(
 Path("extract-product.png").write_bytes(base64.b64decode(cutout.data[0].b64_json))
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"encoding/base64"
+	"fmt"
+	"github.com/openai/openai-go/v3"
+	"os"
+)
+
+func main() {
+	if len(os.Args) != 2 {
+		panic("Usage: go run . MODEL_ID")
+	}
+	model := os.Args[1]
+	suffix := ".png"
+	client := openai.NewClient()
+	ctx := context.Background()
+	logos, err := client.Images.Generate(ctx, openai.ImageGenerateParams{
+		Model:  openai.ImageModel(model),
+		Prompt: "Create an original logo for Field & Flour, a local bakery. Use warm, simple shapes on a fully transparent background, with clean alpha edges and no shadow or checkerboard.",
+		Size:   "1024x1536", Quality: "medium", Background: "transparent", OutputFormat: "png", N: openai.Int(4),
+	})
+	if err != nil {
+		panic(err)
+	}
+	if len(logos.Data) != 4 {
+		panic("Expected four logo candidates")
+	}
+	for i, image := range logos.Data {
+		saveImage(fmt.Sprintf("logo-generation-%d%s", i+1, suffix), image.B64JSON)
+	}
+	input, err := os.Open("input_images/shampoo.webp")
+	if err != nil {
+		panic(err)
+	}
+	defer input.Close()
+	cutout, err := client.Images.Edit(ctx, openai.ImageEditParams{
+		Model:  openai.ImageModel(model),
+		Image:  openai.ImageEditParamsImageUnion{OfFile: openai.File(input, "shampoo.webp", "image/webp")},
+		Prompt: "Extract the product onto a fully transparent background. Preserve its geometry and label, with clean edges and no shadow or restyling.",
+		Size:   "1024x1536", Quality: "medium", Background: "transparent", OutputFormat: "png",
+	})
+	if err != nil {
+		panic(err)
+	}
+	if len(cutout.Data) != 1 {
+		panic("Expected one product cutout")
+	}
+	saveImage("extract-product"+suffix, cutout.Data[0].B64JSON)
+}
+
+func saveImage(filename, encoded string) {
+	if encoded == "" {
+		panic("No PNG returned")
+	}
+	data, err := base64.StdEncoding.Strict().DecodeString(encoded)
+	if err != nil {
+		panic(err)
+	}
+	if err := os.WriteFile(filename, data, 0600); err != nil {
+		panic(err)
+	}
+}
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -2844,6 +2911,70 @@ result = client.images.edit(
 Path("extract-product-gpt-image-2.5-sunburst.png").write_bytes(
     base64.b64decode(result.data[0].b64_json)
 )
+```
+
+```go
+package main
+
+import (
+	"context"
+	"encoding/base64"
+	"fmt"
+	"github.com/openai/openai-go/v3"
+	"os"
+)
+
+func main() {
+	model := "gpt-image-2.5-sunburst"
+	suffix := "-" + model + ".png"
+	client := openai.NewClient()
+	ctx := context.Background()
+	logos, err := client.Images.Generate(ctx, openai.ImageGenerateParams{
+		Model:  openai.ImageModel(model),
+		Prompt: "Create an original logo for Field & Flour, a local bakery. Use warm, simple shapes on a fully transparent background, with clean alpha edges and no shadow or checkerboard.",
+		Size:   "1024x1536", Quality: "medium", Background: "transparent", OutputFormat: "png", N: openai.Int(4),
+	})
+	if err != nil {
+		panic(err)
+	}
+	if len(logos.Data) != 4 {
+		panic("Expected four logo candidates")
+	}
+	for i, image := range logos.Data {
+		saveImage(fmt.Sprintf("logo-generation-%d%s", i+1, suffix), image.B64JSON)
+	}
+	input, err := os.Open("input_images/shampoo.webp")
+	if err != nil {
+		panic(err)
+	}
+	defer input.Close()
+	cutout, err := client.Images.Edit(ctx, openai.ImageEditParams{
+		Model:  openai.ImageModel(model),
+		Image:  openai.ImageEditParamsImageUnion{OfFile: openai.File(input, "shampoo.webp", "image/webp")},
+		Prompt: "Extract the product onto a fully transparent background. Preserve its geometry and label, with clean edges and no shadow or restyling.",
+		Size:   "1024x1536", Quality: "medium", Background: "transparent", OutputFormat: "png",
+	})
+	if err != nil {
+		panic(err)
+	}
+	if len(cutout.Data) != 1 {
+		panic("Expected one product cutout")
+	}
+	saveImage("extract-product"+suffix, cutout.Data[0].B64JSON)
+}
+
+func saveImage(filename, encoded string) {
+	if encoded == "" {
+		panic("No PNG returned")
+	}
+	data, err := base64.StdEncoding.Strict().DecodeString(encoded)
+	if err != nil {
+		panic(err)
+	}
+	if err := os.WriteFile(filename, data, 0600); err != nil {
+		panic(err)
+	}
+}
 ```
 
 ```ruby

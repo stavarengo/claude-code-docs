@@ -4849,27 +4849,6 @@ Content type: `application/json`
 
 ```http
 curl https://api.openai.com/v1/conversations \
-    -X POST \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "metadata": {
-    "foo": "string"
-  },
-  "object": "conversation"
-}
-```
-
-### Example
-
-```http
-curl https://api.openai.com/v1/conversations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
@@ -4918,24 +4897,6 @@ Delete a conversation. Items in the conversation will not be deleted.
   - `object: "conversation.deleted" (default: "conversation.deleted")`
 
     - `"conversation.deleted"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/conversations/$CONVERSATION_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "deleted": true,
-  "object": "conversation.deleted"
-}
-```
 
 ### Example
 
@@ -4990,26 +4951,6 @@ Get a conversation
     The object type, which is always `conversation`.
 
     - `"conversation"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/conversations/$CONVERSATION_ID \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "metadata": {
-    "foo": "string"
-  },
-  "object": "conversation"
-}
-```
 
 ### Example
 
@@ -5074,32 +5015,6 @@ Content type: `application/json`
     The object type, which is always `conversation`.
 
     - `"conversation"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/conversations/$CONVERSATION_ID \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -d '{
-          "metadata": {
-            "foo": "string"
-          }
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "metadata": {
-    "foo": "string"
-  },
-  "object": "conversation"
-}
-```
 
 ### Example
 
@@ -15187,45 +15102,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/conversations/$CONVERSATION_ID/items \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -d '{}'
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "content": [
-        {
-          "text": "text",
-          "type": "input_text",
-          "prompt_cache_breakpoint": {
-            "mode": "explicit",
-            "ttl": "30m"
-          }
-        }
-      ],
-      "role": "unknown",
-      "status": "in_progress",
-      "type": "message",
-      "phase": "commentary"
-    }
-  ],
-  "first_id": "first_id",
-  "has_more": true,
-  "last_id": "last_id",
-  "object": "list"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/conversations/conv_123/items \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -15320,27 +15196,6 @@ Delete an item from a conversation with the given IDs.
     The object type, which is always `conversation`.
 
     - `"conversation"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/conversations/$CONVERSATION_ID/items/$ITEM_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "metadata": {
-    "foo": "string"
-  },
-  "object": "conversation"
-}
-```
 
 ### Example
 
@@ -20093,43 +19948,6 @@ List all items for a conversation with the given ID.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/conversations/$CONVERSATION_ID/items \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "content": [
-        {
-          "text": "text",
-          "type": "input_text",
-          "prompt_cache_breakpoint": {
-            "mode": "explicit",
-            "ttl": "30m"
-          }
-        }
-      ],
-      "role": "unknown",
-      "status": "in_progress",
-      "type": "message",
-      "phase": "commentary"
-    }
-  ],
-  "first_id": "first_id",
-  "has_more": true,
-  "last_id": "last_id",
-  "object": "list"
-}
-```
-
-### Example
-
-```http
 curl "https://api.openai.com/v1/conversations/conv_123/items?limit=10" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
@@ -24840,35 +24658,6 @@ Get a single item from a conversation with the given IDs.
           The caller type. Always `program`.
 
           - `"program"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/conversations/$CONVERSATION_ID/items/$ITEM_ID \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "content": [
-    {
-      "text": "text",
-      "type": "input_text",
-      "prompt_cache_breakpoint": {
-        "mode": "explicit",
-        "ttl": "30m"
-      }
-    }
-  ],
-  "role": "unknown",
-  "status": "in_progress",
-  "type": "message",
-  "phase": "commentary"
-}
-```
 
 ### Example
 

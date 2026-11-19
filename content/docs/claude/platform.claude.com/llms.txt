@@ -20,18 +20,18 @@ The latest version of each Anthropic SDK and of the ant CLI is at https://platfo
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 922 pages - /docs - Content included below
-- German (Deutsch) (de) - 341 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 341 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 341 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 341 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 341 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 341 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 341 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 341 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 341 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 341 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 341 pages - /docs/id - Visit website for content
+- English (en) - 923 pages - /docs - Content included below
+- German (Deutsch) (de) - 342 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 342 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 342 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 342 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 342 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 342 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 342 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 342 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 342 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 342 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 342 pages - /docs/id - Visit website for content
 
 ---
 
@@ -178,6 +178,7 @@ The full documentation is available in the following languages on https://platfo
 - [Managed Agents reference](https://platform.claude.com/docs/en/managed-agents/reference.md) - Reference
 - [Web tool restrictions](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions.md) - Restrict web search and web fetch domains
 - [Review and monitor sessions](https://platform.claude.com/docs/en/managed-agents/secure-deployment-monitoring.md) - Review and monitor agent sessions
+- [Sandbox per session](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-per-session.md) - Run one sandbox per session
 - [Scheduled deployments](https://platform.claude.com/docs/en/managed-agents/scheduled-deployments.md)
 - [Secure your deployment](https://platform.claude.com/docs/en/managed-agents/secure-deployment.md) - Secure your Managed Agents deployment
 - [Security model](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-security.md)

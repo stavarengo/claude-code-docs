@@ -421,6 +421,19 @@ output = {
 }
 ```
 
+```go
+message := "Patch applied successfully."
+if status == "failed" {
+	message = "Patch could not be applied."
+}
+result := map[string]any{
+	"type":    "apply_patch_call_output",
+	"call_id": callID,
+	"status":  status,
+	"output":  message,
+}
+```
+
 ```ruby
 output = {
   type: :apply_patch_call_output,
@@ -439,6 +452,10 @@ The shell tool is invoked in the same way as apply_patch: include it as a tool o
 
 ```python
 tools = [{"type": "shell"}]
+```
+
+```go
+tools := []responses.ToolUnionParam{{OfShell: &responses.FunctionShellToolParam{}}}
 ```
 
 ```ruby

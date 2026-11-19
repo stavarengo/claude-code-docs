@@ -44,8 +44,7 @@ The server confirms the new session is ready. Use its new ID for subsequent side
   "session": {
     "id": "live_fork_123",
     "expires_at": 1788307200,
-    "status": "active",
-    "model": "gpt-live-1"
+    "status": "active"
   }
 }
 ```
@@ -10679,7 +10678,7 @@ Schema name: `LiveSessionUpdated`
     "delegation": {
       "type": "responses",
       "responses": {
-        "model": "gpt-6-astra",
+        "model": "gpt-6.2-astra",
         "instructions": "Check restaurant availability. Ask before confirming a booking.",
         "max_output_tokens": 1024,
         "tools": []

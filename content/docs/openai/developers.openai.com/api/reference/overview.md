@@ -109,10 +109,12 @@ OpenAI provides stability to API users by avoiding breaking changes in major API
 
 - The REST API (currently `v1`)
 - First-party [client libraries](https://developers.openai.com/api/docs/libraries) (released libraries adhere to [semantic versioning](https://semver.org/))
-- [Model](https://developers.openai.com/api/docs/models) families (like `gpt-4o` or `o4-mini`)
+- [Model families](https://developers.openai.com/api/docs/models)
 
 **Model prompting behavior between snapshots is subject to change**.
 Model outputs are by their nature variable, so expect changes in prompting and model behavior between snapshots. The best way to ensure consistent prompting behavior and model output is to use pinned model versions, and to run [evals](https://developers.openai.com/api/docs/guides/evals) for your applications.
+
+For model shutdown dates and recommended replacements, see [deprecations](https://developers.openai.com/api/docs/deprecations).
 
 **Backwards-compatible API changes**:
 

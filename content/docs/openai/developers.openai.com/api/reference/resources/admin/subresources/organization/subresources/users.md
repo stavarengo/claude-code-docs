@@ -27,24 +27,6 @@ Deletes a user from the organization.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/users/$USER_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "deleted": true,
-  "object": "organization.user.deleted"
-}
-```
-
-### Example
-
-```http
 curl -X DELETE https://api.openai.com/v1/organization/users/user_abc \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -201,62 +183,6 @@ Lists all of the users in the organization.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/users \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "added_at": 0,
-      "object": "organization.user",
-      "api_key_last_used_at": 0,
-      "created": 0,
-      "developer_persona": "developer_persona",
-      "email": "email",
-      "is_default": true,
-      "is_scale_tier_authorized_purchaser": true,
-      "is_scim_managed": true,
-      "is_service_account": true,
-      "name": "name",
-      "projects": {
-        "data": [
-          {
-            "id": "id",
-            "name": "name",
-            "role": "role"
-          }
-        ],
-        "object": "list"
-      },
-      "role": "role",
-      "technical_level": "technical_level",
-      "user": {
-        "id": "id",
-        "object": "user",
-        "banned": true,
-        "banned_at": 0,
-        "email": "email",
-        "enabled": true,
-        "name": "name",
-        "picture": "picture"
-      }
-    }
-  ],
-  "has_more": true,
-  "object": "list",
-  "first_id": "first_id",
-  "last_id": "last_id"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/users?after=user_abc&limit=20 \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -404,54 +330,6 @@ Retrieves a user by their identifier.
     - `name: optional string or null`
 
     - `picture: optional string or null`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/users/$USER_ID \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "added_at": 0,
-  "object": "organization.user",
-  "api_key_last_used_at": 0,
-  "created": 0,
-  "developer_persona": "developer_persona",
-  "email": "email",
-  "is_default": true,
-  "is_scale_tier_authorized_purchaser": true,
-  "is_scim_managed": true,
-  "is_service_account": true,
-  "name": "name",
-  "projects": {
-    "data": [
-      {
-        "id": "id",
-        "name": "name",
-        "role": "role"
-      }
-    ],
-    "object": "list"
-  },
-  "role": "role",
-  "technical_level": "technical_level",
-  "user": {
-    "id": "id",
-    "object": "user",
-    "banned": true,
-    "banned_at": 0,
-    "email": "email",
-    "enabled": true,
-    "name": "name",
-    "picture": "picture"
-  }
-}
-```
 
 ### Example
 
@@ -615,56 +493,6 @@ Content type: `application/json`
     - `name: optional string or null`
 
     - `picture: optional string or null`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/users/$USER_ID \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{}'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "added_at": 0,
-  "object": "organization.user",
-  "api_key_last_used_at": 0,
-  "created": 0,
-  "developer_persona": "developer_persona",
-  "email": "email",
-  "is_default": true,
-  "is_scale_tier_authorized_purchaser": true,
-  "is_scim_managed": true,
-  "is_service_account": true,
-  "name": "name",
-  "projects": {
-    "data": [
-      {
-        "id": "id",
-        "name": "name",
-        "role": "role"
-      }
-    ],
-    "object": "list"
-  },
-  "role": "role",
-  "technical_level": "technical_level",
-  "user": {
-    "id": "id",
-    "object": "user",
-    "banned": true,
-    "banned_at": 0,
-    "email": "email",
-    "enabled": true,
-    "name": "name",
-    "picture": "picture"
-  }
-}
-```
 
 ### Example
 
@@ -989,72 +817,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/users/$USER_ID/roles \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "role_id": "role_id"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "object": "user.role",
-  "role": {
-    "id": "id",
-    "description": "description",
-    "name": "name",
-    "object": "role",
-    "permissions": [
-      "string"
-    ],
-    "predefined_role": true,
-    "resource_type": "resource_type"
-  },
-  "user": {
-    "id": "id",
-    "added_at": 0,
-    "object": "organization.user",
-    "api_key_last_used_at": 0,
-    "created": 0,
-    "developer_persona": "developer_persona",
-    "email": "email",
-    "is_default": true,
-    "is_scale_tier_authorized_purchaser": true,
-    "is_scim_managed": true,
-    "is_service_account": true,
-    "name": "name",
-    "projects": {
-      "data": [
-        {
-          "id": "id",
-          "name": "name",
-          "role": "role"
-        }
-      ],
-      "object": "list"
-    },
-    "role": "role",
-    "technical_level": "technical_level",
-    "user": {
-      "id": "id",
-      "object": "user",
-      "banned": true,
-      "banned_at": 0,
-      "email": "email",
-      "enabled": true,
-      "name": "name",
-      "picture": "picture"
-    }
-  }
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/organization/users/user_abc123/roles \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -1116,23 +878,6 @@ Unassigns an organization role from a user within the organization.
 - `object: string`
 
   Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/users/$USER_ID/roles/$ROLE_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "deleted": true,
-  "object": "object"
-}
-```
 
 ### Example
 
@@ -1262,50 +1007,6 @@ Lists the organization roles assigned to a user within the organization.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/users/$USER_ID/roles \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "assignment_sources": [
-        {
-          "principal_id": "principal_id",
-          "principal_type": "principal_type"
-        }
-      ],
-      "created_at": 0,
-      "created_by": "created_by",
-      "created_by_user_obj": {
-        "foo": "bar"
-      },
-      "description": "description",
-      "metadata": {
-        "foo": "bar"
-      },
-      "name": "name",
-      "permissions": [
-        "string"
-      ],
-      "predefined_role": true,
-      "resource_type": "resource_type",
-      "updated_at": 0
-    }
-  ],
-  "has_more": true,
-  "next": "next",
-  "object": "list"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/users/user_abc123/roles \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -1422,43 +1123,6 @@ Retrieves an organization role assigned to a user.
   When the role was last updated.
 
   `format: unixtime`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/users/$USER_ID/roles/$ROLE_ID \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "assignment_sources": [
-    {
-      "principal_id": "principal_id",
-      "principal_type": "principal_type"
-    }
-  ],
-  "created_at": 0,
-  "created_by": "created_by",
-  "created_by_user_obj": {
-    "foo": "bar"
-  },
-  "description": "description",
-  "metadata": {
-    "foo": "bar"
-  },
-  "name": "name",
-  "permissions": [
-    "string"
-  ],
-  "predefined_role": true,
-  "resource_type": "resource_type",
-  "updated_at": 0
-}
-```
 
 ### Example
 

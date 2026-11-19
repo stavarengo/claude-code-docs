@@ -59,11 +59,11 @@ Content type: `multipart/form-data`
 
 ```http
 curl https://api.openai.com/v1/audio/voice_consents \
-    -H 'Content-Type: multipart/form-data' \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -F language=language \
-    -F name=name \
-    -F 'recording=@/path/to/recording'
+  -X POST \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -F "name=John Doe" \
+  -F "language=en-US" \
+  -F "recording=@$HOME/consent_recording.wav;type=audio/x-wav"
 ```
 
 #### 200 — Example
@@ -76,15 +76,4 @@ curl https://api.openai.com/v1/audio/voice_consents \
   "name": "name",
   "object": "audio.voice_consent"
 }
-```
-
-### Example
-
-```http
-curl https://api.openai.com/v1/audio/voice_consents \
-  -X POST \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -F "name=John Doe" \
-  -F "language=en-US" \
-  -F "recording=@$HOME/consent_recording.wav;type=audio/x-wav"
 ```

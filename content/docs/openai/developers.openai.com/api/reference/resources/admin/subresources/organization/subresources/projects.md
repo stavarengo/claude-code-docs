@@ -91,29 +91,6 @@ Archives a project in the organization. Archived projects cannot be used or upda
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/archive \
-    -X POST \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "object": "organization.project",
-  "archived_at": 0,
-  "external_key_id": "external_key_id",
-  "name": "name",
-  "residency": "GLOBAL",
-  "status": "status"
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/archive \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -266,32 +243,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "name": "name"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "object": "organization.project",
-  "archived_at": 0,
-  "external_key_id": "external_key_id",
-  "name": "name",
-  "residency": "GLOBAL",
-  "status": "status"
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/organization/projects \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -418,36 +369,6 @@ Returns a list of projects.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "created_at": 0,
-      "object": "organization.project",
-      "archived_at": 0,
-      "external_key_id": "external_key_id",
-      "name": "name",
-      "residency": "GLOBAL",
-      "status": "status"
-    }
-  ],
-  "has_more": true,
-  "object": "list",
-  "first_id": "first_id",
-  "last_id": "last_id"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects?after=proj_abc&limit=20&include_archived=false \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -559,28 +480,6 @@ Retrieves a project.
   - `status: optional string or null`
 
     `active` or `archived`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "object": "organization.project",
-  "archived_at": 0,
-  "external_key_id": "external_key_id",
-  "name": "name",
-  "residency": "GLOBAL",
-  "status": "status"
-}
-```
 
 ### Example
 
@@ -709,10 +608,12 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{}'
+curl -X POST https://api.openai.com/v1/organization/projects/proj_abc \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+      "name": "Project DEF"
+  }'
 ```
 
 #### 200 — Example
@@ -728,17 +629,6 @@ curl https://api.openai.com/v1/organization/projects/$PROJECT_ID \
   "residency": "GLOBAL",
   "status": "status"
 }
-```
-
-### Example
-
-```http
-curl -X POST https://api.openai.com/v1/organization/projects/proj_abc \
-  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-      "name": "Project DEF"
-  }'
 ```
 
 ## Domain Types
@@ -883,24 +773,6 @@ Returns confirmation of the key deletion.
 - `object: "organization.project.api_key.deleted"`
 
   - `"organization.project.api_key.deleted"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/api_keys/$API_KEY_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "deleted": true,
-  "object": "organization.project.api_key.deleted"
-}
-```
 
 ### Example
 
@@ -1071,52 +943,6 @@ Returns a list of API keys in the project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/api_keys \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "created_at": 0,
-      "last_used_at": 0,
-      "name": "name",
-      "object": "organization.project.api_key",
-      "owner": {
-        "service_account": {
-          "id": "id",
-          "created_at": 0,
-          "name": "name",
-          "role": "role"
-        },
-        "type": "user",
-        "user": {
-          "id": "id",
-          "created_at": 0,
-          "email": "email",
-          "name": "name",
-          "role": "role"
-        }
-      },
-      "owner_project_access": "active",
-      "redacted_value": "redacted_value",
-      "expires_at": 0
-    }
-  ],
-  "has_more": true,
-  "object": "list",
-  "first_id": "first_id",
-  "last_id": "last_id"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc/api_keys?after=key_abc&limit=20&owner_project_access=any \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -1277,44 +1103,6 @@ Retrieves an API key in the project.
     The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
 
     `format: unixtime`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/api_keys/$API_KEY_ID \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "last_used_at": 0,
-  "name": "name",
-  "object": "organization.project.api_key",
-  "owner": {
-    "service_account": {
-      "id": "id",
-      "created_at": 0,
-      "name": "name",
-      "role": "role"
-    },
-    "type": "user",
-    "user": {
-      "id": "id",
-      "created_at": 0,
-      "email": "email",
-      "name": "name",
-      "role": "role"
-    }
-  },
-  "owner_project_access": "active",
-  "redacted_value": "redacted_value",
-  "expires_at": 0
-}
-```
 
 ### Example
 
@@ -1501,50 +1289,6 @@ Content type: `application/json`
     The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
 
     `format: unixtime`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/api_keys/$API_KEY_ID \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "scopes": [
-            "api.all.read"
-          ]
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "last_used_at": 0,
-  "name": "name",
-  "object": "organization.project.api_key",
-  "owner": {
-    "service_account": {
-      "id": "id",
-      "created_at": 0,
-      "name": "name",
-      "role": "role"
-    },
-    "type": "user",
-    "user": {
-      "id": "id",
-      "created_at": 0,
-      "email": "email",
-      "name": "name",
-      "role": "role"
-    }
-  },
-  "owner_project_access": "active",
-  "redacted_value": "redacted_value",
-  "expires_at": 0
-}
-```
 
 ### Example
 
@@ -1776,40 +1520,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/certificates/activate \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "certificate_ids": [
-            "cert_abc"
-          ]
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "active": true,
-      "certificate_details": {
-        "expires_at": 0,
-        "valid_at": 0
-      },
-      "created_at": 0,
-      "name": "name",
-      "object": "organization.project.certificate"
-    }
-  ],
-  "object": "organization.project.certificate.activation"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc/certificates/activate \
 -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
 -H "Content-Type: application/json" \
@@ -1918,40 +1628,6 @@ Content type: `application/json`
   The project certificate deactivation result type.
 
   - `"organization.project.certificate.deactivation"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/certificates/deactivate \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "certificate_ids": [
-            "cert_abc"
-          ]
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "active": true,
-      "certificate_details": {
-        "expires_at": 0,
-        "valid_at": 0
-      },
-      "created_at": 0,
-      "name": "name",
-      "object": "organization.project.certificate"
-    }
-  ],
-  "object": "organization.project.certificate.deactivation"
-}
-```
 
 ### Example
 
@@ -2077,37 +1753,6 @@ List certificates for this project.
 - `object: "list"`
 
   - `"list"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/certificates \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "active": true,
-      "certificate_details": {
-        "expires_at": 0,
-        "valid_at": 0
-      },
-      "created_at": 0,
-      "name": "name",
-      "object": "organization.project.certificate"
-    }
-  ],
-  "first_id": "cert_abc",
-  "has_more": true,
-  "last_id": "cert_abc",
-  "object": "list"
-}
-```
 
 ### Example
 
@@ -2319,22 +1964,6 @@ Retrieves project data retention controls.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/data_retention \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "object": "project.data_retention",
-  "type": "organization_default"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc/data_retention \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -2408,26 +2037,6 @@ Content type: `application/json`
     - `"enhanced_zero_data_retention"`
 
     - `"enhanced_modified_abuse_monitoring"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/data_retention \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "retention_type": "organization_default"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "object": "project.data_retention",
-  "type": "organization_default"
-}
-```
 
 ### Example
 
@@ -2546,31 +2155,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/groups \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "group_id": "group_id",
-          "role": "role"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "created_at": 0,
-  "group_id": "group_id",
-  "group_name": "group_name",
-  "group_type": "group",
-  "object": "project.group",
-  "project_id": "project_id"
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/organization/projects/proj_abc123/groups \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -2620,23 +2204,6 @@ Revokes a group's access to a project.
   Always `project.group.deleted`.
 
   - `"project.group.deleted"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/groups/$GROUP_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "deleted": true,
-  "object": "project.group.deleted"
-}
-```
 
 ### Example
 
@@ -2742,33 +2309,6 @@ Lists the groups that have access to a project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/groups \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "created_at": 0,
-      "group_id": "group_id",
-      "group_name": "group_name",
-      "group_type": "group",
-      "object": "project.group",
-      "project_id": "project_id"
-    }
-  ],
-  "has_more": true,
-  "next": "next",
-  "object": "list"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc123/groups?limit=20 \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -2857,26 +2397,6 @@ Retrieves a project's group.
   - `project_id: string`
 
     Identifier of the project.
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/groups/$GROUP_ID \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "created_at": 0,
-  "group_id": "group_id",
-  "group_name": "group_name",
-  "group_type": "group",
-  "object": "project.group",
-  "project_id": "project_id"
-}
-```
 
 ### Example
 
@@ -3054,43 +2574,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/groups/$GROUP_ID/roles \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "role_id": "role_id"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "group": {
-    "id": "id",
-    "created_at": 0,
-    "name": "name",
-    "object": "group",
-    "scim_managed": true
-  },
-  "object": "group.role",
-  "role": {
-    "id": "id",
-    "description": "description",
-    "name": "name",
-    "object": "role",
-    "permissions": [
-      "string"
-    ],
-    "predefined_role": true,
-    "resource_type": "resource_type"
-  }
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/projects/proj_abc123/groups/group_01J1F8ABCDXYZ/roles \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -3155,23 +2638,6 @@ Unassigns a project role from a group within a project.
 - `object: string`
 
   Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
-
-### Example
-
-```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/groups/$GROUP_ID/roles/$ROLE_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "deleted": true,
-  "object": "object"
-}
-```
 
 ### Example
 
@@ -3305,50 +2771,6 @@ Lists the project roles assigned to a group within a project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/groups/$GROUP_ID/roles \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "assignment_sources": [
-        {
-          "principal_id": "principal_id",
-          "principal_type": "principal_type"
-        }
-      ],
-      "created_at": 0,
-      "created_by": "created_by",
-      "created_by_user_obj": {
-        "foo": "bar"
-      },
-      "description": "description",
-      "metadata": {
-        "foo": "bar"
-      },
-      "name": "name",
-      "permissions": [
-        "string"
-      ],
-      "predefined_role": true,
-      "resource_type": "resource_type",
-      "updated_at": 0
-    }
-  ],
-  "has_more": true,
-  "next": "next",
-  "object": "list"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/projects/proj_abc123/groups/group_01J1F8ABCDXYZ/roles \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -3469,43 +2891,6 @@ Retrieves a project role assigned to a group.
   When the role was last updated.
 
   `format: unixtime`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/groups/$GROUP_ID/roles/$ROLE_ID \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "assignment_sources": [
-    {
-      "principal_id": "principal_id",
-      "principal_type": "principal_type"
-    }
-  ],
-  "created_at": 0,
-  "created_by": "created_by",
-  "created_by_user_obj": {
-    "foo": "bar"
-  },
-  "description": "description",
-  "metadata": {
-    "foo": "bar"
-  },
-  "name": "name",
-  "permissions": [
-    "string"
-  ],
-  "predefined_role": true,
-  "resource_type": "resource_type",
-  "updated_at": 0
-}
-```
 
 ### Example
 
@@ -3814,35 +3199,6 @@ Returns hosted tool permissions for a project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/hosted_tool_permissions \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "code_interpreter": {
-    "enabled": true
-  },
-  "file_search": {
-    "enabled": true
-  },
-  "image_generation": {
-    "enabled": true
-  },
-  "mcp": {
-    "enabled": true
-  },
-  "web_search": {
-    "enabled": true
-  }
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc/hosted_tool_permissions \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -3975,37 +3331,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/hosted_tool_permissions \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{}'
-```
-
-#### 200 — Example
-
-```json
-{
-  "code_interpreter": {
-    "enabled": true
-  },
-  "file_search": {
-    "enabled": true
-  },
-  "image_generation": {
-    "enabled": true
-  },
-  "mcp": {
-    "enabled": true
-  },
-  "web_search": {
-    "enabled": true
-  }
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/hosted_tool_permissions \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -4122,23 +3447,6 @@ Deletes model permissions for a project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/model_permissions \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "deleted": true,
-  "object": "project.model_permissions.deleted"
-}
-```
-
-### Example
-
-```http
 curl -X DELETE https://api.openai.com/v1/organization/projects/proj_abc/model_permissions \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -4192,25 +3500,6 @@ Returns model permissions for a project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/model_permissions \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "mode": "allow_list",
-  "model_ids": [
-    "string"
-  ],
-  "object": "project.model_permissions"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc/model_permissions \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -4223,8 +3512,8 @@ curl https://api.openai.com/v1/organization/projects/proj_abc/model_permissions 
     "object": "project.model_permissions",
     "mode": "allow_list",
     "model_ids": [
-        "gpt-6-astra",
-        "o3"
+        "gpt-6.2-astra",
+        "gpt-6.2-sol"
     ]
 }
 ```
@@ -4284,39 +3573,13 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/model_permissions \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "mode": "allow_list",
-          "model_ids": [
-            "string"
-          ]
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "mode": "allow_list",
-  "model_ids": [
-    "string"
-  ],
-  "object": "project.model_permissions"
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/model_permissions \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
   -d '{
       "mode": "deny_list",
       "model_ids": [
-          "o3"
+          "gpt-6.2-sol"
       ]
   }'
 ```
@@ -4328,7 +3591,7 @@ curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/model_perm
     "object": "project.model_permissions",
     "mode": "deny_list",
     "model_ids": [
-        "o3"
+        "gpt-6.2-sol"
     ]
 }
 ```
@@ -4458,50 +3721,6 @@ Returns the rate limits per model for a project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/rate_limits \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 example 1
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "max_requests_per_1_minute": 0,
-      "max_tokens_per_1_minute": 0,
-      "model": "model",
-      "object": "project.rate_limit",
-      "batch_1_day_max_input_tokens": 0,
-      "max_audio_megabytes_per_1_minute": 0,
-      "max_images_per_1_minute": 0,
-      "max_requests_per_1_day": 0
-    }
-  ],
-  "has_more": true,
-  "object": "list",
-  "first_id": "first_id",
-  "last_id": "last_id"
-}
-```
-
-#### 404 — default
-
-```json
-{
-  "error": {
-    "code": "project_not_found",
-    "message": "The project proj_abc was not found",
-    "type": "invalid_request_error",
-    "param": null
-  }
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc/rate_limits?after=rl_xxx&limit=20 \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -4615,44 +3834,6 @@ Content type: `application/json`
   - `max_requests_per_1_day: optional integer`
 
     The maximum requests per day. Only present for relevant models.
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/rate_limits/$RATE_LIMIT_ID \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{}'
-```
-
-#### 200 example 1
-
-```json
-{
-  "id": "id",
-  "max_requests_per_1_minute": 0,
-  "max_tokens_per_1_minute": 0,
-  "model": "model",
-  "object": "project.rate_limit",
-  "batch_1_day_max_input_tokens": 0,
-  "max_audio_megabytes_per_1_minute": 0,
-  "max_images_per_1_minute": 0,
-  "max_requests_per_1_day": 0
-}
-```
-
-#### 404 — default
-
-```json
-{
-  "error": {
-    "code": "project_not_found",
-    "message": "The project proj_abc was not found",
-    "type": "invalid_request_error",
-    "param": null
-  }
-}
-```
 
 ### Example
 
@@ -4793,36 +3974,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/roles \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "permissions": [
-            "string"
-          ],
-          "role_name": "role_name"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "description": "description",
-  "name": "name",
-  "object": "role",
-  "permissions": [
-    "string"
-  ],
-  "predefined_role": true,
-  "resource_type": "resource_type"
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/projects/proj_abc123/roles \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -4884,24 +4035,6 @@ Deletes a custom role from a project.
   Always `role.deleted`.
 
   - `"role.deleted"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/roles/$ROLE_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "deleted": true,
-  "object": "role.deleted"
-}
-```
 
 ### Example
 
@@ -5006,36 +4139,6 @@ Lists the roles configured for a project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/roles \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "description": "description",
-      "name": "name",
-      "object": "role",
-      "permissions": [
-        "string"
-      ],
-      "predefined_role": true,
-      "resource_type": "resource_type"
-    }
-  ],
-  "has_more": true,
-  "next": "next",
-  "object": "list"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/projects/proj_abc123/roles?limit=20 \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -5116,29 +4219,6 @@ Retrieves a project role.
   - `resource_type: string`
 
     Resource type the role is bound to (for example `api.organization` or `api.project`).
-
-### Example
-
-```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/roles/$ROLE_ID \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "description": "description",
-  "name": "name",
-  "object": "role",
-  "permissions": [
-    "string"
-  ],
-  "predefined_role": true,
-  "resource_type": "resource_type"
-}
-```
 
 ### Example
 
@@ -5232,31 +4312,6 @@ Content type: `application/json`
   - `resource_type: string`
 
     Resource type the role is bound to (for example `api.organization` or `api.project`).
-
-### Example
-
-```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/roles/$ROLE_ID \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{}'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "description": "description",
-  "name": "name",
-  "object": "role",
-  "permissions": [
-    "string"
-  ],
-  "predefined_role": true,
-  "resource_type": "resource_type"
-}
-```
 
 ### Example
 
@@ -5394,37 +4449,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_accounts \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "name": "name"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "api_key": {
-    "id": "id",
-    "created_at": 0,
-    "name": "name",
-    "object": "organization.project.service_account.api_key",
-    "value": "value",
-    "expires_at": 0
-  },
-  "created_at": 0,
-  "name": "name",
-  "object": "organization.project.service_account",
-  "role": "member"
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_accounts \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -5480,24 +4504,6 @@ is archived (archived projects have no service accounts).
 - `object: "organization.project.service_account.deleted"`
 
   - `"organization.project.service_account.deleted"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_accounts/$SERVICE_ACCOUNT_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "deleted": true,
-  "object": "organization.project.service_account.deleted"
-}
-```
 
 ### Example
 
@@ -5586,33 +4592,6 @@ Returns a list of service accounts in the project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_accounts \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "created_at": 0,
-      "name": "name",
-      "object": "organization.project.service_account",
-      "role": "owner"
-    }
-  ],
-  "has_more": true,
-  "object": "list",
-  "first_id": "first_id",
-  "last_id": "last_id"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc/service_accounts?after=custom_id&limit=20 \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -5689,25 +4668,6 @@ Retrieves a service account in the project.
     - `"member"`
 
     - `"none"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_accounts/$SERVICE_ACCOUNT_ID \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "name": "name",
-  "object": "organization.project.service_account",
-  "role": "owner"
-}
-```
 
 ### Example
 
@@ -5796,27 +4756,6 @@ Content type: `application/json`
     - `"member"`
 
     - `"none"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_accounts/$SERVICE_ACCOUNT_ID \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{}'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "name": "name",
-  "object": "organization.project.service_account",
-  "role": "owner"
-}
-```
 
 ### Example
 
@@ -6011,27 +4950,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_accounts/$SERVICE_ACCOUNT_ID/api_keys \
-    -X POST \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "name": "name",
-  "object": "organization.project.service_account.api_key",
-  "value": "value",
-  "expires_at": 0
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_accounts/svc_acct_abc/api_keys \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -6140,23 +5058,6 @@ Retrieve the configured default and enabled service tiers for a project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_tier_settings \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "default": "standard",
-  "enabled_tiers": "all",
-  "object": "project.service_tier_settings"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc/service_tier_settings \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
 ```
@@ -6246,27 +5147,6 @@ Content type: `application/json`
   - `object: "project.service_tier_settings" (default: "project.service_tier_settings")`
 
     - `"project.service_tier_settings"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_tier_settings \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "default": "standard"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "default": "standard",
-  "enabled_tiers": "all",
-  "object": "project.service_tier_settings"
-}
-```
 
 ### Example
 
@@ -6440,44 +5320,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/spend_alerts \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "currency": "USD",
-          "interval": "month",
-          "notification_channel": {
-            "recipients": [
-              "string"
-            ],
-            "type": "email"
-          },
-          "threshold_amount": 0
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "currency": "USD",
-  "interval": "month",
-  "notification_channel": {
-    "recipients": [
-      "string"
-    ],
-    "type": "email",
-    "subject_prefix": "subject_prefix"
-  },
-  "object": "project.spend_alert",
-  "threshold_amount": 0
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/spend_alerts \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -6545,24 +5387,6 @@ Deletes a project spend alert.
     Always `project.spend_alert.deleted`.
 
     - `"project.spend_alert.deleted"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/spend_alerts/$ALERT_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "deleted": true,
-  "object": "project.spend_alert.deleted"
-}
-```
 
 ### Example
 
@@ -6689,40 +5513,6 @@ Lists project spend alerts.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/spend_alerts \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "currency": "USD",
-      "interval": "month",
-      "notification_channel": {
-        "recipients": [
-          "string"
-        ],
-        "type": "email",
-        "subject_prefix": "subject_prefix"
-      },
-      "object": "project.spend_alert",
-      "threshold_amount": 0
-    }
-  ],
-  "first_id": "first_id",
-  "has_more": true,
-  "last_id": "last_id",
-  "object": "list"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc/spend_alerts?limit=20&order=asc \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -6818,32 +5608,6 @@ Retrieves a project spend alert.
   - `threshold_amount: integer`
 
     The alert threshold amount, in cents.
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/spend_alerts/$ALERT_ID \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "currency": "USD",
-  "interval": "month",
-  "notification_channel": {
-    "recipients": [
-      "string"
-    ],
-    "type": "email",
-    "subject_prefix": "subject_prefix"
-  },
-  "object": "project.spend_alert",
-  "threshold_amount": 0
-}
-```
 
 ### Example
 
@@ -6975,44 +5739,6 @@ Content type: `application/json`
   - `threshold_amount: integer`
 
     The alert threshold amount, in cents.
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/spend_alerts/$ALERT_ID \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "currency": "USD",
-          "interval": "month",
-          "notification_channel": {
-            "recipients": [
-              "string"
-            ],
-            "type": "email"
-          },
-          "threshold_amount": 0
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "currency": "USD",
-  "interval": "month",
-  "notification_channel": {
-    "recipients": [
-      "string"
-    ],
-    "type": "email",
-    "subject_prefix": "subject_prefix"
-  },
-  "object": "project.spend_alert",
-  "threshold_amount": 0
-}
-```
 
 ### Example
 
@@ -7154,23 +5880,6 @@ Delete a project's hard spend limit.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/spend_limit \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "deleted": true,
-  "object": "project.spend_limit.deleted"
-}
-```
-
-### Example
-
-```http
 curl -X DELETE https://api.openai.com/v1/organization/projects/proj_abc/spend_limit \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -7254,27 +5963,6 @@ Get a project's hard spend limit.
   - `threshold_amount: integer`
 
     The hard spend limit amount, in cents.
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/spend_limit \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "currency": "USD",
-  "enforcement": {
-    "status": "inactive"
-  },
-  "interval": "month",
-  "object": "project.spend_limit",
-  "threshold_amount": 0
-}
-```
 
 ### Example
 
@@ -7389,33 +6077,6 @@ Content type: `application/json`
   - `threshold_amount: integer`
 
     The hard spend limit amount, in cents.
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/spend_limit \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "currency": "USD",
-          "interval": "month",
-          "threshold_amount": 1
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "currency": "USD",
-  "enforcement": {
-    "status": "inactive"
-  },
-  "interval": "month",
-  "object": "project.spend_limit",
-  "threshold_amount": 0
-}
-```
 
 ### Example
 
@@ -7587,30 +6248,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/users \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "role": "role"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "added_at": 0,
-  "object": "organization.project.user",
-  "role": "role",
-  "email": "email",
-  "name": "name"
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/users \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -7660,24 +6297,6 @@ archived (archived projects have no users).
 - `object: "organization.project.user.deleted"`
 
   - `"organization.project.user.deleted"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/users/$USER_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "deleted": true,
-  "object": "organization.project.user.deleted"
-}
-```
 
 ### Example
 
@@ -7762,34 +6381,6 @@ Returns a list of users in the project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/users \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "added_at": 0,
-      "object": "organization.project.user",
-      "role": "role",
-      "email": "email",
-      "name": "name"
-    }
-  ],
-  "has_more": true,
-  "object": "object",
-  "first_id": "first_id",
-  "last_id": "last_id"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc/users?after=user_abc&limit=20 \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -7869,26 +6460,6 @@ Retrieves a user in the project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/users/$USER_ID \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "added_at": 0,
-  "object": "organization.project.user",
-  "role": "role",
-  "email": "email",
-  "name": "name"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/organization/projects/proj_abc/users/user_abc \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -7964,28 +6535,6 @@ Content type: `application/json`
   - `name: optional string or null`
 
     The name of the user
-
-### Example
-
-```http
-curl https://api.openai.com/v1/organization/projects/$PROJECT_ID/users/$USER_ID \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{}'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "added_at": 0,
-  "object": "organization.project.user",
-  "role": "role",
-  "email": "email",
-  "name": "name"
-}
-```
 
 ### Example
 
@@ -8238,72 +6787,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/users/$USER_ID/roles \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
-    -d '{
-          "role_id": "role_id"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "object": "user.role",
-  "role": {
-    "id": "id",
-    "description": "description",
-    "name": "name",
-    "object": "role",
-    "permissions": [
-      "string"
-    ],
-    "predefined_role": true,
-    "resource_type": "resource_type"
-  },
-  "user": {
-    "id": "id",
-    "added_at": 0,
-    "object": "organization.user",
-    "api_key_last_used_at": 0,
-    "created": 0,
-    "developer_persona": "developer_persona",
-    "email": "email",
-    "is_default": true,
-    "is_scale_tier_authorized_purchaser": true,
-    "is_scim_managed": true,
-    "is_service_account": true,
-    "name": "name",
-    "projects": {
-      "data": [
-        {
-          "id": "id",
-          "name": "name",
-          "role": "role"
-        }
-      ],
-      "object": "list"
-    },
-    "role": "role",
-    "technical_level": "technical_level",
-    "user": {
-      "id": "id",
-      "object": "user",
-      "banned": true,
-      "banned_at": 0,
-      "email": "email",
-      "enabled": true,
-      "name": "name",
-      "picture": "picture"
-    }
-  }
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
@@ -8369,23 +6852,6 @@ Unassigns a project role from a user within a project.
 - `object: string`
 
   Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
-
-### Example
-
-```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/users/$USER_ID/roles/$ROLE_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "deleted": true,
-  "object": "object"
-}
-```
 
 ### Example
 
@@ -8519,50 +6985,6 @@ Lists the project roles assigned to a user within a project.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/users/$USER_ID/roles \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "assignment_sources": [
-        {
-          "principal_id": "principal_id",
-          "principal_type": "principal_type"
-        }
-      ],
-      "created_at": 0,
-      "created_by": "created_by",
-      "created_by_user_obj": {
-        "foo": "bar"
-      },
-      "description": "description",
-      "metadata": {
-        "foo": "bar"
-      },
-      "name": "name",
-      "permissions": [
-        "string"
-      ],
-      "predefined_role": true,
-      "resource_type": "resource_type",
-      "updated_at": 0
-    }
-  ],
-  "has_more": true,
-  "next": "next",
-  "object": "list"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/projects/proj_abc123/users/user_abc123/roles \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json"
@@ -8683,43 +7105,6 @@ Retrieves a project role assigned to a user.
   When the role was last updated.
 
   `format: unixtime`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/projects/$PROJECT_ID/users/$USER_ID/roles/$ROLE_ID \
-    -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "assignment_sources": [
-    {
-      "principal_id": "principal_id",
-      "principal_type": "principal_type"
-    }
-  ],
-  "created_at": 0,
-  "created_by": "created_by",
-  "created_by_user_obj": {
-    "foo": "bar"
-  },
-  "description": "description",
-  "metadata": {
-    "foo": "bar"
-  },
-  "name": "name",
-  "permissions": [
-    "string"
-  ],
-  "predefined_role": true,
-  "resource_type": "resource_type",
-  "updated_at": 0
-}
-```
 
 ### Example
 

@@ -84,19 +84,15 @@ All [active models](https://platform.claude.com/docs/en/models/overview?sdk_lang
 
 ### Send your first PDF request
 
-Start with a simple example using the Messages API. You can provide PDFs to Claude in three ways:
+Start with an example that uses the Messages API. To give Claude a PDF, send it in a [`document` content block](https://platform.claude.com/docs/en/api/messages?sdk_languages=cli#document_block_param) with one of three kinds of source. Your platform determines which kinds you can use (see [Availability](https://platform.claude.com/docs/en/build-with-claude/pdf-support?sdk_languages=cli#feature-availability)). Among those kinds, choose by where the PDF is, how large it is, and how often you use it:
 
-1. As a URL reference to a PDF hosted online
-2. As a base64-encoded PDF in `document` content blocks
-3. By a `file_id` from the [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=cli)
-
-<Note>
-  On Claude Models on Google Cloud (Google managed) and Amazon Bedrock, only base64-encoded sources are available. On Microsoft Foundry, the Files API is not supported for deployments hosted on Azure.
-</Note>
+1. **A PDF hosted online:** Reference it by its URL ([Option 1: URL-based PDF document](https://platform.claude.com/docs/en/build-with-claude/pdf-support?sdk_languages=cli#option-1-url-based-pdf-document)).
+2. **A PDF on your local system or without a URL:** Send it as base64-encoded data ([Option 2: Base64-encoded PDF document](https://platform.claude.com/docs/en/build-with-claude/pdf-support?sdk_languages=cli#option-2-base64-encoded-pdf-document)).
+3. **A large PDF or one that you’ll use repeatedly:** Upload it with the [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=cli) and reference it by its `file_id` ([Option 3: Files API](https://platform.claude.com/docs/en/build-with-claude/pdf-support?sdk_languages=cli#option-3-files-api)).
 
 #### Option 1: URL-based PDF document
 
-The simplest approach is to reference a PDF directly from a URL:
+Reference the PDF by its URL:
 
 <CodeGroup>
   ```bash CLI
@@ -140,7 +136,7 @@ The response returns Claude’s analysis as text blocks in `content`, with token
 
 #### Option 2: Base64-encoded PDF document
 
-If you need to send PDFs from your local system or when a URL isn’t available:
+Send the PDF as base64-encoded data in the request itself. Most of the following examples download a sample PDF and encode it, so they need no local file. To send a local file in those examples, replace the lines that download and encode the PDF with the commented-out lines:
 
 <CodeGroup>
   ```bash CLI
@@ -192,20 +188,16 @@ When you send a PDF to Claude, the following steps occur:
 <Steps>
   <Step title="The system extracts the contents of the document.">
     * The system converts each page of the document into an image.
-    * The text from each page is extracted and provided alongside each page’s image.
+    * The system extracts the text from each page and provides it alongside that page’s image.
   </Step>
 
   <Step title="Claude analyzes both the text and images.">
-    * Documents are provided as a combination of text and images for analysis.
-    * This allows users to ask for insights on visual elements of a PDF, such as charts, diagrams, and other non-textual content.
+    * Claude receives each document as a combination of text and images.
+    * Because Claude receives an image of each page, you can ask for insights on visual elements of a PDF, such as charts, diagrams, and other non-textual content.
   </Step>
 
-  <Step title="Claude responds, referencing the PDF’s contents if relevant.">
-    Claude can reference both textual and visual content when it responds. You can further improve performance by integrating PDF support with:
-
-    * [Use prompt caching](https://platform.claude.com/docs/en/build-with-claude/pdf-support?sdk_languages=cli#use-prompt-caching): To improve performance for repeated analysis.
-    * [Process document batches](https://platform.claude.com/docs/en/build-with-claude/pdf-support?sdk_languages=cli#process-document-batches): To process documents at high volume.
-    * [Tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli): To extract specific information from documents for use as tool inputs.
+  <Step title="Claude uses the PDF’s contents in its response if relevant.">
+    Claude can draw on both textual and visual content in its response.
   </Step>
 </Steps>
 
@@ -214,11 +206,17 @@ When you send a PDF to Claude, the following steps occur:
 The token count of a PDF file depends on the total text extracted from the document and the number of pages:
 
 * Text token costs: Each page typically uses 1,500–3,000 tokens depending on content density. Standard API pricing applies with no additional PDF fees.
-* Image token costs: Because each page is converted into an image, the same [image-based cost calculations](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#evaluate-image-size) are applied.
+* Image token costs: Each page’s image uses at most 1,568 visual tokens on every model because the API fits page images within the Standard resolution tier’s limits. For how to count an image’s visual tokens, see [Resolution and token cost](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#evaluate-image-size).
 
 You can use [token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli) to estimate costs for your specific PDFs.
 
 ## Optimize PDF processing
+
+You can combine PDF support with other features:
+
+* [Use prompt caching](https://platform.claude.com/docs/en/build-with-claude/pdf-support?sdk_languages=cli#use-prompt-caching) to improve performance for repeated analysis.
+* [Process document batches](https://platform.claude.com/docs/en/build-with-claude/pdf-support?sdk_languages=cli#process-document-batches) to handle documents at high volume.
+* [Use tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli) to have Claude extract specific information from documents for use as tool inputs.
 
 ### Improve performance
 
@@ -309,7 +307,7 @@ Batches process asynchronously. To check progress and retrieve results once proc
 
 <CardGroup cols={2}>
   <Card title="Vision" icon="image" href="https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli">
-    Claude’s vision capabilities allow it to process and analyze images, opening up exciting possibilities for multimodal interaction.
+    Learn how to count an image’s visual tokens and which limitations PDFs share with other vision tasks.
   </Card>
 
   <Card title="Try PDF examples" icon="file" href="https://platform.claude.com/cookbook/multimodal-getting-started-with-vision">

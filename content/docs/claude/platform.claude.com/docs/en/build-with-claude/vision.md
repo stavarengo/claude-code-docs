@@ -1,7 +1,7 @@
 ---
 title: Vision
 url: https://platform.claude.com/docs/en/build-with-claude/vision
-description: Claude's vision capabilities allow it to process and analyze images, opening up exciting possibilities for multimodal interaction.
+description: Send images to Claude through the API and learn which limits and costs apply.
 featureMetadata:
   status: stable
   supportedModels:
@@ -117,6 +117,8 @@ For images you’ll use repeatedly or when you want to avoid encoding overhead, 
 <Tip>
   In multi-turn conversations and agentic workflows, each request resends the full conversation history. If images are base64-encoded, the full image bytes are included in the payload on every turn, which can significantly increase request size and latency as the conversation grows. Uploading images to the Files API and referencing them by `file_id` keeps request payloads small regardless of how many images accumulate in the conversation history.
 </Tip>
+
+To follow the examples with the image that they use, first download the [sample image](https://platform.claude.com/docs/images/vision-example.jpg) to your working directory. Each example uploads that file, `vision-example.jpg`, and then references it by the `file_id` that the upload returns:
 
 <CodeGroup>
   ```bash CLI
@@ -286,7 +288,7 @@ Always carefully review and verify Claude’s image interpretations, especially 
   </Accordion>
 
   <Accordion title="Is there a limit to the image file size I can upload?">
-    Yes. See [Request limits](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#request-limits) for per-image and overall request size limits across the Claude API, Amazon Bedrock, Claude Models on Google Cloud (Google managed), and claude.ai.
+    Yes. See [Request limits](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli#request-limits) for the size limits on each image and on the whole request.
   </Accordion>
 
   <Accordion title="How many images can I include in one request?">

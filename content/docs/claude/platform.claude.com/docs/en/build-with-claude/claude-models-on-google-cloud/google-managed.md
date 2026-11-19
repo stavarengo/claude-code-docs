@@ -1,7 +1,7 @@
 ---
 title: Claude Models on Google Cloud (Google managed)
 url: https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed
-description: Google operates Claude Models on Google Cloud (Google managed) as part of Google Cloud's Agent Platform. You can call Claude with Anthropic's client SDKs.
+description: Set up Claude Models on Google Cloud (Google managed), which Google operates as part of Google Cloud's Agent Platform. Then, call Claude with the Anthropic SDK or cURL.
 ---
 
 [Claude Models on Google Cloud](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/overview?sdk_languages=cli) compares the two Google Cloud offerings. It also shows how to tell which one you use.
@@ -79,9 +79,8 @@ The [client SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview
 
   <Tab title="Ruby">
     ```bash
-    # Gemfile
-    gem "anthropic"
-    gem "googleauth"
+    bundle add anthropic
+    bundle add googleauth
     ```
   </Tab>
 </Tabs>
@@ -95,7 +94,11 @@ Requests to Claude Models on Google Cloud (Google managed) go to an Agent Platfo
 A request is nearly identical to a [Messages API](https://platform.claude.com/docs/en/api/messages/create?sdk_languages=cli) request. It differs in two main ways:
 
 * **Model:** The endpoint URL names the model. In a cURL request, leave `model` out of the body.
-* **Version:** In a cURL request, pass `anthropic_version` in the body, not as a header. Set it to `vertex-2023-10-16`, or to [API version `2026-10-21`](https://platform.claude.com/docs/en/api/migration-2026-10-21?sdk_languages=cli).
+* **Version:** In a cURL request, pass `anthropic_version` in the body and not as a header. Set it to `vertex-2023-10-16` or to [API version `2026-10-21`](https://platform.claude.com/docs/en/api/migration-2026-10-21?sdk_languages=cli).
+
+The SDK handles both differences for you. It moves your `model` value into the URL and sets `anthropic_version` to the API version that it uses with the Claude API. For the model IDs to pass, see [API model IDs](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=cli#api-model-ids).
+
+In the following examples, the SDK client authenticates with Application Default Credentials. To set up Application Default Credentials, see [Before making API calls](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=cli#before-making-api-calls).
 
 The following examples use the global endpoint. For the other endpoint types, see [Global, multi-region, and regional endpoints](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=cli#global-multi-region-and-regional-endpoints).
 

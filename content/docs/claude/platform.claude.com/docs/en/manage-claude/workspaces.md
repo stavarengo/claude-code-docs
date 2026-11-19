@@ -239,7 +239,7 @@ Some resources are managed differently:
 
   * Tunnels are created in a workspace. The Console **MCP tunnels** list and the MCP server picker for Claude Managed Agents show tunnels in the current workspace only.
   * The cap of 10 active tunnels applies organization-wide.
-  * Managing tunnels requires the Manage tunnels permission, which organization admins and owners have by default. Organization developers can view tunnels but not change them.
+  * In the Claude Console, managing tunnels requires the admin organization role. Organization developers can view tunnels there but not change them.
 
 * **Workspaces** themselves and **organization members** are managed at the organization level through the [Admin API](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli), using an Admin API key, an `org:admin` OAuth token, or a personal or service account key that isn’t scoped to a specific workspace.
 
@@ -301,10 +301,12 @@ Workspace limits can keep a workspace below your organization’s limits, but th
 * **Rate limits:** Limit requests per minute, input tokens per minute, or output tokens per minute. To set these, go to [Rate limits in the Claude Console](https://platform.claude.com/usage/limits), select the workspace from the **Workspace** dropdown menu, and click **Edit** next to a model.
 
 <Note>
-  - You cannot set spend limits on the Default Workspace.
+  - On [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli) and [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), you cannot set spend limits on the Default Workspace.
   - If not set, workspace limits match the organization’s limits.
   - Organization-wide limits always apply, even if workspace limits add up to more.
 </Note>
+
+A spend limit on the Default Workspace might not count or stop some usage in that workspace. This includes usage from the Claude Console (such as playground) and from Claude Managed Agents sessions. It also includes Claude Code or Claude Desktop usage when a member signs in with a Claude Console account and uses the Default Workspace. Your organization’s [spend limit](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli#setting-your-own-spend-limit) applies to all of this usage.
 
 For detailed information on rate limits and how they work, see [Rate limits](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli). You can also read your current organization and workspace rate limits and set workspace rate limits programmatically with the [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api?sdk_languages=cli), which stores a value above the organization’s limit but still enforces the lower of the two.
 

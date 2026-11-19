@@ -49,30 +49,6 @@ Retrieve the parsed contents of a vector store file.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID/content \
-    -H 'OpenAI-Beta: assistants=v2' \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "text": "text",
-      "type": "type"
-    }
-  ],
-  "has_more": true,
-  "next_page": "next_page",
-  "object": "vector_store.file_content.page"
-}
-```
-
-### Example
-
-```http
 curl \
 https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 -H "Authorization: Bearer $OPENAI_API_KEY"
@@ -280,45 +256,6 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files \
-    -H 'Content-Type: application/json' \
-    -H 'OpenAI-Beta: assistants=v2' \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -d '{
-          "file_id": "file_id"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "last_error": {
-    "code": "server_error",
-    "message": "message"
-  },
-  "object": "vector_store.file",
-  "status": "in_progress",
-  "usage_bytes": 0,
-  "vector_store_id": "vector_store_id",
-  "attributes": {
-    "foo": "string"
-  },
-  "chunking_strategy": {
-    "static": {
-      "chunk_overlap_tokens": 0,
-      "max_chunk_size_tokens": 100
-    },
-    "type": "static"
-  }
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -H "Content-Type: application/json" \
@@ -369,25 +306,6 @@ Delete a vector store file. This will remove the file from the vector store but 
   - `object: "vector_store.file.deleted"`
 
     - `"vector_store.file.deleted"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID \
-    -X DELETE \
-    -H 'OpenAI-Beta: assistants=v2' \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "deleted": true,
-  "object": "vector_store.file.deleted"
-}
-```
 
 ### Example
 
@@ -576,49 +494,6 @@ Returns a list of vector store files.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files \
-    -H 'OpenAI-Beta: assistants=v2' \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "created_at": 0,
-      "last_error": {
-        "code": "server_error",
-        "message": "message"
-      },
-      "object": "vector_store.file",
-      "status": "in_progress",
-      "usage_bytes": 0,
-      "vector_store_id": "vector_store_id",
-      "attributes": {
-        "foo": "string"
-      },
-      "chunking_strategy": {
-        "static": {
-          "chunk_overlap_tokens": 0,
-          "max_chunk_size_tokens": 100
-        },
-        "type": "static"
-      }
-    }
-  ],
-  "first_id": "file-abc123",
-  "has_more": false,
-  "last_id": "file-abc456",
-  "object": "list"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/vector_stores/vs_abc123/files \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
@@ -783,41 +658,6 @@ Retrieves a vector store file.
         Always `other`.
 
         - `"other"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID \
-    -H 'OpenAI-Beta: assistants=v2' \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "last_error": {
-    "code": "server_error",
-    "message": "message"
-  },
-  "object": "vector_store.file",
-  "status": "in_progress",
-  "usage_bytes": 0,
-  "vector_store_id": "vector_store_id",
-  "attributes": {
-    "foo": "string"
-  },
-  "chunking_strategy": {
-    "static": {
-      "chunk_overlap_tokens": 0,
-      "max_chunk_size_tokens": 100
-    },
-    "type": "static"
-  }
-}
-```
 
 ### Example
 
@@ -989,47 +829,6 @@ Content type: `application/json`
         Always `other`.
 
         - `"other"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID \
-    -H 'Content-Type: application/json' \
-    -H 'OpenAI-Beta: assistants=v2' \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -d '{
-          "attributes": {
-            "foo": "string"
-          }
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "last_error": {
-    "code": "server_error",
-    "message": "message"
-  },
-  "object": "vector_store.file",
-  "status": "in_progress",
-  "usage_bytes": 0,
-  "vector_store_id": "vector_store_id",
-  "attributes": {
-    "foo": "string"
-  },
-  "chunking_strategy": {
-    "static": {
-      "chunk_overlap_tokens": 0,
-      "max_chunk_size_tokens": 100
-    },
-    "type": "static"
-  }
-}
-```
 
 ### Example
 

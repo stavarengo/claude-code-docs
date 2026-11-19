@@ -794,6 +794,54 @@ compacted_response = client.responses.compact(
 print(json.dumps(compacted_response.model_dump(), indent=2))
 ```
 
+```go
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"os"
+
+	"github.com/openai/openai-go/v3"
+	"github.com/openai/openai-go/v3/responses"
+)
+
+func main() {
+	client := openai.NewClient()
+	ctx := context.Background()
+	input := responses.ResponseInputParam{
+		responses.ResponseInputItemParamOfMessage("Write a very long poem about a dog.", responses.EasyInputMessageRoleUser),
+	}
+	response, err := client.Responses.New(ctx, responses.ResponseNewParams{
+		Model: "gpt-5.2",
+		Input: responses.ResponseNewParamsInputUnion{OfInputItemList: input},
+	})
+	if err != nil {
+		panic(err)
+	}
+	if response.Status != "completed" {
+		panic("Response did not complete")
+	}
+	for _, item := range response.Output {
+		var converted responses.ResponseInputItemUnion
+		if err := json.Unmarshal([]byte(item.RawJSON()), &converted); err != nil {
+			panic(err)
+		}
+		input = append(input, converted.ToParam())
+	}
+	compaction, err := client.Responses.Compact(ctx, responses.ResponseCompactParams{
+		Model: "gpt-5.2",
+		Input: responses.ResponseCompactParamsInputUnion{OfResponseInputItemArray: input},
+	})
+	if err != nil {
+		panic(err)
+	}
+	if err := json.NewEncoder(os.Stdout).Encode(compaction.Output); err != nil {
+		panic(err)
+	}
+}
+```
+
 ```ruby
 require "openai"
 

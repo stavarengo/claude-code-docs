@@ -4983,7 +4983,7 @@ the `background` parameter set to `true` can be cancelled.
 
   - `model: ResponsesModel`
 
-    Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+    Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](/api/docs/models)
     to browse and compare available models.
@@ -10707,159 +10707,6 @@ the `background` parameter set to `true` can be cancelled.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/responses/$RESPONSE_ID/cancel \
-    -X POST \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "resp_67ccd3a9da748190baa7f1570fe91ac604becb25c45c1d41",
-  "object": "response",
-  "access_programs": null,
-  "created_at": 1741476777,
-  "status": "completed",
-  "completed_at": 1741476778,
-  "error": null,
-  "incomplete_details": null,
-  "instructions": null,
-  "max_output_tokens": null,
-  "model": "gpt-6-astra",
-  "output": [
-    {
-      "type": "message",
-      "id": "msg_67ccd3acc8d48190a77525dc6de64b4104becb25c45c1d41",
-      "status": "completed",
-      "role": "assistant",
-      "content": [
-        {
-          "type": "output_text",
-          "text": "The image depicts a scenic landscape with a wooden boardwalk or pathway leading through lush, green grass under a blue sky with some clouds. The setting suggests a peaceful natural area, possibly a park or nature reserve. There are trees and shrubs in the background.",
-          "annotations": [],
-          "logprobs": []
-        }
-      ]
-    }
-  ],
-  "parallel_tool_calls": true,
-  "previous_response_id": null,
-  "reasoning": {
-    "effort": null,
-    "summary": null,
-    "context": null
-  },
-  "store": true,
-  "temperature": 1,
-  "text": {
-    "format": {
-      "type": "text"
-    }
-  },
-  "tool_choice": "auto",
-  "tools": [],
-  "top_p": 1,
-  "truncation": "disabled",
-  "usage": {
-    "input_tokens": 328,
-    "input_tokens_details": {
-      "cached_tokens": 0,
-      "cache_write_tokens": 0
-    },
-    "output_tokens": 52,
-    "output_tokens_details": {
-      "reasoning_tokens": 0
-    },
-    "total_tokens": 380
-  },
-  "tool_usage": {
-    "image_gen": {
-      "input_tokens": 0,
-      "input_tokens_details": {
-        "text_tokens": 0,
-        "image_tokens": 0
-      },
-      "output_tokens": 0,
-      "output_tokens_details": {
-        "text_tokens": 0,
-        "image_tokens": 0
-      },
-      "total_tokens": 0
-    },
-    "web_search": {
-      "num_requests": 0
-    }
-  },
-  "user": null,
-  "metadata": {},
-  "conversation": {
-    "id": "id"
-  },
-  "image": {
-    "context_compression": "enabled"
-  },
-  "input_transformations": [
-    {
-      "id": "id",
-      "action": "removed",
-      "reason": "organization_mismatch",
-      "type": "reasoning"
-    }
-  ],
-  "moderation": {
-    "input": {
-      "categories": {
-        "foo": true
-      },
-      "category_applied_input_types": {
-        "foo": [
-          "text"
-        ]
-      },
-      "category_scores": {
-        "foo": 0
-      },
-      "flagged": true,
-      "model": "model",
-      "type": "moderation_result"
-    },
-    "output": {
-      "categories": {
-        "foo": true
-      },
-      "category_applied_input_types": {
-        "foo": [
-          "text"
-        ]
-      },
-      "category_scores": {
-        "foo": 0
-      },
-      "flagged": true,
-      "model": "model",
-      "type": "moderation_result"
-    }
-  },
-  "output_text": "output_text",
-  "prompt_cache_diagnostics": {
-    "cache_missed_tokens": 0,
-    "reason": "model_changed",
-    "type": "cache_miss",
-    "comparison_reusable_tokens": 0
-  },
-  "prompt_cache_options": {
-    "mode": "implicit",
-    "ttl": "30m",
-    "comparison_response_id": "comparison_response_id"
-  },
-  "service_tier": "auto"
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/responses/resp_123/cancel \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY"
@@ -10880,7 +10727,7 @@ curl -X POST https://api.openai.com/v1/responses/resp_123/cancel \
   "incomplete_details": null,
   "instructions": null,
   "max_output_tokens": null,
-  "model": "gpt-6-astra",
+  "model": "gpt-6.2-astra",
   "output": [
     {
       "type": "message",
@@ -10934,11 +10781,11 @@ Content type: `application/json`
 
 - `model: "gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more or string or null`
 
-  Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/api/docs/models) to browse and compare available models.
+  Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/api/docs/models) to browse and compare available models.
 
   - `"gpt-6-astra" or "gpt-6.2-astra" or "gpt-6.1-sol" or 112 more`
 
-    Model ID used to generate the response, like `gpt-6-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/api/docs/models) to browse and compare available models.
+    Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](/api/docs/models) to browse and compare available models.
 
     - `"gpt-6-astra"`
 
@@ -20683,83 +20530,11 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/responses/compact \
-    -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -d '{
-          "model": "gpt-6-astra",
-          "previous_response_id": "resp_123"
-        }'
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "resp_001",
-  "created_at": 1731459200,
-  "object": "response.compaction",
-  "output": [
-    {
-      "id": "msg_001",
-      "status": "completed",
-      "type": "message",
-      "role": "user",
-      "content": [
-        {
-          "type": "input_text",
-          "text": "Summarize our launch checklist from last week."
-        }
-      ]
-    },
-    {
-      "id": "msg_002",
-      "status": "completed",
-      "type": "message",
-      "role": "user",
-      "content": [
-        {
-          "type": "input_text",
-          "text": "You are performing a CONTEXT CHECKPOINT COMPACTION..."
-        }
-      ]
-    },
-    {
-      "type": "compaction",
-      "id": "cmp_001",
-      "encrypted_content": "encrypted-summary"
-    }
-  ],
-  "usage": {
-    "input_tokens": 42897,
-    "input_tokens_details": {
-      "cache_write_tokens": 0,
-      "cached_tokens": 0,
-      "cache_write_tokens_details": {
-        "ttl_12h_tokens": 0,
-        "ttl_30m_tokens": 0
-      }
-    },
-    "output_tokens": 12000,
-    "output_tokens_details": {
-      "reasoning_tokens": 0
-    },
-    "total_tokens": 54897
-  },
-  "image": {
-    "context_compression": "disabled"
-  }
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/responses/compact \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-      "model": "gpt-6-astra",
+      "model": "gpt-6.2-astra",
       "input": [
         {
           "role": "user",
@@ -25816,7 +25591,7 @@ Content type: `application/json`
 
 - `model: optional ResponsesModel`
 
-  Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+  Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
   offers a wide range of models with different capabilities, performance
   characteristics, and price points. Refer to the [model guide](/api/docs/models)
   to browse and compare available models.
@@ -32566,7 +32341,7 @@ Content type: `application/json`
 
   - `model: ResponsesModel`
 
-    Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+    Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](/api/docs/models)
     to browse and compare available models.
@@ -38293,7 +38068,10 @@ Content type: `application/json`
 curl https://api.openai.com/v1/responses \
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -d '"string"'
+    -d '{
+          "model": "gpt-6.2-astra",
+          "input": "Write a one-sentence bedtime story about a unicorn."
+        }'
 ```
 
 #### 200 — Example
@@ -38310,7 +38088,7 @@ curl https://api.openai.com/v1/responses \
   "incomplete_details": null,
   "instructions": null,
   "max_output_tokens": null,
-  "model": "gpt-6-astra",
+  "model": "gpt-6.2-astra",
   "output": [
     {
       "type": "message",
@@ -38448,7 +38226,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "input": [
       {
         "role": "user",
@@ -38481,7 +38259,7 @@ curl https://api.openai.com/v1/responses \
   "instructions": null,
   "max_output_tokens": null,
   "max_tool_calls": null,
-  "model": "gpt-6-astra",
+  "model": "gpt-6.2-astra",
   "output": [
     {
       "id": "msg_686eef60d3e081a29283bdcbc4322fd90e34c516d176ff86",
@@ -38541,7 +38319,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "tools": [{
       "type": "file_search",
       "vector_store_ids": ["vs_1234567890"],
@@ -38565,7 +38343,7 @@ curl https://api.openai.com/v1/responses \
   "incomplete_details": null,
   "instructions": null,
   "max_output_tokens": null,
-  "model": "gpt-6-astra",
+  "model": "gpt-6.2-astra",
   "output": [
     {
       "type": "file_search_call",
@@ -38694,7 +38472,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "input": "What is the weather like in Boston today?",
     "tools": [
       {
@@ -38735,7 +38513,7 @@ curl https://api.openai.com/v1/responses \
   "incomplete_details": null,
   "instructions": null,
   "max_output_tokens": null,
-  "model": "gpt-6-astra",
+  "model": "gpt-6.2-astra",
   "output": [
     {
       "type": "function_call",
@@ -38814,7 +38592,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "input": [
       {
         "role": "user",
@@ -38844,7 +38622,7 @@ curl https://api.openai.com/v1/responses \
   "incomplete_details": null,
   "instructions": null,
   "max_output_tokens": null,
-  "model": "gpt-6-astra",
+  "model": "gpt-6.2-astra",
   "output": [
     {
       "type": "message",
@@ -38902,7 +38680,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "input": "How much wood would a woodchuck chuck?",
     "reasoning": {
       "effort": "high"
@@ -38924,7 +38702,7 @@ curl https://api.openai.com/v1/responses \
   "incomplete_details": null,
   "instructions": null,
   "max_output_tokens": null,
-  "model": "gpt-6-astra",
+  "model": "gpt-6.2-astra",
   "output": [
     {
       "type": "message",
@@ -38982,7 +38760,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "instructions": "You are a helpful assistant.",
     "input": "Hello!",
     "stream": true
@@ -38993,10 +38771,10 @@ curl https://api.openai.com/v1/responses \
 
 ```json
 event: response.created
-data: {"type":"response.created","response":{"id":"resp_67c9fdcecf488190bdd9a0409de3a1ec07b8b0ad4e5eb654","object":"response","access_programs":null,"created_at":1741290958,"status":"in_progress","error":null,"incomplete_details":null,"instructions":"You are a helpful assistant.","max_output_tokens":null,"model":"gpt-6-astra","output":[],"parallel_tool_calls":true,"previous_response_id":null,"reasoning":{"effort":null,"summary":null},"store":true,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+data: {"type":"response.created","response":{"id":"resp_67c9fdcecf488190bdd9a0409de3a1ec07b8b0ad4e5eb654","object":"response","access_programs":null,"created_at":1741290958,"status":"in_progress","error":null,"incomplete_details":null,"instructions":"You are a helpful assistant.","max_output_tokens":null,"model":"gpt-6.2-astra","output":[],"parallel_tool_calls":true,"previous_response_id":null,"reasoning":{"effort":null,"summary":null},"store":true,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
 
 event: response.in_progress
-data: {"type":"response.in_progress","response":{"id":"resp_67c9fdcecf488190bdd9a0409de3a1ec07b8b0ad4e5eb654","object":"response","access_programs":null,"created_at":1741290958,"status":"in_progress","error":null,"incomplete_details":null,"instructions":"You are a helpful assistant.","max_output_tokens":null,"model":"gpt-6-astra","output":[],"parallel_tool_calls":true,"previous_response_id":null,"reasoning":{"effort":null,"summary":null},"store":true,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+data: {"type":"response.in_progress","response":{"id":"resp_67c9fdcecf488190bdd9a0409de3a1ec07b8b0ad4e5eb654","object":"response","access_programs":null,"created_at":1741290958,"status":"in_progress","error":null,"incomplete_details":null,"instructions":"You are a helpful assistant.","max_output_tokens":null,"model":"gpt-6.2-astra","output":[],"parallel_tool_calls":true,"previous_response_id":null,"reasoning":{"effort":null,"summary":null},"store":true,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_p":1.0,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
 
 event: response.output_item.added
 data: {"type":"response.output_item.added","output_index":0,"item":{"id":"msg_67c9fdcf37fc8190ba82116e33fb28c507b8b0ad4e5eb654","type":"message","status":"in_progress","role":"assistant","content":[]},"sequence_number":2}
@@ -39019,7 +38797,7 @@ event: response.output_item.done
 data: {"type":"response.output_item.done","output_index":0,"item":{"id":"msg_67c9fdcf37fc8190ba82116e33fb28c507b8b0ad4e5eb654","type":"message","status":"completed","role":"assistant","content":[{"type":"output_text","text":"Hi there! How can I assist you today?","annotations":[],"logprobs":[]}]},"sequence_number":12}
 
 event: response.completed
-data: {"type":"response.completed","response":{"id":"resp_67c9fdcecf488190bdd9a0409de3a1ec07b8b0ad4e5eb654","object":"response","access_programs":null,"created_at":1741290958,"status":"completed","error":null,"incomplete_details":null,"instructions":"You are a helpful assistant.","max_output_tokens":null,"model":"gpt-6-astra","output":[{"id":"msg_67c9fdcf37fc8190ba82116e33fb28c507b8b0ad4e5eb654","type":"message","status":"completed","role":"assistant","content":[{"type":"output_text","text":"Hi there! How can I assist you today?","annotations":[],"logprobs":[]}]}],"parallel_tool_calls":true,"previous_response_id":null,"reasoning":{"effort":null,"summary":null},"store":true,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_p":1.0,"truncation":"disabled","usage":{"input_tokens":37,"output_tokens":11,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":48,"input_tokens_details":{"cached_tokens":0,"cache_write_tokens":0}},"user":null,"metadata":{}},"sequence_number":13}
+data: {"type":"response.completed","response":{"id":"resp_67c9fdcecf488190bdd9a0409de3a1ec07b8b0ad4e5eb654","object":"response","access_programs":null,"created_at":1741290958,"status":"completed","error":null,"incomplete_details":null,"instructions":"You are a helpful assistant.","max_output_tokens":null,"model":"gpt-6.2-astra","output":[{"id":"msg_67c9fdcf37fc8190ba82116e33fb28c507b8b0ad4e5eb654","type":"message","status":"completed","role":"assistant","content":[{"type":"output_text","text":"Hi there! How can I assist you today?","annotations":[],"logprobs":[]}]}],"parallel_tool_calls":true,"previous_response_id":null,"reasoning":{"effort":null,"summary":null},"store":true,"temperature":1.0,"text":{"format":{"type":"text"}},"tool_choice":"auto","tools":[],"top_p":1.0,"truncation":"disabled","usage":{"input_tokens":37,"output_tokens":11,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":48,"input_tokens_details":{"cached_tokens":0,"cache_write_tokens":0}},"user":null,"metadata":{}},"sequence_number":13}
 
 ```
 
@@ -39030,7 +38808,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "input": "Tell me a three sentence bedtime story about a unicorn."
   }'
 ```
@@ -39049,7 +38827,7 @@ curl https://api.openai.com/v1/responses \
   "incomplete_details": null,
   "instructions": null,
   "max_output_tokens": null,
-  "model": "gpt-6-astra",
+  "model": "gpt-6.2-astra",
   "output": [
     {
       "type": "message",
@@ -39107,7 +38885,7 @@ curl https://api.openai.com/v1/responses \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-6-astra",
+    "model": "gpt-6.2-astra",
     "tools": [{ "type": "web_search_preview" }],
     "input": "What was a positive news story from today?"
   }'
@@ -39127,7 +38905,7 @@ curl https://api.openai.com/v1/responses \
   "incomplete_details": null,
   "instructions": null,
   "max_output_tokens": null,
-  "model": "gpt-6-astra",
+  "model": "gpt-6.2-astra",
   "output": [
     {
       "type": "web_search_call",
@@ -39239,24 +39017,6 @@ Deletes a model response with the given ID.
 - `object: "response.deleted" (default: "response.deleted")`
 
   - `"response.deleted"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/responses/$RESPONSE_ID \
-    -X DELETE \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "id",
-  "deleted": true,
-  "object": "response.deleted"
-}
-```
 
 ### Example
 
@@ -44301,7 +44061,7 @@ Retrieves a model response with the given ID.
 
   - `model: ResponsesModel`
 
-    Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+    Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](/api/docs/models)
     to browse and compare available models.
@@ -50025,158 +49785,6 @@ Retrieves a model response with the given ID.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/responses/$RESPONSE_ID \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "id": "resp_67ccd3a9da748190baa7f1570fe91ac604becb25c45c1d41",
-  "object": "response",
-  "access_programs": null,
-  "created_at": 1741476777,
-  "status": "completed",
-  "completed_at": 1741476778,
-  "error": null,
-  "incomplete_details": null,
-  "instructions": null,
-  "max_output_tokens": null,
-  "model": "gpt-6-astra",
-  "output": [
-    {
-      "type": "message",
-      "id": "msg_67ccd3acc8d48190a77525dc6de64b4104becb25c45c1d41",
-      "status": "completed",
-      "role": "assistant",
-      "content": [
-        {
-          "type": "output_text",
-          "text": "The image depicts a scenic landscape with a wooden boardwalk or pathway leading through lush, green grass under a blue sky with some clouds. The setting suggests a peaceful natural area, possibly a park or nature reserve. There are trees and shrubs in the background.",
-          "annotations": [],
-          "logprobs": []
-        }
-      ]
-    }
-  ],
-  "parallel_tool_calls": true,
-  "previous_response_id": null,
-  "reasoning": {
-    "effort": null,
-    "summary": null,
-    "context": null
-  },
-  "store": true,
-  "temperature": 1,
-  "text": {
-    "format": {
-      "type": "text"
-    }
-  },
-  "tool_choice": "auto",
-  "tools": [],
-  "top_p": 1,
-  "truncation": "disabled",
-  "usage": {
-    "input_tokens": 328,
-    "input_tokens_details": {
-      "cached_tokens": 0,
-      "cache_write_tokens": 0
-    },
-    "output_tokens": 52,
-    "output_tokens_details": {
-      "reasoning_tokens": 0
-    },
-    "total_tokens": 380
-  },
-  "tool_usage": {
-    "image_gen": {
-      "input_tokens": 0,
-      "input_tokens_details": {
-        "text_tokens": 0,
-        "image_tokens": 0
-      },
-      "output_tokens": 0,
-      "output_tokens_details": {
-        "text_tokens": 0,
-        "image_tokens": 0
-      },
-      "total_tokens": 0
-    },
-    "web_search": {
-      "num_requests": 0
-    }
-  },
-  "user": null,
-  "metadata": {},
-  "conversation": {
-    "id": "id"
-  },
-  "image": {
-    "context_compression": "enabled"
-  },
-  "input_transformations": [
-    {
-      "id": "id",
-      "action": "removed",
-      "reason": "organization_mismatch",
-      "type": "reasoning"
-    }
-  ],
-  "moderation": {
-    "input": {
-      "categories": {
-        "foo": true
-      },
-      "category_applied_input_types": {
-        "foo": [
-          "text"
-        ]
-      },
-      "category_scores": {
-        "foo": 0
-      },
-      "flagged": true,
-      "model": "model",
-      "type": "moderation_result"
-    },
-    "output": {
-      "categories": {
-        "foo": true
-      },
-      "category_applied_input_types": {
-        "foo": [
-          "text"
-        ]
-      },
-      "category_scores": {
-        "foo": 0
-      },
-      "flagged": true,
-      "model": "model",
-      "type": "moderation_result"
-    }
-  },
-  "output_text": "output_text",
-  "prompt_cache_diagnostics": {
-    "cache_missed_tokens": 0,
-    "reason": "model_changed",
-    "type": "cache_miss",
-    "comparison_reusable_tokens": 0
-  },
-  "prompt_cache_options": {
-    "mode": "implicit",
-    "ttl": "30m",
-    "comparison_response_id": "comparison_response_id"
-  },
-  "service_tier": "auto"
-}
-```
-
-### Example
-
-```http
 curl https://api.openai.com/v1/responses/resp_123 \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY"
@@ -50196,7 +49804,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
   "incomplete_details": null,
   "instructions": null,
   "max_output_tokens": null,
-  "model": "gpt-6-astra",
+  "model": "gpt-6.2-astra",
   "output": [
     {
       "type": "message",
@@ -60809,7 +60417,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
   - `model: ResponsesModel`
 
-    Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+    Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](/api/docs/models)
     to browse and compare available models.
@@ -71727,7 +71335,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
     - `model: ResponsesModel`
 
-      Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+      Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
       characteristics, and price points. Refer to the [model guide](/api/docs/models)
       to browse and compare available models.
@@ -83166,7 +82774,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
     - `model: ResponsesModel`
 
-      Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+      Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
       characteristics, and price points. Refer to the [model guide](/api/docs/models)
       to browse and compare available models.
@@ -94068,7 +93676,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
     - `model: ResponsesModel`
 
-      Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+      Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
       characteristics, and price points. Refer to the [model guide](/api/docs/models)
       to browse and compare available models.
@@ -105175,7 +104783,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
     - `model: ResponsesModel`
 
-      Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+      Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
       characteristics, and price points. Refer to the [model guide](/api/docs/models)
       to browse and compare available models.
@@ -115914,7 +115522,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
     - `model: ResponsesModel`
 
-      Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+      Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
       characteristics, and price points. Refer to the [model guide](/api/docs/models)
       to browse and compare available models.
@@ -141714,7 +141322,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
     - `model: ResponsesModel`
 
-      Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+      Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
       characteristics, and price points. Refer to the [model guide](/api/docs/models)
       to browse and compare available models.
@@ -154505,7 +154113,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
       - `model: ResponsesModel`
 
-        Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+        Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
         offers a wide range of models with different capabilities, performance
         characteristics, and price points. Refer to the [model guide](/api/docs/models)
         to browse and compare available models.
@@ -167155,7 +166763,7 @@ curl https://api.openai.com/v1/responses/resp_123 \
 
     - `model: optional ResponsesModel`
 
-      Model ID used to generate the response, like `gpt-6-astra`. OpenAI
+      Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
       characteristics, and price points. Refer to the [model guide](/api/docs/models)
       to browse and compare available models.
@@ -175473,42 +175081,6 @@ Returns a list of input items for a given response.
     The type of object returned, must be `list`.
 
     - `"list"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/responses/$RESPONSE_ID/input_items \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "data": [
-    {
-      "id": "id",
-      "content": [
-        {
-          "text": "text",
-          "type": "input_text",
-          "prompt_cache_breakpoint": {
-            "mode": "explicit",
-            "ttl": "30m"
-          }
-        }
-      ],
-      "role": "user",
-      "type": "message",
-      "status": "in_progress"
-    }
-  ],
-  "first_id": "first_id",
-  "has_more": true,
-  "last_id": "last_id",
-  "object": "list"
-}
-```
 
 ### Example
 
@@ -186366,28 +185938,11 @@ Content type: `application/json`
 ### Example
 
 ```http
-curl https://api.openai.com/v1/responses/input_tokens \
-    -X POST \
-    -H "Authorization: Bearer $OPENAI_API_KEY"
-```
-
-#### 200 — Example
-
-```json
-{
-  "input_tokens": 123,
-  "object": "response.input_tokens"
-}
-```
-
-### Example
-
-```http
 curl -X POST https://api.openai.com/v1/responses/input_tokens \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-      "model": "gpt-6-astra",
+      "model": "gpt-6.2-astra",
       "input": "Tell me a joke."
     }'
 ```
