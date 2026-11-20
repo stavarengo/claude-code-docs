@@ -20,14 +20,16 @@ Learn how to [get started with GPT-Live](/api/docs/guides/live), [configure dele
 
 ## Pricing
 
-Voice sessions cost $0.05 per minute, billed per second. Backend model and tool usage is billed separately.
+Voice sessions are billed per second. Backend model and tool usage is billed separately.
 
 ### Live session duration
 
 | Metric | Price | Unit |
 | --- | ---: | --- |
-| Per minute | $0.05 | minute |
+| Active | $0.05 | minute |
+| Standby | $0.02 | minute |
 
+- The lower standby rate applies to WebRTC sessions while inference is paused. See [GPT-Live pricing](/api/docs/pricing#live-session-duration).
 - Session duration is not rounded up to the next whole minute.
 - Backend Responses calls use the normal pricing for the configured model and tools.
 

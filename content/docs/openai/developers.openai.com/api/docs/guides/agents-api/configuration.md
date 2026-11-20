@@ -480,6 +480,30 @@ Updating a session does not change the saved agent or other sessions. Later save
 
 You cannot update `reasoning.summary`, `text`, `instructions`, or `multi_agent` through this endpoint. Create a new session to change those settings. See the [Update session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/update) for request fields.
 
+## Use Daybreak in a session
+
+The Agents API supports Daybreak Blue and Daybreak Red. Use an API key from a project with access to both your [chosen model and its cyber access program](https://developers.openai.com/api/docs/guides/daybreak#choose-the-model-and-access-program).
+
+When you [create a session](https://developers.openai.com/api/docs/guides/agents-api/quickstart?lang=cURL), include the fields for your program in the request body.
+
+**Daybreak Blue**
+
+```json
+{
+  "agent": { "model": "gpt-6-sol" },
+  "access_programs": { "cyber": "daybreak_blue" }
+}
+```
+
+**Daybreak Red**
+
+```json
+{
+  "agent": { "model": "gpt-5.6-cyber" },
+  "access_programs": { "cyber": "daybreak_red" }
+}
+```
+
 ## Automatic action review
 
 Set the session-level `review` field to `"auto_review"` to automatically review supported approval requests. Set it alongside `agent` or `agent_id`, rather than inside the agent configuration. If you omit `review` when creating a session, the value defaults to `"none"`.

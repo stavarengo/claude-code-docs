@@ -1197,7 +1197,7 @@ While we recommend you enable strict mode, it has a few limitations:
 Specifically for fine tuned models:
 
 1. Schemas undergo additional processing on the first request (and are then cached). If your schemas vary from request to request, this may result in higher latencies.
-2. Schemas are cached for performance, and are not eligible for [zero data retention](https://developers.openai.com/api/docs/models#how-we-use-your-data).
+2. Schemas are cached for performance, and are not eligible for [zero data retention](https://developers.openai.com/api/docs/guides/your-data#zero-data-retention).
 
 ## Streaming
 

@@ -25,7 +25,7 @@ Required once, immediately after connecting. Configure the session here, then se
   "type": "session.start",
   "event_id": "evt_start_001",
   "session": {
-    "model": "gpt-live-1",
+    "model": "gpt-live-1.1",
     "instructions": "Help the caller plan a restaurant reservation. Confirm details before booking.",
     "audio": {
       "format": {
@@ -85,7 +85,7 @@ Schema name: `LiveSessionStartEvent`
 
   Initial configuration for a primary WebSocket. Send session.start first and wait for session.started before application commands. WebRTC creation already starts the session; do not send this event again on its data channel.
 
-  - `model: string or "gpt-live-1"`
+  - `model: string or "gpt-live-1" or "gpt-live-1.1"`
 
     The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
 
@@ -93,11 +93,13 @@ Schema name: `LiveSessionStartEvent`
 
       `minLength: 1`
 
-    - `"gpt-live-1"`
+    - `"gpt-live-1" or "gpt-live-1.1"`
 
       The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
 
       - `"gpt-live-1"`
+
+      - `"gpt-live-1.1"`
 
   - `audio: optional object { format, output }`
 
@@ -1486,7 +1488,7 @@ Schema name: `LiveSessionStartEvent`
   "type": "session.start",
   "event_id": "evt_start_001",
   "session": {
-    "model": "gpt-live-1",
+    "model": "gpt-live-1.1",
     "instructions": "Help the caller plan a restaurant reservation. Confirm details before booking.",
     "audio": {
       "format": {
@@ -8374,7 +8376,7 @@ Schema name: `LiveSessionStarted`
 
     The Unix timestamp, in seconds, at which the Live session expires.
 
-  - `model: string or "gpt-live-1"`
+  - `model: string or "gpt-live-1" or "gpt-live-1.1"`
 
     The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
 
@@ -8382,11 +8384,13 @@ Schema name: `LiveSessionStarted`
 
       `minLength: 1`
 
-    - `"gpt-live-1"`
+    - `"gpt-live-1" or "gpt-live-1.1"`
 
       The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
 
       - `"gpt-live-1"`
+
+      - `"gpt-live-1.1"`
 
   - `status: "active" (default: "active")`
 
@@ -9781,7 +9785,7 @@ Schema name: `LiveSessionStarted`
   "client_event_id": "evt_start_001",
   "session": {
     "id": "live_abc123",
-    "model": "gpt-live-1",
+    "model": "gpt-live-1.1",
     "status": "active",
     "expires_at": 1788555600,
     "instructions": "Help the caller plan a restaurant reservation. Confirm details before booking.",
@@ -9828,7 +9832,7 @@ Schema name: `LiveSessionUpdated`
 
     The Unix timestamp, in seconds, at which the Live session expires.
 
-  - `model: string or "gpt-live-1"`
+  - `model: string or "gpt-live-1" or "gpt-live-1.1"`
 
     The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
 
@@ -9836,11 +9840,13 @@ Schema name: `LiveSessionUpdated`
 
       `minLength: 1`
 
-    - `"gpt-live-1"`
+    - `"gpt-live-1" or "gpt-live-1.1"`
 
       The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
 
       - `"gpt-live-1"`
+
+      - `"gpt-live-1.1"`
 
   - `status: "active" (default: "active")`
 
@@ -11235,7 +11241,7 @@ Schema name: `LiveSessionUpdated`
   "client_event_id": "evt_update_001",
   "session": {
     "id": "live_def456",
-    "model": "gpt-live-1",
+    "model": "gpt-live-1.1",
     "status": "active",
     "expires_at": 1788555600,
     "instructions": "Help the caller plan a restaurant reservation. Confirm details before booking.",
@@ -12523,9 +12529,17 @@ Schema name: `LiveSessionUsageUpdated`
 
   The cumulative Live audio usage so far.
 
-  - `seconds: number`
+  - `seconds: integer`
 
-    The cumulative Live audio duration in seconds. Do not sum this value across usage events.
+    The cumulative billable duration in whole seconds. When present, the active and paused breakdown adds up to this total.
+
+  - `active_seconds: optional integer`
+
+    The remaining billable seconds attributed to active audio and any unused prepaid duration.
+
+  - `paused_seconds: optional integer`
+
+    Billable time attributed to paused inference at the configured rate, rounded down to whole seconds.
 
 - `client_event_id: optional string`
 
@@ -12546,7 +12560,7 @@ Schema name: `LiveSessionUsageUpdated`
   "type": "session.usage.updated",
   "event_id": "evt_usage_001",
   "usage": {
-    "seconds": 32.5
+    "seconds": 32
   },
   "context_window": {
     "usage_ratio": 0.12
@@ -12598,7 +12612,7 @@ Schema name: `LiveSessionClosed`
 
     The Unix timestamp, in seconds, at which the Live session expires.
 
-  - `model: string or "gpt-live-1"`
+  - `model: string or "gpt-live-1" or "gpt-live-1.1"`
 
     The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
 
@@ -12606,11 +12620,13 @@ Schema name: `LiveSessionClosed`
 
       `minLength: 1`
 
-    - `"gpt-live-1"`
+    - `"gpt-live-1" or "gpt-live-1.1"`
 
       The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
 
       - `"gpt-live-1"`
+
+      - `"gpt-live-1.1"`
 
   - `status: "active" (default: "active")`
 
@@ -13996,9 +14012,17 @@ Schema name: `LiveSessionClosed`
 
   The final cumulative Live audio usage after session finalization.
 
-  - `seconds: number`
+  - `seconds: integer`
 
-    The cumulative Live audio duration in seconds. Do not sum this value across usage events.
+    The cumulative billable duration in whole seconds. When present, the active and paused breakdown adds up to this total.
+
+  - `active_seconds: optional integer`
+
+    The remaining billable seconds attributed to active audio and any unused prepaid duration.
+
+  - `paused_seconds: optional integer`
+
+    Billable time attributed to paused inference at the configured rate, rounded down to whole seconds.
 
 - `client_event_id: optional string`
 
@@ -14014,7 +14038,7 @@ Schema name: `LiveSessionClosed`
   "reason": "close_requested",
   "session": {
     "id": "live_abc123",
-    "model": "gpt-live-1",
+    "model": "gpt-live-1.1",
     "status": "active",
     "expires_at": 1788555600,
     "instructions": "Help the caller plan a restaurant reservation. Confirm details before booking.",
@@ -14033,7 +14057,7 @@ Schema name: `LiveSessionClosed`
     }
   },
   "usage": {
-    "seconds": 45.8
+    "seconds": 45
   }
 }
 ```
@@ -14142,6 +14166,68 @@ Schema name: `LiveInfoEvent`
   "event_id": "evt_info_001",
   "code": "data_channel_permissions",
   "message": "The frontend data channel is configured with restricted event permissions."
+}
+```
+
+<a id="session.resumed"></a>
+
+### session.resumed
+
+Sent when speech wakes inference and it is ready for audio in a Live WebRTC session. This occurs on the first wake and after each later wake. Delivered to the sideband and, when permitted by its event settings, the data channel.
+
+#### Schema
+
+Schema name: `LiveSessionResumed`
+
+- `event_id: string`
+
+  The unique ID of the Live server event.
+
+- `type: "session.resumed" (default: "session.resumed")`
+
+  - `"session.resumed"`
+
+- `client_event_id: optional string`
+
+  The event_id of the client command associated with this server event, when supplied.
+
+#### Example
+
+```json
+{
+  "type": "session.resumed",
+  "event_id": "evt_resumed_001"
+}
+```
+
+<a id="session.paused"></a>
+
+### session.paused
+
+Sent when the idle timeout pauses inference in a Live WebRTC session. The WebRTC connection, sideband, and session ID persist. Delivered to the sideband and, when permitted by its event settings, the data channel.
+
+#### Schema
+
+Schema name: `LiveSessionPaused`
+
+- `event_id: string`
+
+  The unique ID of the Live server event.
+
+- `type: "session.paused" (default: "session.paused")`
+
+  - `"session.paused"`
+
+- `client_event_id: optional string`
+
+  The event_id of the client command associated with this server event, when supplied.
+
+#### Example
+
+```json
+{
+  "type": "session.paused",
+  "event_id": "evt_paused_001"
 }
 ```
 

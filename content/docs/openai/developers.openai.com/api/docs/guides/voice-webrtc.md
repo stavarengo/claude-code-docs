@@ -30,9 +30,9 @@ The example uses Responses delegation with `gpt-5.6-terra` and hosted web search
 4. Have your server post JSON containing `session` and `transport: { type: "webrtc", sdp: ... }` to OpenAI.
 5. Apply the returned SDP answer as the remote description. Wait for `session.started` on the data channel before sending application commands.
 
-The HTTP request starts the session. **Do not send `session.start` on the data channel.** The `oai-events` string in the example is the data-channel label.
+The HTTP request starts the session. **Do not send `session.start` on the data channel.** The `oai-events` string in the example is the data-channel label. To wait for speech before starting inference, [configure standby](https://developers.openai.com/api/docs/guides/live-conversations#configure-standby).
 
-Creating a WebRTC session with `POST /v1/live/sessions` bills 15 seconds of voice duration during initialization. That amount is credited against duration charges once the session starts running; it is not an extra 15 seconds added to the running session. See [WebRTC initialization charges](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live#webrtc-initialization-charges) for cost accounting.
+With the default startup behavior, creating a WebRTC session with `POST /v1/live/sessions` bills 15 seconds of voice duration during initialization. That amount is credited against duration charges once the session starts running; it is not an extra 15 seconds added to the running session. See [WebRTC initialization charges](https://developers.openai.com/api/docs/guides/voice-latency-cost?api=live#webrtc-initialization-charges) for cost accounting.
 
 ### Create the application server
 
@@ -78,7 +78,7 @@ app.post("/api/session", async (request, response) => {
   try {
     const result = await client.live.create({
       session: {
-        model: "gpt-live-1",
+        model: "gpt-live-1.1",
         instructions:
           "Be concise. Delegate requests needing current information to the backend, which can search the web.",
         delegation: {
@@ -166,7 +166,7 @@ class SessionHandler(BaseHTTPRequestHandler):
             self.reply(400, b'{"error":"An SDP offer is required"}')
             return
         session: MediaSessionConfigParam = {
-            "model": "gpt-live-1",
+            "model": "gpt-live-1.1",
             "instructions": "Be concise. Delegate requests needing current information to the backend, which can search the web.",
             "delegation": {
                 "type": "responses",
@@ -251,7 +251,7 @@ func main() {
 		}
 		result, err := client.Live.New(r.Context(), live.LiveNewParams{
 			Session: live.MediaSessionConfigParam{
-				Model:        "gpt-live-1",
+				Model:        "gpt-live-1.1",
 				Instructions: openai.String("Be concise. Delegate requests needing current information to the backend, which can search the web."),
 				Delegation: live.MediaSessionConfigDelegationUnionParam{OfResponses: &live.MediaSessionConfigDelegationResponsesParam{Responses: live.ResponsesDelegationConfigParam{
 					Model:        "gpt-5.6-terra",
@@ -342,7 +342,7 @@ public final class LiveConnectionWebrtcExample {
                               LiveCreateParams.builder()
                                   .session(
                                       MediaSessionConfig.builder()
-                                          .model("gpt-live-1")
+                                          .model("gpt-live-1.1")
                                           .instructions(
                                               "Be concise. Delegate requests needing current information to the backend, which can search the web.")
                                           .responsesDelegation(
@@ -429,7 +429,7 @@ server.mount_proc "/" do |request, response|
     begin
       result = client.live.create(
         session: {
-          model: "gpt-live-1",
+          model: "gpt-live-1.1",
           instructions: "Be concise. Delegate requests needing current information to the backend, which can search the web.",
           delegation: {
             type: :responses,

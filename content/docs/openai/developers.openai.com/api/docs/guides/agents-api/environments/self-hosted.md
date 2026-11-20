@@ -229,6 +229,7 @@ Choose a sandbox provider to run code and work with files. See [Sandbox lifecycl
 | E2B                               | [E2B setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/e2b)                   |
 | Modal                             | [Modal setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/modal)               |
 | Oracle Cloud Infrastructure (OCI) | [OCI setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/oci)                   |
+| Render                            | [Render setup](https://render.com/docs/sandboxes-openai-agents-api)                   |
 | Vercel                            | [Vercel setup](https://developers.openai.com/api/docs/guides/agents-api/environments/providers/vercel)             |
 
 For webhook-managed provisioning, implement a handler using [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle#start-compute-from-webhooks) and your provider's SDK or API. Keep provisioning ownership and cleanup policies explicit.

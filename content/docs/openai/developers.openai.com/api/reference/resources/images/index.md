@@ -346,13 +346,13 @@ Content type: `application/json`
 
     `maxLength: 20971520`, `format: uri`
 
-- `model: optional string or "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 9 more or null (default: "gpt-image-2.5-sunburst")`
+- `model: optional string or "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 9 more or null (default: "gpt-image-2.6-sunburst")`
 
   The GPT image model to use for image editing, including `gpt-image-2`, its dated
   snapshot `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
   `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
   `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`, and `gpt-image-2.6-flare`.
-  Defaults to `gpt-image-2.5-sunburst`.
+  Defaults to `gpt-image-2.6-sunburst`.
 
   `gpt-image-1` was shut down on October 23, 2026. Use
   `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
@@ -365,7 +365,7 @@ Content type: `application/json`
     snapshot `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`,
     `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`,
     `gpt-image-2.5-flare-2026-09-08`, `gpt-image-2.6-sunburst`, and `gpt-image-2.6-flare`.
-    Defaults to `gpt-image-2.5-sunburst`.
+    Defaults to `gpt-image-2.6-sunburst`.
 
     `gpt-image-1` was shut down on October 23, 2026. Use
     `gpt-image-2.5-sunburst` or `gpt-image-2.5-flare` instead.
