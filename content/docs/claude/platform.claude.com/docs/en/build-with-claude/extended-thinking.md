@@ -219,10 +219,10 @@ Extended thinking is available or deprecated on select models.
 
 * Availability: Available
 
-| Status     | Models                                                                                                                                                                                                                                                                                                                                  |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Available  | Claude Mythos Preview, [Claude Haiku 4.5](https://platform.claude.com/docs/en/models/haiku-4-5/overview?sdk_languages=curl), [Claude Opus 4.5](https://platform.claude.com/docs/en/models/opus-4-5/overview?sdk_languages=curl), [Claude Sonnet 4.5](https://platform.claude.com/docs/en/models/sonnet-4-5/overview?sdk_languages=curl) |
-| Deprecated | [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=curl), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=curl)                                                                                                                              |
+| Status | Models |
+| ----- | ----- |
+| Available | Claude Mythos Preview, [Claude Haiku 4.5](https://platform.claude.com/docs/en/models/haiku-4-5/overview?sdk_languages=curl), [Claude Opus 4.5](https://platform.claude.com/docs/en/models/opus-4-5/overview?sdk_languages=curl), [Claude Sonnet 4.5](https://platform.claude.com/docs/en/models/sonnet-4-5/overview?sdk_languages=curl) |
+| Deprecated | [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=curl), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=curl) |
 
 #### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=curl)
 

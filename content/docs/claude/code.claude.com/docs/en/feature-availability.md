@@ -345,7 +345,7 @@ In Enterprise organizations with the [HIPAA configuration](./hipaa-setup.md) app
 | [Remote Control](./remote-control.md) | ✓ | ✓ | ✓ | Admin-enabled | Admin-enabled |
 | [Channels](./channels.md) | ✓ | ✓ | ✓ | Admin-enabled | Admin-enabled |
 | [Computer use](./computer-use.md) | ✓ | ✓ | ✓ | ✗ | ✗ |
-| Dispatch ([Desktop](./desktop.md#sessions-from-dispatch)) | ✓ | ✓ | ✓ | ✗ | ✗ |
+| Dispatch ([Desktop](./desktop.md#sessions-from-dispatch)) | Not available to new users | Not available to new users | Not available to new users | ✗ | ✗ |
 | [Code Review](./code-review.md) | ✗ | ✗ | ✗ | ✓ | ✓ |
 | [Artifacts](./artifacts.md) | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [Analytics dashboard and contribution metrics](./analytics.md) | ✗ | ✗ | ✗ | ✓ | ✓ |

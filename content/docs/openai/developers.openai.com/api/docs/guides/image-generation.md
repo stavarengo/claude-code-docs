@@ -1541,6 +1541,32 @@ try (StreamResponse<ResponseStreamEvent> stream = client.responses().createStrea
 }
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new() { Model = "gpt-6.2-astra", StreamingEnabled = true };
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape"));
+options.Tools.Add(new ImageGenerationTool { Model = "gpt-image-2.5-sunburst", PartialImageCount = 2 });
+bool completed = false;
+await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+{
+    if (update is StreamingResponseImageGenerationCallPartialImageUpdate partial)
+        await File.WriteAllBytesAsync($"river-partial-{partial.PartialImageIndex}.png", partial.PartialImageBytes.ToArray());
+    else if (update is StreamingResponseCompletedUpdate final)
+    {
+        ImageGenerationCallResponseItem image = final.Response.OutputItems.OfType<ImageGenerationCallResponseItem>().FirstOrDefault()
+            ?? throw new InvalidOperationException("No generated image was returned.");
+        await File.WriteAllBytesAsync("river-final.png", image.ImageResultBytes.ToArray());
+        completed = true;
+    }
+}
+if (!completed) throw new InvalidOperationException("Image generation did not complete.");
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -1870,6 +1896,17 @@ var file =
                 .build());
 
 System.out.println(file.id());
+```
+
+```csharp
+using OpenAI.Files;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+OpenAIFileClient client = new(key);
+
+OpenAIFile file = await client.UploadFileAsync("cat_and_otter.png", FileUploadPurpose.Vision);
+Console.WriteLine(file.Id);
 ```
 
 ```ruby
@@ -2260,6 +2297,30 @@ Files.write(
             image.result().orElseThrow(() -> new IllegalStateException("No image returned"))));
 ```
 
+```csharp
+using OpenAI.Files;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+OpenAIFileClient files = new(key);
+
+OpenAIFile bathBomb = await files.UploadFileAsync("bath-bomb.png", FileUploadPurpose.Vision);
+OpenAIFile incense = await files.UploadFileAsync("incense-kit.png", FileUploadPurpose.Vision);
+CreateResponseOptions options = new("gpt-6.2-astra", [ResponseItem.CreateUserMessageItem([
+    ResponseContentPart.CreateInputTextPart("Generate a photorealistic image of a gift basket on a white background labeled 'Relax & Unwind' with a ribbon and handwriting-like font, containing all the items in the reference pictures."),
+    ResponseContentPart.CreateInputImagePart(BinaryData.FromBytes(await File.ReadAllBytesAsync("body-lotion.png"), "image/png")),
+    ResponseContentPart.CreateInputImagePart(BinaryData.FromBytes(await File.ReadAllBytesAsync("soap.png"), "image/png")),
+    ResponseContentPart.CreateInputImagePart(bathBomb.Id),
+    ResponseContentPart.CreateInputImagePart(incense.Id),
+])]);
+options.Tools.Add(new ImageGenerationTool { Model = "gpt-image-2.5-sunburst" });
+ResponseResult response = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem image = response.OutputItems.OfType<ImageGenerationCallResponseItem>().First();
+await File.WriteAllBytesAsync("gift-basket.png", image.ImageResultBytes.ToArray());
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -2575,6 +2636,33 @@ For markup-guided edits with supported GPT-Image-2.5 and GPT-Image-2.6 models, u
 For example, download the [kitchen photo](https://developers.openai.com/images/platform/guides/image-prompting/kitchen.webp) and [transparent overlay](https://developers.openai.com/images/platform/guides/image-prompting/markup-vase-overlay-gpt-image-2-6.png) into the same directory. The overlay circles the vase to recolor.
 
 Edit the circled vase with the Image API
+
+```typescript
+import { createReadStream } from "node:fs";
+import { writeFile } from "node:fs/promises";
+import OpenAI, { toFile } from "openai";
+
+const client = new OpenAI();
+const response = await client.images.edit({
+  model: "gpt-image-2.6-flare",
+  image: await toFile(createReadStream("kitchen.webp"), "kitchen.webp", {
+    type: "image/webp",
+  }),
+  markup: await toFile(
+    createReadStream("markup-vase-overlay-gpt-image-2-6.png"),
+    "markup-vase-overlay-gpt-image-2-6.png",
+    { type: "image/png" }
+  ),
+  quality: "medium",
+  prompt:
+    "Recolor the striped vase inside the red circle to solid cobalt blue ceramic. " +
+    "Keep its shape, the dried stems, and the rest of the kitchen unchanged. " +
+    "Remove the red circle from the finished photo.",
+});
+const encoded = response.data?.[0]?.b64_json;
+if (!encoded) throw new Error("Image edit returned no image");
+await writeFile("vase.png", Buffer.from(encoded, "base64"));
+```
 
 ```python
 import base64
@@ -2971,6 +3059,32 @@ String imageResult =
 Files.write(Path.of("lounge.png"), Base64.getDecoder().decode(imageResult));
 ```
 
+```csharp
+using OpenAI.Files;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+OpenAIFileClient files = new(key);
+
+OpenAIFile lounge = await files.UploadFileAsync("sunlit_lounge.png", FileUploadPurpose.Vision);
+OpenAIFile mask = await files.UploadFileAsync("mask.png", FileUploadPurpose.Vision);
+CreateResponseOptions options = new("gpt-6.2-astra", [ResponseItem.CreateUserMessageItem([
+    ResponseContentPart.CreateInputTextPart("generate an image of the same sunlit indoor lounge area with a pool but the pool should contain a flamingo"),
+    ResponseContentPart.CreateInputImagePart(lounge.Id),
+])]);
+options.Tools.Add(new ImageGenerationTool
+{
+    Model = "gpt-image-2.5-sunburst",
+    Quality = ImageGenerationToolQuality.High,
+    InputImageMask = new ImageGenerationToolInputImageMask(mask.Id),
+});
+ResponseResult response = await client.CreateResponseAsync(options);
+ImageGenerationCallResponseItem image = response.OutputItems.OfType<ImageGenerationCallResponseItem>().First();
+await File.WriteAllBytesAsync("lounge.png", image.ImageResultBytes.ToArray());
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -3154,6 +3268,21 @@ try (InputStream image = Files.newInputStream(imagePath);
 }
 ```
 
+```csharp
+using OpenAI.Images;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-image-2.5-sunburst";
+ImageClient client = new(model, key);
+
+GeneratedImage image = await client.GenerateImageEditAsync(
+    "sunlit_lounge.png",
+    "A sunlit indoor lounge area with a pool containing a flamingo",
+    "mask.png");
+await File.WriteAllBytesAsync("composition.png", image.ImageBytes.ToArray());
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -3220,6 +3349,26 @@ The mask image must also contain an alpha channel. If you're using an image edit
 You can modify a black and white image programmatically to add an alpha channel.
 
 Add an alpha channel to a black and white mask
+
+```typescript
+import { execFileSync } from "node:child_process";
+
+// Requires FFmpeg. Use the grayscale mask as both color and alpha.
+execFileSync("ffmpeg", [
+  "-v",
+  "error",
+  "-y",
+  "-i",
+  "mask.png",
+  "-i",
+  "mask.png",
+  "-filter_complex",
+  "[0:v]format=rgb24[color];[color][1:v]alphamerge",
+  "-frames:v",
+  "1",
+  "mask_alpha.png",
+]);
+```
 
 ```python
 from PIL import Image

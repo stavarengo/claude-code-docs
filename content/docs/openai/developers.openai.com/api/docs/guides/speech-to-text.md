@@ -484,6 +484,27 @@ for (var segment : diarized.segments()) {
 }
 ```
 
+```csharp
+using System.Globalization;
+using OpenAI.Audio;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+AudioClient client = new("gpt-4o-transcribe-diarize", key);
+
+string speaker = "data:audio/wav;base64," + Convert.ToBase64String(await File.ReadAllBytesAsync("agent.wav"));
+AudioTranscriptionOptions options = new()
+{
+    ResponseFormat = AudioTranscriptionFormat.Diarized,
+    ChunkingStrategy = AudioTranscriptionDefaultChunkingStrategy.Auto,
+    KnownSpeakerNames = { "agent" },
+    KnownSpeakerReferenceUris = { speaker },
+};
+DiarizedAudioTranscription transcript = await client.TranscribeAudioDiarizedAsync("meeting.wav", options);
+foreach (DiarizedTranscriptionSegment segment in transcript.Segments)
+    Console.WriteLine(string.Create(CultureInfo.InvariantCulture, $"{segment.SpeakerLabel}: {segment.Text} ({segment.StartTime.TotalSeconds:F2}-{segment.EndTime.TotalSeconds:F2})"));
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -734,7 +755,51 @@ The Go example requires `ffmpeg` and `ffprobe` on your `PATH`. It writes the fir
 
 
 
+
+
+
+Install `ffmpeg` and `ffprobe` and ensure both commands are on your `PATH`. Save the [complete TypeScript program](https://developers.openai.com/api/docs/samples/typescript/speech-to-text/longer-inputs.ts) beside `good_morning.wav`. Run `node --experimental-strip-types longer-inputs.ts` to write `good_morning_10.wav` and print both durations in milliseconds.
+
+
+
+
 Split a long audio file
+
+```typescript
+import { execFileSync } from "node:child_process";
+
+function durationMilliseconds(path: string): number {
+  const result = JSON.parse(
+    execFileSync(
+      "ffprobe",
+      ["-v", "error", "-show_entries", "format=duration", "-of", "json", path],
+      { encoding: "utf8" }
+    )
+  );
+  return Math.round(Number(result.format.duration) * 1000);
+}
+
+const inputMilliseconds = durationMilliseconds("good_morning.wav");
+// Keep the first ten minutes, preserving the retained PCM samples.
+execFileSync("ffmpeg", [
+  "-v",
+  "error",
+  "-y",
+  "-i",
+  "good_morning.wav",
+  "-t",
+  "600",
+  "-c:a",
+  "pcm_s16le",
+  "-flags:a",
+  "+bitexact",
+  "-fflags",
+  "+bitexact",
+  "-map_metadata",
+  "-1",
+  "good_morning_10.wav",
+]);
+```
 
 ```python
 from pydub import AudioSegment

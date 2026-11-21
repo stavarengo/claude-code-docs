@@ -379,6 +379,24 @@ if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
 System.out.println(response.output());
 ```
 
+```csharp
+using System.ClientModel.Primitives;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+CreateResponseOptions options = new("gpt-5.1",
+    [ResponseItem.CreateUserMessageItem("Update the README title and fix the failing test.")]);
+options.Tools.Add(new ApplyPatchTool());
+ResponseResult response = await client.CreateResponseAsync(options);
+if (response.Status != ResponseStatus.Completed)
+    throw new InvalidOperationException($"Response ended with status {response.Status}");
+foreach (ResponseItem item in response.OutputItems)
+    Console.WriteLine(ModelReaderWriter.Write(item));
+```
+
 ```ruby
 response = client.responses.create(
   model: "gpt-5.1", input: response_input, tools: [{ type: :apply_patch }]
@@ -412,6 +430,18 @@ When the model decides to execute an apply_patch tool, you will receive an apply
 
 [This repository](https://github.com/openai/openai-cookbook/blob/main/examples/gpt-5/apply_patch.py) contains the expected implementation for the apply_patch tool executable. When your system finishes executing the patch tool, the Responses API expects a tool output in the following form:
 
+```typescript
+const result = {
+  type: "apply_patch_call_output",
+  call_id: callID,
+  status,
+  output:
+    status === "completed"
+      ? "Patch applied successfully."
+      : "Patch could not be applied.",
+};
+```
+
 ```python
 output = {
     "type": "apply_patch_call_output",
@@ -434,6 +464,17 @@ result := map[string]any{
 }
 ```
 
+```csharp
+using System.ClientModel.Primitives;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+ApplyPatchCallOutputItem output = new(callId, success ? ApplyPatchCallOutputStatus.Completed : ApplyPatchCallOutputStatus.Failed)
+{
+    Output = logOutput
+};
+```
+
 ```ruby
 output = {
   type: :apply_patch_call_output,
@@ -449,6 +490,10 @@ output = {
 We’ve also built a new shell tool for GPT-5.1. The shell tool allows the model to interact with your local computer through a controlled command-line interface. The model proposes shell commands; your integration executes them and returns the outputs. This creates a simple plan-execute loop that lets models inspect the system, run utilities, and gather data until they finish the task.
 
 The shell tool is invoked in the same way as apply_patch: include it as a tool of type `shell`.
+
+```typescript
+const tools: Tool[] = [{ type: "shell" }];
+```
 
 ```python
 tools = [{"type": "shell"}]

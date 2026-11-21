@@ -276,7 +276,7 @@ Ruby
 
     
 
-To use the OpenAI API in Ruby, you can use the official [OpenAI SDK for Ruby](https://github.com/openai/openai-ruby). Get started by adding the gem to your application:
+The official [OpenAI SDK for Ruby](https://github.com/openai/openai-ruby) requires Ruby 3.3.0 or later. If you use an earlier version of the gem, read the [Ruby SDK 1.0 migration guide](https://developers.openai.com/api/docs/guides/ruby-sdk-migration). To get started, add the gem to your application:
 
 Install the OpenAI SDK with Bundler
 

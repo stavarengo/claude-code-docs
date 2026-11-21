@@ -1858,6 +1858,12 @@ ant user-profiles delete \
 
     The user profile represents a company that the platform resells Claude access to.
 
+### User Profile Billing Not Authorized Error Details
+
+- `user_profile_billing_not_authorized_error_details: object`
+
+  - `error_code: "user_profile_billing_not_authorized"`
+
 ### User Profile Cyber Program
 
 - `user_profile_cyber_program: object`
@@ -2364,6 +2370,12 @@ ant user-profiles delete \
 
     Sort by `name`, ignoring the case of ASCII letters. Profiles without a name come last in either direction.
 
+### User Profile Not Billable Error Details
+
+- `user_profile_not_billable_error_details: object`
+
+  - `error_code: "user_profile_not_billable"`
+
 ### User Profile Not Found Error Details
 
 - `user_profile_not_found_error_details: object`
@@ -2458,6 +2470,12 @@ ant user-profiles delete \
 
       Anthropic's decision on the entity the profile represents: `pending` while it is awaited, `active` once Anthropic has approved the entity for the program, or `rejected` once Anthropic has declined or has removed the entity from the program. `active` does not mean that any one feature is approved: read the feature you need in `features`.
 
+### User Profile Required Error Details
+
+- `user_profile_required_error_details: object`
+
+  - `error_code: "user_profile_required"`
+
 ## Errors
 
 ### user_profile_not_found
@@ -2471,6 +2489,42 @@ HTTP status 400
   - `details: object`
 
     - `error_code: "user_profile_not_found"`
+
+### user_profile_required
+
+HTTP status 400
+
+- `"user_profile_required"`
+
+  The request sets `billing_policy.bill_to` to `"user_profile"` but names no user profile. Name the profile to bill in the `anthropic-user-profile-id` header.
+
+  - `details: object`
+
+    - `error_code: "user_profile_required"`
+
+### user_profile_billing_not_authorized
+
+HTTP status 403
+
+- `"user_profile_billing_not_authorized"`
+
+  The customer that the request's user profile represents has not authorized the caller to bill them, or the authorization that the request's credential uses has ended. The response does not say which applies.
+
+  - `details: object`
+
+    - `error_code: "user_profile_billing_not_authorized"`
+
+### user_profile_not_billable
+
+HTTP status 403
+
+- `"user_profile_not_billable"`
+
+  The request's user profile cannot be billed. The response gives no more specific error code and does not say what the reason is.
+
+  - `details: object`
+
+    - `error_code: "user_profile_not_billable"`
 
 ## User Profiles › Action URLs
 

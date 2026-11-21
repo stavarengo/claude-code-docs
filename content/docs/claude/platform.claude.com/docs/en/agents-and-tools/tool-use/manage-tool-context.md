@@ -10,12 +10,12 @@ Tool definitions and accumulated `tool_result` blocks consume your context windo
 
 Each approach targets a different source of context pressure. Pick the one that matches where your tokens are going.
 
-| Approach                  | What it reduces                         | When it fits                                                  | Learn more                                                                                                                                   |
-| ------------------------- | --------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Tool search               | Tool definitions loaded upfront         | Many tools (10+), most of which aren’t needed every turn      | [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool?sdk_languages=cli)                         |
-| Programmatic tool calling | `tool_result` roundtrips                | Chains of tool calls that can run as a single script          | [Programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli)       |
-| Prompt caching            | Token cost of repeated tool definitions | Stable tool definitions across many requests                  | [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching?sdk_languages=cli) |
-| Context editing           | Old `tool_result` blocks in history     | Long conversations where early results are no longer relevant | [Context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli)                                   |
+| Approach | What it reduces | When it fits | Learn more |
+| ----- | ----- | ----- | ----- |
+| Tool search | Tool definitions loaded upfront | Many tools (10+), most of which aren’t needed every turn | [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool?sdk_languages=cli) |
+| Programmatic tool calling | `tool_result` roundtrips | Chains of tool calls that can run as a single script | [Programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli) |
+| Prompt caching | Token cost of repeated tool definitions | Stable tool definitions across many requests | [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching?sdk_languages=cli) |
+| Context editing | Old `tool_result` blocks in history | Long conversations where early results are no longer relevant | [Context editing](https://platform.claude.com/docs/en/build-with-claude/context-editing?sdk_languages=cli) |
 
 ### Tool search
 

@@ -148,6 +148,12 @@ If your routing decision depends on a specific API or model, pair this health ch
 
 Use the regional Private Link host name as the OpenAI API base URL:
 
+```typescript
+const client = new OpenAI({
+  baseURL: "https://southcentralus.privatelink.api.openai.com/v1",
+});
+```
+
 ```python
 from openai import OpenAI
 
@@ -167,6 +173,19 @@ const baseURL = "https://southcentralus.privatelink.api.openai.com/v1"
 var client = openai.NewClient(
 	option.WithBaseURL(baseURL),
 )
+```
+
+```csharp
+using System.ClientModel;
+using OpenAI;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(new ApiKeyCredential(key), new ResponsesClientOptions
+{
+    Endpoint = new Uri("https://southcentralus.privatelink.api.openai.com/v1")
+});
 ```
 
 ```ruby

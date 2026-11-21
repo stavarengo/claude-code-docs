@@ -162,17 +162,17 @@ Invocation of model ID anthropic.claude-sonnet-4-5-20250929-v1:0 with on-demand 
 
 To call these models, pass an inference profile instead of the base model ID. The inference profile ID is the base model ID with a prefix from a column marked “Yes” in the following table, for example us.anthropic.claude-sonnet-4-5-20250929-v1:0. You can also pass the full inference profile ARN, in the form `arn:aws:bedrock:{region}:{account-id}:inference-profile/{inference-profile-id}`. For AWS’s authoritative list of available inference profiles, see [Supported Regions and models for inference profiles](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html). To learn how the prefixes affect routing and pricing, see the [Global versus regional endpoints](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli#global-vs-regional-endpoints) section.
 
-| Model                                                                                                                   | Base Bedrock model ID                       | `global` | `us` | `eu` | `jp` | `apac` |
-| :---------------------------------------------------------------------------------------------------------------------- | :------------------------------------------ | :------- | :--- | :--- | :--- | :----- |
-| Claude Fable 5.2                                                                                                        | `anthropic.claude-fable-5-2`                | Yes      | Yes  | No   | No   | No     |
-| Claude Mythos 5.2 ([limited availability](https://support.claude.com/en/articles/14604842))                             | `anthropic.claude-mythos-5-2`               | Yes      | Yes  | No   | No   | No     |
-| Claude Opus 4.6                                                                                                         | `anthropic.claude-opus-4-6-v1`              | Yes      | Yes  | Yes  | Yes  | Yes    |
-| Claude Opus 4.5                                                                                                         | `anthropic.claude-opus-4-5-20251101-v1:0`   | Yes      | Yes  | Yes  | No   | No     |
-| Claude Opus 4.1 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))   | `anthropic.claude-opus-4-1-20250805-v1:0`   | No       | Yes  | No   | No   | No     |
-| Claude Sonnet 4.6                                                                                                       | `anthropic.claude-sonnet-4-6`               | Yes      | Yes  | Yes  | Yes  | No     |
-| Claude Sonnet 4.5 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | `anthropic.claude-sonnet-4-5-20250929-v1:0` | Yes      | Yes  | Yes  | Yes  | No     |
-| Claude Sonnet 4 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli))   | `anthropic.claude-sonnet-4-20250514-v1:0`   | Yes      | Yes  | Yes  | No   | Yes    |
-| Claude Haiku 4.5                                                                                                        | `anthropic.claude-haiku-4-5-20251001-v1:0`  | Yes      | Yes  | Yes  | No   | No     |
+| Model | Base Bedrock model ID | `global` | `us` | `eu` | `jp` | `apac` |
+| :---- | :---- | :---- | :---- | :---- | :---- | :---- |
+| Claude Fable 5.2 | `anthropic.claude-fable-5-2` | Yes | Yes | No | No | No |
+| Claude Mythos 5.2 ([limited availability](https://support.claude.com/en/articles/14604842)) | `anthropic.claude-mythos-5-2` | Yes | Yes | No | No | No |
+| Claude Opus 4.6 | `anthropic.claude-opus-4-6-v1` | Yes | Yes | Yes | Yes | Yes |
+| Claude Opus 4.5 | `anthropic.claude-opus-4-5-20251101-v1:0` | Yes | Yes | Yes | No | No |
+| Claude Opus 4.1 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | `anthropic.claude-opus-4-1-20250805-v1:0` | No | Yes | No | No | No |
+| Claude Sonnet 4.6 | `anthropic.claude-sonnet-4-6` | Yes | Yes | Yes | Yes | No |
+| Claude Sonnet 4.5 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | `anthropic.claude-sonnet-4-5-20250929-v1:0` | Yes | Yes | Yes | Yes | No |
+| Claude Sonnet 4 ([deprecated](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=cli)) | `anthropic.claude-sonnet-4-20250514-v1:0` | Yes | Yes | Yes | No | Yes |
+| Claude Haiku 4.5 | `anthropic.claude-haiku-4-5-20251001-v1:0` | Yes | Yes | Yes | No | No |
 
 ### List available models
 
@@ -372,6 +372,7 @@ For the full feature list with Amazon Bedrock availability, see [Features overvi
 * [Tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli), including the [Bash tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/bash-tool?sdk_languages=cli), [Computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli), [Memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool?sdk_languages=cli), and [Text editor tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/text-editor-tool?sdk_languages=cli)
 * [Citations](https://platform.claude.com/docs/en/build-with-claude/citations?sdk_languages=cli)
 * [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli)
+* [User profiles for end-customer attribution](https://platform.claude.com/docs/en/manage-claude/user-profiles?sdk_languages=cli), with `InvokeModel` on [some models](https://platform.claude.com/docs/en/manage-claude/user-profiles?sdk_languages=cli#attribute-requests-on-amazon-bedrock-and-google-cloud) when the profile ID is in the request body
 
 ### Features not supported
 

@@ -114,12 +114,12 @@ Each MCP server in the `mcp_servers` array defines the connection details:
 
 ### Field descriptions
 
-| Property              | Type   | Required | Description                                                                                                                                                                                               |
-| --------------------- | ------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`                | string | Yes      | Currently only `url` is supported.                                                                                                                                                                        |
-| `url`                 | string | Yes      | The URL of the MCP server. Must start with `https://`.                                                                                                                                                    |
-| `name`                | string | Yes      | A unique identifier for this MCP server. Must be referenced by exactly one MCPToolset in the `tools` array.                                                                                               |
-| `authorization_token` | string | No       | OAuth authorization token if required by the MCP server. See [Authentication](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli#authentication) for how to obtain one. |
+| Property | Type | Required | Description |
+| ----- | ----- | ----- | ----- |
+| `type` | string | Yes | Currently only `url` is supported. |
+| `url` | string | Yes | The URL of the MCP server. Must start with `https://`. |
+| `name` | string | Yes | A unique identifier for this MCP server. Must be referenced by exactly one MCPToolset in the `tools` array. |
+| `authorization_token` | string | No | OAuth authorization token if required by the MCP server. See [Authentication](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli#authentication) for how to obtain one. |
 
 ## MCP toolset configuration
 
@@ -146,13 +146,13 @@ The MCPToolset lives in the `tools` array and configures which tools from the MC
 
 ### Field descriptions
 
-| Property          | Type   | Required | Description                                                                                                                                               |
-| ----------------- | ------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`            | string | Yes      | Must be `mcp_toolset`.                                                                                                                                    |
-| `mcp_server_name` | string | Yes      | Must match a server name defined in the `mcp_servers` array.                                                                                              |
-| `default_config`  | object | No       | Default configuration applied to all tools in this set. Individual tool configs in `configs` override these defaults.                                     |
-| `configs`         | object | No       | Per-tool configuration overrides. Keys are tool names; values are configuration objects.                                                                  |
-| `cache_control`   | object | No       | [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) cache breakpoint configuration for this toolset. |
+| Property | Type | Required | Description |
+| ----- | ----- | ----- | ----- |
+| `type` | string | Yes | Must be `mcp_toolset`. |
+| `mcp_server_name` | string | Yes | Must match a server name defined in the `mcp_servers` array. |
+| `default_config` | object | No | Default configuration applied to all tools in this set. Individual tool configs in `configs` override these defaults. |
+| `configs` | object | No | Per-tool configuration overrides. Keys are tool names; values are configuration objects. |
+| `cache_control` | object | No | [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) cache breakpoint configuration for this toolset. |
 
 With the `mcp-client-2026-09-15` beta header, an MCPToolset also accepts `tools`, a pinned copy of the server’s tool list. See [Pin an MCP server’s tool list](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli#pin-mcp-tool-list).
 
@@ -160,9 +160,9 @@ With the `mcp-client-2026-09-15` beta header, an MCPToolset also accepts `tools`
 
 Each tool (whether configured in `default_config` or in `configs`) supports the following fields:
 
-| Property        | Type    | Default | Description                                                                                                                                                                                   |
-| --------------- | ------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `enabled`       | boolean | `true`  | Whether this tool is enabled.                                                                                                                                                                 |
+| Property | Type | Default | Description |
+| ----- | ----- | ----- | ----- |
+| `enabled` | boolean | `true` | Whether this tool is enabled. |
 | `defer_loading` | boolean | `false` | If true, tool description is not sent to the model initially. Used with [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool?sdk_languages=cli). |
 
 For the full directory of Anthropic-provided tools and optional properties such as `defer_loading`, see the [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=cli). To search across large tool sets, see [Tool search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool?sdk_languages=cli).
@@ -570,8 +570,8 @@ Install both the Anthropic SDK and the MCP SDK:
     <Tabs>
       <Tab title="Gradle">
         ```kotlin
-        implementation("com.anthropic:anthropic-java:3.11.0")
-        implementation("com.anthropic:anthropic-java-mcp:3.11.0")
+        implementation("com.anthropic:anthropic-java:3.12.0")
+        implementation("com.anthropic:anthropic-java-mcp:3.12.0")
         ```
       </Tab>
 
@@ -580,12 +580,12 @@ Install both the Anthropic SDK and the MCP SDK:
         <dependency>
             <groupId>com.anthropic</groupId>
             <artifactId>anthropic-java</artifactId>
-            <version>3.11.0</version>
+            <version>3.12.0</version>
         </dependency>
         <dependency>
             <groupId>com.anthropic</groupId>
             <artifactId>anthropic-java-mcp</artifactId>
-            <version>3.11.0</version>
+            <version>3.12.0</version>
         </dependency>
         ```
       </Tab>
@@ -659,12 +659,12 @@ Import the helpers for your language:
   ```
 </CodeGroup>
 
-| Helper                              | Description                                                                              |
-| ----------------------------------- | ---------------------------------------------------------------------------------------- |
-| `async_mcp_tool(tool, mcp_client)`  | Converts MCP tools to Claude API tools for use with `client.beta.messages.tool_runner()` |
-| `mcp_message(message)`              | Converts MCP prompt messages to Claude API message format                                |
-| `mcp_resource_to_content(resource)` | Converts an MCP resource to a Claude API content block                                   |
-| `mcp_resource_to_file(resource)`    | Converts an MCP resource to a file object for upload                                     |
+| Helper | Description |
+| ----- | ----- |
+| `async_mcp_tool(tool, mcp_client)` | Converts MCP tools to Claude API tools for use with `client.beta.messages.tool_runner()` |
+| `mcp_message(message)` | Converts MCP prompt messages to Claude API message format |
+| `mcp_resource_to_content(resource)` | Converts an MCP resource to a Claude API content block |
+| `mcp_resource_to_file(resource)` | Converts an MCP resource to a file object for upload |
 
 ### Use MCP tools
 
@@ -1357,11 +1357,11 @@ If you’re using the deprecated `mcp-client-2025-04-04` beta header, follow thi
 
 ### Common migration patterns
 
-| Old pattern                                 | New pattern                                                                             |
-| ------------------------------------------- | --------------------------------------------------------------------------------------- |
-| No `tool_configuration` (all tools enabled) | MCPToolset with no `default_config` or `configs`                                        |
-| `tool_configuration.enabled: false`         | MCPToolset with `default_config.enabled: false`                                         |
-| `tool_configuration.allowed_tools: [...]`   | MCPToolset with `default_config.enabled: false` and specific tools enabled in `configs` |
+| Old pattern | New pattern |
+| ----- | ----- |
+| No `tool_configuration` (all tools enabled) | MCPToolset with no `default_config` or `configs` |
+| `tool_configuration.enabled: false` | MCPToolset with `default_config.enabled: false` |
+| `tool_configuration.allowed_tools: [...]` | MCPToolset with `default_config.enabled: false` and specific tools enabled in `configs` |
 
 ## Deprecated version: mcp-client-2025-04-04
 
@@ -1390,11 +1390,11 @@ The previous version of the MCP connector included tool configuration directly i
 
 ### Deprecated field descriptions
 
-| Property                           | Type    | Description                                                        |
-| ---------------------------------- | ------- | ------------------------------------------------------------------ |
-| `tool_configuration`               | object  | **Deprecated:** Use MCPToolset in the `tools` array instead        |
-| `tool_configuration.enabled`       | boolean | **Deprecated:** Use `default_config.enabled` in MCPToolset         |
-| `tool_configuration.allowed_tools` | array   | **Deprecated:** Use allowlist pattern with `configs` in MCPToolset |
+| Property | Type | Description |
+| ----- | ----- | ----- |
+| `tool_configuration` | object | **Deprecated:** Use MCPToolset in the `tools` array instead |
+| `tool_configuration.enabled` | boolean | **Deprecated:** Use `default_config.enabled` in MCPToolset |
+| `tool_configuration.allowed_tools` | array | **Deprecated:** Use allowlist pattern with `configs` in MCPToolset |
 
 ## Availability
 
@@ -1407,18 +1407,18 @@ MCP connector is in beta on every model.
 * Availability: Available
 * Usage: Pass `mcp_servers` and a matching `mcp_toolset` in `tools` on each request. For OAuth servers you get and refresh the access token yourself and pass it as `authorization_token`.
 
-| Status | Cloud platforms                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Beta   | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
+| Status | Cloud platforms |
+| ----- | ----- |
+| Beta | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
 
 #### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli)
 
 * Availability: Available
 * Usage: Declare MCP servers on the agent. Each session supplies credentials by referencing a vault, so secrets stay out of the agent definition.
 
-| Status | Cloud platforms         |
-| ------ | ----------------------- |
-| Beta   | All supported platforms |
+| Status | Cloud platforms |
+| ----- | ----- |
+| Beta | All supported platforms |
 
 ### Required beta headers
 
@@ -1426,19 +1426,19 @@ MCP connector is in beta on every model.
 
 Beta headers allow you to access experimental features and new model capabilities before they become part of the standard API.
 
-| Header                                             | APIs                                                                                                          | Cloud platforms                                                                                                                                                                                                                                    |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `mcp-client-2026-09-15` or `mcp-client-2025-11-20` | [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli) | Claude API, [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli)                                                           |
-| `mcp-client-2025-11-20`                            | [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli) | [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
+| Header | APIs | Cloud platforms |
+| ----- | ----- | ----- |
+| `mcp-client-2026-09-15` or `mcp-client-2025-11-20` | [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli) | Claude API, [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli) |
+| `mcp-client-2025-11-20` | [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli) | [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
 
 ### Data handling
 
 [Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
 
-| Item    | Zero data retention                                                                                                                                           | HIPAA        |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| Status  | Not eligible                                                                                                                                                  | Not eligible |
-| Details | Data retained according to standard policy. [Learn more](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli#data-retention) | —            |
+| Item | Zero data retention | HIPAA |
+| ----- | ----- | ----- |
+| Status | Not eligible | Not eligible |
+| Details | Data retained according to standard policy. [Learn more](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli#data-retention) | — |
 
 Applicable endpoints:
 

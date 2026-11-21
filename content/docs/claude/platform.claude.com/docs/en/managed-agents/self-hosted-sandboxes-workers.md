@@ -54,13 +54,13 @@ When deploying workers, you need to make two choices: how the worker claims work
 
 The CLI and SDK workers support different combinations:
 
-| Capability                                                                                                                    | `ant` CLI                       | SDK (Python, TypeScript, Go) |
-| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------- |
-| Always-on polling                                                                                                             | Yes                             | Yes                          |
-| Webhook-triggered                                                                                                             | No                              | Yes                          |
-| [Sandbox per session](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-per-session?sdk_languages=cli) | Yes                             | Yes                          |
-| [Memory stores](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli)            | Yes, with default sync settings | Yes, with configurable sync  |
-| [Custom tools](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools?sdk_languages=cli)       | No                              | Yes                          |
+| Capability | `ant` CLI | SDK (Python, TypeScript, Go) |
+| ----- | ----- | ----- |
+| Always-on polling | Yes | Yes |
+| Webhook-triggered | No | Yes |
+| [Sandbox per session](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-per-session?sdk_languages=cli) | Yes | Yes |
+| [Memory stores](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-memory?sdk_languages=cli) | Yes, with default sync settings | Yes, with configurable sync |
+| [Custom tools](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-custom-tools?sdk_languages=cli) | No | Yes |
 
 See [Self-hosted worker reference](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes-reference?sdk_languages=cli) for every CLI flag and SDK option.
 
@@ -138,9 +138,9 @@ Prebuilt self-hosted workers are in beta on every model.
 
 * Availability: Available
 
-| Status | Cloud platforms                                                                                                                      |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Beta   | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli) |
+| Status | Cloud platforms |
+| ----- | ----- |
+| Beta | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli) |
 
 ### Required beta headers
 
@@ -154,9 +154,9 @@ Beta headers allow you to access experimental features and new model capabilitie
 
 [Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
 
-| Item    | Zero data retention                                                                                                                                                                                                                                                           | HIPAA                                                               |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Status  | Not eligible                                                                                                                                                                                                                                                                  | Not eligible                                                        |
+| Item | Zero data retention | HIPAA |
+| ----- | ----- | ----- |
+| Status | Not eligible | Not eligible |
 | Details | Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them. [Learn more](https://platform.claude.com/docs/en/managed-agents/self-hosted-data-and-access?sdk_languages=cli#how-long-data-is-kept) | Not eligible for HIPAA. Applies to all Managed Agents sub-features. |
 
 Applicable endpoints:

@@ -95,13 +95,13 @@ Then create a session that mounts the GitHub repository. With a `limited` [envir
 
 A `github_repository` resource accepts the following fields:
 
-| Field                 | Description                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`                | Required. Must be `"github_repository"`.                                                                                                                                                                                                                                                                                                                                                                                          |
-| `url`                 | Required. The repository’s HTTPS URL in the form `https://github.com/<owner>/<repo>`, without a `.git` suffix. Other forms, including SSH URLs, are rejected with an `invalid_request_error`.                                                                                                                                                                                                                                     |
+| Field | Description |
+| ----- | ----- |
+| `type` | Required. Must be `"github_repository"`. |
+| `url` | Required. The repository’s HTTPS URL in the form `https://github.com/<owner>/<repo>`, without a `.git` suffix. Other forms, including SSH URLs, are rejected with an `invalid_request_error`. |
 | `authorization_token` | Optional. The GitHub token used to clone the repository and to push to it. Without a token, a private repository fails to clone after the session is created. A public repository clones without a token, and the agent can commit in its clone, but `git push` fails. It is not echoed in API responses. See [Token permissions](https://platform.claude.com/docs/en/managed-agents/github?sdk_languages=cli#token-permissions). |
-| `mount_path`          | Optional. The directory under `/workspace` to clone the repository into. Defaults to `/workspace/<repo-name>`.                                                                                                                                                                                                                                                                                                                    |
-| `checkout`            | Optional. A branch (`{"type": "branch", "name": "main"}`) or commit (`{"type": "commit", "sha": "..."}`) to check out. Defaults to the repository’s default branch.                                                                                                                                                                                                                                                               |
+| `mount_path` | Optional. The directory under `/workspace` to clone the repository into. Defaults to `/workspace/<repo-name>`. |
+| `checkout` | Optional. A branch (`{"type": "branch", "name": "main"}`) or commit (`{"type": "commit", "sha": "..."}`) to check out. Defaults to the repository’s default branch. |
 
 Mounting a repository also loads any skills stored in its root `.claude/skills` directory. Skills are discovered once for each session, from the repository state checked out at session start. See [Load skills from a GitHub repository](https://platform.claude.com/docs/en/managed-agents/skills?sdk_languages=cli#load-skills-from-a-github-repository).
 
@@ -109,12 +109,12 @@ Mounting a repository also loads any skills stored in its root `.claude/skills` 
 
 When providing a GitHub token, use the minimum required permissions:
 
-| Action              | Required scopes                   |
-| ------------------- | --------------------------------- |
-| Clone private repos | `repo`                            |
-| Create PRs          | `repo`                            |
-| Read issues         | `repo` (private) or `public_repo` |
-| Create issues       | `repo` (private) or `public_repo` |
+| Action | Required scopes |
+| ----- | ----- |
+| Clone private repos | `repo` |
+| Create PRs | `repo` |
+| Read issues | `repo` (private) or `public_repo` |
+| Create issues | `repo` (private) or `public_repo` |
 
 <Warning>
   Use fine-grained personal access tokens with minimum required permissions. Avoid using tokens with broad access to your GitHub account.
@@ -201,9 +201,9 @@ GitHub access is in beta on every model.
 
 * Availability: Available
 
-| Status | Cloud platforms         |
-| ------ | ----------------------- |
-| Beta   | All supported platforms |
+| Status | Cloud platforms |
+| ----- | ----- |
+| Beta | All supported platforms |
 
 ### Required beta headers
 
@@ -217,9 +217,9 @@ Beta headers allow you to access experimental features and new model capabilitie
 
 [Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
 
-| Item    | Zero data retention                                                                                                                                                                                                                                                           | HIPAA                                                               |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Status  | Not eligible                                                                                                                                                                                                                                                                  | Not eligible                                                        |
+| Item | Zero data retention | HIPAA |
+| ----- | ----- | ----- |
+| Status | Not eligible | Not eligible |
 | Details | Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them. [Learn more](https://platform.claude.com/docs/en/managed-agents/self-hosted-data-and-access?sdk_languages=cli#how-long-data-is-kept) | Not eligible for HIPAA. Applies to all Managed Agents sub-features. |
 
 Applicable endpoints:

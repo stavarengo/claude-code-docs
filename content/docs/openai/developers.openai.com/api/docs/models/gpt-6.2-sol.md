@@ -94,6 +94,14 @@ Tools supported by this model when using the Responses API.
 
 - `gpt-6.2-sol`
 
+## Cloud providers
+
+Model IDs across cloud providers.
+
+| Provider | Model ID |
+| --- | --- |
+| [Google Cloud](/api/docs/guides/google-cloud)<br>Private preview | `gpt-6.2-sol` |
+
 ## Rate limits
 
 Rate limits ensure fair and reliable access to the API by placing specific caps on requests, tokens, audio duration, or other usage within a given time period. Your usage tier determines how high these limits are set and automatically increases as you send more requests and spend more on the API.

@@ -64,6 +64,22 @@ Additionally, Chat Completions can return multiple parallel generations as `choi
 
   Chat Completions API
 
+```typescript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const completion = await client.chat.completions.create({
+  model: "gpt-6.2-astra",
+  messages: [
+    {
+      role: "user",
+      content: "Write a one-sentence bedtime story about a unicorn.",
+    },
+  ],
+});
+console.log(completion.choices[0].message.content);
+```
+
 ```python
 from openai import OpenAI
 
@@ -107,6 +123,18 @@ func main() {
 }
 ```
 
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ChatClient client = new("gpt-6.2-astra", key);
+
+ChatCompletion completion = await client.CompleteChatAsync(
+    [new UserChatMessage("Write a one-sentence bedtime story about a unicorn.")]);
+Console.WriteLine(completion.Content[0].Text);
+```
+
 ```ruby
 require "openai"
 
@@ -124,6 +152,17 @@ puts(completion.choices.fetch(0).message.content)
 ```
 
   Responses API
+
+```typescript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const response = await client.responses.create({
+  model: "gpt-6.2-astra",
+  input: "Write a one-sentence bedtime story about a unicorn.",
+});
+console.log(response.output_text);
+```
 
 ```python
 from openai import OpenAI
@@ -159,6 +198,18 @@ func main() {
 	}
 	fmt.Println(response.OutputText())
 }
+```
+
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult response = await client.CreateResponseAsync(
+    "gpt-6.2-astra", "Write a one-sentence bedtime story about a unicorn.");
+Console.WriteLine(response.GetOutputText());
 ```
 
 ```ruby

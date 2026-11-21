@@ -182,10 +182,10 @@ To get the same behavior with a self-hosted sandbox, you can run your own proxy 
 
     `injection_location` behaves differently on create and on update:
 
-    | Operation         | `injection_location` behavior                                                                                                                                                              |
-    | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+    | Operation | `injection_location` behavior |
+    | ----- | ----- |
     | Create credential | If you provide the object, any field you omit inside it defaults to `false`: `{"header": true}` creates a header-only credential. Omit the object entirely and both locations are enabled. |
-    | Update credential | Fields merge individually: `{"body": false}` disables body substitution and leaves `header` unchanged.                                                                                     |
+    | Update credential | Fields merge individually: `{"body": false}` disables body substitution and leaves `header` unchanged. |
 
     A credential must have at least one location enabled, so a create or update that would disable both locations returns a 400 error. Passing an explicit `null` for the `injection_location` object or for either field also returns a 400 error (“omit the field instead”). The response always returns both fields with their resolved values.
 
@@ -258,12 +258,12 @@ Credentials are re-resolved periodically, both during a session and during the v
 
 To be notified if a credential is archived, deleted, or fails to refresh, you can subscribe to the vault and credential [webhooks](https://platform.claude.com/docs/en/managed-agents/webhooks?sdk_languages=cli) associated with those lifecycle changes.
 
-| Event                             | Trigger                                                                                                              |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `vault.archived`                  | Vault archived. A `vault_credential.archived` event is also emitted for each underlying credential.                  |
-| `vault.deleted`                   | Vault deleted. A `vault_credential.deleted` event is also emitted for each underlying credential.                    |
-| `vault_credential.archived`       | Credential archived, either directly or as a result of vault archival.                                               |
-| `vault_credential.deleted`        | Credential deleted, either directly or as a result of vault deletion.                                                |
+| Event | Trigger |
+| ----- | ----- |
+| `vault.archived` | Vault archived. A `vault_credential.archived` event is also emitted for each underlying credential. |
+| `vault.deleted` | Vault deleted. A `vault_credential.deleted` event is also emitted for each underlying credential. |
+| `vault_credential.archived` | Credential archived, either directly or as a result of vault archival. |
+| `vault_credential.deleted` | Credential deleted, either directly or as a result of vault deletion. |
 | `vault_credential.refresh_failed` | An `mcp_oauth` credential cannot be refreshed (invalid refresh token, or irrecoverable error from the OAuth server). |
 
 <Note>
@@ -333,9 +333,9 @@ Vaults are in beta on every model.
 
 * Availability: Available
 
-| Status | Cloud platforms                                                                                                                                                                                                                                                                                                    | Models                                                                              |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| Beta   | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli) | [All models](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli) |
+| Status | Cloud platforms | Models |
+| ----- | ----- | ----- |
+| Beta | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli) | [All models](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli) |
 
 ### Required beta headers
 
@@ -349,9 +349,9 @@ Beta headers allow you to access experimental features and new model capabilitie
 
 [Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
 
-| Item    | Zero data retention                                                                                                                                                                                                                                                           | HIPAA                                                               |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Status  | Not eligible                                                                                                                                                                                                                                                                  | Not eligible                                                        |
+| Item | Zero data retention | HIPAA |
+| ----- | ----- | ----- |
+| Status | Not eligible | Not eligible |
 | Details | Not eligible for ZDR, except for self-hosted Managed Agents. Sessions are stateful resources; transcripts persist until you delete them. [Learn more](https://platform.claude.com/docs/en/managed-agents/self-hosted-data-and-access?sdk_languages=cli#how-long-data-is-kept) | Not eligible for HIPAA. Applies to all Managed Agents sub-features. |
 
 Applicable endpoints:

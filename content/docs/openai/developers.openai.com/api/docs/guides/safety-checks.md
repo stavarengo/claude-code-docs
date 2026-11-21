@@ -103,6 +103,21 @@ client.responses().create(params).output().stream()
     .forEach(text -> System.out.println(text.text()));
 ```
 
+```csharp
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+ResponseResult response = await client.CreateResponseAsync(new CreateResponseOptions(
+    "gpt-6.1-terra", [ResponseItem.CreateUserMessageItem("This is a test")])
+{
+    SafetyIdentifier = "user_123456",
+});
+Console.WriteLine(response.GetOutputText());
+```
+
 ```ruby
 require "openai"
 
@@ -201,6 +216,22 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Chat;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ChatClient client = new("gpt-6.1-terra", key);
+
+ChatCompletion completion = await client.CompleteChatAsync(
+    [new UserChatMessage("This is a test")],
+    new ChatCompletionOptions
+    {
+        SafetyIdentifier = "user_123456",
+    });
+Console.WriteLine(completion.Content[0].Text);
 ```
 
 ```ruby

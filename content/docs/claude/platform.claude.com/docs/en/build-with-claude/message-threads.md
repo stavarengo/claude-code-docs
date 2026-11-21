@@ -300,11 +300,11 @@ This example creates a thread on the first turn and continues it on the second. 
 
 ## What to send on each request
 
-| Group       | Fields                                                                                                                                                                                                                                      | Rule                                                                                                                                                                                                                            |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Create-only | `system`, `tools`                                                                                                                                                                                                                           | Send them on the create request only, with any `cache_control` breakpoints on them. Sending either one on a continue request, even as `null`, returns a 400 error.                                                              |
-| Fixed       | `model`, `tool_choice`, `thinking`, `mcp_servers` (apart from each server’s authorization token), `context_management`, `output_config`, the `skills` in `container`, the top-level `cache_control`, and the set of `anthropic-beta` values | Send them on every request of the thread, with the same values as on the create request. A different value returns a 400 error with the code `thread_fingerprint_mismatch`, and the error message names the fields that differ. |
-| Free        | `max_tokens`, `stop_sequences`, `stream`, `metadata`, `service_tier`, and other fields not named on this page                                                                                                                               | These can change from turn to turn.                                                                                                                                                                                             |
+| Group | Fields | Rule |
+| ----- | ----- | ----- |
+| Create-only | `system`, `tools` | Send them on the create request only, with any `cache_control` breakpoints on them. Sending either one on a continue request, even as `null`, returns a 400 error. |
+| Fixed | `model`, `tool_choice`, `thinking`, `mcp_servers` (apart from each server’s authorization token), `context_management`, `output_config`, the `skills` in `container`, the top-level `cache_control`, and the set of `anthropic-beta` values | Send them on every request of the thread, with the same values as on the create request. A different value returns a 400 error with the code `thread_fingerprint_mismatch`, and the error message names the fields that differ. |
+| Free | `max_tokens`, `stop_sequences`, `stream`, `metadata`, `service_tier`, and other fields not named on this page | These can change from turn to turn. |
 
 The API does not store MCP server URLs, MCP authorization tokens, or the container `id`. Send `mcp_servers` and `container` on every request that uses them. An MCP authorization token can change between requests.
 
@@ -425,18 +425,18 @@ The SDK’s beta tool runner also uses a thread by default. You can turn off thi
 
 ### Other helper methods
 
-| To do this                                      | Use                              |
-| ----------------------------------------------- | -------------------------------- |
-| Stream a turn                                   | `thread.stream(...)`             |
-| Finished response of a streamed turn            | `stream.get_final_message()`     |
-| Full conversation                               | `thread.messages`                |
-| Response `id` that the next turn continues from | `thread.previous_message_id`     |
-| Add messages without sending                    | `thread.append(...)`             |
-| Change fields for later turns                   | `thread.update(...)`             |
-| Copy the thread                                 | `thread.fork()`                  |
-| Fields and conversation to start a new thread   | `thread.params`                  |
-| Tool runner on this thread                      | `thread.tool_runner()`           |
-| Tool runner without a thread                    | `tool_runner(..., thread=False)` |
+| To do this | Use |
+| ----- | ----- |
+| Stream a turn | `thread.stream(...)` |
+| Finished response of a streamed turn | `stream.get_final_message()` |
+| Full conversation | `thread.messages` |
+| Response `id` that the next turn continues from | `thread.previous_message_id` |
+| Add messages without sending | `thread.append(...)` |
+| Change fields for later turns | `thread.update(...)` |
+| Copy the thread | `thread.fork()` |
+| Fields and conversation to start a new thread | `thread.params` |
+| Tool runner on this thread | `thread.tool_runner()` |
+| Tool runner without a thread | `tool_runner(..., thread=False)` |
 
 **Streaming.** The helper records the response when the stream reaches `message_stop`, so read the stream to its end. If you stop reading early, end the stream so that the thread is free for the next turn:
 
@@ -470,13 +470,13 @@ In C#, Go, Java, and PHP, after a refusal, `thread.LastMessage` still returns th
 
 The API returns the errors in this table before the model runs. The request uses no tokens, and the thread and its expiry time do not change. `error.type` is `invalid_request_error` for the 400 errors and `not_found_error` for the 404 error.
 
-| Status | `error_code`                  | Meaning                                                                                                                              | What to do                                                                                                 |
-| ------ | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
-| 404    | `thread_not_found`            | The API can’t continue the thread.                                                                                                   | Send the full conversation in a new create request.                                                        |
-| 400    | `thread_fingerprint_mismatch` | A fixed field differs from the value stored with the thread. The error message names the fields.                                     | Keep the fixed fields the same or start a new thread to change one.                                        |
-| 400    | `thread_already_continued`    | Each response `id` can be continued once.                                                                                            | Continue from the latest response `id` of the thread. If your client never received that response, replay. |
-| 400    | `thread_continue_in_flight`   | Another continue request from this response `id` is still running. This is usually your own earlier attempt.                         | Let it finish and continue from its response `id`, or replay.                                              |
-| 400    | `thread_unsupported_request`  | The request uses a feature or an organization setting that threads don’t support. `error.details.unsupported` names it when present. | Remove that feature from the request or send the full conversation without `thread`.                       |
+| Status | `error_code` | Meaning | What to do |
+| ----- | ----- | ----- | ----- |
+| 404 | `thread_not_found` | The API can’t continue the thread. | Send the full conversation in a new create request. |
+| 400 | `thread_fingerprint_mismatch` | A fixed field differs from the value stored with the thread. The error message names the fields. | Keep the fixed fields the same or start a new thread to change one. |
+| 400 | `thread_already_continued` | Each response `id` can be continued once. | Continue from the latest response `id` of the thread. If your client never received that response, replay. |
+| 400 | `thread_continue_in_flight` | Another continue request from this response `id` is still running. This is usually your own earlier attempt. | Let it finish and continue from its response `id`, or replay. |
+| 400 | `thread_unsupported_request` | The request uses a feature or an organization setting that threads don’t support. `error.details.unsupported` names it when present. | Remove that feature from the request or send the full conversation without `thread`. |
 
 Some requests with `thread` return a 400 error with no `error_code`. For example, a continue request returns this error if it has no `previous_message_id` or if it includes `system` or `tools`.
 
@@ -510,13 +510,13 @@ Threads don’t support these features:
 
 The API rejects most requests that threads don’t support with a 400 error and the code `thread_unsupported_request`. When `error.details.unsupported` is present, it holds one of these values:
 
-| Value                | Meaning                                                                                                                                                                                            |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `context_management` | The request uses context management or compaction that threads don’t support.                                                                                                                      |
-| `cache_control`      | The request has more than 4 `cache_control` breakpoints. See [Prompt caching on a thread](https://platform.claude.com/docs/en/build-with-claude/message-threads?sdk_languages=cli#prompt-caching). |
-| `fallbacks`          | The request sets `fallbacks`, and your organization can’t use `fallbacks` with threads.                                                                                                            |
-| `hipaa`              | Your organization has HIPAA readiness enabled.                                                                                                                                                     |
-| `inference_hooks`    | Your organization has Inference hooks turned on.                                                                                                                                                   |
+| Value | Meaning |
+| ----- | ----- |
+| `context_management` | The request uses context management or compaction that threads don’t support. |
+| `cache_control` | The request has more than 4 `cache_control` breakpoints. See [Prompt caching on a thread](https://platform.claude.com/docs/en/build-with-claude/message-threads?sdk_languages=cli#prompt-caching). |
+| `fallbacks` | The request sets `fallbacks`, and your organization can’t use `fallbacks` with threads. |
+| `hipaa` | Your organization has HIPAA readiness enabled. |
+| `inference_hooks` | Your organization has Inference hooks turned on. |
 
 The API can add values to this list. If you get a value that you don’t recognize, send the full conversation without `thread`. A request that meets several of these conditions gets an error that names only one.
 
@@ -553,9 +553,9 @@ Message threads are in beta on every model.
 
 * Availability: Available
 
-| Status | Cloud platforms                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Beta   | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
+| Status | Cloud platforms |
+| ----- | ----- |
+| Beta | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli), [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
 
 ### Required beta headers
 
@@ -569,10 +569,10 @@ Beta headers allow you to access experimental features and new model capabilitie
 
 [Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
 
-| Item    | Zero data retention                                                                                                                                                                                                                                                                                                                                                                                                        | HIPAA        |
-| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| Status  | Not eligible                                                                                                                                                                                                                                                                                                                                                                                                               | Not eligible |
-| Details | A thread’s contents (the conversation, system prompt, and tools) are held in memory, encrypted under a server-managed key, never written to durable storage, and deleted no more than 1 hour after the thread’s last use. Using this feature does not affect your use of other ZDR eligible features. [Learn more](https://platform.claude.com/docs/en/build-with-claude/message-threads?sdk_languages=cli#data-retention) | —            |
+| Item | Zero data retention | HIPAA |
+| ----- | ----- | ----- |
+| Status | Not eligible | Not eligible |
+| Details | A thread’s contents (the conversation, system prompt, and tools) are held in memory, encrypted under a server-managed key, never written to durable storage, and deleted no more than 1 hour after the thread’s last use. Using this feature does not affect your use of other ZDR eligible features. [Learn more](https://platform.claude.com/docs/en/build-with-claude/message-threads?sdk_languages=cli#data-retention) | — |
 
 Applicable endpoints:
 

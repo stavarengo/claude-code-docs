@@ -91,12 +91,12 @@ Each event in `initial_events` is validated and persisted before the create resp
 
 The create request is rejected in the following cases:
 
-| Condition                                                                                                                                                                   | Status |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| More than one `user.define_outcome` event                                                                                                                                   | 400    |
-| A `user.define_outcome` event without a `rubric`                                                                                                                            | 400    |
-| More than 100 file-sourced [`document` content blocks](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=cli#document-blocks) across the whole list | 400    |
-| A request body over 32 MB                                                                                                                                                   | 413    |
+| Condition | Status |
+| ----- | ----- |
+| More than one `user.define_outcome` event | 400 |
+| A `user.define_outcome` event without a `rubric` | 400 |
+| More than 100 file-sourced [`document` content blocks](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=cli#document-blocks) across the whole list | 400 |
+| A request body over 32 MB | 413 |
 
 A `user.define_outcome` event in `initial_events` is accepted under the same conditions as sending one to an existing session; see [Define outcomes](https://platform.claude.com/docs/en/managed-agents/define-outcomes?sdk_languages=cli).
 

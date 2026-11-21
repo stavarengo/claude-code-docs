@@ -242,6 +242,62 @@ For endpoint details see our `/responses/compact` [docs](https://developers.open
 
 The easiest way to implement apply_patch is with our first-class implementation in the Responses API, but you can also use our freeform tool implementation with [context-free grammar](https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_new_params_and_tools?utm_source=chatgpt.com#3-contextfree-grammar-cfg). Both are demonstrated below.
 
+```typescript
+import OpenAI from "openai";
+import type { Tool } from "openai/resources/responses/responses";
+
+const client = new OpenAI();
+const grammar = `
+start: begin_patch hunk+ end_patch
+begin_patch: "*** Begin Patch" LF
+end_patch: "*** End Patch" LF?
+
+hunk: add_hunk | delete_hunk | update_hunk
+add_hunk: "*** Add File: " filename LF add_line+
+delete_hunk: "*** Delete File: " filename LF
+update_hunk: "*** Update File: " filename LF change_move? change?
+
+filename: /(.+)/
+add_line: "+" /(.*)/ LF -> line
+
+change_move: "*** Move to: " filename LF
+change: (change_context | change_line)+ eof_line?
+change_context: ("@@" | "@@ " /(.+)/) LF
+change_line: ("+" | "-" | " ") /(.*)/ LF
+eof_line: "*** End of File" LF
+
+%import common.LF`;
+const input =
+  "Add a cancel button next to the save button in app/page.tsx.\nCurrent file contents:\nexport default function Page() { return <button>Save</button>; }";
+const toolSets: Tool[][] = [
+  [{ type: "apply_patch" }],
+  [
+    {
+      type: "custom",
+      name: "apply_patch",
+      description: "Apply a patch to update files.",
+      format: { type: "grammar", syntax: "lark", definition: grammar },
+    },
+  ],
+];
+for (const tools of toolSets) {
+  const response = await client.responses.create({
+    model: "gpt-5.3-codex",
+    input,
+    tools,
+    tool_choice: "required",
+    parallel_tool_calls: false,
+  });
+  if (response.status !== "completed")
+    throw new Error("Response did not complete");
+  for (const item of response.output) {
+    if (item.type === "apply_patch_call")
+      console.log(JSON.stringify(item.operation));
+    if (item.type === "custom_tool_call") console.log(item.input);
+  }
+}
+```
+
 ```python
 # Sample script to demonstrate the server-defined apply_patch tool
 
@@ -641,6 +697,29 @@ This is a basic function used in codex-cli for the model to view images.
 
 If you would prefer your codex agent to use terminal-wrapping tools (like a dedicated `list_dir(‘.’)` tool instead of `terminal(‘ls .’)`, this generally works well. We see the best results when the name of the tool, the arguments, and the output are as close as possible to those from the underlying command, so it’s as in-distribution as possible for the model (which was primarily trained using a dedicated terminal tool). For example, if you notice the model using git via the terminal and would prefer it to use a dedicated tool, we found that creating a related tool, and adding a directive in the prompt to only use that tool for git commands, fully mitigated the model’s terminal usage for git commands.
 
+```typescript
+const gitTool = {
+  type: "function",
+  name: "git",
+  description:
+    "Execute a git command in the repository root. Accepts a full git invocation or just its arguments.",
+  parameters: {
+    type: "object",
+    properties: {
+      command: {
+        type: "string",
+        description: "The git command or arguments to execute.",
+      },
+      timeout_sec: { type: "integer", minimum: 1, maximum: 1800 },
+    },
+    required: ["command"],
+  },
+};
+const tools = [gitTool];
+const promptToolUseDirective =
+  "- Strictly avoid raw cmd/terminal for Git operations. Use the dedicated git tool instead.";
+```
+
 ```python
 GIT_TOOL = {
     "type": "function",
@@ -710,6 +789,22 @@ func main() {
 	}
 	fmt.Println(promptToolUseDirective)
 }
+```
+
+```csharp
+using System.ClientModel.Primitives;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+ResponseTool gitTool = ResponseTool.CreateFunctionTool("git", functionDescription:
+            """
+Execute a git command in the repository root. Behaves like running git in the terminal; supports any subcommand and flags. The command can be provided as a full git invocation (e.g., `git status -sb`) or just the arguments after git (e.g., `status -sb`).
+""",
+            functionParameters: BinaryData.FromString("""
+{"type": "object", "properties": {"command": {"type": "string", "description": "The git command to execute. Accepts either a full git invocation or only the subcommand/args."}, "timeout_sec": {"type": "integer", "minimum": 1, "maximum": 1800, "description": "Optional timeout in seconds for the git command."}}, "required": ["command"]}
+"""), strictModeEnabled: false);
+        ResponseTool[] tools = [gitTool];
+        string promptToolUseDirective = "- Strictly avoid raw `cmd`/terminal for Git operations. Use the dedicated `git` tool instead.";
 ```
 
 ```ruby

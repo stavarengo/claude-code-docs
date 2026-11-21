@@ -169,7 +169,7 @@ To resolve this error:
 - Reduce your request rate, then increase it gradually.
 - Keep your traffic pattern steady to reduce the chance of another `slow_down` error.
 
-Enterprise customers whose pay-as-you-go traffic routinely hits ramp-rate limits can consider [Scale Tier](https://openai.com/api-scale-tier/) for more predictable capacity on eligible models. For GPT-5.6 and later models, see [Reserved Tier](https://openai.com/api-reserved-tier/). These capacity options don't replace the recovery steps above: continue to follow `Retry-After` when it's present and ramp traffic gradually.
+Enterprise customers whose pay-as-you-go traffic routinely hits ramp-rate limits can consider [Scale Tier](https://openai.com/api-scale-tier/) for more predictable capacity on eligible models. For GPT-5.6 and later models, see [Reserved Tier](https://developers.openai.com/api/docs/guides/reserved-tier). These capacity options don't replace the recovery steps above: continue to follow `Retry-After` when it's present and ramp traffic gradually.
 
 
 
@@ -466,6 +466,33 @@ try {
       .forEach(text -> System.out.println(text.text()));
 } catch (OpenAIServiceException error) {
   System.err.println(error.getMessage());
+}
+```
+
+```csharp
+using System.ClientModel;
+using OpenAI.Responses;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+ResponsesClient client = new(key);
+
+try
+{
+    ResponseResult response = await client.CreateResponseAsync("gpt-6.2-astra", "Hello world");
+    Console.WriteLine(response.GetOutputText());
+}
+catch (ClientResultException error) when (error.Status == 429)
+{
+    Console.WriteLine($"OpenAI API request exceeded rate limit: {error.Message}");
+}
+catch (ClientResultException error)
+{
+    Console.WriteLine($"OpenAI API returned an API error: {error.Message}");
+}
+catch (HttpRequestException error)
+{
+    Console.WriteLine($"Failed to connect to OpenAI API: {error.Message}");
 }
 ```
 

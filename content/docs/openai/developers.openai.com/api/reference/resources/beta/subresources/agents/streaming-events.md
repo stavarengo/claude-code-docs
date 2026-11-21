@@ -1501,7 +1501,23 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `"environment_connection"`
 
-  - `status: "idle" or "in_progress" or "requires_action" or "failed"`
+  - `spend_control: object { consumed, limit }`
+
+    Spending limit and best-effort consumption, in USD cents. The limit is null for an unlimited session. Consumption is null when unavailable.
+
+    - `consumed: integer or null`
+
+      Best-effort recorded spend floored to whole USD cents, or null when unavailable.
+
+      `minimum: 0`
+
+    - `limit: integer or null`
+
+      The configured positive limit in USD cents, or null when unlimited.
+
+      `format: int64`, `minimum: 1`, `maximum: 4503599627370495`
+
+  - `status: "idle" or "in_progress" or "requires_action" or 2 more`
 
     The current status of the session.
 
@@ -1520,6 +1536,10 @@ Schema name: `SessionEventAgentSessionCreated`
     - `"failed"`
 
       The session failed.
+
+    - `"budget_reached"`
+
+      The session is paused because its spending limit was reached.
 
   - `usage: TokenUsage or null`
 
@@ -1610,6 +1630,10 @@ Schema name: `SessionEventAgentSessionCreated`
       "ttl": "30m"
     },
     "review": "none",
+    "spend_control": {
+      "limit": 1,
+      "consumed": 0
+    },
     "metadata": {
       "foo": "string"
     },
@@ -1748,7 +1772,7 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "max_output_tokens" or "usage_limit_exceeded" or 21 more`
+    - `code: "context_length_exceeded" or "max_output_tokens" or "session_budget_exceeded" or 23 more`
 
       A stable, machine-readable failure category.
 
@@ -1759,6 +1783,10 @@ Schema name: `SessionEventAgentSessionTurnCreated`
       - `"max_output_tokens"`
 
         The model reached its output token limit before finishing the response.
+
+      - `"session_budget_exceeded"`
+
+        The session has reached its usage budget.
 
       - `"usage_limit_exceeded"`
 
@@ -1807,6 +1835,10 @@ Schema name: `SessionEventAgentSessionTurnCreated`
       - `"misalignment_policy_violation"`
 
         The request was blocked by the safety systems.
+
+      - `"audio_input_unavailable"`
+
+        Audio input is unavailable for the organization.
 
       - `"connection_failed"`
 
@@ -2071,7 +2103,7 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "max_output_tokens" or "usage_limit_exceeded" or 21 more`
+    - `code: "context_length_exceeded" or "max_output_tokens" or "session_budget_exceeded" or 23 more`
 
       A stable, machine-readable failure category.
 
@@ -2082,6 +2114,10 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
       - `"max_output_tokens"`
 
         The model reached its output token limit before finishing the response.
+
+      - `"session_budget_exceeded"`
+
+        The session has reached its usage budget.
 
       - `"usage_limit_exceeded"`
 
@@ -2130,6 +2166,10 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
       - `"misalignment_policy_violation"`
 
         The request was blocked by the safety systems.
+
+      - `"audio_input_unavailable"`
+
+        Audio input is unavailable for the organization.
 
       - `"connection_failed"`
 
@@ -2394,7 +2434,7 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "max_output_tokens" or "usage_limit_exceeded" or 21 more`
+    - `code: "context_length_exceeded" or "max_output_tokens" or "session_budget_exceeded" or 23 more`
 
       A stable, machine-readable failure category.
 
@@ -2405,6 +2445,10 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
       - `"max_output_tokens"`
 
         The model reached its output token limit before finishing the response.
+
+      - `"session_budget_exceeded"`
+
+        The session has reached its usage budget.
 
       - `"usage_limit_exceeded"`
 
@@ -2453,6 +2497,10 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
       - `"misalignment_policy_violation"`
 
         The request was blocked by the safety systems.
+
+      - `"audio_input_unavailable"`
+
+        Audio input is unavailable for the organization.
 
       - `"connection_failed"`
 
@@ -2732,7 +2780,7 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "max_output_tokens" or "usage_limit_exceeded" or 21 more`
+    - `code: "context_length_exceeded" or "max_output_tokens" or "session_budget_exceeded" or 23 more`
 
       A stable, machine-readable failure category.
 
@@ -2743,6 +2791,10 @@ Schema name: `SessionEventAgentSessionTurnFailed`
       - `"max_output_tokens"`
 
         The model reached its output token limit before finishing the response.
+
+      - `"session_budget_exceeded"`
+
+        The session has reached its usage budget.
 
       - `"usage_limit_exceeded"`
 
@@ -2791,6 +2843,10 @@ Schema name: `SessionEventAgentSessionTurnFailed`
       - `"misalignment_policy_violation"`
 
         The request was blocked by the safety systems.
+
+      - `"audio_input_unavailable"`
+
+        Audio input is unavailable for the organization.
 
       - `"connection_failed"`
 
@@ -3070,7 +3126,7 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
     A customer-safe error. Non-null only for a failed turn.
 
-    - `code: "context_length_exceeded" or "max_output_tokens" or "usage_limit_exceeded" or 21 more`
+    - `code: "context_length_exceeded" or "max_output_tokens" or "session_budget_exceeded" or 23 more`
 
       A stable, machine-readable failure category.
 
@@ -3081,6 +3137,10 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
       - `"max_output_tokens"`
 
         The model reached its output token limit before finishing the response.
+
+      - `"session_budget_exceeded"`
+
+        The session has reached its usage budget.
 
       - `"usage_limit_exceeded"`
 
@@ -3129,6 +3189,10 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
       - `"misalignment_policy_violation"`
 
         The request was blocked by the safety systems.
+
+      - `"audio_input_unavailable"`
+
+        Audio input is unavailable for the organization.
 
       - `"connection_failed"`
 
@@ -5433,7 +5497,23 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `"environment_connection"`
 
-  - `status: "idle" or "in_progress" or "requires_action" or "failed"`
+  - `spend_control: object { consumed, limit }`
+
+    Spending limit and best-effort consumption, in USD cents. The limit is null for an unlimited session. Consumption is null when unavailable.
+
+    - `consumed: integer or null`
+
+      Best-effort recorded spend floored to whole USD cents, or null when unavailable.
+
+      `minimum: 0`
+
+    - `limit: integer or null`
+
+      The configured positive limit in USD cents, or null when unlimited.
+
+      `format: int64`, `minimum: 1`, `maximum: 4503599627370495`
+
+  - `status: "idle" or "in_progress" or "requires_action" or 2 more`
 
     The current status of the session.
 
@@ -5452,6 +5532,10 @@ Schema name: `SessionEventAgentSessionIdle`
     - `"failed"`
 
       The session failed.
+
+    - `"budget_reached"`
+
+      The session is paused because its spending limit was reached.
 
   - `usage: TokenUsage or null`
 
@@ -5542,6 +5626,1191 @@ Schema name: `SessionEventAgentSessionIdle`
       "ttl": "30m"
     },
     "review": "none",
+    "spend_control": {
+      "limit": 1,
+      "consumed": 0
+    },
+    "metadata": {
+      "foo": "string"
+    },
+    "id": "id",
+    "object": "agent.session",
+    "created_at": 0,
+    "last_active_at": 0,
+    "status": "idle",
+    "required_actions": [
+      {
+        "type": "mcp_approval_request",
+        "turn_id": "turn_id",
+        "request_id": "request_id",
+        "request": {
+          "type": "mcp_tool_call",
+          "server_label": "server_label",
+          "name": "name",
+          "arguments": {},
+          "message": "message"
+        }
+      }
+    ],
+    "error": "error",
+    "agent": {
+      "id": "id",
+      "name": "name",
+      "model": "model",
+      "reasoning": {
+        "effort": "none",
+        "summary": "concise"
+      },
+      "text": {
+        "format": {
+          "type": "text"
+        },
+        "verbosity": "low"
+      },
+      "service_tier": "auto",
+      "instructions": "instructions",
+      "tools": [
+        {
+          "type": "function",
+          "name": "name",
+          "description": "description",
+          "parameters": {
+            "foo": "bar"
+          },
+          "defer_loading": true,
+          "async": true
+        }
+      ],
+      "multi_agent": {
+        "enabled": true,
+        "max_concurrent_subagents": 1
+      },
+      "compaction": {
+        "async": true
+      },
+      "experimental": {
+        "time_awareness": true
+      }
+    },
+    "environment": {
+      "type": "none"
+    },
+    "vault_ids": [
+      "string"
+    ],
+    "usage": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "cached_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 0
+    }
+  },
+  "obfuscation": "obfuscation"
+}
+```
+
+<a id="agent.session.budget_reached"></a>
+
+## agent.session.budget_reached
+
+Emitted when a session pauses because its spending limit was reached.
+
+### Schema
+
+Schema name: `SessionEventAgentSessionBudgetReached`
+
+- `event_id: string`
+
+  The unique ID of the event.
+
+  `minLength: 0`
+
+- `session: AgentSession`
+
+  The paused session.
+
+  - `id: string`
+
+    The ID of the session.
+
+    `minLength: 0`
+
+  - `agent: object { id, instructions, model, 8 more }`
+
+    The agent running in the session.
+
+    - `id: string`
+
+      The ID of the agent.
+
+      `minLength: 0`
+
+    - `instructions: string or null`
+
+      Custom instructions appended to the agent's default base instructions.
+
+      `minLength: 0`
+
+    - `model: string`
+
+      The model used by the agent.
+
+      `minLength: 0`
+
+    - `multi_agent: MultiAgentConfig`
+
+      Configuration for creating and coordinating subagents.
+
+      - `enabled: boolean`
+
+        Whether subagent tools are enabled. Defaults to false.
+
+      - `max_concurrent_subagents: integer or null`
+
+        Maximum number of subagents that may run concurrently, or null when disabled. Defaults to 6 when enabled.
+
+        `format: int64`, `minimum: 1`, `maximum: 4294967295`
+
+    - `name: string or null`
+
+      The reusable agent's name when the session was created, or null if no name was saved. Later changes to the agent's name do not affect this value.
+
+      `minLength: 0`
+
+    - `reasoning: AgentReasoning`
+
+      The agent's reasoning configuration.
+
+      - `effort: "none" or "minimal" or "low" or 4 more or null`
+
+        The requested reasoning effort, or `null` when the model selects its own default.
+
+        - `"none"`
+
+        - `"minimal"`
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+        - `"xhigh"`
+
+        - `"max"`
+
+      - `summary: "concise" or "detailed" or "auto" or null`
+
+        The requested reasoning summary format, or `null` when summaries are disabled.
+
+        - `"concise"`
+
+          Returns a concise reasoning summary when supported.
+
+        - `"detailed"`
+
+          Returns a detailed reasoning summary when supported.
+
+        - `"auto"`
+
+          Automatically selects the most detailed summary supported by the model.
+
+    - `service_tier: "auto" or "default" or "flex" or 3 more`
+
+      The effective service-tier policy for model requests. Defaults to `auto`.
+
+      - `"auto"`
+
+      - `"default"`
+
+      - `"flex"`
+
+      - `"priority"`
+
+      - `"fast"`
+
+      - `"ultrafast"`
+
+    - `text: AgentText`
+
+      Configuration for text generated by the agent.
+
+      - `format: TextFormat`
+
+        The effective output format. Defaults to ordinary text.
+
+        - `Text object { type }`
+
+          Generates ordinary text without a structured-output constraint.
+
+          - `type: "text" (default: "text")`
+
+            The type of the object. Always `text`.
+
+            - `"text"`
+
+        - `JSONSchema object { schema, type }`
+
+          Constrains generated text to a JSON Schema.
+
+          - `schema: map[unknown]`
+
+            The JSON Schema that generated text must match.
+
+          - `type: "json_schema" (default: "json_schema")`
+
+            The type of the object. Always `json_schema`.
+
+            - `"json_schema"`
+
+      - `verbosity: "low" or "medium" or "high"`
+
+        The amount of text produced by the agent. Defaults to `medium`.
+
+        - `"low"`
+
+        - `"medium"`
+
+        - `"high"`
+
+    - `tools: array of AgentTool`
+
+      Tools available to the agent.
+
+      `minItems: 0`, `maxItems: 2000`
+
+      - `Function object { defer_loading, description, name, 3 more }`
+
+        A function defined by the application.
+
+        - `defer_loading: boolean`
+
+          Whether the function is deferred and discovered through tool search.
+
+        - `description: string`
+
+          A description of what the function does.
+
+          `minLength: 0`
+
+        - `name: string`
+
+          The name of the function.
+
+          `minLength: 0`
+
+        - `parameters: map[unknown]`
+
+          A JSON Schema object describing the function's arguments.
+
+        - `type: "function" (default: "function")`
+
+          The type of the object. Always `function`.
+
+          - `"function"`
+
+        - `async: optional boolean`
+
+          Whether the agent continues without waiting for the function result.
+
+      - `ProgrammaticToolCalling object { enabled, type }`
+
+        Enables calling tools from model-generated code.
+
+        - `enabled: boolean`
+
+          Whether tools can be called from model-generated code.
+
+        - `type: "programmatic_tool_calling" (default: "programmatic_tool_calling")`
+
+          The type of the object. Always `programmatic_tool_calling`.
+
+          - `"programmatic_tool_calling"`
+
+      - `Mcp object { allowed_tools, connection_origin, credential_id, 5 more }`
+
+        Tools provided by a remote MCP server.
+
+        - `allowed_tools: array of string or null`
+
+          The MCP tools the agent may call.
+
+          `minItems: 0`, `maxItems: 2000`
+
+        - `connection_origin: "service" or "environment"`
+
+          Where outbound MCP HTTP connections originate.
+
+          - `"service"`
+
+          - `"environment"`
+
+        - `credential_id: string or null`
+
+          The attached vault credential selected for this MCP server, if any. Optional when exactly one attached credential matches the server URL.
+
+          `minLength: 0`
+
+        - `request_metadata: map[unknown]`
+
+          Metadata included with requests to this MCP server.
+
+        - `required: boolean`
+
+          Whether this MCP server must initialize before the first turn.
+
+        - `server_label: string`
+
+          A label used to identify the MCP server in tool calls.
+
+          `minLength: 0`
+
+        - `transport: McpTransport`
+
+          The transport used to connect to the MCP server.
+
+          - `HTTP object { server_url, type }`
+
+            Connects to an MCP server over HTTP.
+
+            - `server_url: string`
+
+              The URL of the MCP server.
+
+              `minLength: 0`
+
+            - `type: "http" (default: "http")`
+
+              The type of the object. Always `http`.
+
+              - `"http"`
+
+          - `Stdio object { args, command, cwd, 2 more }`
+
+            Starts an MCP server as a local process.
+
+            - `args: array of string`
+
+              Arguments passed to the MCP server command.
+
+              `minItems: 0`, `maxItems: 2000`
+
+            - `command: string`
+
+              The command used to start the MCP server.
+
+              `minLength: 0`
+
+            - `cwd: string`
+
+              The working directory used to start the MCP server.
+
+              `minLength: 0`
+
+            - `env_vars: array of string`
+
+              Environment variable names inherited from the execution environment.
+
+              `minItems: 0`, `maxItems: 2000`
+
+            - `type: "stdio" (default: "stdio")`
+
+              The type of the object. Always `stdio`.
+
+              - `"stdio"`
+
+        - `type: "mcp" (default: "mcp")`
+
+          The type of the object. Always `mcp`.
+
+          - `"mcp"`
+
+      - `WebSearch object { allowed_domains, context_size, location, 2 more }`
+
+        Web search.
+
+        - `allowed_domains: array of string or null`
+
+          Allowed search domains, or `null` when the search is unrestricted.
+
+          `minItems: 0`, `maxItems: 2000`
+
+        - `context_size: "low" or "medium" or "high"`
+
+          The amount of search context made available to the model. Defaults to `medium`.
+
+          - `"low"`
+
+          - `"medium"`
+
+          - `"high"`
+
+        - `location: object { city, country, region, timezone }  or null`
+
+          Approximate location used to localize search results, if provided.
+
+          - `city: string or null`
+
+            The city name.
+
+            `minLength: 0`
+
+          - `country: string or null`
+
+            The two-letter ISO country code, such as `US`.
+
+            `minLength: 0`
+
+          - `region: string or null`
+
+            The region or state name.
+
+            `minLength: 0`
+
+          - `timezone: string or null`
+
+            The IANA timezone, such as `America/Los_Angeles`.
+
+            `minLength: 0`
+
+        - `mode: "disabled" or "cached" or "live"`
+
+          The source used for web search results.
+
+          - `"disabled"`
+
+          - `"cached"`
+
+          - `"live"`
+
+        - `type: "web_search" (default: "web_search")`
+
+          The type of the object. Always `web_search`.
+
+          - `"web_search"`
+
+      - `ComputerUse object { include_screenshots, type }`
+
+        Browser use in an OpenAI-hosted session.
+
+        - `include_screenshots: boolean`
+
+          Whether computer tool outputs include screenshots.
+
+        - `type: "computer_use" (default: "computer_use")`
+
+          The type of the object. Always `computer_use`.
+
+          - `"computer_use"`
+
+      - `Automations object { type }`
+
+        Lets the agent manage its own scheduled wakeups.
+
+        - `type: "automations" (default: "automations")`
+
+          The type of the object. Always `automations`.
+
+          - `"automations"`
+
+    - `compaction: optional object { async }`
+
+      The effective context compaction settings.
+
+      - `async: boolean`
+
+        Whether context is compacted in the background. Defaults to false.
+
+    - `experimental: optional object { time_awareness }`
+
+      The effective experimental settings for the agent.
+
+      - `time_awareness: boolean`
+
+        Whether the model receives periodic current-time reminders.
+
+  - `created_at: integer`
+
+    The Unix timestamp, in seconds, when the session was created.
+
+    `format: int64`
+
+  - `environment: Environment`
+
+    The execution environment for the session.
+
+    - `None object { type }`
+
+      The session talks to CCA without selecting or provisioning an execution environment.
+
+      - `type: "none" (default: "none")`
+
+        The type of the object. Always `none`.
+
+        - `"none"`
+
+    - `OpenAIHosted object { id, capability_directories, desktop, 7 more }`
+
+      An environment hosted by OpenAI.
+
+      - `id: string`
+
+        The public ID of the environment.
+
+        `minLength: 0`
+
+      - `capability_directories: array of string`
+
+        Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
+
+      - `desktop: object { enabled }`
+
+        The effective desktop configuration.
+
+        - `enabled: boolean`
+
+          Whether the environment provisions a desktop and browser proxy.
+
+      - `files: array of HostedEnvironmentFile`
+
+        Files available in the environment, excluding their contents.
+
+        `minItems: 0`, `maxItems: 50`
+
+        - `HostedEnvironmentFileID object { id, file_id, path, 2 more }`
+
+          A file copied from the OpenAI Files API.
+
+          - `id: string`
+
+            The session-scoped ID of the file in the execution environment.
+
+            `minLength: 0`
+
+          - `file_id: string`
+
+            The ID of the uploaded file.
+
+            `minLength: 0`
+
+          - `path: string`
+
+            The file's absolute path inside the environment.
+
+            `minLength: 0`
+
+          - `size_bytes: integer`
+
+            The decoded file size in bytes.
+
+            `format: int64`, `minimum: 0`
+
+          - `type: "file_id" (default: "file_id")`
+
+            The type of the object. Always `file_id`.
+
+            - `"file_id"`
+
+        - `Inline object { id, path, size_bytes, type }`
+
+          A file supplied inline when the session was created.
+
+          - `id: string`
+
+            The session-scoped ID of the file in the execution environment.
+
+            `minLength: 0`
+
+          - `path: string`
+
+            The file's absolute path inside the environment.
+
+            `minLength: 0`
+
+          - `size_bytes: integer`
+
+            The decoded file size in bytes.
+
+            `format: int64`, `minimum: 0`
+
+          - `type: "inline" (default: "inline")`
+
+            The type of the object. Always `inline`.
+
+            - `"inline"`
+
+      - `network: object { access, allowed_domains }`
+
+        The effective network access policy for the environment.
+
+        - `access: "enabled" or "disabled" or "restricted"`
+
+          The environment's network access mode.
+
+          - `"enabled"`
+
+            Allows unrestricted network access.
+
+          - `"disabled"`
+
+            Disables network access.
+
+          - `"restricted"`
+
+            Applies the configured domain restrictions.
+
+        - `allowed_domains: array of string`
+
+          Domains the environment may access when network access is restricted.
+
+          `minItems: 0`, `maxItems: 2000`
+
+      - `packages: object { npm, python, system }`
+
+        Packages installed in the environment.
+
+        - `npm: array of string`
+
+          npm packages installed globally in the environment.
+
+          `minItems: 0`, `maxItems: 16384`
+
+        - `python: array of string`
+
+          Python packages installed in the environment.
+
+          `minItems: 0`, `maxItems: 16384`
+
+        - `system: array of string`
+
+          System packages installed in the environment.
+
+          `minItems: 0`, `maxItems: 16384`
+
+      - `plugins: array of HostedPlugin`
+
+        Plugins installed in the environment, excluding their archive contents.
+
+        `minItems: 0`, `maxItems: 2000`
+
+        - `description: string`
+
+          The installed plugin description.
+
+          `minLength: 0`
+
+        - `name: string`
+
+          The installed plugin name.
+
+          `minLength: 0`
+
+        - `type: "inline" (default: "inline")`
+
+          The type of the object. Always `inline`.
+
+          - `"inline"`
+
+      - `skills: array of HostedSkill`
+
+        Skills installed in the environment, excluding their archive contents.
+
+        `minItems: 0`, `maxItems: 2000`
+
+        - `HostedSkillReference object { description, name, skill_id, 2 more }`
+
+          A skill installed from the Skills API.
+
+          - `description: string`
+
+            The installed skill description.
+
+            `minLength: 0`
+
+          - `name: string`
+
+            The installed skill name.
+
+            `minLength: 0`
+
+          - `skill_id: string`
+
+            The referenced skill ID.
+
+            `minLength: 0`
+
+          - `type: "skill_reference" (default: "skill_reference")`
+
+            The type of the object. Always `skill_reference`.
+
+            - `"skill_reference"`
+
+          - `version: string`
+
+            The concrete skill version installed for this session.
+
+            `minLength: 0`
+
+        - `Inline object { description, name, type }`
+
+          A skill installed from an inline ZIP archive.
+
+          - `description: string`
+
+            The installed skill description.
+
+            `minLength: 0`
+
+          - `name: string`
+
+            The installed skill name.
+
+            `minLength: 0`
+
+          - `type: "inline" (default: "inline")`
+
+            The type of the object. Always `inline`.
+
+            - `"inline"`
+
+      - `type: "openai_hosted" (default: "openai_hosted")`
+
+        The type of the object. Always `openai_hosted`.
+
+        - `"openai_hosted"`
+
+      - `container_size: optional "small" or "medium" or "large" or null`
+
+        The effective CPU and memory tier, or null when unknown or outside the public tiers.
+
+        - `"small"`
+
+        - `"medium"`
+
+        - `"large"`
+
+    - `SelfHosted object { id, capability_directories, remote_url, 2 more }`
+
+      An environment hosted by the application.
+
+      - `id: string`
+
+        The public ID of the environment.
+
+        `minLength: 0`
+
+      - `capability_directories: array of string`
+
+        Directories that contain capabilities exposed to the agent.
+
+        `minItems: 0`, `maxItems: 2000`
+
+      - `remote_url: string`
+
+        Pass this URL unchanged to `codex exec-server --remote` when connecting this environment.
+
+        `minLength: 0`
+
+      - `type: "self_hosted" (default: "self_hosted")`
+
+        The type of the object. Always `self_hosted`.
+
+        - `"self_hosted"`
+
+      - `workspace_directory: string`
+
+        The absolute project directory inside the environment. Defaults to `/workspace`.
+
+        `minLength: 0`
+
+  - `error: string or null`
+
+    The error that caused the session to fail, if any.
+
+    `minLength: 0`
+
+  - `last_active_at: integer`
+
+    The Unix timestamp, in seconds, when the session was last active.
+
+    `format: int64`
+
+  - `metadata: map[string]`
+
+    Custom string key-value pairs attached to the session.
+
+  - `object: "agent.session" (default: "agent.session")`
+
+    The object type. Always `agent.session`.
+
+    - `"agent.session"`
+
+  - `required_actions: array of McpApprovalRequest { request, request_id, turn_id, type }  or ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
+
+    Actions that must be completed before the session can continue.
+
+    `minItems: 0`, `maxItems: 2000`
+
+    - `McpApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to an MCP tool-call approval request.
+
+      - `request: object { arguments, message, name, 2 more }`
+
+        Information for presenting an MCP approval.
+
+        - `arguments: unknown`
+
+          The tool arguments as JSON, or null when CCA does not provide them.
+
+        - `message: string`
+
+          `minLength: 0`
+
+        - `name: string or null`
+
+          The tool name, or null when CCA does not provide it.
+
+          `minLength: 0`
+
+        - `server_label: string`
+
+          `minLength: 0`
+
+        - `type: "mcp_tool_call" (default: "mcp_tool_call")`
+
+          The type of the object. Always `mcp_tool_call`.
+
+          - `"mcp_tool_call"`
+
+      - `request_id: string`
+
+        The opaque approval ID to echo when responding.
+
+        `minLength: 0`
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+        `minLength: 0`
+
+      - `type: "mcp_approval_request" (default: "mcp_approval_request")`
+
+        The type of the object. Always `mcp_approval_request`.
+
+        - `"mcp_approval_request"`
+
+    - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
+
+      Respond to a computer-use request.
+
+      - `request: BrowserAuthentication { credential_origin, fields, options, 2 more }  or BrowserOriginAccess { origin, reason, type }`
+
+        The information needed to render the request.
+
+        - `BrowserAuthentication object { credential_origin, fields, options, 2 more }`
+
+          A registered form awaiting the application's response.
+
+          - `credential_origin: string or null`
+
+            The registered form or frame origin where values will be entered.
+
+            `minLength: 0`
+
+          - `fields: array of object { id, label, required, type }`
+
+            Controls to render. All submitted values are sensitive.
+
+            `minItems: 0`, `maxItems: 2000`
+
+            - `id: string`
+
+              The field ID to submit as field_id in a fields entry.
+
+              `minLength: 0`
+
+            - `label: string`
+
+              The label to display beside the control.
+
+              `minLength: 0`
+
+            - `required: boolean`
+
+              Whether this control requires a nonempty value.
+
+            - `type: string`
+
+              The rendering type, such as email, password, or text.
+
+              `minLength: 0`
+
+          - `options: array of object { id, field_ids, label }`
+
+            Sign-in methods. Empty for a plain form.
+
+            `minItems: 0`, `maxItems: 2000`
+
+            - `id: string`
+
+              The option ID to submit as selected_option.
+
+              `minLength: 0`
+
+            - `field_ids: array of string`
+
+              IDs from the registered fields that this method accepts.
+
+              `minItems: 0`, `maxItems: 2000`
+
+            - `label: string`
+
+              The method label to display.
+
+              `minLength: 0`
+
+          - `reason: string or null`
+
+            Why the agent needs the user to sign in.
+
+            `minLength: 0`
+
+          - `type: "browser_authentication" (default: "browser_authentication")`
+
+            The type of the object. Always `browser_authentication`.
+
+            - `"browser_authentication"`
+
+        - `BrowserOriginAccess object { origin, reason, type }`
+
+          A browser origin awaiting the application's approval decision.
+
+          - `origin: string`
+
+            The origin the browser needs permission to access.
+
+            `minLength: 0`
+
+          - `reason: string or null`
+
+            The browser's explanation for this request, or null when unavailable.
+
+            `minLength: 0`
+
+          - `type: "browser_origin_access" (default: "browser_origin_access")`
+
+            The type of the object. Always `browser_origin_access`.
+
+            - `"browser_origin_access"`
+
+      - `request_id: string`
+
+        The registered request ID to echo when responding.
+
+        `minLength: 0`
+
+      - `turn_id: string`
+
+        The turn that requested approval.
+
+        `minLength: 0`
+
+      - `type: "computer_use_approval_request" (default: "computer_use_approval_request")`
+
+        The type of the object. Always `computer_use_approval_request`.
+
+        - `"computer_use_approval_request"`
+
+    - `FunctionCall object { arguments, call_id, name, 2 more }`
+
+      Run a function tool and submit its result.
+
+      - `arguments: unknown`
+
+        The arguments supplied by the model.
+
+      - `call_id: string`
+
+        The ID to include when submitting the function result.
+
+        `minLength: 0`
+
+      - `name: string`
+
+        The function name.
+
+        `minLength: 0`
+
+      - `turn_id: string`
+
+        The ID of the turn that requested the function call.
+
+        `minLength: 0`
+
+      - `type: "function_call" (default: "function_call")`
+
+        The type of the object. Always `function_call`.
+
+        - `"function_call"`
+
+    - `EnvironmentConnection object { environment_id, type }`
+
+      Reconnect a session environment.
+
+      - `environment_id: string`
+
+        The ID of the environment to reconnect.
+
+        `minLength: 0`
+
+      - `type: "environment_connection" (default: "environment_connection")`
+
+        The type of the object. Always `environment_connection`.
+
+        - `"environment_connection"`
+
+  - `spend_control: object { consumed, limit }`
+
+    Spending limit and best-effort consumption, in USD cents. The limit is null for an unlimited session. Consumption is null when unavailable.
+
+    - `consumed: integer or null`
+
+      Best-effort recorded spend floored to whole USD cents, or null when unavailable.
+
+      `minimum: 0`
+
+    - `limit: integer or null`
+
+      The configured positive limit in USD cents, or null when unlimited.
+
+      `format: int64`, `minimum: 1`, `maximum: 4503599627370495`
+
+  - `status: "idle" or "in_progress" or "requires_action" or 2 more`
+
+    The current status of the session.
+
+    - `"idle"`
+
+      The session has no turn in progress and is ready for input. A hosted environment may still be provisioning.
+
+    - `"in_progress"`
+
+      The session is processing a turn.
+
+    - `"requires_action"`
+
+      The session is waiting for one or more required actions.
+
+    - `"failed"`
+
+      The session failed.
+
+    - `"budget_reached"`
+
+      The session is paused because its spending limit was reached.
+
+  - `usage: TokenUsage or null`
+
+    Best-effort token usage for the session, or null if unknown. Recorded usage may change.
+
+    - `input_tokens: integer`
+
+      The number of input tokens used by the agent.
+
+      `format: int64`
+
+    - `input_tokens_details: object { cached_tokens }`
+
+      A breakdown of the agent's input token usage.
+
+      - `cached_tokens: integer`
+
+        The number of input tokens retrieved from the prompt cache.
+
+        `format: int64`
+
+    - `output_tokens: integer`
+
+      The number of output tokens generated by the agent.
+
+      `format: int64`
+
+    - `output_tokens_details: object { reasoning_tokens }`
+
+      A breakdown of the agent's output token usage.
+
+      - `reasoning_tokens: integer`
+
+        The number of output tokens used for reasoning.
+
+        `format: int64`
+
+    - `total_tokens: integer`
+
+      The total number of input and output tokens used by the agent.
+
+      `format: int64`
+
+  - `vault_ids: array of string`
+
+    The IDs of vaults made available to the session.
+
+    `minItems: 0`, `maxItems: 2000`
+
+  - `prompt_cache_options: optional object { ttl }  or null`
+
+    Default prompt cache lifetime for turns in this session, when configured.
+
+    - `ttl: "30m" or "12h"`
+
+      - `"30m"`
+
+      - `"12h"`
+
+  - `review: optional "none" or "auto_review"`
+
+    Review applied to eligible actions in this session. Omitted when review is none and automatic review is not enabled. Omission means none.
+
+    - `"none"`
+
+    - `"auto_review"`
+
+- `type: "agent.session.budget_reached" (default: "agent.session.budget_reached")`
+
+  The type of the object. Always `agent.session.budget_reached`.
+
+  - `"agent.session.budget_reached"`
+
+- `obfuscation: optional string`
+
+  Random alphanumeric padding. Present when stream obfuscation is enabled.
+
+  `minLength: 0`
+
+### Example
+
+```json
+{
+  "type": "agent.session.budget_reached",
+  "event_id": "event_id",
+  "session": {
+    "prompt_cache_options": {
+      "ttl": "30m"
+    },
+    "review": "none",
+    "spend_control": {
+      "limit": 1,
+      "consumed": 0
+    },
     "metadata": {
       "foo": "string"
     },
@@ -6590,7 +7859,23 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `"environment_connection"`
 
-  - `status: "idle" or "in_progress" or "requires_action" or "failed"`
+  - `spend_control: object { consumed, limit }`
+
+    Spending limit and best-effort consumption, in USD cents. The limit is null for an unlimited session. Consumption is null when unavailable.
+
+    - `consumed: integer or null`
+
+      Best-effort recorded spend floored to whole USD cents, or null when unavailable.
+
+      `minimum: 0`
+
+    - `limit: integer or null`
+
+      The configured positive limit in USD cents, or null when unlimited.
+
+      `format: int64`, `minimum: 1`, `maximum: 4503599627370495`
+
+  - `status: "idle" or "in_progress" or "requires_action" or 2 more`
 
     The current status of the session.
 
@@ -6609,6 +7894,10 @@ Schema name: `SessionEventAgentSessionInProgress`
     - `"failed"`
 
       The session failed.
+
+    - `"budget_reached"`
+
+      The session is paused because its spending limit was reached.
 
   - `usage: TokenUsage or null`
 
@@ -6699,6 +7988,10 @@ Schema name: `SessionEventAgentSessionInProgress`
       "ttl": "30m"
     },
     "review": "none",
+    "spend_control": {
+      "limit": 1,
+      "consumed": 0
+    },
     "metadata": {
       "foo": "string"
     },
@@ -7747,7 +9040,23 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `"environment_connection"`
 
-  - `status: "idle" or "in_progress" or "requires_action" or "failed"`
+  - `spend_control: object { consumed, limit }`
+
+    Spending limit and best-effort consumption, in USD cents. The limit is null for an unlimited session. Consumption is null when unavailable.
+
+    - `consumed: integer or null`
+
+      Best-effort recorded spend floored to whole USD cents, or null when unavailable.
+
+      `minimum: 0`
+
+    - `limit: integer or null`
+
+      The configured positive limit in USD cents, or null when unlimited.
+
+      `format: int64`, `minimum: 1`, `maximum: 4503599627370495`
+
+  - `status: "idle" or "in_progress" or "requires_action" or 2 more`
 
     The current status of the session.
 
@@ -7766,6 +9075,10 @@ Schema name: `SessionEventAgentSessionRequiresAction`
     - `"failed"`
 
       The session failed.
+
+    - `"budget_reached"`
+
+      The session is paused because its spending limit was reached.
 
   - `usage: TokenUsage or null`
 
@@ -7856,6 +9169,10 @@ Schema name: `SessionEventAgentSessionRequiresAction`
       "ttl": "30m"
     },
     "review": "none",
+    "spend_control": {
+      "limit": 1,
+      "consumed": 0
+    },
     "metadata": {
       "foo": "string"
     },
@@ -8904,7 +10221,23 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `"environment_connection"`
 
-  - `status: "idle" or "in_progress" or "requires_action" or "failed"`
+  - `spend_control: object { consumed, limit }`
+
+    Spending limit and best-effort consumption, in USD cents. The limit is null for an unlimited session. Consumption is null when unavailable.
+
+    - `consumed: integer or null`
+
+      Best-effort recorded spend floored to whole USD cents, or null when unavailable.
+
+      `minimum: 0`
+
+    - `limit: integer or null`
+
+      The configured positive limit in USD cents, or null when unlimited.
+
+      `format: int64`, `minimum: 1`, `maximum: 4503599627370495`
+
+  - `status: "idle" or "in_progress" or "requires_action" or 2 more`
 
     The current status of the session.
 
@@ -8923,6 +10256,10 @@ Schema name: `SessionEventAgentSessionFailed`
     - `"failed"`
 
       The session failed.
+
+    - `"budget_reached"`
+
+      The session is paused because its spending limit was reached.
 
   - `usage: TokenUsage or null`
 
@@ -9013,6 +10350,10 @@ Schema name: `SessionEventAgentSessionFailed`
       "ttl": "30m"
     },
     "review": "none",
+    "spend_control": {
+      "limit": 1,
+      "consumed": 0
+    },
     "metadata": {
       "foo": "string"
     },
