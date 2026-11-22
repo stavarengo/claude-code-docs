@@ -37,9 +37,9 @@ The standard tier is the default service tier for all API requests. The API prio
 
 ## Priority Tier
 
-The API prioritizes requests in this tier over all other requests. This prioritization helps minimize [“server overloaded” errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=curl#http-errors), even during peak times.
+The API prioritizes requests in this tier over all other requests. This prioritization helps minimize [“server overloaded” errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli#http-errors), even during peak times.
 
-For more information, see [Existing Priority Tier commitments](https://platform.claude.com/docs/en/api/service-tiers?sdk_languages=curl#existing-priority-tier-commitments).
+For more information, see [Existing Priority Tier commitments](https://platform.claude.com/docs/en/api/service-tiers?sdk_languages=cli#existing-priority-tier-commitments).
 
 ## How requests get assigned tiers
 
@@ -55,12 +55,12 @@ Anthropic counts usage against Priority Tier capacity as follows:
 * Cache reads as 0.1 tokens per token read from the cache
 * Cache writes as 1.25 tokens per token written to the cache with a 5-minute TTL
 * Cache writes as 2.00 tokens per token written to the cache with a 1-hour TTL
-* For [US-only inference](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=curl) (`inference_geo: "us"`) requests on Claude 4.6 and later models, input tokens are 1.1 tokens per token
+* For [US-only inference](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) (`inference_geo: "us"`) requests on Claude 4.6 and later models, input tokens are 1.1 tokens per token
 * All other input tokens are 1 token per token
 
 **Output tokens**
 
-* For [US-only inference](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=curl) (`inference_geo: "us"`) requests on Claude 4.6 and later models, output tokens are 1.1 tokens per token
+* For [US-only inference](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) (`inference_geo: "us"`) requests on Claude 4.6 and later models, output tokens are 1.1 tokens per token
 * All other output tokens are 1 token per token
 
 Otherwise, requests proceed at standard tier.
@@ -78,17 +78,15 @@ Otherwise, requests proceed at standard tier.
 You can control which service tiers can be used for a request by setting the `service_tier` parameter:
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2026-10-21" \
-    -H "content-type: application/json" \
-    -d '{
-      "model": "claude-opus-4-8",
-      "max_tokens": 1024,
-      "messages": [{"role": "user", "content": "Hello, Claude!"}],
-      "service_tier": "auto"
-    }'
+  ```bash CLI
+  ant messages create <<'YAML'
+  model: claude-opus-4-8
+  max_tokens: 1024
+  messages:
+    - role: user
+      content: Hello, Claude!
+  service_tier: auto  # Automatically use Priority Tier when available, fall back to standard
+  YAML
   ```
 </CodeGroup>
 
@@ -141,7 +139,7 @@ Priority Tier targets 99.5 percent uptime with prioritized computational resourc
 
 Priority Tier is supported on all available Claude models except Claude Fable 5.2, Claude Fable 5.1, Claude Haiku 5.5, Claude Mythos 5.2, Claude Mythos 5.1, Claude Mythos 5, [Claude Mythos Preview](https://anthropic.com/glasswing), Claude Opus 5.5, Claude Opus 5, Claude Sonnet 5.5, and Claude Sonnet 5.
 
-Check the [Models overview](https://platform.claude.com/docs/en/models/overview?sdk_languages=curl) for more details on available models.
+Check the [Models overview](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli) for more details on available models.
 
 ## Availability
 
@@ -149,15 +147,15 @@ Service tiers are available on select models.
 
 ### API support
 
-#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=curl)
+#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli)
 
 * Availability: Available
 * Usage: Needs a Priority Tier commitment, which is no longer sold. With one, requests use Priority Tier by default; set `service_tier` to `"standard_only"` to use only standard capacity.
 
 | Status | Cloud platforms | Models |
 | ----- | ----- | ----- |
-| Available | Claude API | [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=curl), [Claude Haiku 4.5](https://platform.claude.com/docs/en/models/haiku-4-5/overview?sdk_languages=curl), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=curl), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=curl), [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=curl), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=curl), [Claude Opus 4.5](https://platform.claude.com/docs/en/models/opus-4-5/overview?sdk_languages=curl), [Claude Sonnet 4.5](https://platform.claude.com/docs/en/models/sonnet-4-5/overview?sdk_languages=curl) |
+| Available | Claude API | [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli), [Claude Haiku 4.5](https://platform.claude.com/docs/en/models/haiku-4-5/overview?sdk_languages=cli), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli), [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=cli), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=cli), [Claude Opus 4.5](https://platform.claude.com/docs/en/models/opus-4-5/overview?sdk_languages=cli), [Claude Sonnet 4.5](https://platform.claude.com/docs/en/models/sonnet-4-5/overview?sdk_languages=cli) |
 
-#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=curl)
+#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli)
 
 * Availability: Not available

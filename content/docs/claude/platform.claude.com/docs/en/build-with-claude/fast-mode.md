@@ -6,7 +6,7 @@ featureMetadata:
   betaHeader: fast-mode-2026-02-01
   zdr:
     eligibility: eligible
-    note: Excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#model-specific-data-retention-requirements). Same Messages API endpoint with faster inference. ZDR applies regardless of speed setting.
+    note: Excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#model-specific-data-retention-requirements). Same Messages API endpoint with faster inference. ZDR applies regardless of speed setting.
   supportedModels:
     - claude-fable-5-2
     - claude-mythos-5-2
@@ -16,7 +16,7 @@ featureMetadata:
   supportedPlatforms:
     Claude API:
       availability: stable
-      note: 'Removal date: November 30, 2026. After removal, requests to `claude-opus-4-8` with `speed: "fast"` will return an error. To continue using fast mode, migrate to Claude Opus 5.5. See [Migrating to Claude Opus 5.5 from Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=curl#migrating-from-claude-opus-4-8).'
+      note: 'Removal date: November 30, 2026. After removal, requests to `claude-opus-4-8` with `speed: "fast"` will return an error. To continue using fast mode, migrate to Claude Opus 5.5. See [Migrating to Claude Opus 5.5 from Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#migrating-from-claude-opus-4-8).'
     Claude Models on Google Cloud (Anthropic managed): stable
     Claude Models on Google Cloud (Google managed): stable
     Microsoft Foundry:
@@ -39,31 +39,26 @@ Fast mode runs the same model with a faster inference configuration. There is no
 
 * Up to 2.5x higher output tokens per second compared to standard speed
 * Speed benefits are focused on output tokens per second (OTPS), not time to first token (TTFT)
-* Compatible with [streaming](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl), where the OTPS gain is most visible
+* Compatible with [streaming](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli), where the OTPS gain is most visible
 
 ## Basic usage
 
-Fast mode works only on supported models. See [Availability](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=curl#feature-availability) for details, including which models need a beta header.
+Fast mode works only on supported models. See [Availability](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=cli#feature-availability) for details, including which models need a beta header.
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2026-10-21" \
-    -H "content-type: application/json" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 4096,
-      "speed": "fast",
-      "messages": [{
-        "role": "user",
-        "content": "Refactor this module to use dependency injection"
-      }]
-    }'
+  ```bash CLI
+  ant messages create <<'YAML'
+  model: claude-opus-5-5
+  max_tokens: 4096
+  speed: fast
+  messages:
+    - role: user
+      content: Refactor this module to use dependency injection
+  YAML
   ```
 </CodeGroup>
 
-On [Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=curl), fast mode has its own model IDs, and the deployment sets the speed. Send fast mode requests to a deployment of the fast mode model, and leave out `speed`:
+On [Claude in Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli), fast mode has its own model IDs, and the deployment sets the speed. Send fast mode requests to a deployment of the fast mode model, and leave out `speed`:
 
 | Model | Fast mode model ID |
 | ----- | ----- |
@@ -75,9 +70,9 @@ A request that sets `speed` on a deployment of the standard model, such as `clau
 
 ## Rate limits
 
-Fast mode has a dedicated rate limit that is separate from standard rate limits. When you exceed your fast mode rate limit, the API returns a `429` error with a `retry-after` header that says when capacity is available. On [Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=curl#rate-limits), Google Cloud manages rate limits and quotas.
+Fast mode has a dedicated rate limit that is separate from standard rate limits. When you exceed your fast mode rate limit, the API returns a `429` error with a `retry-after` header that says when capacity is available. On [Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=cli#rate-limits), Google Cloud manages rate limits and quotas.
 
-Claude Fable 5.2, Claude Mythos 5.2, and Claude Opus 5.5 have a default fast mode rate limit. The default limit applies in the Start, Build, and Scale [usage tiers](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=curl). You don’t need to request fast mode access for these models. Organizations in the Evaluation tier can use fast mode with these models once they move to the Start, Build, or Scale tier.
+Claude Fable 5.2, Claude Mythos 5.2, and Claude Opus 5.5 have a default fast mode rate limit. The default limit applies in the Start, Build, and Scale [usage tiers](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli). You don’t need to request fast mode access for these models. Organizations in the Evaluation tier can use fast mode with these models once they move to the Start, Build, or Scale tier.
 
 The response includes headers that indicate your fast mode rate limit status:
 
@@ -94,20 +89,18 @@ To see your fast mode rate limits, go to the [Rate limits](https://platform.clau
 
 ## Checking which speed was used
 
-The response `usage` object includes a `speed` field that indicates which speed was used, either `"fast"` or `"standard"`. Requesting `speed: "fast"` on a [model that doesn’t support fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=curl#feature-availability) returns an error, and so does exceeding fast mode’s rate limits or capacity (a `429` or `529`). When a request with `speed: "fast"` succeeds, `usage.speed` is `"fast"`. Claude Opus 4.6 is an exception: instead of returning an error, a request with `speed: "fast"` and the `fast-mode-2026-02-01` beta header succeeds, but runs at standard speed. In this situation, `usage.speed` shows `"standard"`. On Claude Models on Google Cloud (Anthropic managed), a Claude Opus 4.6 request with `speed: "fast"` returns a `400` error even with the header.
+The response `usage` object includes a `speed` field that indicates which speed was used, either `"fast"` or `"standard"`. Requesting `speed: "fast"` on a [model that doesn’t support fast mode](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=cli#feature-availability) returns an error, and so does exceeding fast mode’s rate limits or capacity (a `429` or `529`). When a request with `speed: "fast"` succeeds, `usage.speed` is `"fast"`. Claude Opus 4.6 is an exception: instead of returning an error, a request with `speed: "fast"` and the `fast-mode-2026-02-01` beta header succeeds, but runs at standard speed. In this situation, `usage.speed` shows `"standard"`. On Claude Models on Google Cloud (Anthropic managed), a Claude Opus 4.6 request with `speed: "fast"` returns a `400` error even with the header.
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2026-10-21" \
-    -H "content-type: application/json" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 1024,
-      "speed": "fast",
-      "messages": [{"role": "user", "content": "Hello"}]
-    }'
+  ```bash CLI
+  ant messages create <<'YAML'
+  model: claude-opus-5-5
+  max_tokens: 1024
+  speed: fast
+  messages:
+    - role: user
+      content: Hello
+  YAML
   ```
 </CodeGroup>
 
@@ -125,7 +118,7 @@ The response `usage` object includes a `speed` field that indicates which speed 
 }
 ```
 
-To track fast mode usage and costs across your organization, see the [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=curl).
+To track fast mode usage and costs across your organization, see the [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli).
 
 ## Retries and fallbacks
 
@@ -138,7 +131,7 @@ The SDK automatically retries fast mode `429` errors up to two times by default 
 If you’d prefer to fall back to standard speed rather than wait for fast mode capacity, catch the rate limit error and retry without `speed: "fast"`. On Claude in Microsoft Foundry, the deployment sets the speed, so retry on a deployment of the standard model instead. Set `max_retries` to `0` on the initial fast request to skip automatic retries and fail immediately on rate limit errors.
 
 <Note>
-  Falling back from fast to standard speed results in a [prompt cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl) miss. Requests at different speeds do not share cached prefixes.
+  Falling back from fast to standard speed results in a [prompt cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) miss. Requests at different speeds do not share cached prefixes.
 </Note>
 
 Because setting `max_retries` to `0` also disables retries for other transient errors (overloaded, internal server errors), the following examples resend the request after those errors.
@@ -431,12 +424,12 @@ Because setting `max_retries` to `0` also disables retries for other transient e
 
 ## Considerations
 
-* **Batch API:** Fast mode is not available with the [Batch API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=curl).
-* **Priority Tier:** Fast mode is not available with a [Priority Tier](https://platform.claude.com/docs/en/api/service-tiers?sdk_languages=curl) commitment.
+* **Batch API:** Fast mode is not available with the [Batch API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli).
+* **Priority Tier:** Fast mode is not available with a [Priority Tier](https://platform.claude.com/docs/en/api/service-tiers?sdk_languages=cli) commitment.
 
 ## Pricing
 
-Fast mode is priced at a multiplier on standard rates across the full context window, including requests over 200k input tokens. On Claude Models on Google Cloud (Google managed), Google Cloud sets fast mode prices. See [Cloud platform pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=curl#cloud-platform-pricing).
+Fast mode is priced at a multiplier on standard rates across the full context window, including requests over 200k input tokens. On Claude Models on Google Cloud (Google managed), Google Cloud sets fast mode prices. See [Cloud platform pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#cloud-platform-pricing).
 
 | Model | Input | Output |
 | ----- | ----- | ----- |
@@ -447,10 +440,10 @@ Fast mode is priced at a multiplier on standard rates across the full context wi
 
 Fast mode pricing stacks with other pricing modifiers:
 
-* [Prompt caching multipliers](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=curl#prompt-caching) apply on top of fast mode pricing.
-* [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=curl) multipliers apply on top of fast mode pricing.
+* [Prompt caching multipliers](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#prompt-caching) apply on top of fast mode pricing.
+* [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency?sdk_languages=cli) multipliers apply on top of fast mode pricing.
 
-For complete pricing details, see the [Pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=curl#fast-mode-pricing) page.
+For complete pricing details, see the [Pricing](https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#fast-mode-pricing) page.
 
 ## Availability
 
@@ -458,57 +451,57 @@ Fast mode is available or in research preview or deprecated on select models and
 
 ### API support
 
-Fast mode is available only on the following models. If you were using fast mode on an earlier model, [migrate to a model that supports fast mode](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=curl).
+Fast mode is available only on the following models. If you were using fast mode on an earlier model, [migrate to a model that supports fast mode](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli).
 
 To access fast mode on Claude Opus 5, contact your account manager or [join the waitlist](https://claude.com/fast-mode).
 
-#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=curl)
+#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli)
 
 * Availability: Available
 * Usage: Set `speed: "fast"` on the request.
 
 | Status | Cloud platforms | Models |
 | ----- | ----- | ----- |
-| Available | Claude API, [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=curl), [Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=curl) | [Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=curl), [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=curl) |
-| Available<sup>1</sup> | [Microsoft Foundry (hosted on Anthropic)](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=curl) | [Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=curl), [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=curl) |
-| Available | Claude API, [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=curl) | [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=curl) |
-| Available<sup>1</sup> | [Microsoft Foundry (hosted on Azure)](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=curl) | [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=curl) |
-| Research preview | Claude API | [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=curl) |
-| Deprecated<sup>2</sup> | Claude API | [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=curl) |
+| Available | Claude API, [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli), [Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=cli) | [Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=cli), [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=cli) |
+| Available<sup>1</sup> | [Microsoft Foundry (hosted on Anthropic)](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) | [Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=cli), [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=cli) |
+| Available | Claude API, [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli) | [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) |
+| Available<sup>1</sup> | [Microsoft Foundry (hosted on Azure)](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) | [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) |
+| Research preview | Claude API | [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) |
+| Deprecated<sup>2</sup> | Claude API | [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli) |
 
 1. On Microsoft Foundry, fast mode has its own model IDs, which end in `-fast`. Send requests to a deployment of the fast mode model, and leave out `speed`.
-2. Removal date: November 30, 2026. After removal, requests to `claude-opus-4-8` with `speed: "fast"` will return an error. To continue using fast mode, migrate to Claude Opus 5.5. See [Migrating to Claude Opus 5.5 from Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=curl#migrating-from-claude-opus-4-8).
+2. Removal date: November 30, 2026. After removal, requests to `claude-opus-4-8` with `speed: "fast"` will return an error. To continue using fast mode, migrate to Claude Opus 5.5. See [Migrating to Claude Opus 5.5 from Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#migrating-from-claude-opus-4-8).
 
-#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=curl)
+#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli)
 
 * Availability: Available
 * Usage: Set `speed` on the agent’s model object, for example `{"id": "claude-opus-5-5", "speed": "fast"}`.
 
 | Status | Cloud platforms | Models |
 | ----- | ----- | ----- |
-| Available | Claude API, [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=curl) | [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=curl) |
-| Research preview | Claude API | [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=curl) |
-| Deprecated<sup>1</sup> | Claude API | [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=curl) |
+| Available | Claude API, [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli) | [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli) |
+| Research preview | Claude API | [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli) |
+| Deprecated<sup>1</sup> | Claude API | [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli) |
 
-1. Removal date: November 30, 2026. After removal, requests to `claude-opus-4-8` with `speed: "fast"` will return an error. To continue using fast mode, migrate to Claude Opus 5.5. See [Migrating to Claude Opus 5.5 from Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=curl#migrating-from-claude-opus-4-8).
+1. Removal date: November 30, 2026. After removal, requests to `claude-opus-4-8` with `speed: "fast"` will return an error. To continue using fast mode, migrate to Claude Opus 5.5. See [Migrating to Claude Opus 5.5 from Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#migrating-from-claude-opus-4-8).
 
 ### Required beta headers
 
-[Beta headers overview](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=curl)
+[Beta headers overview](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=cli)
 
 Beta headers allow you to access experimental features and new model capabilities before they become part of the standard API.
 
 | Header | Models |
 | ----- | ----- |
-| `fast-mode-2026-02-01` | [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=curl), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=curl) |
+| `fast-mode-2026-02-01` | [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli) |
 
 ### Data handling
 
-[Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#feature-eligibility)
+[Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
 
 | Item | Zero data retention | HIPAA |
 | ----- | ----- | ----- |
-| Status | Eligible (excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#model-specific-data-retention-requirements)) | Eligible |
+| Status | Eligible (excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#model-specific-data-retention-requirements)) | Eligible |
 | Details | Same Messages API endpoint with faster inference. ZDR applies regardless of speed setting. | — |
 
 Applicable endpoints:
@@ -518,19 +511,19 @@ Applicable endpoints:
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Structured outputs" icon="code-brackets" href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl">
+  <Card title="Structured outputs" icon="code-brackets" href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli">
     Get validated JSON results from agent workflows.
   </Card>
 
-  <Card title="Pricing" icon="calculator" href="https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=curl#fast-mode-pricing">
+  <Card title="Pricing" icon="calculator" href="https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli#fast-mode-pricing">
     Learn about Anthropic’s pricing structure for models and features.
   </Card>
 
-  <Card title="Effort" icon="gauge" href="https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl">
+  <Card title="Effort" icon="gauge" href="https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli">
     Control how many tokens Claude uses when responding with the effort parameter, trading off between response thoroughness and token efficiency.
   </Card>
 
-  <Card title="Streaming messages" icon="arrow-right" href="https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl">
+  <Card title="Streaming messages" icon="arrow-right" href="https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli">
     Stream Messages API responses incrementally with server-sent events, including text, tool use, and extended thinking deltas.
   </Card>
 </CardGroup>

@@ -550,7 +550,7 @@ const options = {
 
 ### Track subagent activity
 
-Use `SubagentStop` hooks to monitor when subagents finish their work. See the full input type in the [TypeScript](./typescript.md#hookinput) and [Python](./python.md#hookinput) SDK references. This example logs a summary each time a subagent completes:
+Use `SubagentStop` hooks to monitor when subagents finish their work. See the full input type in the [TypeScript](./typescript.md#hookinput) and [Python](./python.md#hookinput) SDK references. This example logs a summary when a subagent completes:
 
 ```python Python theme={null}
 async def subagent_tracker(input_data, tool_use_id, context):

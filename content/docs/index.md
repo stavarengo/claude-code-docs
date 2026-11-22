@@ -167,6 +167,7 @@ claude/platform.claude.com/docs/en/api/cli/messages/batches:{cancel.md,create.md
 claude/platform.claude.com/docs/en/api/cli/models:{list.md}
 claude/platform.claude.com/docs/en/api/cli/organization:{retrieve.md,service_accounts.md}
 claude/platform.claude.com/docs/en/api/cli/organization/api_keys:{list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/cli/organization/external_keys:{list.md,validate.md}
 claude/platform.claude.com/docs/en/api/cli/organization/federation:{issuers.md,rules.md}
 claude/platform.claude.com/docs/en/api/cli/organization/invites:{create.md,delete.md,list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/cli/organization/rate_limits:{list.md}
@@ -268,6 +269,7 @@ claude/platform.claude.com/docs/en/api/http/messages/batches:{cancel.md,create.m
 claude/platform.claude.com/docs/en/api/http/models:{list.md}
 claude/platform.claude.com/docs/en/api/http/organization:{retrieve.md,service_accounts.md}
 claude/platform.claude.com/docs/en/api/http/organization/api_keys:{list.md,retrieve.md}
+claude/platform.claude.com/docs/en/api/http/organization/external_keys:{list.md,validate.md}
 claude/platform.claude.com/docs/en/api/http/organization/federation:{issuers.md,rules.md}
 claude/platform.claude.com/docs/en/api/http/organization/invites:{create.md,delete.md,list.md,retrieve.md}
 claude/platform.claude.com/docs/en/api/http/organization/rate_limits:{list.md}

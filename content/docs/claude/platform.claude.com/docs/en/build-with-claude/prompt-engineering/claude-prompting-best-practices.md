@@ -6,12 +6,12 @@ description: Comprehensive guide to prompt engineering techniques for Claude's l
 
 This is the reference for prompt engineering with current Claude models, including Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Opus 4.6, Claude Sonnet 5.5, Claude Sonnet 5, Claude Sonnet 4.6, Claude Haiku 5.5, and Claude Haiku 4.5. The page is organized in three parts:
 
-* **[Model-specific guidance](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=curl#model-specific-guidance)** first: where a single model behaves differently and what to change in your prompt.
+* **[Model-specific guidance](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=cli#model-specific-guidance)** first: where a single model behaves differently and what to change in your prompt.
 * **Techniques for all current models** after that: general principles, output and formatting, tool use, thinking, and agentic systems.
 * **Migration considerations** last, for prompts moving from earlier generations.
 
 <Tip>
-  For an overview of model capabilities, see [Models overview](https://platform.claude.com/docs/en/models/overview?sdk_languages=curl). For Claude Fable 5.2 capabilities and API changes, see [What’s new in Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2?sdk_languages=curl). For migration guidance, see [Migration guides](https://platform.claude.com/docs/en/about-claude/models/migration-guide?sdk_languages=curl). For Claude Opus 5.5, see [What’s new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5?sdk_languages=curl). For Claude Sonnet 5.5, see [What’s new in Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5?sdk_languages=curl). For Claude Haiku 5.5, see [What’s new in Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/whats-new-haiku-5-5?sdk_languages=curl).
+  For an overview of model capabilities, see [Models overview](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli). For Claude Fable 5.2 capabilities and API changes, see [What’s new in Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/whats-new-fable-5-2?sdk_languages=cli). For migration guidance, see [Migration guides](https://platform.claude.com/docs/en/about-claude/models/migration-guide?sdk_languages=cli). For Claude Opus 5.5, see [What’s new in Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/whats-new-opus-5-5?sdk_languages=cli). For Claude Sonnet 5.5, see [What’s new in Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/whats-new-sonnet-5-5?sdk_languages=cli). For Claude Haiku 5.5, see [What’s new in Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/whats-new-haiku-5-5?sdk_languages=cli).
 </Tip>
 
 ## Model-specific guidance
@@ -20,15 +20,15 @@ Each of these models has its own prompting page. Read the one for your model fir
 
 | Model | Guide | What’s different |
 | ----- | ----- | ----- |
-| Claude Fable 5.2 and Claude Mythos 5.2 | [Prompting Claude Fable 5.2](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2?sdk_languages=curl) | Differences from earlier models: effort calibration, finishing long tasks, approvals, code ownership, user-facing progress updates, subagent delegation, caution that builds up, prompts and harnesses designed for earlier models, final reports, and safeguard refusals. |
-| Claude Fable 5.1 and Claude Mythos 5.1 | [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=curl) | Differences from Claude Fable 5: effort levels, finishing long tasks, user-facing progress updates, passing thinking blocks back unchanged, tool-call batching in agent loops, search triggering at low effort, formatting, and writing density. |
-| Claude Fable 5 and Claude Mythos 5 | [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5?sdk_languages=curl) | Differences from Claude Opus 4.8: effort levels, instruction following, long-run progress claims, memory systems, and the `reasoning_extraction` refusal category. |
-| Claude Sonnet 5.5 | [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5?sdk_languages=curl) | Differences from Claude Sonnet 5: effort calibration, initiative and scope, running without up-front thinking, JSON output on reasoning tasks, user-facing progress updates, tool use in chat, mid-turn user messages, verification on coding tasks, tool-call handling, complex visual inputs, and safeguard refusals. |
-| Claude Sonnet 5 | [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5?sdk_languages=curl) | Differences from Claude Sonnet 4.6: response length, effort and thinking-depth calibration, tool use triggering, literal instruction following, and design and frontend defaults. |
-| Claude Opus 5.5 | [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5?sdk_languages=curl) | Differences from Claude Opus 5: effort calibration, prompts written for thinking disabled, user-facing progress updates, safeguard refusals, and tools for complex visual inputs. |
-| Claude Opus 5 | [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5?sdk_languages=curl) | Differences from prior Opus models: response length and verbosity, user-facing progress updates, written deliverable length, task scope and over-verification, subagent control, and self-correction. |
-| Claude Opus 4.8 | [Prompting Claude Opus 4.8](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8?sdk_languages=curl) | Response length, effort and thinking-depth calibration, tool use triggering, literal instruction following, subagent control, and design and frontend defaults. |
-| Claude Haiku 5.5 | [Prompting Claude Haiku 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5?sdk_languages=curl) | Differences from Claude Haiku 4.5: effort levels, search, JSON output with your own tools, early stopping in long agent prompts, verification on coding tasks, mid-turn user messages, system prompt adherence in chatbots, and safeguard refusals. |
+| Claude Fable 5.2 and Claude Mythos 5.2 | [Prompting Claude Fable 5.2](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2?sdk_languages=cli) | Differences from earlier models: effort calibration, finishing long tasks, approvals, code ownership, user-facing progress updates, subagent delegation, caution that builds up, prompts and harnesses designed for earlier models, final reports, and safeguard refusals. |
+| Claude Fable 5.1 and Claude Mythos 5.1 | [Prompting Claude Fable 5.1](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=cli) | Differences from Claude Fable 5: effort levels, finishing long tasks, user-facing progress updates, passing thinking blocks back unchanged, tool-call batching in agent loops, search triggering at low effort, formatting, and writing density. |
+| Claude Fable 5 and Claude Mythos 5 | [Prompting Claude Fable 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5?sdk_languages=cli) | Differences from Claude Opus 4.8: effort levels, instruction following, long-run progress claims, memory systems, and the `reasoning_extraction` refusal category. |
+| Claude Sonnet 5.5 | [Prompting Claude Sonnet 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5?sdk_languages=cli) | Differences from Claude Sonnet 5: effort calibration, initiative and scope, running without up-front thinking, JSON output on reasoning tasks, user-facing progress updates, tool use in chat, mid-turn user messages, verification on coding tasks, tool-call handling, complex visual inputs, and safeguard refusals. |
+| Claude Sonnet 5 | [Prompting Claude Sonnet 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5?sdk_languages=cli) | Differences from Claude Sonnet 4.6: response length, effort and thinking-depth calibration, tool use triggering, literal instruction following, and design and frontend defaults. |
+| Claude Opus 5.5 | [Prompting Claude Opus 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5?sdk_languages=cli) | Differences from Claude Opus 5: effort calibration, prompts written for thinking disabled, user-facing progress updates, safeguard refusals, and tools for complex visual inputs. |
+| Claude Opus 5 | [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5?sdk_languages=cli) | Differences from prior Opus models: response length and verbosity, user-facing progress updates, written deliverable length, task scope and over-verification, subagent control, and self-correction. |
+| Claude Opus 4.8 | [Prompting Claude Opus 4.8](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8?sdk_languages=cli) | Response length, effort and thinking-depth calibration, tool use triggering, literal instruction following, subagent control, and design and frontend defaults. |
+| Claude Haiku 5.5 | [Prompting Claude Haiku 5.5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5?sdk_languages=cli) | Differences from Claude Haiku 4.5: effort levels, search, JSON output with your own tools, early stopping in long agent prompts, verification on coding tasks, mid-turn user messages, system prompt adherence in chatbots, and safeguard refusals. |
 
 ## General principles
 
@@ -107,19 +107,12 @@ Best practices:
 Setting a role in the system prompt focuses Claude’s behavior and tone for your use case. Even a single sentence makes a difference:
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-    -H "content-type: application/json" \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2026-10-21" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 1024,
-      "system": "You are a helpful coding assistant specializing in Python.",
-      "messages": [
-        {"role": "user", "content": "How do I sort a list of dictionaries by key?"}
-      ]
-    }'
+  ```bash CLI
+  ant messages create \
+    --model claude-opus-5-5 \
+    --max-tokens 1024 \
+    --system "You are a helpful coding assistant specializing in Python." \
+    --message '{role: user, content: "How do I sort a list of dictionaries by key?"}'
   ```
 </CodeGroup>
 
@@ -218,7 +211,7 @@ This means Claude might skip verbal summaries after tool calls, jumping directly
 After completing a task that involves tool use, provide a quick summary of the work you've done.
 ```
 
-Claude Opus 5 is an exception on verbosity: its default user-facing responses run longer than prior models’, and raising or lowering [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl) does not reliably change visible response length. Prompt explicitly for conciseness instead. See [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5?sdk_languages=curl#response-length-and-verbosity) for a sample instruction. Claude Fable 5.1 has the opposite tendency during agentic work: it writes fewer user-facing updates between tool calls. Ask for progress text explicitly, and remove any instruction telling it to keep that text brief. See [Ask for user-facing progress updates](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=curl#ask-for-user-facing-progress-updates). For Claude Fable 5.2, see [Keep users informed during long turns](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2?sdk_languages=curl#keep-users-informed-during-long-turns).
+Claude Opus 5 is an exception on verbosity: its default user-facing responses run longer than prior models’, and raising or lowering [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli) does not reliably change visible response length. Prompt explicitly for conciseness instead. See [Prompting Claude Opus 5](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5?sdk_languages=cli#response-length-and-verbosity) for a sample instruction. Claude Fable 5.1 has the opposite tendency during agentic work: it writes fewer user-facing updates between tool calls. Ask for progress text explicitly, and remove any instruction telling it to keep that text brief. See [Ask for user-facing progress updates](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=cli#ask-for-user-facing-progress-updates). For Claude Fable 5.2, see [Keep users informed during long turns](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2?sdk_languages=cli#keep-users-informed-during-long-turns).
 
 ### Control the format of responses
 
@@ -263,7 +256,7 @@ rather than fragmenting information into isolated points.
 </avoid_excessive_markdown_and_bullet_points>
 ````
 
-Claude Fable 5.1 already formats less than earlier models, so on that model a block like this can suppress structure the content needs. Remove it, or replace it with the shorter rule in [Formatting in chat](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=curl#formatting-in-chat).
+Claude Fable 5.1 already formats less than earlier models, so on that model a block like this can suppress structure the content needs. Remove it, or replace it with the shorter rule in [Formatting in chat](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=cli#formatting-in-chat).
 
 ### LaTeX output
 
@@ -295,7 +288,7 @@ Here are common prefill scenarios and how to migrate away from them:
 <Accordion title="Controlling output formatting">
   Prefills have been used to force specific output formats such as JSON/YAML, classification, and similar patterns where the prefill constrains Claude to a particular structure.
 
-  **Migration:** The [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl) feature is designed specifically to constrain Claude’s responses to follow a given schema. Try asking the model to conform to your output structure first, as newer models can reliably match complex schemas when told to, especially if implemented with retries. For classification tasks, use either tools with an enum field containing your valid labels or structured outputs.
+  **Migration:** The [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli) feature is designed specifically to constrain Claude’s responses to follow a given schema. Try asking the model to conform to your output structure first, as newer models can reliably match complex schemas when told to, especially if implemented with retries. For classification tasks, use either tools with an enum field containing your valid labels or structured outputs.
 </Accordion>
 
 <Accordion title="Eliminating preambles">
@@ -319,14 +312,14 @@ Here are common prefill scenarios and how to migrate away from them:
 <Accordion title="Context hydration and role consistency">
   Prefills were used to periodically ensure refreshed or injected context.
 
-  **Migration:** For very long conversations, inject what were previously prefilled-assistant reminders into the user turn. If context hydration is part of a more complex agentic system, consider hydrating through tools (expose or encourage use of tools containing context based on heuristics such as number of turns) or during [context compaction](https://platform.claude.com/docs/en/build-with-claude/compaction?sdk_languages=curl).
+  **Migration:** For very long conversations, inject what were previously prefilled-assistant reminders into the user turn. If context hydration is part of a more complex agentic system, consider hydrating through tools (expose or encourage use of tools containing context based on heuristics such as number of turns) or during [context compaction](https://platform.claude.com/docs/en/build-with-claude/compaction?sdk_languages=cli).
 </Accordion>
 
 ## Tool use
 
 ### Tool usage
 
-Claude’s latest models are trained for precise instruction following and benefit from explicit direction to use specific tools. If you say “can you suggest some changes,” Claude will sometimes provide suggestions rather than implementing them, even if making changes might be what you intended. To learn how to define tools and troubleshoot tool triggering, see [Tool use with Claude](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=curl).
+Claude’s latest models are trained for precise instruction following and benefit from explicit direction to use specific tools. If you say “can you suggest some changes,” Claude will sometimes provide suggestions rather than implementing them, even if making changes might be what you intended. To learn how to define tools and troubleshoot tool triggering, see [Tool use with Claude](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli).
 
 For Claude to take action, be more explicit:
 
@@ -402,13 +395,13 @@ calls.
 Execute operations sequentially with brief pauses between each step to ensure stability.
 ```
 
-On Claude Fable 5.1 in long agent loops, send the parallel-calls instruction as a turn-scoped system message after each round of tool results. See [Batch independent tool calls in agent loops](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=curl#batch-independent-tool-calls-in-agent-loops).
+On Claude Fable 5.1 in long agent loops, send the parallel-calls instruction as a turn-scoped system message after each round of tool results. See [Batch independent tool calls in agent loops](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=cli#batch-independent-tool-calls-in-agent-loops).
 
 ## Thinking and reasoning
 
 ### Overthinking and excessive thoroughness
 
-Claude Opus 4.6 does more upfront exploration than previous models, especially at higher [`effort`](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl) settings. This initial work often helps to optimize the final results, but the model might gather extensive context or pursue multiple threads of research without being prompted. If your prompts previously encouraged the model to be more thorough, you should tune that guidance for Claude Opus 4.6:
+Claude Opus 4.6 does more upfront exploration than previous models, especially at higher [`effort`](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli) settings. This initial work often helps to optimize the final results, but the model might gather extensive context or pursue multiple threads of research without being prompted. If your prompts previously encouraged the model to be more thorough, you should tune that guidance for Claude Opus 4.6:
 
 * **Replace blanket defaults with more targeted instructions.** Instead of “Default to using \[tool],” add guidance such as “Use \[tool] when it would enhance your understanding of the problem.”
 * **Remove over-prompting.** Tools that undertriggered in previous models are likely to trigger appropriately now. Instructions such as “If in doubt, use \[tool]” cause overtriggering.
@@ -423,15 +416,15 @@ contradicts your reasoning. If you're weighing two approaches, pick one and see 
 through. You can always course-correct later if the chosen approach fails.
 ```
 
-If you need a hard ceiling on thinking costs, extended thinking with a `budget_tokens` cap is still functional on Opus 4.6 and Sonnet 4.6 but is deprecated. On Claude 4.7 and later models, setting `budget_tokens` returns a 400 error. Prefer lowering the [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl) setting or using `max_tokens` as a hard limit with [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl).
+If you need a hard ceiling on thinking costs, extended thinking with a `budget_tokens` cap is still functional on Opus 4.6 and Sonnet 4.6 but is deprecated. On Claude 4.7 and later models, setting `budget_tokens` returns a 400 error. Prefer lowering the [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli) setting or using `max_tokens` as a hard limit with [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli).
 
 ### Leverage thinking and interleaved thinking capabilities
 
 Claude’s latest models offer thinking capabilities that can be especially helpful for tasks involving reflection after tool use or complex multistep reasoning. You can guide its initial or interleaved thinking for better results.
 
-Claude 4.6 and later models and Claude Mythos Preview use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl) (`thinking: {type: "adaptive"}`), where Claude dynamically determines when and how much to think. On Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, and Claude Opus 5.5, thinking is always on and adaptive thinking is the only mode. Claude calibrates its thinking based on two factors: the `effort` parameter and query complexity. Higher effort elicits more thinking, and more complex queries do the same. On easier queries that don’t require thinking, the model responds directly. Claude Fable 5.2 and Claude Mythos 5.2 are exceptions: at `high` effort and above, they think before almost every reply. In internal evaluations, adaptive thinking reliably drives better performance than extended thinking. Consider moving to adaptive thinking.
+Claude 4.6 and later models and Claude Mythos Preview use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli) (`thinking: {type: "adaptive"}`), where Claude dynamically determines when and how much to think. On Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, and Claude Opus 5.5, thinking is always on and adaptive thinking is the only mode. Claude calibrates its thinking based on two factors: the `effort` parameter and query complexity. Higher effort elicits more thinking, and more complex queries do the same. On easier queries that don’t require thinking, the model responds directly. Claude Fable 5.2 and Claude Mythos 5.2 are exceptions: at `high` effort and above, they think before almost every reply. In internal evaluations, adaptive thinking reliably drives better performance than extended thinking. Consider moving to adaptive thinking.
 
-Use adaptive thinking for workloads that require agentic behavior such as multistep tool use, complex coding tasks, and long-horizon agent loops. Older models use manual [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl) with `budget_tokens`; see the [per-model configuration table](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=curl#supported-models) for which configuration each model accepts.
+Use adaptive thinking for workloads that require agentic behavior such as multistep tool use, complex coding tasks, and long-horizon agent loops. Older models use manual [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) with `budget_tokens`; see the [per-model configuration table](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=cli#supported-models) for which configuration each model accepts.
 
 You can guide Claude’s thinking behavior:
 
@@ -449,40 +442,36 @@ answer quality - typically for problems that require multistep reasoning. When i
 doubt, respond directly.
 ```
 
-On Claude Fable 5.2, lower the effort level instead. In Anthropic’s testing, an instruction to answer directly without deliberating didn’t stop the model from thinking at `medium` effort and above. See [Calibrate effort](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2?sdk_languages=curl#calibrate-effort).
+On Claude Fable 5.2, lower the effort level instead. In Anthropic’s testing, an instruction to answer directly without deliberating didn’t stop the model from thinking at `medium` effort and above. See [Calibrate effort](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2?sdk_languages=cli#calibrate-effort).
 
-If you are migrating from [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl) with `budget_tokens`, replace your thinking configuration and move budget control to `effort`. The following examples show the same request before and after the migration (see [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl) for the available levels and per-model availability):
+If you are migrating from [extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) with `budget_tokens`, replace your thinking configuration and move budget control to `effort`. The following examples show the same request before and after the migration (see [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli) for the available levels and per-model availability):
 
 <CodeGroup>
-  ```bash cURL
+  ```bash CLI
   # Before: extended thinking with a manual budget (older models)
-  curl https://api.anthropic.com/v1/messages \
-    -H "content-type: application/json" \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2026-10-21" \
-    -d '{
-      "model": "claude-sonnet-4-5-20250929",
-      "max_tokens": 16000,
-      "thinking": {"type": "enabled", "budget_tokens": 10000},
-      "messages": [
-        {"role": "user", "content": "..."}
-      ]
-    }'
+  ant messages create <<'YAML'
+  model: claude-sonnet-4-5-20250929
+  max_tokens: 16000
+  thinking:
+    type: enabled
+    budget_tokens: 10000
+  messages:
+    - role: user
+      content: "..."
+  YAML
 
   # After: adaptive thinking with effort
-  curl https://api.anthropic.com/v1/messages \
-    -H "content-type: application/json" \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2026-10-21" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 16000,
-      "thinking": {"type": "adaptive"},
-      "output_config": {"effort": "high"},
-      "messages": [
-        {"role": "user", "content": "..."}
-      ]
-    }'
+  ant messages create <<'YAML'
+  model: claude-opus-5-5
+  max_tokens: 16000
+  thinking:
+    type: adaptive
+  output_config:
+    effort: high
+  messages:
+    - role: user
+      content: "..."
+  YAML
   ```
 </CodeGroup>
 
@@ -490,15 +479,15 @@ If you are not using extended thinking, you don’t need to add a `thinking` par
 
 * **Prefer general instructions over prescriptive steps.** A prompt such as “think thoroughly” often produces better reasoning than a hand-written step-by-step plan. Claude’s reasoning frequently exceeds what a human would prescribe.
 * **Multishot examples work with thinking.** Worked examples in your prompt shape how Claude approaches similar problems in its own thinking blocks. Present each example as a problem, the method to apply, and the expected answer.
-* **Manual chain-of-thought (CoT) prompting as a fallback.** When thinking is off, you can still encourage step-by-step reasoning by asking Claude to think through the problem before it answers. Ask it to put the final answer in `<answer>` tags so you can extract it. Some models might decline a prompt that asks them to write their reasoning, for example in `<thinking>` tags. On those models, rely on thinking instead. If cost or latency matters, use a lower [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl) level. For examples of these models, see [Keep reasoning in thinking blocks](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=curl#keep-reasoning-in-thinking-blocks).
-* **Ask Claude to self-check.** Append something like “Before you finish, verify your answer against \[test criteria].” This catches errors reliably, especially for coding and math. Claude Opus 5 is the exception: it verifies its own work well without explicit instruction, and verification instructions carried over from prompts tuned for earlier models can cause over-verification, adding tokens and latency. On Claude Opus 5, remove these instructions rather than rewriting them. See [Task scope and over-verification](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5?sdk_languages=curl#task-scope-and-over-verification).
+* **Manual chain-of-thought (CoT) prompting as a fallback.** When thinking is off, you can still encourage step-by-step reasoning by asking Claude to think through the problem before it answers. Ask it to put the final answer in `<answer>` tags so you can extract it. Some models might decline a prompt that asks them to write their reasoning, for example in `<thinking>` tags. On those models, rely on thinking instead. If cost or latency matters, use a lower [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli) level. For the list of these models, see [Keep reasoning in thinking blocks](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#keep-reasoning-in-thinking-blocks).
+* **Ask Claude to self-check.** Append something like “Before you finish, verify your answer against \[test criteria].” This catches errors reliably, especially for coding and math. Claude Opus 5 is the exception: it verifies its own work well without explicit instruction, and verification instructions carried over from prompts tuned for earlier models can cause over-verification, adding tokens and latency. On Claude Opus 5, remove these instructions rather than rewriting them. See [Task scope and over-verification](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5?sdk_languages=cli#task-scope-and-over-verification).
 
 <Note>
   When extended thinking is disabled, Claude Opus 4.5 is particularly sensitive to the word “think” and its variants. Consider using alternatives such as “consider,” “evaluate,” or “reason through” in those cases.
 </Note>
 
 <Info>
-  For more information on thinking capabilities, see [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl) and [Steering thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost?sdk_languages=curl).
+  For more information on thinking capabilities, see [Thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli) and [Steering thinking](https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost?sdk_languages=cli).
 </Info>
 
 ## Agentic systems
@@ -509,7 +498,7 @@ Claude’s latest models handle long-horizon reasoning tasks with strong state t
 
 #### Context awareness and multiwindow workflows
 
-Claude Sonnet 5, Claude Sonnet 4.6, Claude Sonnet 4.5 (deprecated), and Claude Haiku 4.5 feature [context awareness](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=curl#context-awareness), which lets the model track its remaining context window (that is, its “token budget”) throughout a conversation. This allows Claude to run tasks and manage context more effectively based on how much space it has to work.
+Claude Sonnet 5, Claude Sonnet 4.6, Claude Sonnet 4.5 (deprecated), and Claude Haiku 4.5 feature [context awareness](https://platform.claude.com/docs/en/build-with-claude/context-windows?sdk_languages=cli#context-awareness), which lets the model track its remaining context window (that is, its “token budget”) throughout a conversation. This allows Claude to run tasks and manage context more effectively based on how much space it has to work.
 
 **Managing context limits:**
 
@@ -525,7 +514,7 @@ your budget is approaching. Never artificially stop any task early regardless of
 context remaining.
 ```
 
-The [memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool?sdk_languages=curl) pairs well with context awareness for managing context transitions.
+The [memory tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool?sdk_languages=cli) pairs well with context awareness for managing context transitions.
 
 #### Workflows across multiple context windows
 
@@ -543,7 +532,7 @@ For tasks spanning multiple context windows:
    * “Review progress.txt, tests.json, and the git logs.”
    * “Manually run through a fundamental integration test before moving on to implementing new features.”
 
-5. **Provide verification tools:** As the length of autonomous tasks grows, Claude needs to verify correctness without continuous human feedback. Tools that let Claude verify UI work are helpful, such as the [computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=curl), the [browser use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=curl), or a browser automation MCP server.
+5. **Provide verification tools:** As the length of autonomous tasks grows, Claude needs to verify correctness without continuous human feedback. Tools that let Claude verify UI work are helpful, such as the [computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli), the [browser use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli), or a browser automation MCP server.
 
 6. **Encourage complete usage of context:** Prompt Claude to efficiently complete components before moving on:
 
@@ -617,7 +606,7 @@ The block tells Claude not to send any payment itself, even one that it’s allo
 * **The agent’s only payment tool waits for a person’s approval:** Claude has to call that tool for the person to see the request, and the block tells Claude not to call it. Add a separate tool that requests or queues the payment, or follow the next case.
 * **The agent is meant to send payments:** Leave out the two sentences that start `Never initiate` and `Prepare the payment request`, and have a person approve each payment call instead.
 
-The block guides Claude and doesn’t enforce anything, so have a person approve each call to any tool that can move money. On Claude Managed Agents, see [Approve risky actions](https://platform.claude.com/docs/en/managed-agents/secure-deployment?sdk_languages=curl#approve-risky-actions). Test the block on your own tasks, because it can change how Claude handles ordinary work.
+The block guides Claude and doesn’t enforce anything, so have a person approve each call to any tool that can move money. On Claude Managed Agents, see [Approve risky actions](https://platform.claude.com/docs/en/managed-agents/secure-deployment?sdk_languages=cli#approve-risky-actions). Test the block on your own tasks, because it can change how Claude handles ordinary work.
 
 Copy the following block word for word. If your agent is meant to send payments, leave out the two sentences named earlier.
 
@@ -653,7 +642,7 @@ To take advantage of this behavior:
 
 1. **Ensure well-defined subagent tools:** Have subagent tools available and described in tool definitions.
 2. **Let Claude orchestrate naturally:** Claude delegates appropriately without explicit instruction.
-3. **Watch for overuse:** Claude Opus 4.6 has a strong tendency to use subagents and might spawn them in situations where a simpler, direct approach would suffice. For example, the model might spawn subagents for code exploration when a direct grep call is faster and sufficient. Claude Opus 5 also delegates to subagents more readily than prior models; see [Controlling subagent spawning](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5?sdk_languages=curl#controlling-subagent-spawning) for guidance and a sample damping prompt.
+3. **Watch for overuse:** Claude Opus 4.6 has a strong tendency to use subagents and might spawn them in situations where a simpler, direct approach would suffice. For example, the model might spawn subagents for code exploration when a direct grep call is faster and sufficient. Claude Opus 5 also delegates to subagents more readily than prior models; see [Controlling subagent spawning](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5?sdk_languages=cli#controlling-subagent-spawning) for guidance and a sample damping prompt.
 
 If you’re seeing excessive subagent use, add explicit guidance about when subagents are and aren’t warranted:
 
@@ -747,7 +736,7 @@ hallucination-free answers.
 
 Claude Opus 4.5 and Claude Opus 4.6 have improved vision capabilities compared to previous Claude models. They perform better on image processing and data extraction tasks, particularly when there are multiple images present in context. These improvements carry over to computer use, where the models can more reliably interpret screenshots and UI elements. You can also use these models to analyze videos by breaking them up into frames.
 
-One technique that has proven effective to further boost performance is to give Claude a crop tool or [agent skill](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview?sdk_languages=curl). Testing has shown consistent uplift on image evaluations when Claude is able to “zoom” in on relevant regions of an image. Anthropic has created a [recipe for the crop tool](https://platform.claude.com/cookbook/multimodal-crop-tool).
+One technique that has proven effective to further boost performance is to give Claude a crop tool or [agent skill](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview?sdk_languages=cli). Testing has shown consistent uplift on image evaluations when Claude is able to “zoom” in on relevant regions of an image. Anthropic has created a [recipe for the crop tool](https://platform.claude.com/cookbook/multimodal-crop-tool).
 
 ### Frontend design
 
@@ -799,7 +788,7 @@ You can also refer to the [full skill definition](https://github.com/anthropics/
 
 ### Medication dosing
 
-If people might ask your application about medicine doses, add the following block for the model your application calls to your system prompt, exactly as written. The block has Claude give a child’s dose of an over-the-counter medicine from the product’s label, not from memory. With web search, such as the [web search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl), Claude checks the label before answering, which adds latency and search costs. Without web search, Claude points the person to the label’s dosing chart, a pharmacist, or the child’s doctor instead of giving a dose.
+If people might ask your application about medicine doses, add the following block for the model your application calls to your system prompt, exactly as written. The block has Claude give a child’s dose of an over-the-counter medicine from the product’s label, not from memory. With web search, such as the [web search tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli), Claude checks the label before answering, which adds latency and search costs. Without web search, Claude points the person to the label’s dosing chart, a pharmacist, or the child’s doctor instead of giving a dose.
 
 ```text Medication dosing block for Claude Fable 5.2 wrap
 <medical_guidance>
@@ -861,56 +850,56 @@ When migrating to current Claude models from earlier generations:
 
 3. **Request specific features explicitly:** Ask explicitly for animations and interactive elements when you want them.
 
-4. **Update thinking configuration:** Claude 4.6 and later models use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl) (`thinking: {type: "adaptive"}`) instead of manual thinking with `budget_tokens`. On Claude 4.7 and later models, setting `budget_tokens` returns a 400 error. Use the [effort parameter](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl) to control thinking depth.
+4. **Update thinking configuration:** Claude 4.6 and later models use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli) (`thinking: {type: "adaptive"}`) instead of manual thinking with `budget_tokens`. On Claude 4.7 and later models, setting `budget_tokens` returns a 400 error. Use the [effort parameter](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli) to control thinking depth.
 
-5. **Migrate away from prefilled responses:** Prefilled responses on the last assistant turn are no longer supported starting with Claude 4.6 models and Claude Mythos Preview. See [Migrating away from prefilled responses](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=curl#migrating-away-from-prefilled-responses) for detailed guidance on alternatives.
+5. **Migrate away from prefilled responses:** Prefilled responses on the last assistant turn are no longer supported starting with Claude 4.6 models and Claude Mythos Preview. See [Migrating away from prefilled responses](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=cli#migrating-away-from-prefilled-responses) for detailed guidance on alternatives.
 
 6. **Tune anti-laziness prompting:** If your prompts previously encouraged the model to be more thorough or use tools more aggressively, reduce that guidance. Claude 4.6 models are more proactive and might overtrigger on instructions that were needed for previous models.
 
-7. **Pass thinking blocks back unchanged and keep history append-only:** Append each assistant turn exactly as the API returned it, thinking blocks included. On Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5, editing earlier messages, rebuilding `system` or `tools`, or summarizing older turns in place between requests [invalidates every later thinking block already in the history](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#preserved-in-conversation). Move those changes to mid-conversation system messages and server-side context management. See [Keep the conversation history append-only](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=curl#keep-the-conversation-history-append-only).
+7. **Pass thinking blocks back unchanged and keep history append-only:** Append each assistant turn exactly as the API returned it, thinking blocks included. On Claude Fable 5.2, Claude Mythos 5.2, Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5, editing earlier messages, rebuilding `system` or `tools`, or summarizing older turns in place between requests [invalidates every later thinking block already in the history](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#preserved-in-conversation). Move those changes to mid-conversation system messages and server-side context management. See [Keep the conversation history append-only](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=cli#keep-the-conversation-history-append-only).
 
-For detailed migration steps, see the [Migration guide](https://platform.claude.com/docs/en/about-claude/models/migration-guide?sdk_languages=curl).
+For detailed migration steps, see the [Migration guide](https://platform.claude.com/docs/en/about-claude/models/migration-guide?sdk_languages=cli).
 
 ### Migrating to Claude Sonnet 5.5
 
-See the [Claude Sonnet 5.5 migration guide](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide?sdk_languages=curl). It covers the breaking changes for code written for Claude Sonnet 5 and the steps from Claude Sonnet 4.6 and earlier, including the removal of manual extended thinking (`budget_tokens`).
+See the [Claude Sonnet 5.5 migration guide](https://platform.claude.com/docs/en/models/sonnet-5-5/migration-guide?sdk_languages=cli). It covers the breaking changes for code written for Claude Sonnet 5 and the steps from Claude Sonnet 4.6 and earlier, including the removal of manual extended thinking (`budget_tokens`).
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Prompting Claude Fable 5.2" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2?sdk_languages=curl">
+  <Card title="Prompting Claude Fable 5.2" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-2?sdk_languages=cli">
     Behavioral differences and prompting patterns for Claude Fable 5.2, covering effort, finishing long tasks, approvals, code ownership, progress updates, subagents, caution that builds up, prompts and harnesses designed for earlier models, final reports, and safeguard refusals.
   </Card>
 
-  <Card title="Prompting Claude Fable 5.1" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=curl">
+  <Card title="Prompting Claude Fable 5.1" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1?sdk_languages=cli">
     Behavioral differences and prompting patterns for Claude Fable 5.1, covering effort, task completion, progress updates, thinking blocks, tool-call batching, and writing style.
   </Card>
 
-  <Card title="Prompting Claude Fable 5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5?sdk_languages=curl">
+  <Card title="Prompting Claude Fable 5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5?sdk_languages=cli">
     Behavioral differences and prompting patterns for Claude Fable 5 and Claude Mythos 5, covering effort, instruction following, long runs, memory, and scaffolding changes.
   </Card>
 
-  <Card title="Prompting Claude Sonnet 5.5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5?sdk_languages=curl">
+  <Card title="Prompting Claude Sonnet 5.5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5?sdk_languages=cli">
     Behavioral differences and prompting patterns for Claude Sonnet 5.5, covering effort calibration, initiative and scope, running without up-front thinking, JSON output on reasoning tasks, progress updates, tool use, mid-turn user messages, coding verification, tool-call handling, visual inputs, and safeguard refusals.
   </Card>
 
-  <Card title="Prompting Claude Sonnet 5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5?sdk_languages=curl">
+  <Card title="Prompting Claude Sonnet 5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5?sdk_languages=cli">
     Behavioral differences and prompting patterns for Claude Sonnet 5, covering effort, adaptive thinking defaults, and tool use.
   </Card>
 
-  <Card title="Prompting Claude Opus 5.5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5?sdk_languages=curl">
+  <Card title="Prompting Claude Opus 5.5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5?sdk_languages=cli">
     Behavioral differences and prompting patterns for Claude Opus 5.5, covering effort calibration, thinking always on, progress updates, safeguard refusals, and visual inputs.
   </Card>
 
-  <Card title="Prompting Claude Opus 5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5?sdk_languages=curl">
+  <Card title="Prompting Claude Opus 5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5?sdk_languages=cli">
     Behavioral differences and prompting patterns for Claude Opus 5, covering response verbosity, agentic narration, task scoping, subagent delegation, and self-correction.
   </Card>
 
-  <Card title="Prompting Claude Haiku 5.5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5?sdk_languages=curl">
+  <Card title="Prompting Claude Haiku 5.5" icon="terminal" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5?sdk_languages=cli">
     Behavioral differences and prompting patterns for Claude Haiku 5.5, covering effort, search, JSON output with your own tools, early stopping, coding verification, mid-turn user messages, system prompt adherence in chatbots, and safeguard refusals.
   </Card>
 
-  <Card title="Prompt engineering overview" icon="edit" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview?sdk_languages=curl">
+  <Card title="Prompt engineering overview" icon="edit" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview?sdk_languages=cli">
     When to use prompt engineering and how to plan your approach before tuning prompts.
   </Card>
 </CardGroup>

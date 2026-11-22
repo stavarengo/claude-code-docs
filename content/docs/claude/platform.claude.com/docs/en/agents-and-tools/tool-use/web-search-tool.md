@@ -6,7 +6,7 @@ featureMetadata:
   status: stable
   zdr:
     eligibility: eligible
-    note: Excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#model-specific-data-retention-requirements). Real-time web search results returned in the API response. Dynamic filtering for web search is not eligible for ZDR or HIPAA.
+    note: Excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#model-specific-data-retention-requirements). Real-time web search results returned in the API response. Dynamic filtering for web search is not eligible for ZDR or HIPAA.
   supportedModels:
     - claude-fable-5-2
     - claude-mythos-5-2
@@ -51,8 +51,8 @@ With `web_search_20260209` and later versions, Claude can write and run code tha
 Three versions of the web search tool are available:
 
 * `web_search_20250305`: basic web search
-* `web_search_20260209`: adds [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#dynamic-filtering)
-* `web_search_20260318`: adds [response inclusion](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#response-inclusion) control for agentic workflows
+* `web_search_20260209`: adds [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli#dynamic-filtering)
+* `web_search_20260318`: adds [response inclusion](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli#response-inclusion) control for agentic workflows
 
 The examples on this page use `web_search_20250305` for basic search and `web_search_20260318` for dynamic filtering.
 
@@ -60,11 +60,11 @@ The examples on this page use `web_search_20250305` for basic search and `web_se
   For [Claude Mythos Preview](https://anthropic.com/glasswing), web search is supported on the Claude API, Claude Models on Google Cloud (Google managed), and Microsoft Foundry.
 </Note>
 
-For web search’s Zero Data Retention eligibility and the related `allowed_callers` configuration, see [Server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl#zdr-and-allowed-callers).
+For web search’s Zero Data Retention eligibility and the related `allowed_callers` configuration, see [Server tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli#zdr-and-allowed-callers).
 
-For model support, see the [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=curl).
+For model support, see the [Tool reference](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=cli).
 
-To check whether a model accepts web search before you send a request, read its `capabilities.server_tools.web_search.supported` value from the Models API. [Using the Models API](https://platform.claude.com/docs/en/models/overview?sdk_languages=curl#using-the-models-api) describes the field.
+To check whether a model accepts web search before you send a request, read its `capabilities.server_tools.web_search.supported` value from the Models API. [Using the Models API](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli#using-the-models-api) describes the field.
 
 ## How web search works
 
@@ -90,76 +90,56 @@ Claude answers directly without searching when the request draws on stable knowl
 * Analysis of content already provided in the conversation
 * Conversational turns and greetings
 
-Triggering is steerable through your system prompt: you can encourage Claude to search more readily or to prefer answering directly. To enforce a limit, use [`max_uses`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#max-uses) to cap the number of searches in a turn.
+Triggering is steerable through your system prompt: you can encourage Claude to search more readily or to prefer answering directly. To enforce a limit, use [`max_uses`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli#max-uses) to cap the number of searches in a turn.
 
 ### Dynamic filtering
 
 With basic web search, every search result is loaded into Claude’s context window, and much of that content can be irrelevant to the request. With `web_search_20260209` or later, Claude instead writes and runs code that filters the results first, so only relevant content reaches the context window. This reduces token use on search-heavy requests.
 
-Dynamic filtering runs web search from inside [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl): on `web_search_20260209` and later, the tool’s `allowed_callers` field defaults to `["code_execution_20260120"]`, and when dynamic filtering runs, the API provisions the code execution it needs for the request automatically. You don’t need to add the code execution tool to `tools` yourself. There are no additional charges for code execution calls made this way beyond the standard token costs.
+Dynamic filtering runs web search from inside [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli): on `web_search_20260209` and later, the tool’s `allowed_callers` field defaults to `["code_execution_20260120"]`, and when dynamic filtering runs, the API provisions the code execution it needs for the request automatically. You don’t need to add the code execution tool to `tools` yourself. There are no additional charges for code execution calls made this way beyond the standard token costs.
 
 To call web search directly, without dynamic filtering, set `allowed_callers: ["direct"]`. Models that don’t support programmatic tool calling require this setting. Without it, the API returns a 400 error that tells you to set it.
 
 <Note>
-  The web search tool (with and without dynamic filtering) is available on the Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=curl), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=curl), and [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=curl). On Microsoft Foundry, deployments [hosted on Azure](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=curl#additional-features-not-supported-when-hosted-on-azure) support only the basic web search tool (`web_search_20250305`, without dynamic filtering). Deployments hosted on Anthropic support all versions. On Claude Models on Google Cloud (Google managed), only the basic web search tool (without dynamic filtering) is available.
+  The web search tool (with and without dynamic filtering) is available on the Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli), and [Microsoft Foundry](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli). On Microsoft Foundry, deployments [hosted on Azure](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli#additional-features-not-supported-when-hosted-on-azure) support only the basic web search tool (`web_search_20250305`, without dynamic filtering). Deployments hosted on Anthropic support all versions. On Claude Models on Google Cloud (Google managed), only the basic web search tool (without dynamic filtering) is available.
 </Note>
 
 The following examples use `web_search_20260318`:
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2026-10-21" \
-    -H "content-type: application/json" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 4096,
-      "messages": [
-        {
-          "role": "user",
-          "content": "Search for the current prices of AAPL and GOOGL, then calculate which has a better P/E ratio."
-        }
-      ],
-      "tools": [{
-        "type": "web_search_20260318",
-        "name": "web_search"
-      }]
-    }'
+  ```bash CLI
+  ant messages create <<'YAML'
+  model: claude-opus-5-5
+  max_tokens: 4096
+  messages:
+    - role: user
+      content: >-
+        Search for the current prices of AAPL and GOOGL, then calculate
+        which has a better P/E ratio.
+  tools:
+    - type: web_search_20260318
+      name: web_search
+  YAML
   ```
 </CodeGroup>
 
 ## How to use web search
 
 <Note>
-  Web search is enabled for your organization unless an administrator has disabled it in the [Claude Console](https://platform.claude.com/settings/capabilities), where they can also restrict which domains it searches. If it’s disabled, a Messages API request that includes the tool fails with a 400 `invalid_request_error` that says web search is not enabled, rather than an [error code](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#errors) inside a search result.
+  Web search is enabled for your organization unless an administrator has disabled it in the [Claude Console](https://platform.claude.com/settings/capabilities), where they can also restrict which domains it searches. If it’s disabled, a Messages API request that includes the tool fails with a 400 `invalid_request_error` that says web search is not enabled, rather than an [error code](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli#errors) inside a search result.
 </Note>
 
-For how your organization’s web search settings apply in Claude Managed Agents sessions, see [Restrict web search and web fetch domains](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=curl).
+For how your organization’s web search settings apply in Claude Managed Agents sessions, see [Restrict web search and web fetch domains](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli).
 
 Provide the web search tool in your API request:
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2026-10-21" \
-    -H "content-type: application/json" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 4096,
-      "messages": [
-        {
-          "role": "user",
-          "content": "What is the weather in NYC?"
-        }
-      ],
-      "tools": [{
-        "type": "web_search_20250305",
-        "name": "web_search",
-        "max_uses": 5
-      }]
-    }'
+  ```bash CLI
+  ant messages create \
+    --model claude-opus-5-5 \
+    --max-tokens 4096 \
+    --message '{role: user, content: What is the weather in NYC?}' \
+    --tool '{type: web_search_20250305, name: web_search, max_uses: 5}'
   ```
 </CodeGroup>
 
@@ -193,7 +173,7 @@ The web search tool supports the following parameters:
 }
 ```
 
-All web search tool versions accept `allowed_callers`, which controls whether Claude calls web search directly or from code execution through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#dynamic-filtering). On `web_search_20260209` and later it defaults to `["code_execution_20260120"]` instead of `["direct"]`. See [ZDR and allowed\_callers](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl#zdr-and-allowed-callers) for how to configure it. `web_search_20260318` and later also accept [`response_inclusion`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#response-inclusion).
+All web search tool versions accept `allowed_callers`, which controls whether Claude calls web search directly or from code execution through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli#dynamic-filtering). On `web_search_20260209` and later it defaults to `["code_execution_20260120"]` instead of `["direct"]`. See [ZDR and allowed\_callers](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli#zdr-and-allowed-callers) for how to configure it. `web_search_20260318` and later also accept [`response_inclusion`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli#response-inclusion).
 
 ### Max uses
 
@@ -201,15 +181,15 @@ The `max_uses` parameter limits the number of searches in a single turn. Single-
 
 Failed searches count against the limit. If Claude calls web search directly more times than allowed, the `web_search_tool_result` is an error with the `max_uses_exceeded` error code. If Claude calls web search from code execution more times than allowed, the code execution run ends with an error.
 
-A turn can span several requests. A request continues a turn when it resumes after [`pause_turn`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl#the-server-side-loop-and-pause-turn) or when its last message contains only `tool_result` blocks. Searches from earlier requests in that turn count against the limit, unless Claude ran them from code execution through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#dynamic-filtering).
+A turn can span several requests. A request continues a turn when it resumes after [`pause_turn`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli#the-server-side-loop-and-pause-turn) or when its last message contains only `tool_result` blocks. Searches from earlier requests in that turn count against the limit, unless Claude ran them from code execution through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli#dynamic-filtering).
 
 ### Domain filtering
 
 Provide `allowed_domains` or `blocked_domains`, not both. If a request includes both, the API returns a 400 error. Entries are bare domains with an optional path, for example `example.com` or `example.com/blog`, without a scheme.
 
-For the full domain filtering rules, see [Domain filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl#domain-filtering) in the Server tools guide.
+For the full domain filtering rules, see [Domain filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli#domain-filtering) in the Server tools guide.
 
-On [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=curl), set these fields on the `web_search` entry of the agent toolset; see [Restrict web search and web fetch domains](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=curl).
+On [Claude Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli), set these fields on the `web_search` entry of the agent toolset; see [Restrict web search and web fetch domains](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli).
 
 ### Localization
 
@@ -221,7 +201,7 @@ The `user_location` parameter allows you to localize search results based on a u
 * `country`: The two-letter [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code (the API rejects an unsupported code with a 400 error)
 * `timezone`: The [IANA time zone ID](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 
-On Claude Managed Agents, the `web_search` entry of the agent toolset also accepts `user_location`; see the [web tool settings](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=curl#settings).
+On Claude Managed Agents, the `web_search` entry of the agent toolset also accepts `user_location`; see the [web tool settings](https://platform.claude.com/docs/en/managed-agents/tools-web-restrictions?sdk_languages=cli#settings).
 
 ### Response inclusion
 
@@ -229,7 +209,7 @@ On Claude Managed Agents, the `web_search` entry of the agent toolset also accep
   Requires `web_search_20260318` or later.
 </Note>
 
-The `response_inclusion` parameter controls how search result blocks appear in the API response when a completed [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl) call in the same response consumed the result. Set `"response_inclusion": "excluded"` to drop those nested `server_tool_use` and result block pairs entirely from the response, for agentic workflows that don’t need the raw search content. Token usage is unaffected, because Claude reads the code’s output rather than these blocks. The default is `"full"`. The API always returns results from direct calls, or from code execution calls that paused before completing, in full so that you can send them back in the next request.
+The `response_inclusion` parameter controls how search result blocks appear in the API response when a completed [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli) call in the same response consumed the result. Set `"response_inclusion": "excluded"` to drop those nested `server_tool_use` and result block pairs entirely from the response, for agentic workflows that don’t need the raw search content. Token usage is unaffected, because Claude reads the code’s output rather than these blocks. The default is `"full"`. The API always returns results from direct calls, or from code execution calls that paused before completing, in full so that you can send them back in the next request.
 
 ```json JSON
 {
@@ -310,7 +290,7 @@ Here’s an example response structure:
 }
 ```
 
-This example shows a direct search. When a search runs through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=curl#dynamic-filtering), the response also contains the result blocks of the [code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl), and each nested `server_tool_use` and `web_search_tool_result` pair carries a `caller` field identifying the code execution call that made it.
+This example shows a direct search. When a search runs through [dynamic filtering](https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-search-tool?sdk_languages=cli#dynamic-filtering), the response also contains the result blocks of the [code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli), and each nested `server_tool_use` and `web_search_tool_result` pair carries a `caller` field identifying the code execution call that made it.
 
 ### Search results
 
@@ -368,13 +348,13 @@ These are the possible error codes:
 
 The API can pause a long-running search turn and return `stop_reason: "pause_turn"`. To continue, send the paused assistant message back unchanged in a new request.
 
-If Claude calls web search and one of your client tools in the same group of parallel tool calls, the API returns `stop_reason: "tool_use"` instead and does not run the search yet. To continue, return the client tool results, and the API runs the search in the next request. See [Mixing server tools and client tools in one turn](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl#mixing-server-tools-and-client-tools-in-one-turn).
+If Claude calls web search and one of your client tools in the same group of parallel tool calls, the API returns `stop_reason: "tool_use"` instead and does not run the search yet. To continue, return the client tool results, and the API runs the search in the next request. See [Mixing server tools and client tools in one turn](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli#mixing-server-tools-and-client-tools-in-one-turn).
 
-For the server-side loop and `pause_turn` handling, see [The server-side loop and pause\_turn](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl#the-server-side-loop-and-pause-turn) in the Server tools guide.
+For the server-side loop and `pause_turn` handling, see [The server-side loop and pause\_turn](https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli#the-server-side-loop-and-pause-turn) in the Server tools guide.
 
 ## Prompt caching
 
-To cache tool definitions across turns, see [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching?sdk_languages=curl).
+To cache tool definitions across turns, see [Tool use with prompt caching](https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-use-with-prompt-caching?sdk_languages=cli).
 
 ## Streaming
 
@@ -407,7 +387,7 @@ data: {"type": "content_block_start", "index": 2, "content_block": {"type": "web
 
 ## Batch requests
 
-You can include the web search tool in the [Message Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=curl). Web search tool calls through the Message Batches API are priced the same as those in regular Messages API requests.
+You can include the web search tool in the [Message Batches API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli). Web search tool calls through the Message Batches API are priced the same as those in regular Messages API requests.
 
 To protect shared capacity, the Batches API throttles web search requests for each organization, so large batches with many searches might take longer to complete. You can see your organization’s web search rate limit on the [Rate limits](https://platform.claude.com/usage/limits) page in the Claude Console. To request a higher limit, contact sales from that page.
 
@@ -436,15 +416,15 @@ Each web search counts as one use, regardless of the number of results returned.
 ## Next steps
 
 <CardGroup cols={3}>
-  <Card title="Web fetch tool" icon="link" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool?sdk_languages=curl">
+  <Card title="Web fetch tool" icon="link" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/web-fetch-tool?sdk_languages=cli">
     Fetch and read content from specific URLs to augment Claude’s context with live web content.
   </Card>
 
-  <Card title="Server tools" icon="tool" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=curl">
+  <Card title="Server tools" icon="tool" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/server-tools?sdk_languages=cli">
     Work with tools that Anthropic runs: `server_tool_use` blocks, `pause_turn` continuation, and domain filtering.
   </Card>
 
-  <Card title="Tool reference" icon="book" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=curl">
+  <Card title="Tool reference" icon="book" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-reference?sdk_languages=cli">
     Directory of Anthropic-provided tools and reference for optional tool definition properties.
   </Card>
 </CardGroup>
@@ -455,34 +435,34 @@ Web search tool is available on every model and eligible for zero data retention
 
 ### API support
 
-#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=curl)
+#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli)
 
 * Availability: Available
 * Usage: Add a `web_search` tool to the request’s `tools`. Settings such as `max_uses`, domain lists and `user_location` go on that tool.
 
 | Status | Cloud platforms |
 | ----- | ----- |
-| Available | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=curl), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=curl), [Microsoft Foundry (hosted on Anthropic)](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=curl) |
-| Available<sup>1</sup> | [Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=curl), [Microsoft Foundry (hosted on Azure)](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=curl) |
+| Available | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli), [Microsoft Foundry (hosted on Anthropic)](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
+| Available<sup>1</sup> | [Claude Models on Google Cloud (Google managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/google-managed?sdk_languages=cli), [Microsoft Foundry (hosted on Azure)](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) |
 
 1. Only the basic web search tool (`web_search_20250305`), without dynamic filtering.
 
-#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=curl)
+#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli)
 
 * Availability: Available
 * Usage: Part of the agent toolset, and on by default once the toolset is added. Domain lists and `user_location` go on the toolset’s `web_search` entry; `max_uses`, `citations` and `cache_control` are not available.
 
 | Status | Cloud platforms |
 | ----- | ----- |
-| Available | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=curl), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=curl) |
+| Available | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli) |
 
 ### Data handling
 
-[Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#feature-eligibility)
+[Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
 
 | Item | Zero data retention | HIPAA |
 | ----- | ----- | ----- |
-| Status | Eligible (excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#model-specific-data-retention-requirements)) | Eligible |
+| Status | Eligible (excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#model-specific-data-retention-requirements)) | Eligible |
 | Details | Real-time web search results returned in the API response. Dynamic filtering for web search is not eligible for ZDR or HIPAA. | Dynamic filtering for web search is not eligible for ZDR or HIPAA. |
 
 Applicable endpoints:

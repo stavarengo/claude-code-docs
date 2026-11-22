@@ -6,7 +6,7 @@ featureMetadata:
   status: stable
   zdr:
     eligibility: qualified
-    note: "Excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#model-specific-data-retention-requirements). Your prompts and Claude's outputs are not stored. Only the JSON schema is cached, for up to 24 hours since last use. This also covers strict tool use (`strict: true` on tools), which uses the same grammar pipeline."
+    note: "Excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#model-specific-data-retention-requirements). Your prompts and Claude's outputs are not stored. Only the JSON schema is cached, for up to 24 hours since last use. This also covers strict tool use (`strict: true` on tools), which uses the same grammar pipeline."
   supportedModels:
     - claude-fable-5-2
     - claude-mythos-5-2
@@ -40,9 +40,9 @@ featureMetadata:
 Structured outputs constrain Claude’s responses to follow a specific schema, ensuring valid, parseable output for downstream processing. Structured outputs provide two complementary features:
 
 * **JSON outputs** (`output_config.format`): Get Claude’s response in a specific JSON format, for example to extract data from images or text, generate structured reports, or format API responses. This page covers JSON outputs.
-* **Strict tool use** (`strict: true`): Guarantee schema validation on tool names and inputs. See [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=curl).
+* **Strict tool use** (`strict: true`): Guarantee schema validation on tool names and inputs. See [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=cli).
 
-You can use these features independently or [together in the same request](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#using-both-features-together).
+You can use these features independently or [together in the same request](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#using-both-features-together).
 
 ## Why use structured outputs
 
@@ -63,7 +63,7 @@ Structured outputs guarantee schema-compliant responses through constrained deco
 
 <Steps>
   <Step title="Define your schema">
-    Describe the structure you want as a JSON schema or as a type in your language. The schema follows JSON Schema, with some [limitations](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#json-schema-limitations).
+    Describe the structure you want as a JSON schema or as a type in your language. The schema follows JSON Schema, with some [limitations](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#json-schema-limitations).
   </Step>
 
   <Step title="Send it in output_config.format">
@@ -78,38 +78,30 @@ Structured outputs guarantee schema-compliant responses through constrained deco
 ## Usage
 
 <Tabs>
-  <Tab title="cURL">
+  <Tab title="CLI">
     ```bash
-    curl https://api.anthropic.com/v1/messages \
-      -H "content-type: application/json" \
-      -H "x-api-key: $ANTHROPIC_API_KEY" \
-      -H "anthropic-version: 2026-10-21" \
-      -d '{
-        "model": "claude-opus-5-5",
-        "max_tokens": 1024,
-        "messages": [
-          {
-            "role": "user",
-            "content": "Extract the key information from this email: John Smith (john@example.com) is interested in our Enterprise plan and wants to schedule a demo for next Tuesday at 2pm."
-          }
-        ],
-        "output_config": {
-          "format": {
-            "type": "json_schema",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {"type": "string"},
-                "email": {"type": "string"},
-                "plan_interest": {"type": "string"},
-                "demo_requested": {"type": "boolean"}
-              },
-              "required": ["name", "email", "plan_interest", "demo_requested"],
-              "additionalProperties": false
-            }
-          }
-        }
-      }'
+    ant messages create <<'YAML'
+    model: claude-opus-5-5
+    max_tokens: 1024
+    messages:
+      - role: user
+        content: >-
+          Extract the key information from this email: John Smith
+          (john@example.com) is interested in our Enterprise plan and wants
+          to schedule a demo for next Tuesday at 2pm.
+    output_config:
+      format:
+        type: json_schema
+        schema:
+          type: object
+          properties:
+            name: {type: string}
+            email: {type: string}
+            plan_interest: {type: string}
+            demo_requested: {type: boolean}
+          required: [name, email, plan_interest, demo_requested]
+          additionalProperties: false
+    YAML
     ```
 
     Claude returns JSON like this in the response’s text content block:
@@ -144,38 +136,30 @@ Claude receives a simplified schema, but a helper that validates responses still
 To use a JSON schema from a file, an OpenAPI spec, or code that builds it at runtime, pass it in `output_config.format`.
 
 <Tabs>
-  <Tab title="cURL">
+  <Tab title="CLI">
     ```bash
-    curl https://api.anthropic.com/v1/messages \
-      -H "content-type: application/json" \
-      -H "x-api-key: $ANTHROPIC_API_KEY" \
-      -H "anthropic-version: 2026-10-21" \
-      -d '{
-        "model": "claude-opus-5-5",
-        "max_tokens": 1024,
-        "messages": [
-          {
-            "role": "user",
-            "content": "Extract the key information from this email: John Smith (john@example.com) is interested in our Enterprise plan and wants to schedule a demo for next Tuesday at 2pm."
-          }
-        ],
-        "output_config": {
-          "format": {
-            "type": "json_schema",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {"type": "string"},
-                "email": {"type": "string"},
-                "plan_interest": {"type": "string"},
-                "demo_requested": {"type": "boolean"}
-              },
-              "required": ["name", "email", "plan_interest", "demo_requested"],
-              "additionalProperties": false
-            }
-          }
-        }
-      }'
+    ant messages create <<'YAML'
+    model: claude-opus-5-5
+    max_tokens: 1024
+    messages:
+      - role: user
+        content: >-
+          Extract the key information from this email: John Smith
+          (john@example.com) is interested in our Enterprise plan and wants
+          to schedule a demo for next Tuesday at 2pm.
+    output_config:
+      format:
+        type: json_schema
+        schema:
+          type: object
+          properties:
+            name: {type: string}
+            email: {type: string}
+            plan_interest: {type: string}
+            demo_requested: {type: boolean}
+          required: [name, email, plan_interest, demo_requested]
+          additionalProperties: false
+    YAML
     ```
 
     Claude returns JSON like this in the response’s text content block:
@@ -198,50 +182,43 @@ To use a JSON schema from a file, an OpenAPI spec, or code that builds it at run
     Extract structured data from unstructured text:
 
     <CodeGroup>
-      ```bash cURL
-      curl https://api.anthropic.com/v1/messages \
-        -H "content-type: application/json" \
-        -H "x-api-key: $ANTHROPIC_API_KEY" \
-        -H "anthropic-version: 2026-10-21" \
-        -d '{
-          "model": "claude-opus-5-5",
-          "max_tokens": 4096,
-          "messages": [
-            {
-              "role": "user",
-              "content": "Extract invoice data from: Invoice #12345, Date: 2024-01-15, Customer: Acme Corp, 2 widgets at $150.00 each, 1 setup fee at $200.00, Total: $500.00"
-            }
-          ],
-          "output_config": {
-            "format": {
-              "type": "json_schema",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "invoice_number": {"type": "string"},
-                  "date": {"type": "string"},
-                  "total_amount": {"type": "number"},
-                  "line_items": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "description": {"type": "string"},
-                        "quantity": {"type": "number"},
-                        "unit_price": {"type": "number"}
-                      },
-                      "required": ["description", "quantity", "unit_price"],
-                      "additionalProperties": false
-                    }
-                  },
-                  "customer_name": {"type": "string"}
-                },
-                "required": ["invoice_number", "date", "total_amount", "line_items", "customer_name"],
-                "additionalProperties": false
-              }
-            }
-          }
-        }'
+      ```bash CLI
+      ant messages create <<'YAML'
+      model: claude-opus-5-5
+      max_tokens: 4096
+      messages:
+        - role: user
+          content: |
+            Extract invoice data from:
+            Invoice #12345
+            Date: 2024-01-15
+            Customer: Acme Corp
+            2 widgets at $150.00 each
+            1 setup fee at $200.00
+            Total: $500.00
+      output_config:
+        format:
+          type: json_schema
+          schema:
+            type: object
+            properties:
+              invoice_number: {type: string}
+              date: {type: string}
+              total_amount: {type: number}
+              line_items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    description: {type: string}
+                    quantity: {type: number}
+                    unit_price: {type: number}
+                  required: [description, quantity, unit_price]
+                  additionalProperties: false
+              customer_name: {type: string}
+            required: [invoice_number, date, total_amount, line_items, customer_name]
+            additionalProperties: false
+      YAML
       ```
     </CodeGroup>
   </Accordion>
@@ -250,37 +227,36 @@ To use a JSON schema from a file, an OpenAPI spec, or code that builds it at run
     Classify content with structured categories:
 
     <CodeGroup>
-      ```bash cURL
-      curl https://api.anthropic.com/v1/messages \
-        -H "content-type: application/json" \
-        -H "x-api-key: $ANTHROPIC_API_KEY" \
-        -H "anthropic-version: 2026-10-21" \
-        -d '{
-          "model": "claude-opus-5-5",
-          "max_tokens": 1024,
-          "messages": [
-            {
-              "role": "user",
-              "content": "Classify this feedback: Great product, fast shipping!"
-            }
-          ],
-          "output_config": {
-            "format": {
-              "type": "json_schema",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "category": {"type": "string"},
-                  "confidence": {"type": "number"},
-                  "tags": {"type": "array", "items": {"type": "string"}},
-                  "sentiment": {"type": "string"}
-                },
-                "required": ["category", "confidence", "tags", "sentiment"],
-                "additionalProperties": false
-              }
-            }
-          }
-        }'
+      ```bash CLI
+      ant messages create <<'YAML'
+      model: claude-opus-5-5
+      max_tokens: 1024
+      messages:
+        - role: user
+          content: "Classify this feedback: Great product, fast shipping!"
+      output_config:
+        format:
+          type: json_schema
+          schema:
+            type: object
+            properties:
+              category:
+                type: string
+              confidence:
+                type: number
+              tags:
+                type: array
+                items:
+                  type: string
+              sentiment:
+                type: string
+            required:
+              - category
+              - confidence
+              - tags
+              - sentiment
+            additionalProperties: false
+      YAML
       ```
     </CodeGroup>
   </Accordion>
@@ -289,58 +265,56 @@ To use a JSON schema from a file, an OpenAPI spec, or code that builds it at run
     Generate API-ready responses:
 
     <CodeGroup>
-      ```bash cURL
-      curl https://api.anthropic.com/v1/messages \
-        -H "content-type: application/json" \
-        -H "x-api-key: $ANTHROPIC_API_KEY" \
-        -H "anthropic-version: 2026-10-21" \
-        -d '{
-          "model": "claude-opus-5-5",
-          "max_tokens": 1024,
-          "messages": [
-            {
-              "role": "user",
-              "content": "Write an API response: request req_2abc3def has an invalid email."
-            }
-          ],
-          "output_config": {
-            "format": {
-              "type": "json_schema",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "status": {"type": "string"},
-                  "data": {
-                    "type": "object",
-                    "properties": {"message": {"type": "string"}},
-                    "required": ["message"],
-                    "additionalProperties": false
-                  },
-                  "errors": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "code": {"type": "string"},
-                        "detail": {"type": "string"}
-                      },
-                      "required": ["code", "detail"],
-                      "additionalProperties": false
-                    }
-                  },
-                  "metadata": {
-                    "type": "object",
-                    "properties": {"request_id": {"type": "string"}},
-                    "required": ["request_id"],
-                    "additionalProperties": false
-                  }
-                },
-                "required": ["status", "data", "metadata"],
-                "additionalProperties": false
-              }
-            }
-          }
-        }'
+      ```bash CLI
+      ant messages create <<'YAML'
+      model: claude-opus-5-5
+      max_tokens: 1024
+      output_config:
+        format:
+          type: json_schema
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              data:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+                additionalProperties: false
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code:
+                      type: string
+                    detail:
+                      type: string
+                  required:
+                    - code
+                    - detail
+                  additionalProperties: false
+              metadata:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                required:
+                  - request_id
+                additionalProperties: false
+            required:
+              - status
+              - data
+              - metadata
+            additionalProperties: false
+      messages:
+        - role: user
+          content: "Write an API response: request req_2abc3def has an invalid email."
+      YAML
       ```
     </CodeGroup>
   </Accordion>
@@ -348,7 +322,7 @@ To use a JSON schema from a file, an OpenAPI spec, or code that builds it at run
 
 ## Strict tool use
 
-To enforce JSON Schema compliance on tool inputs with grammar-constrained sampling, see [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=curl).
+To enforce JSON Schema compliance on tool inputs with grammar-constrained sampling, see [Strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=cli).
 
 ### Using both features together
 
@@ -360,50 +334,43 @@ JSON outputs and strict tool use solve different problems and work together:
 When combined, Claude can call tools with guaranteed-valid parameters AND return structured JSON responses. This is useful for agentic workflows where you need both reliable tool calls and structured final outputs.
 
 <CodeGroup>
-  ```bash cURL
-  curl https://api.anthropic.com/v1/messages \
-    -H "content-type: application/json" \
-    -H "x-api-key: $ANTHROPIC_API_KEY" \
-    -H "anthropic-version: 2026-10-21" \
-    -d '{
-      "model": "claude-opus-5-5",
-      "max_tokens": 1024,
-      "messages": [
-        {
-          "role": "user",
-          "content": "Help me plan a trip to Paris departing May 15, 2026"
-        }
-      ],
-      "output_config": {
-        "format": {
-          "type": "json_schema",
-          "schema": {
-            "type": "object",
-            "properties": {
-              "summary": {"type": "string"},
-              "next_steps": {"type": "array", "items": {"type": "string"}}
-            },
-            "required": ["summary", "next_steps"],
-            "additionalProperties": false
-          }
-        }
-      },
-      "tools": [
-        {
-          "name": "search_flights",
-          "strict": true,
-          "input_schema": {
-            "type": "object",
-            "properties": {
-              "destination": {"type": "string"},
-              "date": {"type": "string", "format": "date"}
-            },
-            "required": ["destination", "date"],
-            "additionalProperties": false
-          }
-        }
-      ]
-    }'
+  ```bash CLI
+  ant messages create <<'YAML'
+  model: claude-opus-5-5
+  max_tokens: 1024
+  messages:
+    - role: user
+      content: Help me plan a trip to Paris departing May 15, 2026
+  # JSON outputs: structured response format
+  output_config:
+    format:
+      type: json_schema
+      schema:
+        type: object
+        properties:
+          summary:
+            type: string
+          next_steps:
+            type: array
+            items:
+              type: string
+        required: [summary, next_steps]
+        additionalProperties: false
+  # Strict tool use: guaranteed tool parameters
+  tools:
+    - name: search_flights
+      strict: true
+      input_schema:
+        type: object
+        properties:
+          destination:
+            type: string
+          date:
+            type: string
+            format: date
+        required: [destination, date]
+        additionalProperties: false
+  YAML
   ```
 </CodeGroup>
 
@@ -423,7 +390,7 @@ When using structured outputs, Claude automatically receives an additional syste
 
 * Your input token count is slightly higher.
 * The injected prompt costs you tokens like any other system prompt.
-* Changing the `output_config.format` parameter invalidates any [prompt cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl) for that conversation thread.
+* Changing the `output_config.format` parameter invalidates any [prompt cache](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli) for that conversation thread.
 
 ### JSON Schema limitations
 
@@ -431,7 +398,7 @@ Structured outputs support standard JSON Schema with some limitations. Both JSON
 
 <Accordion title="Supported features">
   * All basic types: object, array, string, integer, number, boolean, null
-  * `enum` and `const` (strings, numbers, booleans, or nulls only), with a [capitalization caveat](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#invalid-outputs)
+  * `enum` and `const` (strings, numbers, booleans, or nulls only), with a [capitalization caveat](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#invalid-outputs)
   * `anyOf` and `allOf`, except the uses listed under “Not supported”
   * `$ref`, `$defs`, and `definitions`
   * `default` property for all supported types
@@ -452,7 +419,7 @@ Structured outputs support standard JSON Schema with some limitations. Both JSON
   * Numerical constraints (such as `minimum`, `maximum`, `multipleOf`)
   * String constraints (`minLength`, `maxLength`)
   * Array constraints beyond `minItems` of 0 or 1
-  * `additionalProperties` set to anything other than `false` (see [Objects with arbitrary keys](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#objects-with-arbitrary-keys))
+  * `additionalProperties` set to anything other than `false` (see [Objects with arbitrary keys](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#objects-with-arbitrary-keys))
 
   If you use an unsupported feature, you’ll receive a 400 error with details.
 </Accordion>
@@ -476,7 +443,7 @@ Structured outputs support standard JSON Schema with some limitations. Both JSON
 </Accordion>
 
 <Tip>
-  SDK helpers can transform schemas with [constraints not supported by the API](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#json-schema-limitations). See [How SDK transformation works](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#how-sdk-transformation-works).
+  SDK helpers can transform schemas with [constraints not supported by the API](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#json-schema-limitations). See [How SDK transformation works](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#how-sdk-transformation-works).
 </Tip>
 
 #### Objects with arbitrary keys
@@ -555,7 +522,7 @@ Claude maintains its safety and helpfulness properties even when using structure
 * You’ll be billed for the tokens generated.
 * The output might not match your schema because the refusal message takes precedence over schema constraints.
 
-A property that asks for the model’s thinking or step-by-step reasoning might lead to a `reasoning_extraction` refusal. Ask for a short explanation instead. See [Keep reasoning in thinking blocks](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=curl#keep-reasoning-in-thinking-blocks).
+A property that asks for the model’s thinking or step-by-step reasoning might lead to a `reasoning_extraction` refusal. Ask for a short explanation instead. See [Keep reasoning in thinking blocks](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#keep-reasoning-in-thinking-blocks).
 
 **Token limit reached** (`stop_reason: "max_tokens"`)
 
@@ -620,24 +587,24 @@ For persistent issues with valid schemas, [contact support](https://support.clau
 
 The `output_format` parameter has moved to `output_config.format`, and beta headers are no longer required. The `output_format` parameter is deprecated. To use it anyway, add the `structured-outputs-2025-11-13` beta header. Without it, the API returns a 400 error.
 
-In the Python SDK (v1.0 and later), a schema dictionary passed as `output_format={...}` raises a `TypeError`. Use `output_config` instead. A Pydantic model passed as `output_format=Model` to `parse()` or `stream()` works with no change and no beta header, because the SDK sends it as `output_config`. See [Using a raw JSON schema](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#using-a-raw-json-schema) for the updated API shape.
+In the Python SDK (v1.0 and later), a schema dictionary passed as `output_format={...}` raises a `TypeError`. Use `output_config` instead. A Pydantic model passed as `output_format=Model` to `parse()` or `stream()` works with no change and no beta header, because the SDK sends it as `output_config`. See [Using a raw JSON schema](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#using-a-raw-json-schema) for the updated API shape.
 
 ## Feature compatibility
 
 **Works with:**
 
-* **[Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=curl):** Process structured outputs at scale with a 50 percent discount
-* **[Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=curl):** Count tokens without compilation
-* **[Streaming](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl):** Stream structured outputs like normal responses
-* **[Combined usage](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#using-both-features-together):** Use JSON outputs (`output_config.format`) and strict tool use (`strict: true`) together in the same request
+* **[Batch processing](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli):** Process structured outputs at scale with a 50 percent discount
+* **[Token counting](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli):** Count tokens without compilation
+* **[Streaming](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli):** Stream structured outputs like normal responses
+* **[Combined usage](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#using-both-features-together):** Use JSON outputs (`output_config.format`) and strict tool use (`strict: true`) together in the same request
 
 **Incompatible with:**
 
-* **[Citations](https://platform.claude.com/docs/en/build-with-claude/citations?sdk_languages=curl):** Citations require interleaving citation blocks with text, which conflicts with strict JSON schema constraints. The API returns a 400 error if citations are enabled with `output_config.format`. To extract structured data with a citation for each value, see [Get structured data with citations](https://platform.claude.com/docs/en/build-with-claude/citations?sdk_languages=curl#get-structured-data-with-citations).
+* **[Citations](https://platform.claude.com/docs/en/build-with-claude/citations?sdk_languages=cli):** Citations require interleaving citation blocks with text, which conflicts with strict JSON schema constraints. The API returns a 400 error if citations are enabled with `output_config.format`. To extract structured data with a citation for each value, see [Get structured data with citations](https://platform.claude.com/docs/en/build-with-claude/citations?sdk_languages=cli#get-structured-data-with-citations).
 * **Message prefilling:** Prefilling is incompatible with JSON outputs.
 
 <Tip>
-  **Grammar scope:** Grammars apply only to Claude’s direct output, not to tool use calls, tool results, or thinking tags (when using [thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl)). Grammar state resets between sections, allowing Claude to think freely while still producing structured output in the final response.
+  **Grammar scope:** Grammars apply only to Claude’s direct output, not to tool use calls, tool results, or thinking tags (when using [thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli)). Grammar state resets between sections, allowing Claude to think freely while still producing structured output in the final response.
 </Tip>
 
 ## Availability
@@ -646,26 +613,26 @@ Structured outputs are available on every model and eligible for HIPAA readiness
 
 ### API support
 
-#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=curl)
+#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli)
 
 * Availability: Available
 
 | Status | Cloud platforms | Models |
 | ----- | ----- | ----- |
-| Available | All supported platforms | [All models](https://platform.claude.com/docs/en/models/overview?sdk_languages=curl) |
+| Available | All supported platforms | [All models](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli) |
 
-#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=curl)
+#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli)
 
 * Availability: Not available
 
 ### Data handling
 
-[Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#feature-eligibility)
+[Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
 
 | Item | Zero data retention | HIPAA |
 | ----- | ----- | ----- |
-| Status | Eligible (qualified; excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#model-specific-data-retention-requirements)) | Eligible |
-| Details | Your prompts and Claude’s outputs are not stored. Only the JSON schema is cached, for up to 24 hours since last use. This also covers strict tool use (`strict: true` on tools), which uses the same grammar pipeline. [Learn more](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#data-retention) | PHI must not be included in JSON schema definitions; see PHI handling guidelines. [Learn more](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#phi-handling-guidelines) |
+| Status | Eligible (qualified; excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#model-specific-data-retention-requirements)) | Eligible |
+| Details | Your prompts and Claude’s outputs are not stored. Only the JSON schema is cached, for up to 24 hours since last use. This also covers strict tool use (`strict: true` on tools), which uses the same grammar pipeline. [Learn more](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#data-retention) | PHI must not be included in JSON schema definitions; see PHI handling guidelines. [Learn more](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#phi-handling-guidelines) |
 
 Applicable endpoints:
 
@@ -678,19 +645,19 @@ Structured outputs are HIPAA eligible, but **PHI must not be included in JSON sc
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Citations" icon="book-bookmark" href="https://platform.claude.com/docs/en/build-with-claude/citations?sdk_languages=curl">
+  <Card title="Citations" icon="book-bookmark" href="https://platform.claude.com/docs/en/build-with-claude/citations?sdk_languages=cli">
     Have Claude cite its sources when answering questions about provided documents.
   </Card>
 
-  <Card title="Strict tool use" icon="check" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=curl">
+  <Card title="Strict tool use" icon="check" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=cli">
     Enforce JSON Schema compliance on Claude’s tool inputs with grammar-constrained sampling.
   </Card>
 
-  <Card title="Tool use with Claude" icon="wrench" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=curl">
+  <Card title="Tool use with Claude" icon="wrench" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli">
     Connect Claude to external tools and APIs. Learn where tools run and how the agentic loop works.
   </Card>
 
-  <Card title="Pricing" icon="calculator" href="https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=curl">
+  <Card title="Pricing" icon="calculator" href="https://platform.claude.com/docs/en/about-claude/pricing?sdk_languages=cli">
     Learn about Anthropic’s pricing structure for models and features.
   </Card>
 </CardGroup>
