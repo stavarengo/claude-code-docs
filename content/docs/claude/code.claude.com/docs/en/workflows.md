@@ -122,7 +122,17 @@ If the run does what you wanted, you can [save it as a command](#save-the-workfl
 
 #### Dismiss or turn off the keyword
 
-If you didn't mean to start a workflow, press `Option+W` on macOS or `Alt+W` on Windows and Linux to dismiss the highlight for this prompt, or press backspace while the cursor is right after the highlighted keyword. To stop the keyword from triggering at all, turn off Ultracode keyword trigger in `/config`.
+To use the word `ultracode` without asking for a workflow, skip the keyword for one prompt or turn the keyword off for every prompt:
+
+* **One prompt, as you type**: put the word in backticks.
+
+  For example, this prompt is a regular request to search your files:
+
+  ```text wrap theme={null}
+  find every file that mentions `ultracode`
+  ```
+* **One prompt, already highlighted in your terminal**: press Backspace right after the word, or press `Alt+W`. On macOS, that key is `Option+W` with [Option as Meta](./terminal-config.md#enable-option-key-shortcuts-on-macos).
+* **Every prompt**: turn off [**Ultracode keyword trigger**](./settings-reference.md#workflowkeywordtriggerenabled) in `/config`.
 
 #### Where the keyword works
 
@@ -223,7 +233,7 @@ The following prompt runs a saved workflow with a list of issue numbers:
 Run /triage-issues on issues 1024, 1025, and 1030
 ```
 
-Claude passes the list as structured data, so the script can call array and object methods on `args` directly without parsing it first. If `args` is omitted, the global is `undefined` inside the script.
+Claude passes the list as structured data, so the script can call array and object methods on `args` directly. If `args` is omitted, the global is `undefined` inside the script.
 
 ## Example workflow prompts
 
@@ -279,7 +289,9 @@ use a workflow to find flaky tests in this repo: run the suite repeatedly, recor
 
 ### What the saved script looks like
 
-When you [save a workflow](#save-the-workflow-for-reuse), the file in `.claude/workflows/` holds a `meta` block followed by a script body that orchestrates subagents. You usually don't need to edit it, but here is the shape of a small one so you can recognize what Claude generated:
+When you [save a workflow](#save-the-workflow-for-reuse), the file in `.claude/workflows/` holds a `meta` block followed by a script body that orchestrates subagents.
+
+Here is the shape of a small one so you can recognize what Claude generated:
 
 ```javascript theme={null}
 export const meta = {

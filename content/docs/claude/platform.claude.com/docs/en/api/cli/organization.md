@@ -51,6 +51,12 @@ ant organization retrieve
 
 ## Domain types
 
+### Change Outcome Unknown Error Details
+
+- `change_outcome_unknown_error_details: object`
+
+  - `error_code: "change_outcome_unknown"`
+
 ### Concurrent Membership Change Error Details
 
 - `concurrent_membership_change_error_details: object`
@@ -148,6 +154,18 @@ HTTP status 409
   - `details: object`
 
     - `error_code: "concurrent_membership_change"`
+
+### change_outcome_unknown
+
+HTTP status 503
+
+- `"change_outcome_unknown"`
+
+  Some of the request's changes may have been saved and others not. Send the same request again to finish it; changes already saved aren't repeated.
+
+  - `details: object`
+
+    - `error_code: "change_outcome_unknown"`
 
 ## Organization › API Keys
 
@@ -6333,6 +6351,10 @@ Each code below is the value of `error.details.error_code` in the response body.
 
   The external key changed while the request was validating it. Send the request again.
 
+- `workspace_created_incomplete` (HTTP status 503)
+
+  The Workspace was created, but some of what the request asked for did not take effect, or may not have. Don't send the create again. The error's `message` says what to do with the Workspace at `workspace_id`.
+
 #### Example
 
 ```bash
@@ -6698,6 +6720,10 @@ Each code below is the value of `error.details.error_code` in the response body.
 
   After this request, the External Key and the Workspace would not have the same user profile. A key and its Workspace must have the same user profile, or both have none.
 
+- `storage_profile_mismatch` (HTTP status 400)
+
+  The Workspace's storage and its user profile don't match: the Workspace and its storage must have the same user profile, or both have none.
+
 - `user_profile_not_found` (HTTP status 400)
 
   The request depends on a user profile that does not exist in the organization or is no longer active. The request either names this user profile by ID, or names a resource, such as an External Key, that is bound to it.
@@ -6713,6 +6739,10 @@ Each code below is the value of `error.details.error_code` in the response body.
 - `external_key_changed` (HTTP status 409)
 
   The external key changed while the request was validating it. Send the request again.
+
+- `change_outcome_unknown` (HTTP status 503)
+
+  Some of the request's changes may have been saved and others not. Send the same request again to finish it; changes already saved aren't repeated.
 
 #### Example
 
@@ -6866,6 +6896,10 @@ Each code below is the value of `error.details.error_code` in the response body.
 - `sandbox_egress_restricted` (HTTP status 403)
 
   The request came from a Claude sandbox with restricted network access, which is not allowed to make this request. Send it from outside the sandbox, or from a sandbox with unrestricted network access.
+
+- `storage_attached_during_archive` (HTTP status 409)
+
+  The Workspace was archived, but External Storage was attached to it during the archive and is still attached. To detach it, archive the Workspace again as a caller with the `org:external-storage:use` permission.
 
 #### Example
 

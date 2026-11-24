@@ -832,8 +832,8 @@ server.start
 If your application assigns a [safety identifier](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers)
 for each end user, include it as the `OpenAI-Safety-Identifier` header in this
 server-side request. Use a stable, privacy-preserving value, such as a hashed
-internal user ID. The header should be set by your trusted backend, not by the
-browser.
+internal user ID. Keep the identifier to 128 characters or fewer. The header
+should be set by your trusted backend, not by the browser.
 
 #### Connecting to the server
 
@@ -1021,9 +1021,10 @@ server.start
 You can create a server endpoint like this one on any platform that can send and receive HTTP requests. Just ensure that **you only use standard OpenAI API keys on the server, not in the browser.**
 
 When using ephemeral tokens, set `OpenAI-Safety-Identifier` on the server-side
-request that creates the client secret. The Realtime API binds the identifier to
-the resulting ephemeral token, so the browser does not need to send the safety
-identifier when it later connects with that token.
+request that creates the client secret. Keep the identifier to 128 characters or
+fewer. The Realtime API binds the identifier to the resulting ephemeral token,
+so the browser does not need to send the safety identifier when it later
+connects with that token.
 
 #### Connecting to the server
 

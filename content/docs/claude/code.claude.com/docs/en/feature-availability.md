@@ -52,6 +52,8 @@ These require signing in with a claude.ai account and are not reachable with an 
 * [Cloud scheduled tasks](./routines.md) (`/schedule`)
 * [Ultrareview](./ultrareview.md)
 * [Code Review](./code-review.md): Team and Enterprise plans
+* [PR Steward](./pr-steward.md): Team and Enterprise plans
+* [Claude Approvals](./approvals.md): Team and Enterprise plans
 * [Remote Control](./remote-control.md)
 * [Chrome extension](./chrome.md)
 * [Computer use](./computer-use.md): Pro, Max, and Ultra plans
@@ -347,6 +349,8 @@ In Enterprise organizations with the [HIPAA configuration](./hipaa-setup.md) app
 | [Computer use](./computer-use.md) | ✓ | ✓ | ✓ | ✗ | ✗ |
 | Dispatch ([Desktop](./desktop.md#sessions-from-dispatch)) | Not available to new users | Not available to new users | Not available to new users | ✗ | ✗ |
 | [Code Review](./code-review.md) | ✗ | ✗ | ✗ | ✓ | ✓ |
+| [PR Steward](./pr-steward.md) | ✗ | ✗ | ✗ | ✓ | ✓ |
+| [Claude Approvals](./approvals.md) | ✗ | ✗ | ✗ | ✓ | ✓ |
 | [Artifacts](./artifacts.md) | ✓ | ✓ | ✓ | ✓ | ✓ |
 | [Analytics dashboard and contribution metrics](./analytics.md) | ✗ | ✗ | ✗ | ✓ | ✓ |
 | [Enterprise Analytics API](./analytics.md#access-data-programmatically) | ✗ | ✗ | ✗ | ✗ | ✓ |

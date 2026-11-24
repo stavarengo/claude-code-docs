@@ -1,0 +1,1275 @@
+---
+title: External Keys
+url: https://platform.claude.com/docs/en/api/http/organization/external_keys
+---
+
+# External Keys
+
+## Create External Key
+
+**POST** `/v1/organizations/external_keys`
+
+Create an external key config owned by the caller's organization.
+
+### Headers
+
+- `"anthropic-version": optional string`
+
+  The version of the Claude API you want to use.
+
+  Read more about versioning and our version history [here](https://platform.claude.com/docs/en/api/versioning?sdk_languages=http).
+
+### Body parameters
+
+- `provider_config: AWSExternalKeyConfig or GCPExternalKeyConfig or AzureExternalKeyConfigParam`
+
+  KMS provider identity and auth coordinates.
+
+  - `AWSExternalKeyConfig object`
+
+    - `type: "aws"`
+
+    - `kms_arn: string`
+
+      Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key.
+
+      maxLength: 2048
+
+    - `region: optional string or null`
+
+      AWS region. Derived from `kms_arn` if omitted.
+
+    - `role_arn: optional string or null`
+
+      **Deprecated**
+
+      IAM role ARN. Deprecated; this field is ignored.
+
+  - `GCPExternalKeyConfig object`
+
+    - `type: "gcp"`
+
+    - `key_name: string`
+
+      Full resource name of the Cloud KMS key.
+
+  - `AzureExternalKeyConfigParam object`
+
+    Azure Key Vault provider configuration.
+
+    - `type: "azure"`
+
+    - `key_name: string`
+
+      Name of the key within the vault.
+
+    - `tenant_id: string`
+
+      Azure AD tenant ID.
+
+    - `vault_uri: string`
+
+      Key Vault data-plane URI — `https://{vault-name}.vault.azure.net` or `https://{hsm-name}.managedhsm.azure.net`.
+
+    - `client_id: optional string or null`
+
+      Azure AD application (client) ID. Omit to use Anthropic's multitenant app. Provide only if using a single-tenant app registration in the customer's directory.
+
+- `display_name: optional string or null`
+
+  Human-friendly display name.
+
+  minLength: 1, maxLength: 255
+
+- `geo: optional "us"`
+
+  Data residency geo. Only `us` is supported.
+
+- `user_profile_id: optional string or null`
+
+  ID of a user profile to bind the key to. A user profile represents one of your customers: bind a customer's key to that customer's user profile. A key bound to a user profile can only be attached to a Workspace that has the same user profile, and the binding cannot be changed later. Omit this field only for your organization's own key, never a customer's. A key created without a user profile ID can't be attached to a Workspace that has a user profile, and you can't add one to the key later.
+
+### Returns
+
+- `ExternalKey object`
+
+  CMEK external key config belonging to the caller's organization.
+
+  Configs are organization-scoped. Workspaces attach to a config; once any
+  workspace references it, the provider fields become effectively immutable
+  (existing encrypted data needs the config for decrypt).
+
+  - `type: "external_key"`
+
+    default: external_key
+
+  - `id: string`
+
+    Identifier of the external key config: a tagged ID prefixed `ekey_`, or, on Claude Platform on AWS, an AWS KMS key's ARN.
+
+  - `attachment: ExternalKeyAttachedAttachment or ExternalKeyUnattachedAttachment`
+
+    Whether any workspace uses this config to encrypt its data — counting live and archived workspaces (an archived workspace's data remains encrypted under the config), excluding deleted ones. Only an attached config is used by the encryption path; an `unattached` config is inert and can be deleted.
+
+    - `ExternalKeyAttachedAttachment object`
+
+      - `type: "attached"`
+
+        default: attached
+
+    - `ExternalKeyUnattachedAttachment object`
+
+      - `type: "unattached"`
+
+        default: unattached
+
+  - `created_at: string`
+
+    format: date-time
+
+  - `display_name: string or null`
+
+    Human-friendly display name. Null if none was set.
+
+  - `geo: string`
+
+    Data residency geo. Selects the region this key is used in.
+
+  - `provider_config: AWSExternalKeyConfig or GCPExternalKeyConfig or AzureExternalKeyConfig`
+
+    KMS provider identity and auth coordinates.
+
+    - `AWSExternalKeyConfig object`
+
+      - `type: "aws"`
+
+      - `kms_arn: string`
+
+        Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key.
+
+        maxLength: 2048
+
+      - `region: optional string or null`
+
+        AWS region. Derived from `kms_arn` if omitted.
+
+      - `role_arn: optional string or null`
+
+        **Deprecated**
+
+        IAM role ARN. Deprecated; this field is ignored.
+
+    - `GCPExternalKeyConfig object`
+
+      - `type: "gcp"`
+
+      - `key_name: string`
+
+        Full resource name of the Cloud KMS key.
+
+    - `AzureExternalKeyConfig object`
+
+      - `type: "azure"`
+
+      - `key_name: string`
+
+        Name of the key within the vault.
+
+      - `tenant_id: string`
+
+        Azure AD tenant ID.
+
+      - `vault_uri: string`
+
+        Key Vault data-plane URI — `https://{vault-name}.vault.azure.net` or `https://{hsm-name}.managedhsm.azure.net`.
+
+      - `client_id: optional string or null`
+
+        Azure AD application (client) ID. Omit to use Anthropic's multitenant app. Provide only if using a single-tenant app registration in the customer's directory.
+
+  - `updated_at: string`
+
+    format: date-time
+
+  - `user_profile_id: string or null`
+
+    ID of the user profile the key is bound to, or null if the key is not bound to one. A key bound to a user profile can only be attached to a Workspace that has the same user profile. A key that isn't bound can only be attached to a Workspace that has no user profile.
+
+### Errors
+
+Any method can also return the general [HTTP errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=http).
+
+Each code below is the value of `error.details.error_code` in the response body.
+
+- `user_profile_not_found` (HTTP status 400)
+
+  The request depends on a user profile that does not exist in the organization or is no longer active. The request either names this user profile by ID, or names a resource, such as an External Key, that is bound to it.
+
+- `sandbox_egress_restricted` (HTTP status 403)
+
+  The request came from a Claude sandbox with restricted network access, which is not allowed to make this request. Send it from outside the sandbox, or from a sandbox with unrestricted network access.
+
+### Example
+
+```bash
+curl https://api.anthropic.com/v1/organizations/external_keys \
+    -H 'Content-Type: application/json' \
+    -H 'anthropic-version: 2026-10-21' \
+    -H "Authorization: Bearer $ANTHROPIC_API_KEY" \
+    -d '{
+          "provider_config": {
+            "kms_arn": "arn:aws:kms:us-east-1:111122223333:key/abcd1234-5678-90ab-cdef-000011112222",
+            "type": "aws"
+          },
+          "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
+        }'
+```
+
+#### Response (200)
+
+```json
+{
+  "id": "ekey_01SDCCSbTxrXDpWc1phhtcfK",
+  "attachment": {
+    "type": "attached"
+  },
+  "created_at": "2024-10-30T23:58:27.427722Z",
+  "display_name": "prod-us-key",
+  "geo": "us",
+  "provider_config": {
+    "kms_arn": "arn:aws:kms:us-east-1:111122223333:key/abcd1234-5678-90ab-cdef-000011112222",
+    "type": "aws",
+    "region": "us-east-1",
+    "role_arn": "arn:aws:iam::111122223333:role/anthropic-cmek"
+  },
+  "type": "external_key",
+  "updated_at": "2024-10-30T23:58:27.427722Z",
+  "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
+}
+```
+
+## List External Keys
+
+**GET** `/v1/organizations/external_keys`
+
+List external key configs in the caller's organization.
+
+Results are ordered by creation time (newest first). Use the
+`next_page` cursor from the response to fetch subsequent pages.
+
+### Query parameters
+
+- `limit: optional number`
+
+  Number of results per page.
+
+  default: 20, minimum: 1, maximum: 100
+
+- `page: optional string`
+
+  Opaque cursor from a previous response's `next_page`.
+
+### Headers
+
+- `"anthropic-version": optional string`
+
+  The version of the Claude API you want to use.
+
+  Read more about versioning and our version history [here](https://platform.claude.com/docs/en/api/versioning?sdk_languages=http).
+
+### Returns
+
+- `data: array of ExternalKey`
+
+  - `type: "external_key"`
+
+    default: external_key
+
+  - `id: string`
+
+    Identifier of the external key config: a tagged ID prefixed `ekey_`, or, on Claude Platform on AWS, an AWS KMS key's ARN.
+
+  - `attachment: ExternalKeyAttachedAttachment or ExternalKeyUnattachedAttachment`
+
+    Whether any workspace uses this config to encrypt its data — counting live and archived workspaces (an archived workspace's data remains encrypted under the config), excluding deleted ones. Only an attached config is used by the encryption path; an `unattached` config is inert and can be deleted.
+
+    - `ExternalKeyAttachedAttachment object`
+
+      - `type: "attached"`
+
+        default: attached
+
+    - `ExternalKeyUnattachedAttachment object`
+
+      - `type: "unattached"`
+
+        default: unattached
+
+  - `created_at: string`
+
+    format: date-time
+
+  - `display_name: string or null`
+
+    Human-friendly display name. Null if none was set.
+
+  - `geo: string`
+
+    Data residency geo. Selects the region this key is used in.
+
+  - `provider_config: AWSExternalKeyConfig or GCPExternalKeyConfig or AzureExternalKeyConfig`
+
+    KMS provider identity and auth coordinates.
+
+    - `AWSExternalKeyConfig object`
+
+      - `type: "aws"`
+
+      - `kms_arn: string`
+
+        Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key.
+
+        maxLength: 2048
+
+      - `region: optional string or null`
+
+        AWS region. Derived from `kms_arn` if omitted.
+
+      - `role_arn: optional string or null`
+
+        **Deprecated**
+
+        IAM role ARN. Deprecated; this field is ignored.
+
+    - `GCPExternalKeyConfig object`
+
+      - `type: "gcp"`
+
+      - `key_name: string`
+
+        Full resource name of the Cloud KMS key.
+
+    - `AzureExternalKeyConfig object`
+
+      - `type: "azure"`
+
+      - `key_name: string`
+
+        Name of the key within the vault.
+
+      - `tenant_id: string`
+
+        Azure AD tenant ID.
+
+      - `vault_uri: string`
+
+        Key Vault data-plane URI — `https://{vault-name}.vault.azure.net` or `https://{hsm-name}.managedhsm.azure.net`.
+
+      - `client_id: optional string or null`
+
+        Azure AD application (client) ID. Omit to use Anthropic's multitenant app. Provide only if using a single-tenant app registration in the customer's directory.
+
+  - `updated_at: string`
+
+    format: date-time
+
+  - `user_profile_id: string or null`
+
+    ID of the user profile the key is bound to, or null if the key is not bound to one. A key bound to a user profile can only be attached to a Workspace that has the same user profile. A key that isn't bound can only be attached to a Workspace that has no user profile.
+
+- `next_page: string or null`
+
+  Opaque cursor for the next page, or null if no more results. Pass as `?page=` to fetch the next page.
+
+### Example
+
+```bash
+curl https://api.anthropic.com/v1/organizations/external_keys \
+    -H 'anthropic-version: 2026-10-21' \
+    -H "Authorization: Bearer $ANTHROPIC_API_KEY"
+```
+
+#### Response (200)
+
+```json
+{
+  "data": [
+    {
+      "id": "ekey_01SDCCSbTxrXDpWc1phhtcfK",
+      "attachment": {
+        "type": "attached"
+      },
+      "created_at": "2024-10-30T23:58:27.427722Z",
+      "display_name": "prod-us-key",
+      "geo": "us",
+      "provider_config": {
+        "kms_arn": "arn:aws:kms:us-east-1:111122223333:key/abcd1234-5678-90ab-cdef-000011112222",
+        "type": "aws",
+        "region": "us-east-1",
+        "role_arn": "arn:aws:iam::111122223333:role/anthropic-cmek"
+      },
+      "type": "external_key",
+      "updated_at": "2024-10-30T23:58:27.427722Z",
+      "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
+    }
+  ],
+  "next_page": "next_page"
+}
+```
+
+## Get External Key
+
+**GET** `/v1/organizations/external_keys/{external_key_id}`
+
+Retrieve a single external key config in the caller's organization by ID.
+
+### Path parameters
+
+- `external_key_id: string`
+
+  ID of the External Key.
+
+  maxLength: 2048
+
+### Headers
+
+- `"anthropic-version": optional string`
+
+  The version of the Claude API you want to use.
+
+  Read more about versioning and our version history [here](https://platform.claude.com/docs/en/api/versioning?sdk_languages=http).
+
+### Returns
+
+- `ExternalKey object`
+
+  CMEK external key config belonging to the caller's organization.
+
+  Configs are organization-scoped. Workspaces attach to a config; once any
+  workspace references it, the provider fields become effectively immutable
+  (existing encrypted data needs the config for decrypt).
+
+  - `type: "external_key"`
+
+    default: external_key
+
+  - `id: string`
+
+    Identifier of the external key config: a tagged ID prefixed `ekey_`, or, on Claude Platform on AWS, an AWS KMS key's ARN.
+
+  - `attachment: ExternalKeyAttachedAttachment or ExternalKeyUnattachedAttachment`
+
+    Whether any workspace uses this config to encrypt its data — counting live and archived workspaces (an archived workspace's data remains encrypted under the config), excluding deleted ones. Only an attached config is used by the encryption path; an `unattached` config is inert and can be deleted.
+
+    - `ExternalKeyAttachedAttachment object`
+
+      - `type: "attached"`
+
+        default: attached
+
+    - `ExternalKeyUnattachedAttachment object`
+
+      - `type: "unattached"`
+
+        default: unattached
+
+  - `created_at: string`
+
+    format: date-time
+
+  - `display_name: string or null`
+
+    Human-friendly display name. Null if none was set.
+
+  - `geo: string`
+
+    Data residency geo. Selects the region this key is used in.
+
+  - `provider_config: AWSExternalKeyConfig or GCPExternalKeyConfig or AzureExternalKeyConfig`
+
+    KMS provider identity and auth coordinates.
+
+    - `AWSExternalKeyConfig object`
+
+      - `type: "aws"`
+
+      - `kms_arn: string`
+
+        Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key.
+
+        maxLength: 2048
+
+      - `region: optional string or null`
+
+        AWS region. Derived from `kms_arn` if omitted.
+
+      - `role_arn: optional string or null`
+
+        **Deprecated**
+
+        IAM role ARN. Deprecated; this field is ignored.
+
+    - `GCPExternalKeyConfig object`
+
+      - `type: "gcp"`
+
+      - `key_name: string`
+
+        Full resource name of the Cloud KMS key.
+
+    - `AzureExternalKeyConfig object`
+
+      - `type: "azure"`
+
+      - `key_name: string`
+
+        Name of the key within the vault.
+
+      - `tenant_id: string`
+
+        Azure AD tenant ID.
+
+      - `vault_uri: string`
+
+        Key Vault data-plane URI — `https://{vault-name}.vault.azure.net` or `https://{hsm-name}.managedhsm.azure.net`.
+
+      - `client_id: optional string or null`
+
+        Azure AD application (client) ID. Omit to use Anthropic's multitenant app. Provide only if using a single-tenant app registration in the customer's directory.
+
+  - `updated_at: string`
+
+    format: date-time
+
+  - `user_profile_id: string or null`
+
+    ID of the user profile the key is bound to, or null if the key is not bound to one. A key bound to a user profile can only be attached to a Workspace that has the same user profile. A key that isn't bound can only be attached to a Workspace that has no user profile.
+
+### Example
+
+```bash
+curl https://api.anthropic.com/v1/organizations/external_keys/$EXTERNAL_KEY_ID \
+    -H 'anthropic-version: 2026-10-21' \
+    -H "Authorization: Bearer $ANTHROPIC_API_KEY"
+```
+
+#### Response (200)
+
+```json
+{
+  "id": "ekey_01SDCCSbTxrXDpWc1phhtcfK",
+  "attachment": {
+    "type": "attached"
+  },
+  "created_at": "2024-10-30T23:58:27.427722Z",
+  "display_name": "prod-us-key",
+  "geo": "us",
+  "provider_config": {
+    "kms_arn": "arn:aws:kms:us-east-1:111122223333:key/abcd1234-5678-90ab-cdef-000011112222",
+    "type": "aws",
+    "region": "us-east-1",
+    "role_arn": "arn:aws:iam::111122223333:role/anthropic-cmek"
+  },
+  "type": "external_key",
+  "updated_at": "2024-10-30T23:58:27.427722Z",
+  "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
+}
+```
+
+## Update External Key
+
+**POST** `/v1/organizations/external_keys/{external_key_id}`
+
+Partially update an external key config. Omitted fields are left unchanged.
+
+`display_name` is always editable. `geo` and `provider_config` cannot
+be changed once any workspace references this config, and a Google Cloud
+key's provider and `key_name` cannot be changed at all.
+
+### Path parameters
+
+- `external_key_id: string`
+
+  ID of the External Key.
+
+  maxLength: 2048
+
+### Headers
+
+- `"anthropic-version": optional string`
+
+  The version of the Claude API you want to use.
+
+  Read more about versioning and our version history [here](https://platform.claude.com/docs/en/api/versioning?sdk_languages=http).
+
+### Body parameters
+
+- `display_name: optional string or null`
+
+  Human-friendly display name.
+
+  minLength: 1, maxLength: 255
+
+- `geo: optional "us" or null`
+
+  Data residency geo. Only `us` is supported.
+
+- `provider_config: optional AWSExternalKeyConfig or GCPExternalKeyConfig or AzureExternalKeyConfigParam or null`
+
+  KMS provider identity and auth coordinates.
+
+  - `AWSExternalKeyConfig object`
+
+    - `type: "aws"`
+
+    - `kms_arn: string`
+
+      Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key.
+
+      maxLength: 2048
+
+    - `region: optional string or null`
+
+      AWS region. Derived from `kms_arn` if omitted.
+
+    - `role_arn: optional string or null`
+
+      **Deprecated**
+
+      IAM role ARN. Deprecated; this field is ignored.
+
+  - `GCPExternalKeyConfig object`
+
+    - `type: "gcp"`
+
+    - `key_name: string`
+
+      Full resource name of the Cloud KMS key.
+
+  - `AzureExternalKeyConfigParam object`
+
+    Azure Key Vault provider configuration.
+
+    - `type: "azure"`
+
+    - `key_name: string`
+
+      Name of the key within the vault.
+
+    - `tenant_id: string`
+
+      Azure AD tenant ID.
+
+    - `vault_uri: string`
+
+      Key Vault data-plane URI — `https://{vault-name}.vault.azure.net` or `https://{hsm-name}.managedhsm.azure.net`.
+
+    - `client_id: optional string or null`
+
+      Azure AD application (client) ID. Omit to use Anthropic's multitenant app. Provide only if using a single-tenant app registration in the customer's directory.
+
+### Returns
+
+- `ExternalKey object`
+
+  CMEK external key config belonging to the caller's organization.
+
+  Configs are organization-scoped. Workspaces attach to a config; once any
+  workspace references it, the provider fields become effectively immutable
+  (existing encrypted data needs the config for decrypt).
+
+  - `type: "external_key"`
+
+    default: external_key
+
+  - `id: string`
+
+    Identifier of the external key config: a tagged ID prefixed `ekey_`, or, on Claude Platform on AWS, an AWS KMS key's ARN.
+
+  - `attachment: ExternalKeyAttachedAttachment or ExternalKeyUnattachedAttachment`
+
+    Whether any workspace uses this config to encrypt its data — counting live and archived workspaces (an archived workspace's data remains encrypted under the config), excluding deleted ones. Only an attached config is used by the encryption path; an `unattached` config is inert and can be deleted.
+
+    - `ExternalKeyAttachedAttachment object`
+
+      - `type: "attached"`
+
+        default: attached
+
+    - `ExternalKeyUnattachedAttachment object`
+
+      - `type: "unattached"`
+
+        default: unattached
+
+  - `created_at: string`
+
+    format: date-time
+
+  - `display_name: string or null`
+
+    Human-friendly display name. Null if none was set.
+
+  - `geo: string`
+
+    Data residency geo. Selects the region this key is used in.
+
+  - `provider_config: AWSExternalKeyConfig or GCPExternalKeyConfig or AzureExternalKeyConfig`
+
+    KMS provider identity and auth coordinates.
+
+    - `AWSExternalKeyConfig object`
+
+      - `type: "aws"`
+
+      - `kms_arn: string`
+
+        Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key.
+
+        maxLength: 2048
+
+      - `region: optional string or null`
+
+        AWS region. Derived from `kms_arn` if omitted.
+
+      - `role_arn: optional string or null`
+
+        **Deprecated**
+
+        IAM role ARN. Deprecated; this field is ignored.
+
+    - `GCPExternalKeyConfig object`
+
+      - `type: "gcp"`
+
+      - `key_name: string`
+
+        Full resource name of the Cloud KMS key.
+
+    - `AzureExternalKeyConfig object`
+
+      - `type: "azure"`
+
+      - `key_name: string`
+
+        Name of the key within the vault.
+
+      - `tenant_id: string`
+
+        Azure AD tenant ID.
+
+      - `vault_uri: string`
+
+        Key Vault data-plane URI — `https://{vault-name}.vault.azure.net` or `https://{hsm-name}.managedhsm.azure.net`.
+
+      - `client_id: optional string or null`
+
+        Azure AD application (client) ID. Omit to use Anthropic's multitenant app. Provide only if using a single-tenant app registration in the customer's directory.
+
+  - `updated_at: string`
+
+    format: date-time
+
+  - `user_profile_id: string or null`
+
+    ID of the user profile the key is bound to, or null if the key is not bound to one. A key bound to a user profile can only be attached to a Workspace that has the same user profile. A key that isn't bound can only be attached to a Workspace that has no user profile.
+
+### Errors
+
+Any method can also return the general [HTTP errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=http).
+
+Each code below is the value of `error.details.error_code` in the response body.
+
+- `external_key_in_workspace_policy` (HTTP status 400)
+
+  The External Key can't be deleted or reconfigured while the organization's Workspace Policy lists it as an allowed key.
+
+- `sandbox_egress_restricted` (HTTP status 403)
+
+  The request came from a Claude sandbox with restricted network access, which is not allowed to make this request. Send it from outside the sandbox, or from a sandbox with unrestricted network access.
+
+### Example
+
+```bash
+curl https://api.anthropic.com/v1/organizations/external_keys/$EXTERNAL_KEY_ID \
+    -H 'Content-Type: application/json' \
+    -H 'anthropic-version: 2026-10-21' \
+    -H "Authorization: Bearer $ANTHROPIC_API_KEY" \
+    -d '{}'
+```
+
+#### Response (200)
+
+```json
+{
+  "id": "ekey_01SDCCSbTxrXDpWc1phhtcfK",
+  "attachment": {
+    "type": "attached"
+  },
+  "created_at": "2024-10-30T23:58:27.427722Z",
+  "display_name": "prod-us-key",
+  "geo": "us",
+  "provider_config": {
+    "kms_arn": "arn:aws:kms:us-east-1:111122223333:key/abcd1234-5678-90ab-cdef-000011112222",
+    "type": "aws",
+    "region": "us-east-1",
+    "role_arn": "arn:aws:iam::111122223333:role/anthropic-cmek"
+  },
+  "type": "external_key",
+  "updated_at": "2024-10-30T23:58:27.427722Z",
+  "user_profile_id": "uprof_01SDCCSbTxrXDpWc1phhtcfK"
+}
+```
+
+## Delete External Key
+
+**DELETE** `/v1/organizations/external_keys/{external_key_id}`
+
+Delete an external key config.
+
+The request is rejected if any workspace still references this config.
+
+### Path parameters
+
+- `external_key_id: string`
+
+  ID of the External Key.
+
+  maxLength: 2048
+
+### Headers
+
+- `"anthropic-version": optional string`
+
+  The version of the Claude API you want to use.
+
+  Read more about versioning and our version history [here](https://platform.claude.com/docs/en/api/versioning?sdk_languages=http).
+
+### Returns
+
+- `type: "external_key_deleted"`
+
+  default: external_key_deleted
+
+- `id: string`
+
+  ID of the deleted External Key.
+
+### Errors
+
+Any method can also return the general [HTTP errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=http).
+
+Each code below is the value of `error.details.error_code` in the response body.
+
+- `external_key_in_workspace_policy` (HTTP status 400)
+
+  The External Key can't be deleted or reconfigured while the organization's Workspace Policy lists it as an allowed key.
+
+- `sandbox_egress_restricted` (HTTP status 403)
+
+  The request came from a Claude sandbox with restricted network access, which is not allowed to make this request. Send it from outside the sandbox, or from a sandbox with unrestricted network access.
+
+### Example
+
+```bash
+curl https://api.anthropic.com/v1/organizations/external_keys/$EXTERNAL_KEY_ID \
+    -X DELETE \
+    -H 'anthropic-version: 2026-10-21' \
+    -H "Authorization: Bearer $ANTHROPIC_API_KEY"
+```
+
+#### Response (200)
+
+```json
+{
+  "id": "ekey_01AbCdEfGhIjKlMnOpQrStUv",
+  "type": "external_key_deleted"
+}
+```
+
+## Validate External Key
+
+**POST** `/v1/organizations/external_keys/{external_key_id}/validate`
+
+Validate an external key config against the customer's KMS.
+
+Anthropic performs an encrypt/decrypt roundtrip against the configured
+KMS key and waits up to 30 seconds for the result. The response status is
+`success` if the roundtrip succeeded, or `failure` with an error
+message if it failed or timed out.
+
+### Path parameters
+
+- `external_key_id: string`
+
+  ID of the External Key.
+
+  maxLength: 2048
+
+### Headers
+
+- `"anthropic-version": optional string`
+
+  The version of the Claude API you want to use.
+
+  Read more about versioning and our version history [here](https://platform.claude.com/docs/en/api/versioning?sdk_languages=http).
+
+### Returns
+
+- `type: "external_key_validation"`
+
+  default: external_key_validation
+
+- `error: string or null`
+
+  Error message when status is `failure`. Null otherwise.
+
+- `status: "failure" or "success"`
+
+  `success` — encrypt/decrypt roundtrip succeeded. `failure` — the roundtrip failed or timed out; see `error`.
+
+  - `"failure"`
+
+  - `"success"`
+
+### Errors
+
+Any method can also return the general [HTTP errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=http).
+
+Each code below is the value of `error.details.error_code` in the response body.
+
+- `sandbox_egress_restricted` (HTTP status 403)
+
+  The request came from a Claude sandbox with restricted network access, which is not allowed to make this request. Send it from outside the sandbox, or from a sandbox with unrestricted network access.
+
+### Example
+
+```bash
+curl https://api.anthropic.com/v1/organizations/external_keys/$EXTERNAL_KEY_ID/validate \
+    -X POST \
+    -H 'anthropic-version: 2026-10-21' \
+    -H "Authorization: Bearer $ANTHROPIC_API_KEY"
+```
+
+#### Response (200)
+
+```json
+{
+  "error": "error",
+  "status": "failure",
+  "type": "external_key_validation"
+}
+```
+
+## Domain types
+
+### AWS External Key Config
+
+- `AWSExternalKeyConfig object`
+
+  - `type: "aws"`
+
+  - `kms_arn: string`
+
+    Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key.
+
+    maxLength: 2048
+
+  - `region: optional string or null`
+
+    AWS region. Derived from `kms_arn` if omitted.
+
+  - `role_arn: optional string or null`
+
+    **Deprecated**
+
+    IAM role ARN. Deprecated; this field is ignored.
+
+### Azure External Key Config
+
+- `AzureExternalKeyConfig object`
+
+  - `type: "azure"`
+
+  - `key_name: string`
+
+    Name of the key within the vault.
+
+  - `tenant_id: string`
+
+    Azure AD tenant ID.
+
+  - `vault_uri: string`
+
+    Key Vault data-plane URI — `https://{vault-name}.vault.azure.net` or `https://{hsm-name}.managedhsm.azure.net`.
+
+  - `client_id: optional string or null`
+
+    Azure AD application (client) ID. Omit to use Anthropic's multitenant app. Provide only if using a single-tenant app registration in the customer's directory.
+
+### Azure External Key Config Param
+
+- `AzureExternalKeyConfigParam object`
+
+  Azure Key Vault provider configuration.
+
+  - `type: "azure"`
+
+  - `key_name: string`
+
+    Name of the key within the vault.
+
+  - `tenant_id: string`
+
+    Azure AD tenant ID.
+
+  - `vault_uri: string`
+
+    Key Vault data-plane URI — `https://{vault-name}.vault.azure.net` or `https://{hsm-name}.managedhsm.azure.net`.
+
+  - `client_id: optional string or null`
+
+    Azure AD application (client) ID. Omit to use Anthropic's multitenant app. Provide only if using a single-tenant app registration in the customer's directory.
+
+### External Key
+
+- `ExternalKey object`
+
+  CMEK external key config belonging to the caller's organization.
+
+  Configs are organization-scoped. Workspaces attach to a config; once any
+  workspace references it, the provider fields become effectively immutable
+  (existing encrypted data needs the config for decrypt).
+
+  - `type: "external_key"`
+
+    default: external_key
+
+  - `id: string`
+
+    Identifier of the external key config: a tagged ID prefixed `ekey_`, or, on Claude Platform on AWS, an AWS KMS key's ARN.
+
+  - `attachment: ExternalKeyAttachedAttachment or ExternalKeyUnattachedAttachment`
+
+    Whether any workspace uses this config to encrypt its data — counting live and archived workspaces (an archived workspace's data remains encrypted under the config), excluding deleted ones. Only an attached config is used by the encryption path; an `unattached` config is inert and can be deleted.
+
+    - `ExternalKeyAttachedAttachment object`
+
+      - `type: "attached"`
+
+        default: attached
+
+    - `ExternalKeyUnattachedAttachment object`
+
+      - `type: "unattached"`
+
+        default: unattached
+
+  - `created_at: string`
+
+    format: date-time
+
+  - `display_name: string or null`
+
+    Human-friendly display name. Null if none was set.
+
+  - `geo: string`
+
+    Data residency geo. Selects the region this key is used in.
+
+  - `provider_config: AWSExternalKeyConfig or GCPExternalKeyConfig or AzureExternalKeyConfig`
+
+    KMS provider identity and auth coordinates.
+
+    - `AWSExternalKeyConfig object`
+
+      - `type: "aws"`
+
+      - `kms_arn: string`
+
+        Full ARN of the AWS KMS key. On Claude Platform on AWS, alias ARNs are rejected, and your organization's own key must be a single-Region key.
+
+        maxLength: 2048
+
+      - `region: optional string or null`
+
+        AWS region. Derived from `kms_arn` if omitted.
+
+      - `role_arn: optional string or null`
+
+        **Deprecated**
+
+        IAM role ARN. Deprecated; this field is ignored.
+
+    - `GCPExternalKeyConfig object`
+
+      - `type: "gcp"`
+
+      - `key_name: string`
+
+        Full resource name of the Cloud KMS key.
+
+    - `AzureExternalKeyConfig object`
+
+      - `type: "azure"`
+
+      - `key_name: string`
+
+        Name of the key within the vault.
+
+      - `tenant_id: string`
+
+        Azure AD tenant ID.
+
+      - `vault_uri: string`
+
+        Key Vault data-plane URI — `https://{vault-name}.vault.azure.net` or `https://{hsm-name}.managedhsm.azure.net`.
+
+      - `client_id: optional string or null`
+
+        Azure AD application (client) ID. Omit to use Anthropic's multitenant app. Provide only if using a single-tenant app registration in the customer's directory.
+
+  - `updated_at: string`
+
+    format: date-time
+
+  - `user_profile_id: string or null`
+
+    ID of the user profile the key is bound to, or null if the key is not bound to one. A key bound to a user profile can only be attached to a Workspace that has the same user profile. A key that isn't bound can only be attached to a Workspace that has no user profile.
+
+### External Key Attached Attachment
+
+- `ExternalKeyAttachedAttachment object`
+
+  - `type: "attached"`
+
+    default: attached
+
+### External Key Changed Error Details
+
+- `ExternalKeyChangedErrorDetails object`
+
+  - `error_code: "external_key_changed"`
+
+### External Key In Workspace Policy Error Details
+
+- `ExternalKeyInWorkspacePolicyErrorDetails object`
+
+  - `error_code: "external_key_in_workspace_policy"`
+
+### External Key Unattached Attachment
+
+- `ExternalKeyUnattachedAttachment object`
+
+  - `type: "unattached"`
+
+    default: unattached
+
+### External Key Validation Failed Error Details
+
+- `ExternalKeyValidationFailedErrorDetails object`
+
+  - `error_code: "external_key_validation_failed"`
+
+### External Key Validation Timed Out Error Details
+
+- `ExternalKeyValidationTimedOutErrorDetails object`
+
+  - `error_code: "external_key_validation_timed_out"`
+
+### GCP External Key Config
+
+- `GCPExternalKeyConfig object`
+
+  - `type: "gcp"`
+
+  - `key_name: string`
+
+    Full resource name of the Cloud KMS key.
+
+### External Key Delete Response
+
+- `ExternalKeyDeleteResponse object`
+
+  - `type: "external_key_deleted"`
+
+    default: external_key_deleted
+
+  - `id: string`
+
+    ID of the deleted External Key.
+
+### External Key Validate Response
+
+- `ExternalKeyValidateResponse object`
+
+  Result of a validation roundtrip against the customer's KMS.
+
+  HTTP 200 for both outcomes — the operation completed; `status` says
+  whether the key works.
+
+  - `type: "external_key_validation"`
+
+    default: external_key_validation
+
+  - `error: string or null`
+
+    Error message when status is `failure`. Null otherwise.
+
+  - `status: "failure" or "success"`
+
+    `success` — encrypt/decrypt roundtrip succeeded. `failure` — the roundtrip failed or timed out; see `error`.
+
+    - `"failure"`
+
+    - `"success"`
+
+## Errors
+
+### external_key_in_workspace_policy
+
+HTTP status 400
+
+- `"external_key_in_workspace_policy"`
+
+  The External Key can't be deleted or reconfigured while the organization's Workspace Policy lists it as an allowed key.
+
+  - `details: ExternalKeyInWorkspacePolicyErrorDetails`
+
+    - `error_code: "external_key_in_workspace_policy"`
+
+### external_key_validation_failed
+
+HTTP status 400
+
+- `"external_key_validation_failed"`
+
+  The External Key failed Anthropic's validation, so the request was refused. The message gives the reason, if there is one.
+
+  - `details: ExternalKeyValidationFailedErrorDetails`
+
+    - `error_code: "external_key_validation_failed"`
+
+### external_key_validation_timed_out
+
+HTTP status 400
+
+- `"external_key_validation_timed_out"`
+
+  Anthropic's validation of the External Key did not finish in time, so the request was refused. Wait a moment, then send the request again.
+
+  - `details: ExternalKeyValidationTimedOutErrorDetails`
+
+    - `error_code: "external_key_validation_timed_out"`
+
+### external_key_changed
+
+HTTP status 409
+
+- `"external_key_changed"`
+
+  The external key changed while the request was validating it. Send the request again.
+
+  - `details: ExternalKeyChangedErrorDetails`
+
+    - `error_code: "external_key_changed"`

@@ -32,10 +32,10 @@ featureMetadata:
     Claude Models on Google Cloud (Anthropic managed): stable
     Microsoft Foundry (hosted on Anthropic): stable
   details:
-    - Programmatic tool calling requires the code execution tool with the `code_execution_20260120` or later [tool version](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli#tool-versions).
+    - Programmatic tool calling requires the code execution tool with the `code_execution_20260120` or later [tool version](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl#tool-versions).
 ---
 
-Programmatic tool calling allows Claude to write code that calls your tools programmatically within a [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli) container, rather than requiring round trips through the model for each tool call. This reduces latency for multi-tool workflows and decreases token consumption by allowing Claude to filter or process data before it reaches the model’s context window. On agentic search benchmarks such as [BrowseComp](https://arxiv.org/abs/2504.12516) and [DeepSearchQA](https://github.com/google-deepmind/deepsearchqa), which test multistep web research and complex information retrieval, adding programmatic tool calling on top of basic search tools improved performance by an average of 11 percent while using 24 percent fewer input tokens (see [Improved web search with dynamic filtering](https://claude.com/blog/improved-web-search-with-dynamic-filtering)).
+Programmatic tool calling allows Claude to write code that calls your tools programmatically within a [code execution](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl) container, rather than requiring round trips through the model for each tool call. This reduces latency for multi-tool workflows and decreases token consumption by allowing Claude to filter or process data before it reaches the model’s context window. On agentic search benchmarks such as [BrowseComp](https://arxiv.org/abs/2504.12516) and [DeepSearchQA](https://github.com/google-deepmind/deepsearchqa), which test multistep web research and complex information retrieval, adding programmatic tool calling on top of basic search tools improved performance by an average of 11 percent while using 24 percent fewer input tokens (see [Improved web search with dynamic filtering](https://claude.com/blog/improved-web-search-with-dynamic-filtering)).
 
 Consider checking budget compliance across 20 employees: the traditional approach requires 20 separate model round-trips, pulling thousands of expense line items into the context along the way. With programmatic tool calling, a single script runs all 20 lookups, filters the results, and returns only the employees who exceeded their limits, shrinking what Claude needs to reason over from hundreds of kilobytes down to a few lines.
 
@@ -43,44 +43,53 @@ Consider checking budget compliance across 20 employees: the traditional approac
   For a deeper look at the inference and context costs that programmatic tool calling addresses, see [Advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use).
 </Tip>
 
-Programmatic tool calling requires the [code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli) with tool version `code_execution_20260120` or later. Claude Haiku 4.5 accepts the `code_execution_20260120` and later tool versions but doesn’t support programmatic tool calling. To check whether a model supports programmatic tool calling before you send a request, read its `capabilities.code_execution.supported` value from the Models API. [Using the Models API](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli#using-the-models-api) describes the field.
+Programmatic tool calling requires the [code execution tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl) with tool version `code_execution_20260120` or later. Claude Haiku 4.5 accepts the `code_execution_20260120` and later tool versions but doesn’t support programmatic tool calling. To check whether a model supports programmatic tool calling before you send a request, read its `capabilities.code_execution.supported` value from the Models API. [Using the Models API](https://platform.claude.com/docs/en/models/overview?sdk_languages=curl#using-the-models-api) describes the field.
 
 ## Quick start
 
-Here’s an example where Claude programmatically queries a database multiple times and aggregates results. Adding `allowed_callers: ["code_execution_20260120"]` to a tool definition is what makes that tool callable from within code execution (see [The `allowed_callers` field](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#the-allowed-callers-field)):
+Here’s an example where Claude programmatically queries a database multiple times and aggregates results. Adding `allowed_callers: ["code_execution_20260120"]` to a tool definition is what makes that tool callable from within code execution (see [The `allowed_callers` field](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=curl#the-allowed-callers-field)):
 
 <CodeGroup>
-  ```bash CLI
-  ant messages create <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 4096
-  messages:
-    - role: user
-      content: >-
-        Query sales data for the West, East, and Central regions, then
-        tell me which region had the highest revenue
-  tools:
-    - type: code_execution_20260120
-      name: code_execution
-    - name: query_database
-      description: >-
-        Execute a SQL query against the sales database. Returns a list
-        of rows as JSON objects.
-      input_schema:
-        type: object
-        properties:
-          sql:
-            type: string
-            description: SQL query to execute
-        required:
-          - sql
-      allowed_callers:
-        - code_execution_20260120
-  YAML
+  ```bash cURL
+  curl https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2026-10-21" \
+    -H "content-type: application/json" \
+    -d '{
+      "model": "claude-opus-5-5",
+      "max_tokens": 4096,
+      "messages": [
+        {
+          "role": "user",
+          "content": "Query sales data for the West, East, and Central regions, then tell me which region had the highest revenue"
+        }
+      ],
+      "tools": [
+        {
+          "type": "code_execution_20260120",
+          "name": "code_execution"
+        },
+        {
+          "name": "query_database",
+          "description": "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "sql": {
+                "type": "string",
+                "description": "SQL query to execute"
+              }
+            },
+            "required": ["sql"]
+          },
+          "allowed_callers": ["code_execution_20260120"]
+        }
+      ]
+    }'
   ```
 </CodeGroup>
 
-The response stops with `stop_reason: "tool_use"`, a `container` ID, and a `tool_use` block for `query_database` whose `caller` field identifies the code execution run that called it. Return the result as shown in [Step 3 of the example workflow](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#step-3-provide-tool-result) so the code can complete.
+The response stops with `stop_reason: "tool_use"`, a `container` ID, and a `tool_use` block for `query_database` whose `caller` field identifies the code execution run that called it. Return the result as shown in [Step 3 of the example workflow](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=curl#step-3-provide-tool-result) so the code can complete.
 
 ## How programmatic tool calling works
 
@@ -178,7 +187,7 @@ Programmatic tool calling uses the same containers as code execution:
 * **Expiration:** Containers expire 30 days after creation. After about 5 minutes of inactivity a container is checkpointed, and sending a request with its ID inside the 30-day window restores it. The `expires_at` timestamp is a shorter rolling value and doesn’t report the 30-day limit.
 
 <Warning>
-  While Claude’s code is waiting for a programmatic tool result, the pending call times out after about 4 minutes and raises a `TimeoutError` inside the code. That time starts when Claude’s code makes the call, before the paused response reaches you. The `expires_at` timestamp on the paused response falls after the call times out, so it isn’t your deadline. See [Container expiration during tool call](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#container-expiration-during-tool-call).
+  While Claude’s code is waiting for a programmatic tool result, the pending call times out after about 4 minutes and raises a `TimeoutError` inside the code. That time starts when Claude’s code makes the call, before the paused response reaches you. The `expires_at` timestamp on the paused response falls after the call times out, so it isn’t your deadline. See [Container expiration during tool call](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=curl#container-expiration-during-tool-call).
 </Warning>
 
 ## Example workflow
@@ -193,7 +202,7 @@ Send a request with code execution and a tool that allows programmatic calling. 
   Provide detailed descriptions of your tool’s output format in the tool description. If you specify that the tool returns JSON, Claude attempts to deserialize and process the result in code. The more detail you provide about the output schema, the better Claude can handle the response programmatically.
 </Note>
 
-The request shape is identical to the [Quick start](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#quick-start) example: include `code_execution` in your tools list, add `allowed_callers: ["code_execution_20260120"]` to any tool you want Claude to call from code, and send your user message. The remaining steps in this workflow use the user message `"Query customer purchase history from the last quarter and identify our top 5 customers by revenue"`.
+The request shape is identical to the [Quick start](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=curl#quick-start) example: include `code_execution` in your tools list, add `allowed_callers: ["code_execution_20260120"]` to any tool you want Claude to call from code, and send your user message. The remaining steps in this workflow use the user message `"Query customer purchase history from the last quarter and identify our top 5 customers by revenue"`.
 
 ### Step 2: API response with tool call
 
@@ -238,64 +247,83 @@ Claude writes code that calls your tool. The API pauses and returns:
 
 Send the full conversation history plus your tool result. Three details matter on this request:
 
-* The user message that carries your result can contain only `tool_result` blocks. See [Message formatting restrictions](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#message-formatting-restrictions).
+* The user message that carries your result can contain only `tool_result` blocks. See [Message formatting restrictions](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=curl#message-formatting-restrictions).
 * Pass the `container` ID from the paused response. The API rejects a continuation that has pending programmatic tool calls but no container ID.
 * Send the same `tools` array as the original request. The code execution tool must still be present for the paused code to resume, and the tools you send on this request are the definitions Claude and the running code can use for the rest of the turn.
 
 <CodeGroup>
-  ```bash CLI
-  ant messages create <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 4096
-  container: container_xyz789
-  messages:
-    - role: user
-      content: >-
-        Query customer purchase history from the last quarter and identify our
-        top 5 customers by revenue
-    - role: assistant
-      content:
-        - type: text
-          text: I'll query the purchase history and analyze the results.
-        - type: server_tool_use
-          id: srvtoolu_abc123
-          name: code_execution
-          input:
-            code: "..."
-        - type: tool_use
-          id: toolu_def456
-          name: query_database
-          input:
-            sql: "<sql>"
-          caller:
-            type: code_execution_20260120
-            tool_id: srvtoolu_abc123
-    - role: user
-      content:
-        - type: tool_result
-          tool_use_id: toolu_def456
-          content: >-
-            [{"customer_id": "C1", "revenue": 45000}, {"customer_id": "C2",
-            "revenue": 38000}, ...]
-  # Same tools array as the original request
-  tools:
-    - type: code_execution_20260120
-      name: code_execution
-    - name: query_database
-      description: >-
-        Execute a SQL query against the sales database. Returns a list
-        of rows as JSON objects.
-      input_schema:
-        type: object
-        properties:
-          sql:
-            type: string
-            description: SQL query to execute
-        required:
-          - sql
-      allowed_callers:
-        - code_execution_20260120
-  YAML
+  ```bash cURL
+  curl https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2026-10-21" \
+    -H "content-type: application/json" \
+    -d '{
+      "model": "claude-opus-5-5",
+      "max_tokens": 4096,
+      "container": "container_xyz789",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Query customer purchase history from the last quarter and identify our top 5 customers by revenue"
+        },
+        {
+          "role": "assistant",
+          "content": [
+            {
+              "type": "text",
+              "text": "I will query the purchase history and analyze the results."
+            },
+            {
+              "type": "server_tool_use",
+              "id": "srvtoolu_abc123",
+              "name": "code_execution",
+              "input": {"code": "..."}
+            },
+            {
+              "type": "tool_use",
+              "id": "toolu_def456",
+              "name": "query_database",
+              "input": {"sql": "<sql>"},
+              "caller": {
+                "type": "code_execution_20260120",
+                "tool_id": "srvtoolu_abc123"
+              }
+            }
+          ]
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "tool_result",
+              "tool_use_id": "toolu_def456",
+              "content": "[{\"customer_id\": \"C1\", \"revenue\": 45000}, {\"customer_id\": \"C2\", \"revenue\": 38000}]"
+            }
+          ]
+        }
+      ],
+      "tools": [
+        {
+          "type": "code_execution_20260120",
+          "name": "code_execution"
+        },
+        {
+          "name": "query_database",
+          "description": "Execute a SQL query against the sales database. Returns a list of rows as JSON objects.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "sql": {
+                "type": "string",
+                "description": "SQL query to execute"
+              }
+            },
+            "required": ["sql"]
+          },
+          "allowed_callers": ["code_execution_20260120"]
+        }
+      ]
+    }'
   ```
 </CodeGroup>
 
@@ -450,7 +478,7 @@ When all tool calls are satisfied and code completes:
 
 | Error | Where it appears | Description | Solution |
 | ----- | ----- | ----- | ----- |
-| `invalid_tool_input` | `error_code` on the `code_execution_tool_result` error block in the response | Invalid parameters were passed to the code execution tool | See the [code execution tool errors](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli#errors) |
+| `invalid_tool_input` | `error_code` on the `code_execution_tool_result` error block in the response | Invalid parameters were passed to the code execution tool | See the [code execution tool errors](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl#errors) |
 | `invalid_request_error` (on `tool_choice`) | HTTP 400 error response | `tool_choice` names a tool whose `allowed_callers` does not include `"direct"` | Either add `"direct"` to that tool’s `allowed_callers`, or remove the tool from `tool_choice` and let Claude call it from code |
 
 ### Container expiration during tool call
@@ -511,8 +539,8 @@ To work around this, do one of the following:
 
 The following tools cannot be called programmatically:
 
-* Tools provided by an [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=cli)
-* The [computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli) toolsets (`computer_toolset_20260801` and `browser_toolset_20260801`), whose `allowed_callers` field accepts only `"direct"`
+* Tools provided by an [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector?sdk_languages=curl)
+* The [computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=curl) and [browser use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=curl) toolsets (`computer_toolset_20260801` and `browser_toolset_20260801`), whose `allowed_callers` field accepts only `"direct"`
 
 ### Message formatting restrictions
 
@@ -582,11 +610,11 @@ In Anthropic’s internal evaluations on a production Claude model:
 * On [τ²-bench](https://arxiv.org/abs/2506.07982) (airline, retail, and telecom domains), where each turn makes one or two sequential tool calls, programmatic tool calling left scores unchanged and cost roughly 8 percent more. Sequential single-call workflows do not benefit.
 * Across production API traffic, requests whose `tools` array contains 10 to 49 tool definitions see typical token savings of 20 to 40 percent with programmatic tool calling enabled.
 
-Actual savings vary with workload shape. See [When to use programmatic calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#when-to-use-programmatic-calling).
+Actual savings vary with workload shape. See [When to use programmatic calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=curl#when-to-use-programmatic-calling).
 
 ## Usage and pricing
 
-Programmatic tool calling uses the same pricing as code execution. See the [code execution pricing](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli#usage-and-pricing) for details.
+Programmatic tool calling uses the same pricing as code execution. See the [code execution pricing](https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl#usage-and-pricing) for details.
 
 <Note>
   Token counting for programmatic tool calls: Tool results from programmatic calls do not count toward your input/output token usage. Only the final code execution result and Claude’s response count.
@@ -702,7 +730,7 @@ Anthropic’s programmatic tool calling is a managed version of sandboxed execut
 * Enabled with a tool definition, with no infrastructure to run
 * Environment and instructions optimized for Claude
 
-**Use when:** You’re on a [supported platform and model](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#feature-availability) and don’t need to run your own execution environment.
+**Use when:** You’re on a [supported platform and model](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=curl#feature-availability) and don’t need to run your own execution environment.
 
 ## Data retention
 
@@ -711,19 +739,19 @@ Programmatic tool calling is built on the code execution infrastructure and uses
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Fine-grained tool streaming" icon="bolt" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming?sdk_languages=cli">
+  <Card title="Fine-grained tool streaming" icon="bolt" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/fine-grained-tool-streaming?sdk_languages=curl">
     Stream tool inputs without server-side JSON buffering for latency-sensitive applications.
   </Card>
 
-  <Card title="Code execution tool" icon="code" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=cli">
+  <Card title="Code execution tool" icon="code" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool?sdk_languages=curl">
     Run Python and Bash code in a sandboxed container to analyze data, generate files, and iterate on solutions.
   </Card>
 
-  <Card title="Tool use with Claude" icon="wrench" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli">
+  <Card title="Tool use with Claude" icon="wrench" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=curl">
     Connect Claude to external tools and APIs. See where tools run, when Claude calls them, and which tool fits your task.
   </Card>
 
-  <Card title="Define tools" icon="hammer" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=cli">
+  <Card title="Define tools" icon="hammer" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=curl">
     Specify tool schemas, write effective descriptions, and control when Claude calls your tools.
   </Card>
 </CardGroup>
@@ -734,27 +762,27 @@ Programmatic tool calling is available on select models.
 
 ### API support
 
-#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=cli)
+#### [Messages API](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=curl)
 
 * Availability: Available
 
 | Status | Cloud platforms | Models |
 | ----- | ----- | ----- |
-| Available | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), [Microsoft Foundry (hosted on Anthropic)](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=cli) | [Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=cli), [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=cli), [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli), [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli), [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli), [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli), Claude Mythos Preview, [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli), [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli), [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli), [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli), [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli), [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=cli), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=cli), [Claude Opus 4.5](https://platform.claude.com/docs/en/models/opus-4-5/overview?sdk_languages=cli), [Claude Sonnet 4.5](https://platform.claude.com/docs/en/models/sonnet-4-5/overview?sdk_languages=cli) |
-| Available | [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli) | [Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=cli), [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=cli), [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=cli), [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli), [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=cli), [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli), [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=cli), [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=cli), [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=cli), [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=cli), [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=cli), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=cli), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=cli), [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=cli), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=cli), [Claude Opus 4.5](https://platform.claude.com/docs/en/models/opus-4-5/overview?sdk_languages=cli), [Claude Sonnet 4.5](https://platform.claude.com/docs/en/models/sonnet-4-5/overview?sdk_languages=cli) |
+| Available | Claude API, [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=curl), [Microsoft Foundry (hosted on Anthropic)](https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry?sdk_languages=curl) | [Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=curl), [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=curl), [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=curl), [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=curl), [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=curl), [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=curl), Claude Mythos Preview, [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=curl), [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=curl), [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=curl), [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=curl), [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=curl), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=curl), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=curl), [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=curl), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=curl), [Claude Opus 4.5](https://platform.claude.com/docs/en/models/opus-4-5/overview?sdk_languages=curl), [Claude Sonnet 4.5](https://platform.claude.com/docs/en/models/sonnet-4-5/overview?sdk_languages=curl) |
+| Available | [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=curl) | [Claude Fable 5.2](https://platform.claude.com/docs/en/models/fable-5-2/overview?sdk_languages=curl), [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=curl), [Claude Fable 5.1](https://platform.claude.com/docs/en/models/fable-5-1/overview?sdk_languages=curl), [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=curl), [Claude Fable 5](https://platform.claude.com/docs/en/models/fable-5/overview?sdk_languages=curl), [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=curl), [Claude Opus 5.5](https://platform.claude.com/docs/en/models/opus-5-5/overview?sdk_languages=curl), [Claude Opus 5](https://platform.claude.com/docs/en/models/opus-5/overview?sdk_languages=curl), [Claude Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview?sdk_languages=curl), [Claude Sonnet 5](https://platform.claude.com/docs/en/models/sonnet-5/overview?sdk_languages=curl), [Claude Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview?sdk_languages=curl), [Claude Opus 4.8](https://platform.claude.com/docs/en/models/opus-4-8/overview?sdk_languages=curl), [Claude Opus 4.7](https://platform.claude.com/docs/en/models/opus-4-7/overview?sdk_languages=curl), [Claude Opus 4.6](https://platform.claude.com/docs/en/models/opus-4-6/overview?sdk_languages=curl), [Claude Sonnet 4.6](https://platform.claude.com/docs/en/models/sonnet-4-6/overview?sdk_languages=curl), [Claude Opus 4.5](https://platform.claude.com/docs/en/models/opus-4-5/overview?sdk_languages=curl), [Claude Sonnet 4.5](https://platform.claude.com/docs/en/models/sonnet-4-5/overview?sdk_languages=curl) |
 
-#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli)
+#### [Managed Agents](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=curl)
 
 * Availability: Not available
 
 ### Data handling
 
-[Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
+[Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#feature-eligibility)
 
 | Item | Zero data retention | HIPAA |
 | ----- | ----- | ----- |
 | Status | Not eligible | Not eligible |
-| Details | Built on code execution containers; data retained up to 30 days. [Learn more](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=cli#data-retention) | — |
+| Details | Built on code execution containers; data retained up to 30 days. [Learn more](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling?sdk_languages=curl#data-retention) | — |
 
 Applicable endpoints:
 

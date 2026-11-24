@@ -1034,7 +1034,7 @@ If your hook exits 2 and also sets `continue: false`, check [Exit code 2](#exit-
 | Hook event | Can block? | What happens on exit 2 |
 | :- | :- | :- |
 | `PreToolUse` | Yes | Blocks the tool call |
-| `PermissionRequest` | No | Exit code 2 isn't honored for this event and the permission flow proceeds unchanged. Deny through the [`decision` object](#permissionrequest-decision-control) instead |
+| `PermissionRequest` | No | Not read as a decision. Deny through the [`decision` object](#permissionrequest-decision-control) instead |
 | `UserPromptSubmit` | Yes | Blocks the prompt. See [What a blocked prompt leaves behind](#what-a-blocked-prompt-leaves-behind) |
 | `UserPromptExpansion` | Yes | Blocks the expansion |
 | `Stop` | Yes | Prevents Claude from stopping, continues the conversation |
@@ -1226,7 +1226,7 @@ A few events can also rewrite content rather than only allow or block it:
 
 * `PreToolUse`: `updatedInput` directly under `hookSpecificOutput` replaces a tool's arguments before it runs. See [PreToolUse decision control](#pretooluse-decision-control)
 * `PermissionRequest`: `updatedInput` inside the `decision` object. See [PermissionRequest decision control](#permissionrequest-decision-control)
-* `PostToolUse`: `updatedToolOutput` replaces the tool's result. In a [Cowork](https://claude.com/docs/cowork/overview) cloud session, Claude Code ignores `updatedToolOutput` when the tool is `AskUserQuestion` or `ExitPlanMode`, and Claude reads the original answer or plan. See [PostToolUse decision control](#posttooluse-decision-control)
+* `PostToolUse`: `updatedToolOutput` replaces the tool's result. See [PostToolUse decision control](#posttooluse-decision-control), including limits in a [Cowork](https://claude.com/docs/cowork/overview) cloud session
 * `UserPromptSubmit`: can't replace the prompt; it only injects `additionalContext` alongside it
 
 For redaction or transformation use cases, intercept at `PreToolUse` for outbound tool inputs and `PostToolUse` for the results of successful calls. `PostToolUseFailure` can't rewrite a result, so it can't redact a failing command's output.
@@ -1444,7 +1444,7 @@ If any line is of another kind, such as `export PATH="$PATH:./node_modules/.bin"
 
 ### Setup
 
-Fires only when you launch Claude Code with `--init-only`, or with `--init` or `--maintenance` in [non-interactive mode](./headless.md) with the `-p` flag. It doesn't fire on normal startup. Use it for one-time dependency installation or scheduled cleanup that you trigger explicitly from CI or scripts, separate from normal session startup. For per-session initialization, use [SessionStart](#sessionstart) instead.
+Fires only when you launch Claude Code with `--init-only`, or with `--init` or `--maintenance` in [non-interactive mode](./headless.md) with the `-p` flag. Use it for one-time dependency installation or scheduled cleanup that you trigger explicitly from CI or scripts. For per-session initialization, use [SessionStart](#sessionstart) instead.
 
 The matcher value corresponds to the CLI flag that triggered the hook:
 
@@ -1662,7 +1662,6 @@ Use MessageDisplay to:
 
 * strip markdown for a minimal display
 * transform the text an Agent SDK application shows its users
-* redact API keys or internal hostnames from Claude's responses
 
 Claude Code holds each batch until your hook returns, so keep the hook fast. If the hook fails or times out, Claude Code displays the original text. The default timeout for this event is 10 seconds; if your hook needs more time, set the `timeout` field in the hook entry.
 
@@ -2161,8 +2160,10 @@ Before v2.1.319, Claude Code answered a prompt without the tool's result and dro
 
 ### PermissionRequest
 
-Runs when Claude Code is about to ask you for permission to use a tool. In sessions that can't show a prompt, such as background subagents in [non-interactive mode](./headless.md), Claude Code still runs these hooks, and if no hook returns a decision, it denies the tool call. For a call that reaches a `--permission-prompt-tool` or the Agent SDK's [`canUseTool` callback](https://code.claude.com/docs/en/agent-sdk/permissions), the hooks run alongside your host, and whichever decides first applies.
+Runs when Claude Code is about to ask you for permission to use a tool. For a call that reaches a `--permission-prompt-tool` or the Agent SDK's [`canUseTool` callback](https://code.claude.com/docs/en/agent-sdk/permissions), the hooks run alongside your host, and whichever decides first applies.
 Use [PermissionRequest decision control](#permissionrequest-decision-control) to allow or deny on behalf of the user.
+
+In a `-p` run outside [`dontAsk` mode](https://code.claude.com/docs/en/permission-modes#allow-only-pre-approved-tools-with-dontask-mode) with neither a `--permission-prompt-tool` nor a `canUseTool` callback, nobody can answer a prompt. A call that would prompt you is denied there unless something approves it, such as a PermissionRequest hook.
 
 Use this event when you need a signal the moment Claude asks for permission to use a tool. Claude Code runs a [Notification](#notification) hook with the `permission_prompt` type only after the prompt has waited about six seconds.
 
@@ -2215,7 +2216,7 @@ PreToolUse hooks run before every tool call, whether or not it needs permission.
 
 To allow or rewrite a Monitor command, see [Match Monitor commands](#match-monitor-commands).
 
-A hook that exits 2 without a `decision` object leaves the permission flow unchanged, and its stderr is discarded. To grant or deny the request, return the `decision` object.
+Claude Code doesn't read exit code 2 as a decision on this event. To grant or deny the request, return the `decision` object.
 
 ```json theme={null}
 {
@@ -2331,7 +2332,7 @@ The input includes both `tool_input`, the arguments sent to the tool, and `tool_
 | `reason` | Explanation shown to Claude when `decision` is `"block"` |
 | `additionalContext` | String added to Claude's context alongside the tool result. See [Add context for Claude](#add-context-for-claude) |
 | `classifierContext` | Short note about this call's result for the [auto mode](./permission-modes.md#eliminate-prompts-with-auto-mode) classifier rather than for Claude. See [Annotate a result for the auto mode classifier](#annotate-a-result-for-the-auto-mode-classifier). Requires Claude Code v2.1.236 or later |
-| `updatedToolOutput` | Replaces the tool's output with the provided value before it is sent to Claude. The value must match the tool's output shape. In a [Cowork](https://claude.com/docs/cowork/overview) cloud session, Claude Code ignores this field when the tool is `AskUserQuestion` or `ExitPlanMode`, and Claude reads the original answer or plan |
+| `updatedToolOutput` | Replaces the tool's output with the provided value before it is sent to Claude. The value must match the tool's output shape. In a [Cowork](https://claude.com/docs/cowork/overview) cloud session, Claude Code ignores this field and `updatedMCPToolOutput` for some tools, such as `AskUserQuestion` and `ExitPlanMode`. Claude then reads the original result |
 | `updatedMCPToolOutput` | Replaces the output for [MCP tools](#match-mcp-tools) only. Prefer `updatedToolOutput`, which also works for built-in tools |
 
 The example below replaces the output of a `Bash` call. The replacement value matches the `Bash` tool's output shape:
@@ -2509,7 +2510,9 @@ Returning `decision: "block"` or `continue: false` stops the agentic loop before
 
 ### PermissionDenied
 
-Runs when [auto mode](./permission-modes.md#eliminate-prompts-with-auto-mode) denies a tool call, including when it denies without a classifier verdict because [a safety check separate from auto mode refused the classifier's own request](./errors.md#auto-mode-cannot-determine-the-safety-of-an-action) or its response didn't parse. This hook only fires in auto mode: it doesn't run when you manually deny a permission dialog, when a `PreToolUse` hook blocks a call, or when a `deny` rule matches. Use it to log denials, adjust configuration, or tell the model it may retry the tool call.
+Runs when the [auto mode](./permission-modes.md#eliminate-prompts-with-auto-mode) classifier denies a tool call. That includes a denial with no verdict because [a safety check separate from auto mode refused the classifier's own request](./errors.md#auto-mode-cannot-determine-the-safety-of-an-action) or the classifier's response didn't parse. Use PermissionDenied to log denials, adjust configuration, or tell the model it may retry the tool call.
+
+The hook doesn't run when you deny a permission dialog, when a `PreToolUse` hook blocks a call, or when a `deny` rule matches.
 
 Matches on tool name, same values as PreToolUse.
 
@@ -3357,7 +3360,7 @@ For git-based worktrees, Claude Code handles cleanup automatically with `git wor
   * **You exit a worktree session, or Claude calls `ExitWorktree`**: Claude Code removes the path your WorktreeCreate hook returned as `git worktree remove --force` would, so a worktree git recognizes is removed. A worktree git doesn't recognize, for example one your hook created with a non-git version control system, stays on disk.
   * **`claude remote-control` cleans up a session's worktree**: the worktree stays on disk, and the terminal running `claude remote-control` shows `worktree removal failed, kept: <path>`.
   * **You delete a background session**: see [What deleting a session removes](./agent-view.md#what-deleting-a-session-removes).
-* **Hook exits 0**: the worktree counts as removed. Claude Code reads nothing else from the hook, so make sure your hook deleted the directory.
+* **Hook exits 0**: if the worktree's directory is still there, remove it yourself, because Claude Code doesn't fall back to git.
 * **Hook exits non-zero**: the removal fails if the directory at `worktree_path` still exists afterward, and the worktree stays on disk with no git fallback. A hook that deleted the directory before exiting non-zero counts as removed. For how the failure is reported, see [WorktreeRemove input](#worktreeremove-input).
 
 Claude Code never deletes a branch belonging to a hook-created worktree, because it only knows the path your WorktreeCreate hook returned. If your WorktreeCreate hook creates a branch, delete it in your WorktreeRemove hook. Claude Code discards a WorktreeRemove hook's [JSON output fields](#json-output), such as `systemMessage` and `continue`.
@@ -3397,7 +3400,7 @@ In addition to the [common input fields](#common-input-fields), WorktreeRemove h
 }
 ```
 
-A WorktreeRemove hook's exit code decides the outcome. When a hook exits non-zero and the directory at `worktree_path` still exists afterward, the removal fails:
+When a hook exits non-zero and the directory at `worktree_path` still exists afterward, the removal fails:
 
 * If you were deleting a background session, the session stays too. The refusal message in [agent view](./agent-view.md#what-deleting-a-session-removes) reports how the hook ended, such as `exited 1`, quotes the start of its stderr, and says whether deleting the session again removes the directory anyway.
 * If `claude remote-control` was cleaning up a session's worktree, the terminal running it shows `worktree removal failed, kept: <path>`.
@@ -3740,7 +3743,7 @@ For form-mode elicitation, the most common case:
   "cwd": "/Users/...",
   "hook_event_name": "Elicitation",
   "mcp_server_name": "my-mcp-server",
-  "message": "Please provide your credentials",
+  "message": "Please provide your username",
   "mode": "form",
   "requested_schema": {
     "type": "object",
@@ -4105,7 +4108,7 @@ What happens on `ok: false` depends on the event:
 * `PostToolUseFailure` and `TaskCreated`: the reason is returned to Claude as a tool error and the turn continues, regardless of `continueOnBlock`
 * `TaskCompleted` on a `TaskUpdate` call: Claude receives the reason as the tool result and the turn continues, regardless of `continueOnBlock`
 * `TeammateIdle`, and `TaskCompleted` at the end of a teammate's turn: by default the teammate goes idle and the reason appears in its transcript. Set `continueOnBlock: true` to send the reason to the teammate and keep it working
-* `PermissionRequest`: `ok: false` has no effect. To deny an approval from a hook, use a [command hook](#command-hook-fields) returning `hookSpecificOutput.decision.behavior: "deny"`
+* `PermissionRequest`: `ok: false` doesn't deny the request. To deny an approval from a hook, use a [command hook](#command-hook-fields) returning `hookSpecificOutput.decision.behavior: "deny"`
 * `PermissionDenied`: `ok: false` has no effect because the denial already happened. The only output this event reads is `hookSpecificOutput.retry`, which prompt and agent hooks can't set. They run on this event, but their output is discarded. Use a [command hook](#command-hook-fields) to return `retry`
 
 If you need finer control on any event, use a [command hook](#command-hook-fields) with the per-event fields described in [Decision control](#decision-control).

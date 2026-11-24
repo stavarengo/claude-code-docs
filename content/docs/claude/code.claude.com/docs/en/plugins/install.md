@@ -69,7 +69,7 @@ Pick the tab for where you run Claude Code.
 >
 > The last sentence of the summary tells you whether the plugin is usable in this session yet:
 >
-> * **Active now**: `Plugin is now active.` No reload is needed.
+> * **Active now**: `Plugin is now active.`
 > * **Active, but a server needs setup**: `Plugin is now active.` is followed by a note that starts `Its bundled MCP server needs`. The plugin's [bundled MCP server](./components.md#include-a-packaged-mcpb-server) can't start until you set its options. Select the plugin on the **Installed** tab in `/plugin` and choose **Configure**.
 > * **Reload needed**: `Run /reload-plugins to apply.` The panel closes and Claude Code runs that reload for you. If the reload would [invalidate the prompt cache](../prompt-caching.md#enabling-or-disabling-a-plugin), it warns and leaves the plugin pending instead. Run `/reload-plugins --force` to activate it anyway, which costs one uncached request.
 > * **Load failed**: the summary includes `The plugin couldn't`. Open the **Errors** tab in `/plugin` for the reason, then see [After install: plugin not working](./troubleshooting.md#plugin-installed-but-not-working).
@@ -123,9 +123,9 @@ Pick the tab for where you run Claude Code.
 
 > [tab] Cloud session
 >
-> A [cloud session](../cloud-environments.md), including [the browser at claude.ai/code](../claude-code-on-the-web.md), has no plugin browser and doesn't load the plugins you installed on your own machine or the ones your repository's `.claude/settings.json` turns on. For plugins your organization distributes through managed settings, see [Manage plugins for your organization](./org.md).
+> To use a plugin in a [cloud session](../cloud-environments.md), add it to your claude.ai account at [claude.ai/customize/plugins](https://claude.ai/customize/plugins), then start a new session. You can [pick a listed plugin, add a marketplace, or upload a plugin](https://claude.com/docs/plugins/overview#find-and-add-a-plugin). On Team and Enterprise plans, an [Owner](../server-managed-settings.md#access-control) controls which of these you can use. For a self-hosted environment, see [what differs on Amazon Bedrock or Google Cloud's Agent Platform](../self-hosted-environments-configuration.md#what-differs-from-sessions-on-the-anthropic-api).
 >
-> See [which parts of your setup are also available in a cloud session](../cloud-environments.md#what-carries-over-from-your-setup) for the rest of your setup.
+> Plugins you install on your computer at user or local scope aren't available in cloud sessions. For plugins your organization distributes through managed settings, see [Manage plugins for your organization](./org.md). For the rest of your setup, see [What carries over from your setup](../cloud-environments.md#what-carries-over-from-your-setup).
 
 ### Choose an install scope
 
@@ -280,7 +280,7 @@ The **Installed** tab in `/plugin` lists your plugins with actions to enable, di
 A plugin's details menu offers **Disable plugin** or **Enable plugin**, **Update now**, and **Uninstall**. Two more items appear for plugins that take settings, and a plugin can show both:
 
 * **Configure options**: shown when the plugin's manifest declares [`userConfig` options](https://code.claude.com/docs/en/plugins/manifest-reference#user-configuration). Opens the dialog for those options
-* **Configure**: shown when the plugin includes a [bundled MCP server](./components.md#include-a-packaged-mcpb-server). Sets that server's own `user_config` settings
+* **Configure**: shown when a marketplace plugin includes a [bundled MCP server](./components.md#include-a-packaged-mcpb-server). Sets that server's own `user_config` settings
 
 The tab can also show plugins at **Managed** scope. Your organization installed those through [managed settings](../settings.md#settings-files), and you can't enable, disable, or uninstall them here.
 

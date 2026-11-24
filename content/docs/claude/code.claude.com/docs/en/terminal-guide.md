@@ -6,7 +6,7 @@
 
 > A step-by-step guide to installing Claude Code for first-time terminal users on macOS, Linux, and Windows.
 
-You can use Claude Code even if you've never used a terminal before. This guide walks you through opening a terminal, installing Claude Code, and your first interactions.
+This guide walks you through opening a terminal, installing Claude Code, and your first interactions.
 
 * [macOS and Linux](#macos-and-linux)
 * [Windows](#windows)

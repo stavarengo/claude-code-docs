@@ -78,7 +78,7 @@ type "hooks", and tell me what results appear
 
 If Claude Code asks for permission before a browser action, approve it. The dialog starts with `Claude in Chrome wants to` and offers an option to allow all actions on that site for the session. Claude opens a new tab and starts the task.
 
-Run `/chrome` at any time to check the connection status, manage permissions, reconnect the extension, or choose which connected browser to use. The integration is working when the status panel shows "Status: Enabled" and "Extension: Installed".
+Run `/chrome` at any time to check the connection status, manage permissions, reconnect the extension, or choose which connected browser to use.
 
 If more than one browser is connected, you choose which one Claude uses. When a browser action starts before you've chosen, Claude prompts you to pick one. To switch browsers later, run `/chrome` and choose another browser. Claude keeps using your choice even when another browser connects.
 
@@ -111,6 +111,8 @@ Claude Code starts normally when Chrome isn't running.
 >
 > Enabling Chrome by default increases context usage since the browser tools and their instructions are always loaded. If you notice increased context consumption, turn the setting off and connect only when needed, with `--chrome` in the CLI or by typing [`@browser`](https://code.claude.com/docs/en/vs-code#automate-browser-tasks-with-chrome) in the VS Code prompt box.
 
+To start one CLI session without Chrome and leave the setting on, run [`claude --no-chrome`](https://code.claude.com/docs/en/cli-reference#cli-flags) in your terminal.
+
 ### Answer the startup dialog
 
 If the "Claude in Chrome extension detected" dialog appears when you start `claude`, your answer changes the [**Enabled by default** setting](#enable-chrome-by-default):
@@ -126,7 +128,7 @@ To let Claude act on a site, approve it when Claude Code asks. In [auto mode](./
 
 ### Permission prompts in VS Code sessions
 
-In a VS Code session, when Claude Code asks before a browser action, the prompt appears as a card in the chat panel. When the action targets a site you haven't allowed, the card also offers to allow that site.
+In a VS Code session, when Claude Code asks before a browser action, the prompt appears as a card in the chat panel.
 
 In a session that connected to your browser at start because [Enabled by default](#enable-chrome-by-default) is on, Claude Code asks you before browser actions on a site you haven't allowed, in Manual, Edit automatically, Auto, and Bypass permissions modes. In Auto and Bypass permissions modes, this applies until you type `@browser` in that session.
 

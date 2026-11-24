@@ -207,7 +207,7 @@ Telemetry events fire for the usage records Claude Code logs:
 
 ### Settings hook events
 
-Each [settings hook event](../../hooks.md#hook-events) is an event named `classic.<Event>`, such as `classic.Stop` or `classic.PostToolUse`. `e` is the hook's stdin JSON.
+Each [settings hook event](../../hooks.md#hook-events) is an event named `classic.<Event>`, such as `classic.Stop`. For the fields on `e`, see [Handle the settings hook events](./events.md#hook-the-settings-hook-events).
 
 ### Mods API calls
 

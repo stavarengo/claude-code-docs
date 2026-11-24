@@ -20,18 +20,18 @@ The latest version of each Anthropic SDK and of the ant CLI is at https://platfo
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 936 pages - /docs - Content included below
-- German (Deutsch) (de) - 342 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 342 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 342 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 342 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 342 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 342 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 342 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 342 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 342 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 342 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 342 pages - /docs/id - Visit website for content
+- English (en) - 958 pages - /docs - Content included below
+- German (Deutsch) (de) - 357 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 357 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 357 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 357 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 357 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 357 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 357 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 357 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 357 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 357 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 357 pages - /docs/id - Visit website for content
 
 ---
 
@@ -203,6 +203,7 @@ The full documentation is available in the following languages on https://platfo
 ### Admin
 
 - [Overview](https://platform.claude.com/docs/en/manage-claude/oauth-apps/overview.md) - Claude Platform OAuth (EAP)
+- [Overview](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/overview.md) - Enterprise Frontier Safeguards
 - [Overview](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/overview.md) - Security posture in the Compliance API
 - [Overview](https://platform.claude.com/docs/en/manage-claude/access-transparency.md) - Access Transparency
 - [Admin API](https://platform.claude.com/docs/en/manage-claude/cmek-admin-api.md) - Add and attach an encryption key with the Admin API
@@ -221,17 +222,23 @@ The full documentation is available in the following languages on https://platfo
 - [Configure Inference hooks](https://platform.claude.com/docs/en/manage-claude/inference-hooks-configuration.md)
 - [Create an Admin API key](https://platform.claude.com/docs/en/manage-claude/admin-api-keys.md)
 - [Overview](https://platform.claude.com/docs/en/manage-claude/cmek.md) - Customer-managed encryption keys
+- [Overview](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/customer-owned-storage.md) - Customer-owned storage
 - [Data residency](https://platform.claude.com/docs/en/manage-claude/data-residency.md)
 - [Design your integration](https://platform.claude.com/docs/en/manage-claude/compliance-integration-patterns.md) - Design your compliance integration
 - [Detect changes](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/detect-changes.md) - Detect changes in Security posture
 - [Build an integration](https://platform.claude.com/docs/en/manage-claude/inference-hooks-endpoint.md) - Develop an Inference hooks integration
+- [FAQ](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/faq.md) - Enterprise Frontier Safeguards FAQ
+- [Amazon Bedrock](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/setup-amazon-bedrock.md) - Enterprise Frontier Safeguards on Amazon Bedrock
+- [Google Cloud's Agent Platform](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/setup-google-cloud-agent-platform.md) - Enterprise Frontier Safeguards on Google Cloud's Agent Platform
 - [Errors](https://platform.claude.com/docs/en/manage-claude/compliance-errors.md) - Handle Compliance API errors
 - [How it works](https://platform.claude.com/docs/en/manage-claude/cmek-how-it-works.md) - How CMEK works
+- [Human Review](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/human-review-and-access-transparency.md) - Human Review and Access Transparency
 - [Overview](https://platform.claude.com/docs/en/manage-claude/inference-hooks.md) - Inference hooks
 - [IP allowlisting (beta)](https://platform.claude.com/docs/en/manage-claude/ip-allowlist.md) - IP allowlisting
 - [Limit key to workspaces](https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms-workspaces.md) - Limit an AWS KMS key to specific workspaces
 - [Linked billing](https://platform.claude.com/docs/en/manage-claude/oauth-apps/organization-billing-connections.md) - Linked billing (EAP)
 - [Organizations, users, roles, groups, and settings](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, groups, and settings
+- [Manage](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/external-storage-manage.md) - Manage customer-owned storage
 - [Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md)
 - [Map events to OCSF](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/ocsf-mapping.md) - Map Security posture events to OCSF
 - [OAuth reference](https://platform.claude.com/docs/en/manage-claude/oauth-apps/oauth-reference.md) - OAuth reference (EAP)
@@ -242,6 +249,9 @@ The full documentation is available in the following languages on https://platfo
 - [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api.md)
 - [Chats, files, and projects](https://platform.claude.com/docs/en/manage-claude/compliance-content-data.md) - Retrieve and delete chats, files, and projects
 - [Session transcripts](https://platform.claude.com/docs/en/manage-claude/compliance-sessions.md) - Retrieve session transcripts
+- [Overview](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/flagged-cases.md) - Review Safety Cases
+- [Safety Case files](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/safety-case-files.md)
+- [Safety Cases API](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/safety-cases-api.md)
 - [Events reference](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/events-reference.md) - Security posture events reference
 - [Results reference](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/results-reference.md) - Security posture results reference
 - [Verification Portal links](https://platform.claude.com/docs/en/manage-claude/user-profiles-verification-portal.md) - Send an end customer a link to the Verification Portal
@@ -250,6 +260,10 @@ The full documentation is available in the following languages on https://platfo
 - [AWS KMS](https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms.md) - Set up CMEK with AWS KMS
 - [Azure Key Vault](https://platform.claude.com/docs/en/manage-claude/cmek-azure-key-vault.md) - Set up CMEK with Azure Key Vault
 - [Google Cloud KMS](https://platform.claude.com/docs/en/manage-claude/cmek-google-cloud-kms.md) - Set up CMEK with Google Cloud KMS
+- [Setup guide](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/external-storage.md) - Set up customer-owned storage
+- [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/setup-claude-models-on-google-cloud-anthropic-managed.md) - Set up Enterprise Frontier Safeguards on Claude Models on Google Cloud (Anthropic managed)
+- [Claude Platform](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/setup-console.md) - Set up Enterprise Frontier Safeguards on Claude Platform
+- [Claude Platform on AWS](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/setup-claude-platform-on-aws.md) - Set up Enterprise Frontier Safeguards on Claude Platform on AWS
 - [Get Anthropic SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk.md) - Set up OpenTelemetry with the Anthropic SDK
 - [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api.md) - Set up OpenTelemetry with the Claude API
 - [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access.md)
@@ -257,6 +271,7 @@ The full documentation is available in the following languages on https://platfo
 - [Troubleshooting](https://platform.claude.com/docs/en/manage-claude/cmek-troubleshooting.md) - Troubleshoot CMEK
 - [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api.md)
 - [Usage and Cost API (legacy)](https://platform.claude.com/docs/en/manage-claude/usage-cost-api.md) - Usage and Cost API
+- [Use a key with EFS](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/customer-managed-keys.md) - Use a customer-managed key
 - [AWS](https://platform.claude.com/docs/en/manage-claude/wif-providers/aws.md) - Use WIF with AWS
 - [GitHub Actions](https://platform.claude.com/docs/en/manage-claude/wif-providers/github-actions.md) - Use WIF with GitHub Actions
 - [Google Cloud](https://platform.claude.com/docs/en/manage-claude/wif-providers/gcp.md) - Use WIF with Google Cloud
@@ -413,6 +428,7 @@ The full documentation is available in the following languages on https://platfo
 - [Acknowledge Work (Beta)](https://platform.claude.com/docs/en/api/beta/environments/work/ack.md)
 - [Action URLs](https://platform.claude.com/docs/en/api/user_profiles/action_urls.md)
 - [Action URLs (Beta)](https://platform.claude.com/docs/en/api/beta/user_profiles/action_urls.md)
+- [Activate External Storage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_storage/activate.md)
 - [Activities](https://platform.claude.com/docs/en/api/compliance/activities.md)
 - [Add a Telemetry Destination Workspace (Beta)](https://platform.claude.com/docs/en/api/beta/organization/telemetry_destinations/workspaces/add.md)
 - [Add Federation Rule Workspace](https://platform.claude.com/docs/en/api/organization/federation/rules/workspaces/add.md)
@@ -503,6 +519,7 @@ The full documentation is available in the following languages on https://platfo
 - [Create Environment (Beta)](https://platform.claude.com/docs/en/api/beta/environments/create.md)
 - [Create External Key](https://platform.claude.com/docs/en/api/organization/external_keys/create.md)
 - [Create External Key (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_keys/create.md)
+- [Create External Storage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_storage/create.md)
 - [Create Federation Issuer](https://platform.claude.com/docs/en/api/organization/federation/issuers/create.md)
 - [Create Federation Issuer (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/issuers/create.md)
 - [Create Federation Rule](https://platform.claude.com/docs/en/api/organization/federation/rules/create.md)
@@ -545,6 +562,7 @@ The full documentation is available in the following languages on https://platfo
 - [Delete Environment (Beta)](https://platform.claude.com/docs/en/api/beta/environments/delete.md)
 - [Delete External Key](https://platform.claude.com/docs/en/api/organization/external_keys/delete.md)
 - [Delete External Key (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_keys/delete.md)
+- [Delete External Storage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_storage/delete.md)
 - [Delete file](https://platform.claude.com/docs/en/api/compliance/apps/chats/files/delete.md)
 - [Delete File](https://platform.claude.com/docs/en/api/files/delete.md)
 - [Delete File (Beta)](https://platform.claude.com/docs/en/api/beta/files/delete.md)
@@ -593,6 +611,7 @@ The full documentation is available in the following languages on https://platfo
 - [Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/threads/events.md)
 - [External Keys](https://platform.claude.com/docs/en/api/organization/external_keys.md)
 - [External Keys (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_keys.md)
+- [External Storage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_storage.md)
 - [Federation](https://platform.claude.com/docs/en/api/organization/federation.md)
 - [Federation (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation.md)
 - [Files](https://platform.claude.com/docs/en/api/files.md)
@@ -634,6 +653,7 @@ The full documentation is available in the following languages on https://platfo
 - [Get Environment (Beta)](https://platform.claude.com/docs/en/api/beta/environments/retrieve.md)
 - [Get External Key](https://platform.claude.com/docs/en/api/organization/external_keys/retrieve.md)
 - [Get External Key (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_keys/retrieve.md)
+- [Get External Storage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_storage/retrieve.md)
 - [Get Federation Issuer](https://platform.claude.com/docs/en/api/organization/federation/issuers/retrieve.md)
 - [Get Federation Issuer (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/issuers/retrieve.md)
 - [Get Federation Rule](https://platform.claude.com/docs/en/api/organization/federation/rules/retrieve.md)
@@ -725,6 +745,7 @@ The full documentation is available in the following languages on https://platfo
 - [List Events (Beta)](https://platform.claude.com/docs/en/api/beta/sessions/events/list.md)
 - [List External Keys](https://platform.claude.com/docs/en/api/organization/external_keys/list.md)
 - [List External Keys (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_keys/list.md)
+- [List External Storage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_storage/list.md)
 - [List Federation Issuers](https://platform.claude.com/docs/en/api/organization/federation/issuers/list.md)
 - [List Federation Issuers (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/issuers/list.md)
 - [List Federation Rule Workspaces](https://platform.claude.com/docs/en/api/organization/federation/rules/workspaces/list.md)
@@ -942,6 +963,7 @@ The full documentation is available in the following languages on https://platfo
 - [Update Environment (Beta)](https://platform.claude.com/docs/en/api/beta/environments/update.md)
 - [Update External Key](https://platform.claude.com/docs/en/api/organization/external_keys/update.md)
 - [Update External Key (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_keys/update.md)
+- [Update External Storage (Beta)](https://platform.claude.com/docs/en/api/beta/organization/external_storage/update.md)
 - [Update Federation Issuer](https://platform.claude.com/docs/en/api/organization/federation/issuers/update.md)
 - [Update Federation Issuer (Beta)](https://platform.claude.com/docs/en/api/beta/organization/federation/issuers/update.md)
 - [Update Federation Rule](https://platform.claude.com/docs/en/api/organization/federation/rules/update.md)

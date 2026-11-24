@@ -42303,7 +42303,7 @@ Turn codes don't have an HTTP status of their own. For example, a failed turn us
 | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `invalid_request`                                                        | **Cause:** Input or configuration is invalid. <br /> **Solution:** Correct the input described in the message before trying again.                                                                                                                                                              |
 | `context_length_exceeded`                                                | **Cause:** Input exceeds the model's context window. <br /> **Solution:** Reduce the input. If the conversation is too long, start a new session with a shorter summary.                                                                                                                        |
-| `session_budget_exceeded`                                                | **Cause:** The session reached its usage budget. <br /> **Solution:** Start a new session to continue.                                                                                                                                                                                          |
+| `session_budget_exceeded`                                                | **Cause:** The turn stopped because the session reached its spending limit. <br /> **Solution:** [Increase or remove the session limit](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#set-a-session-budget) to continue unfinished work.                                                          |
 | `credit_balance_exhausted`                                               | **Cause:** The organization has no API credits remaining. <br /> **Solution:** See [credit balance guidance](https://developers.openai.com/api/docs/guides/error-codes#api-errors).                                                                                                                                          |
 | `project_spend_limit_exceeded`                                           | **Cause:** The project reached its enforced spend limit. <br /> **Solution:** See [project spend limit guidance](https://developers.openai.com/api/docs/guides/error-codes#api-errors).                                                                                                                                      |
 | `organization_spend_limit_exceeded`                                      | **Cause:** The organization reached its enforced spend limit. <br /> **Solution:** See [organization spend limit guidance](https://developers.openai.com/api/docs/guides/error-codes#api-errors).                                                                                                                            |
@@ -50946,7 +50946,7 @@ Start with the transport docs when you need lower-level control:
 
 If your application identifies individual end users, include a [safety identifier](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers) with Realtime API requests. OpenAI recommends safety identifiers but doesn't require them. They help OpenAI detect harmful behavior and target enforcement to an individual user rather than your entire organization. Use a stable, privacy-preserving value, such as a hashed internal user ID.
 
-For Realtime API requests, send the identifier in the `OpenAI-Safety-Identifier` header. When using ephemeral tokens, set the header on the server-side request that creates the client secret to associate the identifier with the session. When connecting from a trusted server with WebSocket or the unified WebRTC interface, set the header on the connection request.
+For Realtime API requests, send the identifier in the `OpenAI-Safety-Identifier` header. Use an identifier of 128 characters or fewer. When using ephemeral tokens, set the header on the server-side request that creates the client secret to associate the identifier with the session. When connecting from a trusted server with WebSocket or the unified WebRTC interface, set the header on the connection request.
 
 Safety identifiers don't carry over from Responses API requests or other sessions. If you use the Responses API `safety_identifier` parameter elsewhere in your application, pass the same stable value when you create or connect each Realtime session.
 
@@ -63208,6 +63208,81 @@ The event tells your application when to check. The retrieved session tells it w
 
 For saved messages, tool calls, and turn outcomes, see [Fetch items and turns](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#fetch-items-and-turns). To identify which agent ran a command, see [Observe delegation](https://developers.openai.com/api/docs/guides/agents-api/multi-agent#observe-delegation).
 
+## Set a session budget
+
+A `spend_control` object must include `limit`. Set it to a positive integer in USD cents, such as `500` for $5, or `null` for no limit.
+
+Budget control makes a best-effort attempt to limit spending. Spend readings can lag, and work that has already started can continue to incur charges. Actual spend can exceed the limit. If the API cannot check spend, work can continue.
+
+### Create a session with a limit
+
+Send a `POST` request to `/v1/agents/sessions`. For a session without an execution environment, include initial input:
+
+```json snippet=reference reason="Session creation request body with a $5 spending limit"
+{
+  "agent": { "model": "gpt-6.1-terra" },
+  "environment": { "type": "none" },
+  "input": "Reply with exactly OK.",
+  "spend_control": { "limit": 500 }
+}
+```
+
+To create an unlimited session, omit `spend_control` or set it to `null`.
+
+### Read the limit and recorded spend
+
+Send a `GET` request to `/v1/agents/sessions/{session_id}`. Replace `{session_id}` with the ID returned by creation. The session response always includes a `spend_control` object:
+
+```json snippet=output reason="Session response excerpt with a $5 limit and unknown consumption"
+{
+  "id": "sess_example",
+  "object": "agent.session",
+  "spend_control": {
+    "limit": 500,
+    "consumed": null
+  }
+}
+```
+
+`limit` is the total session limit, or `null` if no limit is set. `consumed` is the best-effort recorded spend, rounded down to whole USD cents. It is `null` if no usable reading is available. If budget control is unavailable for the project, both values are `null`.
+
+This unlimited session has recorded $1.23.
+
+```json snippet=output reason="Session response excerpt with no limit and $1.23 in recorded spend"
+{
+  "spend_control": {
+    "limit": null,
+    "consumed": 123
+  }
+}
+```
+
+### Change or remove the limit
+
+Send a `POST` request to `/v1/agents/sessions/{session_id}` with the new total limit. This request changes the total limit to $10 without resetting recorded spend:
+
+```json snippet=reference reason="Session update request body with a $10 total spending limit"
+{
+  "spend_control": { "limit": 1000 }
+}
+```
+
+Omit `spend_control` from an update to keep the current limit. To remove the limit, set `spend_control` to `null` or send the following request.
+
+```json snippet=reference reason="Session update request body that removes the spending limit"
+{
+  "spend_control": { "limit": null }
+}
+```
+
+Retrieve the session again to confirm the change. An unlimited session has `spend_control.limit: null`. Recorded spend can change between reads.
+
+### Continue after reaching the budget
+
+Watch for session status `budget_reached` or the `agent.session.budget_reached` event. The API rejects new input when it detects that the session has reached its limit. A turn stopped by the budget fails with `session_budget_exceeded`.
+
+Increase or remove the total limit to continue. Work stopped by the budget can resume automatically. Follow session events before sending more input.
+
 ## Delete a session
 
 Delete a session when your application no longer needs it. Deletion removes the session from the API. Physical cleanup may continue asynchronously.
@@ -63341,29 +63416,36 @@ Choose the model, voice, and delegation mode when you create the session. Give t
 
 Choose a voice when you create the session. Set `audio.output.voice` to the API name, such as `"quartz"`. GPT-Live includes these additional voice options:
 
-| Voice    | API name   | Language   | Regional influence | Presentation | Source    |
-| -------- | ---------- | ---------- | ------------------ | ------------ | --------- |
-| Quartz   | `quartz`   | English    | Australian         | Feminine     | Generated |
-| Ripple   | `ripple`   | English    | Australian         | Masculine    | Natural   |
-| Vesper   | `vesper`   | English    | British            | Masculine    | Natural   |
-| Willow   | `willow`   | English    | Irish              | Feminine     | Natural   |
-| Stone    | `stone`    | English    | Irish              | Masculine    | Natural   |
-| Gleam    | `gleam`    | English    | North American     | Feminine     | Natural   |
-| Meridian | `meridian` | English    | North American     | Masculine    | Natural   |
-| Bossa    | `bossa`    | Portuguese | Brazilian          | Feminine     | Natural   |
-| Tempo    | `tempo`    | Portuguese | Brazilian          | Masculine    | Natural   |
-| Beacon   | `beacon`   | English    | Filipino           | Masculine    | Generated |
-| Delta    | `delta`    | English    | Southern U.S.      | Feminine     | Generated |
-| Cinder   | `cinder`   | English    | Southern U.S.      | Masculine    | Generated |
-| Nuri     | `nuri`     | German     | —                  | Feminine     | Natural   |
-| Juni     | `juni`     | German     | —                  | Feminine     | Natural   |
-| Flitz    | `flitz`    | German     | —                  | Masculine    | Natural   |
-| Brise    | `brise`    | French     | —                  | Feminine     | Natural   |
-| Sillage  | `sillage`  | French     | —                  | Masculine    | Natural   |
-| Nira     | `nira`     | Hindi      | —                  | Feminine     | Natural   |
-| Harema   | `harema`   | Japanese   | —                  | Feminine     | Natural   |
-| Shida    | `shida`    | Japanese   | —                  | Masculine    | Natural   |
-| Noeul    | `noeul`    | Korean     | —                  | Feminine     | Natural   |
+| Voice      | API name     | Language   | Regional influence | Presentation | Source    |
+| ---------- | ------------ | ---------- | ------------------ | ------------ | --------- |
+| Pearl      | `pearl`      | English    | Australian         | Feminine     | Natural   |
+| Quartz     | `quartz`     | English    | Australian         | Feminine     | Generated |
+| Ripple     | `ripple`     | English    | Australian         | Masculine    | Natural   |
+| Halo       | `halo`       | English    | British            | Feminine     | Natural   |
+| Vesper     | `vesper`     | English    | British            | Masculine    | Natural   |
+| Willow     | `willow`     | English    | Irish              | Feminine     | Natural   |
+| Stone      | `stone`      | English    | Irish              | Masculine    | Natural   |
+| Gleam      | `gleam`      | English    | North American     | Feminine     | Natural   |
+| Meridian   | `meridian`   | English    | North American     | Masculine    | Natural   |
+| Bossa      | `bossa`      | Portuguese | Brazilian          | Feminine     | Natural   |
+| Tempo      | `tempo`      | Portuguese | Brazilian          | Masculine    | Natural   |
+| Beacon     | `beacon`     | English    | Filipino           | Masculine    | Generated |
+| Delta      | `delta`      | English    | Southern U.S.      | Feminine     | Generated |
+| Cinder     | `cinder`     | English    | Southern U.S.      | Masculine    | Generated |
+| Calandria  | `calandria`  | Spanish    | Argentine          | Feminine     | Natural   |
+| Compás     | `compas`     | Spanish    | Argentine          | Masculine    | Natural   |
+| Hornero    | `hornero`    | Spanish    | Argentine          | Masculine    | Natural   |
+| Luciérnaga | `luciernaga` | Spanish    | Mexican            | Feminine     | Natural   |
+| Destello   | `destello`   | Spanish    | Mexican            | Masculine    | Natural   |
+| Nuri       | `nuri`       | German     | —                  | Feminine     | Natural   |
+| Juni       | `juni`       | German     | —                  | Feminine     | Natural   |
+| Flitz      | `flitz`      | German     | —                  | Masculine    | Natural   |
+| Brise      | `brise`      | French     | —                  | Feminine     | Natural   |
+| Sillage    | `sillage`    | French     | —                  | Masculine    | Natural   |
+| Nira       | `nira`       | Hindi      | —                  | Feminine     | Natural   |
+| Harema     | `harema`     | Japanese   | —                  | Feminine     | Natural   |
+| Shida      | `shida`      | Japanese   | —                  | Masculine    | Natural   |
+| Noeul      | `noeul`      | Korean     | —                  | Feminine     | Natural   |
 
 Regional influence describes a voice’s speaking style. Test the voice with the languages and pronunciation your application needs. To create a voice from a text description or an approved recording, see [Custom voices](https://developers.openai.com/api/docs/guides/custom-voices).
 
@@ -75392,6 +75474,10 @@ In this example, the agent processed 5,000 input tokens and generated 900 output
 
 Cached tokens are included in `input_tokens`, and reasoning tokens are included in `output_tokens`.
 
+### Control session spending
+
+To set a best-effort spending limit and learn how to continue after a session reaches it, see [Set a session budget](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#set-a-session-budget).
+
 ### Inspect subagent token usage
 
 List or retrieve [session turns](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#inspect-session-turns) and inspect each turn's `usage`. The `subagent_id` identifies the subagent; it is `null` for root-agent turns. When `has_more` is `true`, pass `last_id` as `after` with the same `order` to read the remaining turns.
@@ -78333,18 +78419,6 @@ class User {
 export default User;
 ```
 
-```ruby
-class User
-  attr_accessor :first_name, :last_name, :username
-
-  def initialize
-    @first_name = ""
-    @last_name = ""
-    @username = ""
-  end
-end
-```
-
 
 Most of the file will be unchanged, except for line 4 above. If you use the current text of the code file as your prediction, you can regenerate the entire file with lower latency. These time savings add up quickly for larger files.
 
@@ -78926,33 +79000,6 @@ serve({
 });
 ```
 
-```ruby
-require "webrick"
-
-server = WEBrick::HTTPServer.new(Port: Integer(ENV.fetch("PORT", "3000")), BindAddress: "127.0.0.1")
-# Build your client first and place its static files in dist/.
-static_files = WEBrick::HTTPServlet::FileHandler.new(server, File.expand_path("dist"))
-server.mount_proc("/") do |request, response|
-  response["Content-Type"] = "text/plain"
-  if !%w[GET HEAD].include?(request.request_method)
-    response.status = 404
-    response.body = "404 Not Found"
-  elsif request.path == "/api"
-    response.body = "Hello Hono!"
-  else
-    begin
-      static_files.service(request, response)
-    rescue WEBrick::HTTPStatus::NotFound
-      response.status = 404
-      response.body = "404 Not Found"
-    end
-  end
-end
-trap("INT") { server.shutdown }
-trap("TERM") { server.shutdown }
-server.start
-```
-
 
 You could prompt the model to regenerate the file with a prompt like:
 
@@ -78995,35 +79042,6 @@ serve({
   fetch: app.fetch,
   port,
 });
-```
-
-```ruby
-require "webrick"
-
-server = WEBrick::HTTPServer.new(Port: Integer(ENV.fetch("PORT", "3000")), BindAddress: "127.0.0.1")
-# Build your client first and place its static files in dist/.
-static_files = WEBrick::HTTPServlet::FileHandler.new(server, File.expand_path("dist"))
-server.mount_proc("/") do |request, response|
-  response["Content-Type"] = "text/plain"
-  if !%w[GET HEAD].include?(request.request_method)
-    response.status = 404
-    response.body = "404 Not Found"
-  elsif request.path == "/api"
-    response.body = "Hello Hono!"
-  elsif request.path == "/hello"
-    response.body = "hello world"
-  else
-    begin
-      static_files.service(request, response)
-    rescue WEBrick::HTTPStatus::NotFound
-      response.status = 404
-      response.body = "404 Not Found"
-    end
-  end
-end
-trap("INT") { server.shutdown }
-trap("TERM") { server.shutdown }
-server.start
 ```
 
 
@@ -95700,7 +95718,7 @@ Before running this example, install `websocket-client` and `sounddevice` for Py
 
 
 
-Before running this example, install `openai` version 0.121.0 and `async-websocket` for Ruby (`gem install openai -v 0.121.0` and `gem install async-websocket`).
+Before running this example, install `openai` and `async-websocket` for Ruby (`gem install openai` and `gem install async-websocket`).
 
 
 
@@ -122725,7 +122743,7 @@ Set `MultiGrader#graders` to a hash keyed by grader name. For example, pass `gra
 
 ## Compare returned image sizes as strings
 
-Image responses and image generation and edit stream events return size strings such as `"1024x1024"`. Use `image.size&.to_s` in code that supports both SDK versions or needs to handle an omitted size. The size constants and `Size.values` also use strings.
+Image responses and image generation and edit stream events return size strings such as `"1024x1024"`. Use `image.size == "1024x1024"` to compare the size. The size constants and `Size.values` also use strings.
 
 ## Replace retired model constants
 
@@ -140739,7 +140757,7 @@ server.mount_proc("/webhook") do |request, response|
 
   headers = request.header.transform_values(&:first)
   event = client.webhooks.unwrap(request.body, headers)
-  puts "Verified webhook event: #{event.type}"
+  puts "Verified webhook event: #{event[:type]}"
 
   response.status = 200
   response.body = "ok"
@@ -141615,8 +141633,8 @@ server.start
 If your application assigns a [safety identifier](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers)
 for each end user, include it as the `OpenAI-Safety-Identifier` header in this
 server-side request. Use a stable, privacy-preserving value, such as a hashed
-internal user ID. The header should be set by your trusted backend, not by the
-browser.
+internal user ID. Keep the identifier to 128 characters or fewer. The header
+should be set by your trusted backend, not by the browser.
 
 #### Connecting to the server
 
@@ -141804,9 +141822,10 @@ server.start
 You can create a server endpoint like this one on any platform that can send and receive HTTP requests. Just ensure that **you only use standard OpenAI API keys on the server, not in the browser.**
 
 When using ephemeral tokens, set `OpenAI-Safety-Identifier` on the server-side
-request that creates the client secret. The Realtime API binds the identifier to
-the resulting ephemeral token, so the browser does not need to send the safety
-identifier when it later connects with that token.
+request that creates the client secret. Keep the identifier to 128 characters or
+fewer. The Realtime API binds the identifier to the resulting ephemeral token,
+so the browser does not need to send the safety identifier when it later
+connects with that token.
 
 #### Connecting to the server
 
@@ -144354,7 +144373,7 @@ In a server-to-server integration with Realtime, your backend system will connec
 
 ## Connect via WebSocket
 
-Below are several examples of connecting via WebSocket to the Realtime API. In addition to using the WebSocket URL below, you will also need to pass an authentication header using your OpenAI API key. If your application assigns [safety identifiers](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers), pass the stable, privacy-preserving identifier for the end user in the `OpenAI-Safety-Identifier` header.
+Below are several examples of connecting via WebSocket to the Realtime API. In addition to using the WebSocket URL below, you will also need to pass an authentication header using your OpenAI API key. If your application assigns [safety identifiers](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers), pass the stable, privacy-preserving identifier for the end user in the `OpenAI-Safety-Identifier` header. Keep the identifier to 128 characters or fewer.
 
 It is possible to use WebSocket in browsers with an ephemeral API token as shown in the [WebRTC connection guide](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime), but if you are connecting from a client like a browser or mobile app, WebRTC will be a more robust solution in most cases.
 
@@ -147243,7 +147262,7 @@ OpenAI provides an API helper for the Java programming language. You can include
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.111.0</version>
+  <version>4.112.0</version>
 </dependency>
 ```
 
@@ -149884,7 +149903,7 @@ OpenAI provides an API helper for the Java programming language. You can include
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.111.0</version>
+  <version>4.112.0</version>
 </dependency>
 ```
 

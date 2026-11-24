@@ -8,11 +8,11 @@ description: Understand the HTTP status codes, error response shape, and request
 
 The API follows a predictable HTTP error code format:
 
-* 400 - `invalid_request_error`: There’s an issue with the format or content of your request. The API might also use this error type for other 4XX status codes not listed in this section. The API also returns a 400 when usage reaches an organization or workspace [spend limit you set](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli#setting-your-own-spend-limit). Limits on the [Claude Code workspace](https://platform.claude.com/docs/en/manage-claude/workspaces?sdk_languages=cli#claude-code-workspace) are the exception: they can return a 429 instead. If the message names a problem with your request, look for it in [Common validation errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli#common-validation-errors).
+* 400 - `invalid_request_error`: There’s an issue with the format or content of your request. The API might also use this error type for other 4XX status codes not listed in this section. The API also returns a 400 when usage reaches an organization or workspace [spend limit you set](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=curl#setting-your-own-spend-limit). Limits on the [Claude Code workspace](https://platform.claude.com/docs/en/manage-claude/workspaces?sdk_languages=curl#claude-code-workspace) are the exception: they can return a 429 instead. If the message names a problem with your request, look for it in [Common validation errors](https://platform.claude.com/docs/en/api/errors?sdk_languages=curl#common-validation-errors).
 
-* 401 - `authentication_error`: There’s an issue with your [API key](https://platform.claude.com/docs/en/get-api-key?sdk_languages=cli) (for example, it’s malformed, revoked, or expired; see [Key expiration](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#key-expiration)). On Claude Platform on AWS, this can also indicate a problem with your AWS credentials or SigV4 signature.
+* 401 - `authentication_error`: There’s an issue with your [API key](https://platform.claude.com/docs/en/get-api-key?sdk_languages=curl) (for example, it’s malformed, revoked, or expired; see [Key expiration](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=curl#key-expiration)). On Claude Platform on AWS, this can also indicate a problem with your AWS credentials or SigV4 signature.
 
-  A 401 whose message begins `CORS requests are not allowed for this Organization` is not a problem with your API key. The request included an `Origin` header, which browsers add, and your organization cannot call the Claude API directly from a browser. The message continues `because of custom retention settings` or `because of its settings`. The first appears only for data retention arrangements such as zero data retention (ZDR); the second is the general case, which includes the Compliance API. No change to the browser request fixes it, so send the request from your own back end; see [Browser-based applications](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=cli#browser-based-applications).
+  A 401 whose message begins `CORS requests are not allowed for this Organization` is not a problem with your API key. The request included an `Origin` header, which browsers add, and your organization cannot call the Claude API directly from a browser. The message continues `because of custom retention settings` or `because of its settings`. The first appears only for data retention arrangements such as zero data retention (ZDR); the second is the general case, which includes the Compliance API. No change to the browser request fixes it, so send the request from your own back end; see [Browser-based applications](https://platform.claude.com/docs/en/manage-claude/authentication?sdk_languages=curl#browser-based-applications).
 
 * 402 - `billing_error`: There’s an issue with your billing or payment information. Check your payment details in the [Claude Console](https://platform.claude.com), or in AWS Marketplace if you’re using Claude Platform on AWS.
 
@@ -22,13 +22,13 @@ The API follows a predictable HTTP error code format:
 
 * 409 - `conflict_error`: The request conflicts with the current state of a resource. For example, the resource was modified concurrently, or a value that must be unique is already in use. Resolve the conflict, then retry the request.
 
-* 413 - `request_too_large`: Request exceeds the maximum allowed number of bytes. See [Request size limits](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli#request-size-limits) for per-endpoint maximums.
+* 413 - `request_too_large`: Request exceeds the maximum allowed number of bytes. See [Request size limits](https://platform.claude.com/docs/en/api/errors?sdk_languages=curl#request-size-limits) for per-endpoint maximums.
 
-* 429 - `rate_limit_error`: Your organization has hit a [rate limit](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli), reached its usage tier’s monthly spend cap, or reached a spend limit on the Claude Code workspace. A tier spend-cap 429 has no `retry-after` header and keeps failing until access resumes; see [Reaching your spend cap](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli#reaching-your-spend-cap) for how to recognize it. A sharp increase in usage can also cause a 429 even while you’re under your rate limits; see [Ramp limits](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli#ramp-limits).
+* 429 - `rate_limit_error`: Your organization has hit a [rate limit](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=curl), reached its usage tier’s monthly spend cap, or reached a spend limit on the Claude Code workspace. A tier spend-cap 429 has no `retry-after` header and keeps failing until access resumes; see [Reaching your spend cap](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=curl#reaching-your-spend-cap) for how to recognize it. A sharp increase in usage can also cause a 429 even while you’re under your rate limits; see [Ramp limits](https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=curl#ramp-limits).
 
-* 500 - `api_error`: An unexpected error has occurred internal to Anthropic’s systems. Retry the request with exponential backoff; if the error persists, contact support with the [request ID](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli#request-id). If the error type is `timeout_error` instead, see the 504 entry.
+* 500 - `api_error`: An unexpected error has occurred internal to Anthropic’s systems. Retry the request with exponential backoff; if the error persists, contact support with the [request ID](https://platform.claude.com/docs/en/api/errors?sdk_languages=curl#request-id). If the error type is `timeout_error` instead, see the 504 entry.
 
-* 504 - `timeout_error`: The request timed out while processing. The API also returns `timeout_error` with other status codes, such as a 500 when a request reaches the server’s time limit before the response starts. For long-running Messages API requests, use the [streaming Messages API](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli). See [Long requests](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli#long-requests) for more options.
+* 504 - `timeout_error`: The request timed out while processing. The API also returns `timeout_error` with other status codes, such as a 500 when a request reaches the server’s time limit before the response starts. For long-running Messages API requests, use the [streaming Messages API](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl). See [Long requests](https://platform.claude.com/docs/en/api/errors?sdk_languages=curl#long-requests) for more options.
 
 * 529 - `overloaded_error`: The API is temporarily overloaded.
 
@@ -38,18 +38,18 @@ The API follows a predictable HTTP error code format:
 
 The official SDK automatically retries transient failures (such as connection errors, rate limits, and 5xx server errors) with exponential backoff, twice by default, honoring the `retry-after` header when present. The SDK client accepts `max_retries` to configure or disable this behavior.
 
-When receiving a [streaming](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli) response over server-sent events (SSE), an error can occur after the API returns a 200 response. In that case, error handling doesn’t follow these standard mechanisms. See [Error events](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli#error-events) for the shape of mid-stream errors.
+When receiving a [streaming](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl) response over server-sent events (SSE), an error can occur after the API returns a 200 response. In that case, error handling doesn’t follow these standard mechanisms. See [Error events](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl#error-events) for the shape of mid-stream errors.
 
 ## Request size limits
 
-The first-party Claude API enforces these request size limits. For other platforms, see the [API overview](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli#request-size-limits).
+The first-party Claude API enforces these request size limits. For other platforms, see the [API overview](https://platform.claude.com/docs/en/api/overview?sdk_languages=curl#request-size-limits).
 
 | Endpoint type | Maximum request size |
 | ----- | ----- |
 | Messages API | 128 MB |
 | Token Counting API | 128 MB |
-| [Batch API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli) | 256 MB |
-| [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=cli) | 500 MB |
+| [Batch API](https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=curl) | 256 MB |
+| [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=curl) | 500 MB |
 
 If you exceed these limits, you’ll receive a 413 `request_too_large` error. On the first-party Claude API, Cloudflare returns this error before the request reaches the API servers.
 
@@ -68,65 +68,63 @@ The API always returns errors as JSON, with a top-level `error` object that alwa
 }
 ```
 
-Under the [API versioning policy](https://platform.claude.com/docs/en/api/versioning?sdk_languages=cli), the values within these objects can expand, and new `type` values can appear.
+Under the [API versioning policy](https://platform.claude.com/docs/en/api/versioning?sdk_languages=curl), the values within these objects can expand, and new `type` values can appear.
 
 ## SDK error types
 
 The official SDK raises typed exceptions for these errors instead of returning raw JSON. For example, a 404 surfaces as `anthropic.NotFoundError`. The Go SDK has one error type for every status, `*anthropic.Error`: branch on `StatusCode`. Catch the SDK’s typed classes rather than string-matching error messages, handling the most specific classes first. Your SDK’s page documents the full exception hierarchy:
 
-* [Python](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python?sdk_languages=cli#handling-errors) · [TypeScript](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/typescript?sdk_languages=cli#handling-errors) · [C#](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/csharp?sdk_languages=cli#error-handling) · [Go](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go?sdk_languages=cli#error-handling) · [Java](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/java?sdk_languages=cli#error-handling) · [PHP](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/php?sdk_languages=cli#error-handling) · [Ruby](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/ruby?sdk_languages=cli#handling-errors)
+* [Python](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/python?sdk_languages=curl#handling-errors) · [TypeScript](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/typescript?sdk_languages=curl#handling-errors) · [C#](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/csharp?sdk_languages=curl#error-handling) · [Go](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go?sdk_languages=curl#error-handling) · [Java](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/java?sdk_languages=curl#error-handling) · [PHP](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/php?sdk_languages=curl#error-handling) · [Ruby](https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/ruby?sdk_languages=curl#handling-errors)
 
 ## Request ID
 
-Every API response includes a unique `request-id` header. This header contains a value such as `req_018EeWyXxfu5pfWkrYcMdjWG`. The same identifier appears as the `request_id` field in [error response bodies](https://platform.claude.com/docs/en/api/errors?sdk_languages=cli#error-shapes). When contacting support about a specific request, include this ID to help quickly resolve your issue.
+Every API response includes a unique `request-id` header. This header contains a value such as `req_018EeWyXxfu5pfWkrYcMdjWG`. The same identifier appears as the `request_id` field in [error response bodies](https://platform.claude.com/docs/en/api/errors?sdk_languages=curl#error-shapes). When contacting support about a specific request, include this ID to help quickly resolve your issue.
 
-On [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), responses include two request IDs: the AWS request ID (`x-amzn-requestid`, primary, indexed in CloudTrail) and the Anthropic request ID (`request-id`, secondary). Use the AWS request ID for CloudTrail lookups and the Anthropic request ID for Anthropic support tickets.
+On [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=curl), responses include two request IDs: the AWS request ID (`x-amzn-requestid`, primary, indexed in CloudTrail) and the Anthropic request ID (`request-id`, secondary). Use the AWS request ID for CloudTrail lookups and the Anthropic request ID for Anthropic support tickets.
 
-The Python and TypeScript SDKs expose the request ID as a `_request_id` property on top-level response objects. The C#, Go, Java, and PHP SDKs expose it through their raw-response accessors, and the Ruby SDK through [middleware](https://platform.claude.com/docs/en/cli-sdks-libraries/middleware?sdk_languages=cli). In every SDK except Ruby, use `with_raw_response` to read any other [response header](https://platform.claude.com/docs/en/api/overview?sdk_languages=cli#response-headers), such as `anthropic-organization-id` and [`anthropic-workspace-id`](https://platform.claude.com/docs/en/manage-claude/workspaces?sdk_languages=cli#identify-the-workspace-behind-an-api-response). In Ruby, use the same middleware. On Claude Platform on AWS, use the raw-response accessor to read the AWS request ID (`x-amzn-requestid`) as well:
+The Python and TypeScript SDKs expose the request ID as a `_request_id` property on top-level response objects. The C#, Go, Java, and PHP SDKs expose it through their raw-response accessors, and the Ruby SDK through [middleware](https://platform.claude.com/docs/en/cli-sdks-libraries/middleware?sdk_languages=curl). In every SDK except Ruby, use `with_raw_response` to read any other [response header](https://platform.claude.com/docs/en/api/overview?sdk_languages=curl#response-headers), such as `anthropic-organization-id` and [`anthropic-workspace-id`](https://platform.claude.com/docs/en/manage-claude/workspaces?sdk_languages=curl#identify-the-workspace-behind-an-api-response). In Ruby, use the same middleware. On Claude Platform on AWS, use the raw-response accessor to read the AWS request ID (`x-amzn-requestid`) as well:
 
 <CodeGroup>
-  ```bash CLI
-  # The request-id header is printed to stderr with --debug:
-  ant --debug messages create \
-    --model claude-sonnet-5 \
-    --max-tokens 1024 \
-    --message '{role: user, content: "Hello, Claude"}'
+  ```bash cURL
+  # -i prints the response headers, including request-id, before the body
+  curl -sS -i https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2026-10-21" \
+    -H "content-type: application/json" \
+    -d '{
+      "model": "claude-sonnet-5",
+      "max_tokens": 1024,
+      "messages": [{"role": "user", "content": "Hello, Claude"}]
+    }'
   ```
 </CodeGroup>
 
-For Claude Platform on AWS request-ID examples in other languages, see [Request IDs](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli#request-ids).
+For Claude Platform on AWS request-ID examples in other languages, see [Request IDs](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=curl#request-ids).
 
 ## Long requests
 
 <Warning>
-  Consider using the [streaming Messages API](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli) or [Message Batches API](https://platform.claude.com/docs/en/api/messages/batches/create?sdk_languages=cli) for long-running requests, especially those over 10 minutes.
+  Consider using the [streaming Messages API](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl) or [Message Batches API](https://platform.claude.com/docs/en/api/messages/batches/create?sdk_languages=curl) for long-running requests, especially those over 10 minutes.
 </Warning>
 
-Avoid setting a large `max_tokens` value without using the [streaming Messages API](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli) or [Message Batches API](https://platform.claude.com/docs/en/api/messages/batches/create?sdk_languages=cli):
+Avoid setting a large `max_tokens` value without using the [streaming Messages API](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl) or [Message Batches API](https://platform.claude.com/docs/en/api/messages/batches/create?sdk_languages=curl):
 
 * Some networks might drop idle connections after a variable period of time, which can cause the request to fail or time out without receiving a response from Anthropic.
-* Networks differ in reliability. The [Message Batches API](https://platform.claude.com/docs/en/api/messages/batches/create?sdk_languages=cli) can help you manage the risk of network issues by allowing you to poll for results rather than requiring an uninterrupted network connection.
+* Networks differ in reliability. The [Message Batches API](https://platform.claude.com/docs/en/api/messages/batches/create?sdk_languages=curl) can help you manage the risk of network issues by allowing you to poll for results rather than requiring an uninterrupted network connection.
 
 If you are building a direct API integration, setting a [TCP socket keep-alive](https://tldp.org/HOWTO/TCP-Keepalive-HOWTO/programming.html) can reduce the impact of idle connection timeouts on some networks.
 
-The [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli) validates that your non-streaming Messages API requests are not expected to exceed a 10-minute timeout. It also sets a socket option for TCP keep-alive.
+The [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=curl) validates that your non-streaming Messages API requests are not expected to exceed a 10-minute timeout. It also sets a socket option for TCP keep-alive.
 
 If you don’t need to process events incrementally, the SDK can consume the stream for you and return the complete `Message` object, identical to what a non-streaming call returns:
 
 <CodeGroup exclude="shell:cURL">
-  ```bash CLI
-  # The CLI streams events; --format jsonl emits one event on each line
-  ant messages create --stream --format jsonl <<'YAML'
-  model: claude-sonnet-5
-  max_tokens: 128000
-  messages:
-    - role: user
-      content: Write a detailed analysis...
-  YAML
-  ```
+  <CodeGroupItem language="cURL">
+    A curl request prints the raw stream events and can’t combine them into the final message. To get the complete `Message` object from a stream, use the [Anthropic SDK](https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=curl).
+  </CodeGroupItem>
 </CodeGroup>
 
-See [Get the final message without handling events](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli#get-the-final-message-without-handling-events) for more details.
+See [Get the final message without handling events](https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl#get-the-final-message-without-handling-events) for more details.
 
 ## Common validation errors
 
@@ -144,7 +142,7 @@ Claude 4.6 and later models and [Claude Mythos Preview](https://anthropic.com/gl
 }
 ```
 
-Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli) on models that support it, system prompt instructions, or [`output_config.format`](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli#usage) instead.
+Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl) on models that support it, system prompt instructions, or [`output_config.format`](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#usage) instead.
 
 ### Thinking blocks cannot be modified
 
@@ -154,7 +152,7 @@ If thinking blocks in the request don’t match what the API returned, the reque
 `thinking` or `redacted_thinking` blocks in the latest assistant message cannot be modified. These blocks must remain as they were in the original response.
 ```
 
-With tool use, pass back every `thinking` and `redacted_thinking` block from the assistant turn exactly as received, including blocks whose `thinking` field is empty. If your application filters content blocks by type before resending, include both `thinking` and `redacted_thinking`. This is a different failure from the [prefix check](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking/prefix-checks?sdk_languages=cli#prefix-check), whose error says that a block is bound to a different conversation. Setting `prefix_mismatch_behavior` might not clear it. See the [fix for modified thinking blocks](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=cli#error-thinking-blocks-modified) in Troubleshooting thinking.
+With tool use, pass back every `thinking` and `redacted_thinking` block from the assistant turn exactly as received, including blocks whose `thinking` field is empty. If your application filters content blocks by type before resending, include both `thinking` and `redacted_thinking`. This is a different failure from the [prefix check](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking/prefix-checks?sdk_languages=curl#prefix-check), whose error says that a block is bound to a different conversation. Setting `prefix_mismatch_behavior` might not clear it. See the [fix for modified thinking blocks](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=curl#error-thinking-blocks-modified) in Troubleshooting thinking.
 
 ### Extended thinking not supported
 
@@ -164,7 +162,7 @@ Claude 4.7 and later models don’t support extended thinking. Sending `thinking
 "thinking.type.enabled" is not supported for this model. Use "thinking.type.adaptive" and "output_config.effort" to control thinking behavior.
 ```
 
-Use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli) instead. For the parameter mapping, see [Migrating to adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli#migrating-to-adaptive-thinking). To fix the error from its symptom, see [A 400 error says `"thinking.type.enabled"` is not supported](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=cli#error-thinking-type-enabled).
+Use [adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl) instead. For the parameter mapping, see [Migrating to adaptive thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl#migrating-to-adaptive-thinking). To fix the error from its symptom, see [A 400 error says `"thinking.type.enabled"` is not supported](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=curl#error-thinking-type-enabled).
 
 ### Adaptive thinking not supported
 
@@ -174,11 +172,11 @@ Models that support only extended thinking (Claude 4.5 and earlier models) rejec
 adaptive thinking is not supported on this model
 ```
 
-Use `thinking: {"type": "enabled", "budget_tokens": N}` on these models; see [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=cli) for the configuration and the [symptom-first fix for the adaptive thinking error](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=cli#error-thinking-type-adaptive) in Troubleshooting thinking.
+Use `thinking: {"type": "enabled", "budget_tokens": N}` on these models; see [Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl) for the configuration and the [symptom-first fix for the adaptive thinking error](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=curl#error-thinking-type-adaptive) in Troubleshooting thinking.
 
 ### Thinking cannot be disabled
 
-On Claude Fable 5.2, [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=cli), Claude Fable 5.1, [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli), Claude Fable 5, [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli), Claude Opus 5.5, and [Claude Mythos Preview](https://anthropic.com/glasswing), thinking is always on. Sending `thinking: {"type": "disabled"}` to any of these models returns a 400 `invalid_request_error`. On all of these models except Claude Mythos Preview, the message reads:
+On Claude Fable 5.2, [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=curl), Claude Fable 5.1, [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=curl), Claude Fable 5, [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=curl), Claude Opus 5.5, and [Claude Mythos Preview](https://anthropic.com/glasswing), thinking is always on. Sending `thinking: {"type": "disabled"}` to any of these models returns a 400 `invalid_request_error`. On all of these models except Claude Mythos Preview, the message reads:
 
 ```text wrap
 "thinking.type.disabled" is not supported for this model. Use "thinking.type.adaptive" and "output_config.effort" to control thinking behavior.
@@ -196,7 +194,7 @@ On Claude Sonnet 5.5, thinking can’t be set to `disabled`. Use `thinking: {"ty
 To turn thinking off on this model, send "thinking": {"type": "between_tools"} instead of {"type": "disabled"}. The model does not think before responding. The short updates it writes between tool calls come back as thinking blocks.
 ```
 
-At `xhigh` or `max` [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli), a request with `between_tools` also returns a 400 `invalid_request_error`. The error message says thinking is disabled because `between_tools` has no up-front thinking:
+At `xhigh` or `max` [effort](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=curl), a request with `between_tools` also returns a 400 `invalid_request_error`. The error message says thinking is disabled because `between_tools` has no up-front thinking:
 
 ```text wrap
 output_config.effort 'xhigh' is not supported when thinking is disabled on this model. Use effort 'high' or below, or enable thinking.
@@ -218,35 +216,35 @@ Sending `thinking: {"type": "between_tools"}` to any model other than Claude Son
 "thinking.type.between_tools" is not supported for this model.
 ```
 
-For the fixes, see the [`between_tools` and effort errors](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=cli#error-thinking-type-between-tools) in Troubleshooting thinking.
+For the fixes, see the [`between_tools` and effort errors](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=curl#error-thinking-type-between-tools) in Troubleshooting thinking.
 
-Omit the `thinking` parameter and the request runs with adaptive thinking. To keep thinking content out of responses without turning thinking off, set `display: "omitted"` on the thinking configuration. See the [fix for the disabled thinking error](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=cli#error-thinking-type-disabled) in Troubleshooting thinking.
+Omit the `thinking` parameter and the request runs with adaptive thinking. To keep thinking content out of responses without turning thinking off, set `display: "omitted"` on the thinking configuration. See the [fix for the disabled thinking error](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=curl#error-thinking-type-disabled) in Troubleshooting thinking.
 
 ### Forced tool use not supported
 
-Claude Fable 5.2, [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=cli), Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1, and [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli) don’t support forced tool use. Sending `tool_choice: {"type": "any"}` or `tool_choice: {"type": "tool", "name": "..."}` to any of these models, including on the [token counting endpoint](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=cli), returns a 400 `invalid_request_error`:
+Claude Fable 5.2, [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=curl), Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1, and [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=curl) don’t support forced tool use. Sending `tool_choice: {"type": "any"}` or `tool_choice: {"type": "tool", "name": "..."}` to any of these models, including on the [token counting endpoint](https://platform.claude.com/docs/en/build-with-claude/token-counting?sdk_languages=curl), returns a 400 `invalid_request_error`:
 
 ```text wrap
 tool_choice: type "tool" and "any" are not supported for this model.
 ```
 
-`tool_choice: {"type": "auto"}` (the default) and `{"type": "none"}` are accepted. Use `auto` with [strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=cli) to keep tool inputs schema-valid, or [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli) when you need the response itself in a fixed JSON shape. See [Forcing tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=cli#forcing-tool-use).
+`tool_choice: {"type": "auto"}` (the default) and `{"type": "none"}` are accepted. Use `auto` with [strict tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/strict-tool-use?sdk_languages=curl) to keep tool inputs schema-valid, or [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl) when you need the response itself in a fixed JSON shape. See [Forcing tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools?sdk_languages=curl#forcing-tool-use).
 
 ### Computer use tool version not supported
 
-Claude Fable 5.2, Claude Mythos 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 return a 400 error for any [computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli) tool version they don’t accept. On the Claude API, that includes `computer_20251124` with its beta header. They don’t accept `computer_20250124` on any platform. The Claude API’s `invalid_request_error` message names the rejected type and, after `Did you mean one of`, lists the tool types the model accepts. For Claude Opus 5.5, the message begins:
+Claude Fable 5.2, Claude Mythos 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 return a 400 error for any [computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=curl) tool version they don’t accept. On the Claude API, that includes `computer_20251124` with its beta header. They don’t accept `computer_20250124` on any platform. The Claude API’s `invalid_request_error` message names the rejected type and, after `Did you mean one of`, lists the tool types the model accepts. For Claude Opus 5.5, the message begins:
 
 ```text wrap
 'claude-opus-5-5' does not support tool types: computer_20251124.
 ```
 
-The Claude API returns the same message for any Anthropic-defined tool type that the requested model doesn’t support. Claude Fable 5.2, Claude Mythos 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 support computer use through the `computer_toolset_20260801` toolset. Declare `{"type": "computer_toolset_20260801"}` without the beta header and update your agent loop as described in [Migrate from `computer_20251124`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli#migrate-from-computer-20251124). To move from `computer_20250124`, see [Move computer use to the toolset](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide?sdk_languages=cli#computer-use-toolset) in the Claude Haiku 5.5 migration guide.
+The Claude API returns the same message for any Anthropic-defined tool type that the requested model doesn’t support. Claude Fable 5.2, Claude Mythos 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 support computer use through the `computer_toolset_20260801` toolset. Declare `{"type": "computer_toolset_20260801"}` without the beta header and update your agent loop as described in [Migrate from `computer_20251124`](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=curl#migrate-from-computer-20251124). To move from `computer_20250124`, see [Move computer use to the toolset](https://platform.claude.com/docs/en/models/haiku-5-5/migration-guide?sdk_languages=curl#computer-use-toolset) in the Claude Haiku 5.5 migration guide.
 
-On Amazon Bedrock, Claude Fable 5.2, Claude Mythos 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 also accept the `computer_20251124` tool with the `computer-use-2025-11-24` beta header. With Amazon Bedrock’s InvokeModel API, send `computer-use-2025-11-24` in the `anthropic_beta` array of the request body instead of in a header. For that API, see [Claude on Amazon Bedrock (`bedrock-runtime`)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=cli). For the models to use with each earlier version, see [Earlier tool versions](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli#earlier-tool-versions).
+On Amazon Bedrock, Claude Fable 5.2, Claude Mythos 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 also accept the `computer_20251124` tool with the `computer-use-2025-11-24` beta header. With Amazon Bedrock’s InvokeModel API, send `computer-use-2025-11-24` in the `anthropic_beta` array of the request body instead of in a header. For that API, see [Claude on Amazon Bedrock (`bedrock-runtime`)](https://platform.claude.com/docs/en/build-with-claude/claude-on-amazon-bedrock-legacy?sdk_languages=curl). For the models to use with each earlier version, see [Earlier tool versions](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=curl#earlier-tool-versions).
 
 ### Thinking block bound to a different conversation
 
-This 400 `invalid_request_error` means a thinking block you sent back failed the [prefix check](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking/prefix-checks?sdk_languages=cli#prefix-check). Compare `system`, `tools`, and the messages before the block with what you sent when the model produced it. For which changes matter, see [What counts as a change](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking/prefix-checks?sdk_languages=cli#what-counts-as-an-edit). The error message starts with the position of the first failing block:
+This 400 `invalid_request_error` means a thinking block you sent back failed the [prefix check](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking/prefix-checks?sdk_languages=curl#prefix-check). Compare `system`, `tools`, and the messages before the block with what you sent when the model produced it. For which changes matter, see [What counts as a change](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking/prefix-checks?sdk_languages=curl#what-counts-as-an-edit). The error message starts with the position of the first failing block:
 
 ```text wrap
 messages.{i}.content.{j}: Invalid `signature` in `thinking` block. The block is bound to a different conversation. Remove the block, or set `thinking.block_binding.prefix_mismatch_behavior` to "drop_block".
@@ -257,9 +255,9 @@ Resending the same history fails the same way. Fixing the code that made the edi
 * Send the `thinking-binding-controls-2026-08-01` beta header and set `thinking.block_binding.prefix_mismatch_behavior` to `"drop_block"`, on the retry and on every later request in that conversation. On Claude Sonnet 5.5 and Claude Haiku 5.5, `block_binding` works only with `thinking: {"type": "adaptive"}`.
 * Strip the block the error names and every `thinking` and `redacted_thinking` block after it, in that message and in every later message. Retry, and leave the stripped blocks out of later requests.
 
-To stop new conversations from failing, [keep the history append-only](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking/prefix-checks?sdk_languages=cli#what-to-check). See the [fix for an invalid thinking block signature](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=cli#error-thinking-block-signature) in Troubleshooting thinking.
+To stop new conversations from failing, [keep the history append-only](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking/prefix-checks?sdk_languages=curl#what-to-check). See the [fix for an invalid thinking block signature](https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=curl#error-thinking-block-signature) in Troubleshooting thinking.
 
-Sending `thinking.block_binding` without the `thinking-binding-controls-2026-08-01` [beta header](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=cli) returns a 400 `invalid_request_error` whose message ends in:
+Sending `thinking.block_binding` without the `thinking-binding-controls-2026-08-01` [beta header](https://platform.claude.com/docs/en/api/beta-headers?sdk_languages=curl) returns a 400 `invalid_request_error` whose message ends in:
 
 ```text wrap
 block_binding: Extra inputs are not permitted
@@ -269,20 +267,20 @@ Add the header, turn thinking on, or remove the field.
 
 ### Outbound web identity federation disabled (Claude Platform on AWS)
 
-If every request to [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli) returns `"Outbound web identity federation is disabled for your account"`, run `aws iam enable-outbound-web-identity-federation` once for each AWS account. See [Enable outbound web identity federation](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli#enable-outbound-web-identity-federation) for details.
+If every request to [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=curl) returns `"Outbound web identity federation is disabled for your account"`, run `aws iam enable-outbound-web-identity-federation` once for each AWS account. See [Enable outbound web identity federation](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=curl#enable-outbound-web-identity-federation) for details.
 
 ## Next steps
 
 <CardGroup cols={3}>
-  <Card title="Troubleshooting thinking" icon="wrench" href="https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=cli">
+  <Card title="Troubleshooting thinking" icon="wrench" href="https://platform.claude.com/docs/en/build-with-claude/thinking-troubleshooting?sdk_languages=curl">
     Symptom-first fixes for thinking configuration 400 errors, empty thinking blocks, and `max_tokens` stops.
   </Card>
 
-  <Card title="Rate limits" icon="gauge" href="https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=cli">
+  <Card title="Rate limits" icon="gauge" href="https://platform.claude.com/docs/en/api/rate-limits?sdk_languages=curl">
     To mitigate misuse and manage capacity on the API, limits are in place on how much an organization can use the Claude API.
   </Card>
 
-  <Card title="Streaming messages" icon="lightning" href="https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=cli">
+  <Card title="Streaming messages" icon="lightning" href="https://platform.claude.com/docs/en/build-with-claude/streaming?sdk_languages=curl">
     Stream Messages API responses incrementally with server-sent events, including text, tool use, and extended thinking deltas.
   </Card>
 </CardGroup>

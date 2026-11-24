@@ -6,7 +6,7 @@ featureMetadata:
   status: stable
   zdr:
     eligibility: eligible
-    note: Excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#model-specific-data-retention-requirements). Standard API calls for generating Claude responses.
+    note: Excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#model-specific-data-retention-requirements). Standard API calls for generating Claude responses.
   supportedModels:
     - claude-fable-5-2
     - claude-mythos-5-2
@@ -44,20 +44,28 @@ Anthropic offers two ways to build with Claude, each suited to different use cas
 | **What it is** | Direct model prompting access | Pre-built, configurable agent harness that runs in managed infrastructure |
 | **Best for** | Custom agent loops and fine-grained control | Long-running tasks and asynchronous work |
 
-This guide covers common patterns for working with the Messages API, including basic requests, multi-turn conversations, prefill techniques, and vision capabilities. For complete API specifications, see the [Messages API reference](https://platform.claude.com/docs/en/api/messages/create?sdk_languages=cli). For the managed agent harness instead, see the [Claude Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=cli).
+This guide covers common patterns for working with the Messages API, including basic requests, multi-turn conversations, prefill techniques, and vision capabilities. For complete API specifications, see the [Messages API reference](https://platform.claude.com/docs/en/api/messages/create?sdk_languages=curl). For the managed agent harness instead, see the [Claude Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview?sdk_languages=curl).
 
 ## Basic request and response
 
 <Note>
-  The `temperature`, `top_p`, and `top_k` sampling parameters are not supported on Claude 4.7 and later models and Claude Mythos Preview, or on any model starting with [API version `2026-10-21`](https://platform.claude.com/docs/en/api/migration-2026-10-21?sdk_languages=cli#sampling-parameters). Setting them to a non-default value returns a 400 error, and starting with `2026-10-21` any value does. Omit them from request payloads and use prompting to guide the model’s behavior instead. See the [breaking changes in the migration guide](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=cli#opus-46-breaking-changes).
+  The `temperature`, `top_p`, and `top_k` sampling parameters are not supported on Claude 4.7 and later models and Claude Mythos Preview, or on any model starting with [API version `2026-10-21`](https://platform.claude.com/docs/en/api/migration-2026-10-21?sdk_languages=curl#sampling-parameters). Setting them to a non-default value returns a 400 error, and starting with `2026-10-21` any value does. Omit them from request payloads and use prompting to guide the model’s behavior instead. See the [breaking changes in the migration guide](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide?sdk_languages=curl#opus-46-breaking-changes).
 </Note>
 
 <CodeGroup>
-  ```bash CLI
-  ant messages create \
-    --model claude-opus-5-5 \
-    --max-tokens 1024 \
-    --message '{role: user, content: "Hello, Claude"}'
+  ```bash cURL
+  #!/bin/sh
+  curl https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2026-10-21" \
+    -H "content-type: application/json" \
+    -d '{
+      "model": "claude-opus-5-5",
+      "max_tokens": 1024,
+      "messages": [
+        {"role": "user", "content": "Hello, Claude"}
+      ]
+    }'
   ```
 </CodeGroup>
 
@@ -82,22 +90,31 @@ This guide covers common patterns for working with the Messages API, including b
 }
 ```
 
-Refusal responses (`stop_reason: "refusal"`) also include a `stop_details` object identifying the policy category that triggered the refusal, on every model. See [What a refusal looks like](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#refusal-response) for the field reference and example handling code.
+Refusal responses (`stop_reason: "refusal"`) also include a `stop_details` object identifying the policy category that triggered the refusal, on every model. See [What a refusal looks like](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=curl#refusal-response) for the field reference and example handling code.
 
 ## Multiple conversational turns
 
 The Messages API is stateless, which means that you always send the full conversational history to the API. You can use this pattern to build up a conversation over time. Earlier conversational turns don’t necessarily need to actually originate from Claude. You can use synthetic `assistant` messages.
 
-With [message threads](https://platform.claude.com/docs/en/build-with-claude/message-threads?sdk_languages=cli), in beta, the API can keep the conversation, so that each later request sends only the new messages. A thread expires 5 minutes after its last request and is deleted no more than 1 hour after its last use.
+With [message threads](https://platform.claude.com/docs/en/build-with-claude/message-threads?sdk_languages=curl), in beta, the API can keep the conversation, so that each later request sends only the new messages. A thread expires 5 minutes after its last request and is deleted no more than 1 hour after its last use.
 
 <CodeGroup>
-  ```bash CLI
-  ant messages create \
-    --model claude-opus-5-5 \
-    --max-tokens 1024 \
-    --message '{role: user, content: "Hello, Claude"}' \
-    --message '{role: assistant, content: "Hello!"}' \
-    --message '{role: user, content: "Can you describe LLMs to me?"}'
+  ```bash cURL
+  #!/bin/sh
+  curl https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2026-10-21" \
+    -H "content-type: application/json" \
+    -d '{
+      "model": "claude-opus-5-5",
+      "max_tokens": 1024,
+      "messages": [
+        {"role": "user", "content": "Hello, Claude"},
+        {"role": "assistant", "content": "Hello!"},
+        {"role": "user", "content": "Can you describe LLMs to me?"}
+
+      ]
+    }'
   ```
 </CodeGroup>
 
@@ -124,31 +141,40 @@ With [message threads](https://platform.claude.com/docs/en/build-with-claude/mes
 
 ### System role in messages
 
-To add a new system instruction partway through a conversation, include a message with `"role": "system"` right after a user turn. That message can’t be the first entry in `messages`. This works on Claude Fable 5.2, [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=cli), Claude Fable 5.1, [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=cli), Claude Fable 5, [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=cli), Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, and Claude Haiku 5.5. See the full [placement rules](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages?sdk_languages=cli#limitations).
+To add a new system instruction partway through a conversation, include a message with `"role": "system"` right after a user turn. That message can’t be the first entry in `messages`. This works on Claude Fable 5.2, [Claude Mythos 5.2](https://platform.claude.com/docs/en/models/mythos-5-2/overview?sdk_languages=curl), Claude Fable 5.1, [Claude Mythos 5.1](https://platform.claude.com/docs/en/models/mythos-5-1/overview?sdk_languages=curl), Claude Fable 5, [Claude Mythos 5](https://platform.claude.com/docs/en/models/mythos-5/overview?sdk_languages=curl), Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, and Claude Haiku 5.5. See the full [placement rules](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages?sdk_languages=curl#limitations).
 
 A mid-conversation system message has the same authority as the top-level `system` field, but because it is appended to the end of the message history, it does not invalidate any cached prefix that came before it. Use the top-level `system` field for instructions that should apply from the very first turn, and a mid-conversation system message for instructions that only become relevant later.
 
-See [Mid-conversation system messages and tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages?sdk_languages=cli) for the complete guide, including how to combine it with [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=cli).
+See [Mid-conversation system messages and tool changes](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages?sdk_languages=curl) for the complete guide, including how to combine it with [prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching?sdk_languages=curl).
 
 ## Prefilling Claude’s response
 
-You can prefill part of Claude’s response in the last position of the input messages list. Use this technique to shape Claude’s response. The following example uses `"max_tokens": 1` to get a single multiple-choice answer from Claude.
+A prefill is text that you write in an `assistant` message and put last in `messages`. An `assistant` message anywhere else in `messages` isn’t a prefill. Claude continues the prefilled text, and the response holds only the continuation.
 
-<Warning>
-  Prefilling is not supported on Claude 4.6 and later models and [Claude Mythos Preview](https://anthropic.com/glasswing). Requests using prefill with these models return a 400 error. Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli) on models that support it, or system prompt instructions, instead. See [Migration guides](https://platform.claude.com/docs/en/about-claude/models/migration-guide?sdk_languages=cli) for migration patterns.
-</Warning>
+Use a prefill to set how a response starts, for example, to start it in a fixed format or to skip a preamble.
+
+Whether the API accepts a prefill depends on the model, not on the API version:
+
+* **Claude 4.5 and earlier models:** The API accepts a prefill unless the model is retired on the platform that you use. All requests to a retired model fail. To check a model’s status, see [Model deprecations](https://platform.claude.com/docs/en/about-claude/model-deprecations?sdk_languages=curl).
+* **All other models:** The API returns a 400 error (see the [Prefill not supported](https://platform.claude.com/docs/en/api/errors?sdk_languages=curl#prefill-not-supported) section of the Claude API errors page). Use one of the [alternatives to a prefill](https://platform.claude.com/docs/en/build-with-claude/working-with-messages?sdk_languages=curl#alternatives-to-a-prefill) instead.
+
+The following example runs on Claude Opus 4.5 and sets the format of a multiple-choice answer. The prefill, `The answer is (`, ends right before the answer’s letter so that Claude writes the letter first. Because the answer is one letter, the example also sets `max_tokens` to `1`. For a longer answer, set a higher `max_tokens`.
 
 <CodeGroup>
-  ```bash CLI
-  ant messages create <<'YAML'
-  model: claude-sonnet-4-5
-  max_tokens: 1
-  messages:
-    - role: user
-      content: "What is latin for Ant? (A) Apoidea, (B) Rhopalocera, (C) Formicidae"
-    - role: assistant
-      content: "The answer is ("
-  YAML
+  ```bash cURL
+  #!/bin/sh
+  curl https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2026-10-21" \
+    -H "content-type: application/json" \
+    -d '{
+      "model": "claude-opus-4-5-20251101",
+      "max_tokens": 1,
+      "messages": [
+        {"role": "user", "content": "What is Latin for ant? (A) Apoidea, (B) Rhopalocera, (C) Formicidae"},
+        {"role": "assistant", "content": "The answer is ("}
+      ]
+    }'
   ```
 </CodeGroup>
 
@@ -163,7 +189,7 @@ You can prefill part of Claude’s response in the last position of the input me
       "text": "C"
     }
   ],
-  "model": "claude-sonnet-4-5",
+  "model": "claude-opus-4-5-20251101",
   "stop_reason": "max_tokens",
   "stop_sequence": null,
   "usage": {
@@ -173,45 +199,90 @@ You can prefill part of Claude’s response in the last position of the input me
 }
 ```
 
+Note two fields in this response:
+
+* **`text`:** The value is `C`. It holds only the continuation, not the prefill.
+* **`stop_reason`:** The value is `max_tokens` because the example ends the response after one token.
+
+To get the full text, `The answer is (C`, join the prefill and the `text` value in your code.
+
+On Claude 4.5 and earlier models, these limits apply to a prefill:
+
+* **Whitespace:** If the prefill ends with whitespace, the API returns a 400 error.
+* **Structured outputs:** If the request also sets `output_config.format`, the API returns a 400 error (see the [Feature compatibility](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl#feature-compatibility) section of the Structured outputs page).
+* **[Extended thinking](https://platform.claude.com/docs/en/build-with-claude/extended-thinking?sdk_languages=curl):** If the request also sets `thinking.type` to `enabled`, the prefill causes no error. The API treats thinking as off, so the response has no `thinking` block.
+
+The `message` in each 400 error says what caused it.
+
+### Alternatives to a prefill
+
+In place of a prefill, end `messages` with a `user` message. Then, choose an approach by what you want from the response:
+
+* **JSON that follows a schema:** Use [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl), which constrain the response to follow the schema.
+* **Another output format:** Describe the format in the system prompt, which is the request’s [`system` field](https://platform.claude.com/docs/en/api/messages/create?sdk_languages=curl#create.system).
+* **No preamble:** Ask in the system prompt for a direct answer.
+
+Unlike a prefill, a system prompt instruction doesn’t guarantee how the response starts, so check the response’s text in your code.
+
+For what to use in place of other common prefills, see the [Migrating away from prefilled responses](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=curl#migrating-away-from-prefilled-responses) section of the Prompting best practices page.
+
+To move the multiple-choice example to a model that doesn’t accept a prefill, follow these steps:
+
+1. Change the model and remove the `assistant` message.
+2. Ask in the system prompt for only the answer’s letter.
+3. Set `max_tokens` high enough for the whole response. On [models with thinking on by default](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=curl#configuring-thinking), thinking tokens also count toward `max_tokens`.
+4. Read the letter from the response’s `text` block. This block can follow a `thinking` block. Don’t join the letter to the prefill.
+
 ## Vision
 
-Claude can read both text and images in requests. You can supply images using the `base64`, `url`, or `file` source types. The `file` source type references an image uploaded through the [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=cli). Supported media types are `image/jpeg`, `image/png`, `image/gif`, and `image/webp`. See the [Vision](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=cli) guide for more details.
+Claude can read both text and images in requests. You can supply images using the `base64`, `url`, or `file` source types. The `file` source type references an image uploaded through the [Files API](https://platform.claude.com/docs/en/build-with-claude/files?sdk_languages=curl). Supported media types are `image/jpeg`, `image/png`, `image/gif`, and `image/webp`. See the [Vision](https://platform.claude.com/docs/en/build-with-claude/vision?sdk_languages=curl) guide for more details.
 
 <CodeGroup>
-  ```bash CLI
-  # Option 1: base64-encoded image (CLI auto-encodes binary @file refs)
-  curl -s "https://platform.claude.com/docs/images/vision-example.jpg" \
-    -o ./vision-example.jpg
+  ```bash cURL
+  #!/bin/sh
 
-  ant messages create <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 1024
-  messages:
-    - role: user
-      content:
-        - type: image
-          source:
-            type: base64
-            media_type: image/jpeg
-            data: "@./vision-example.jpg"
-        - type: text
-          text: What is in the above image?
-  YAML
+  # Option 1: base64-encoded image
+  IMAGE_BASE64=$(curl "https://platform.claude.com/docs/images/vision-example.jpg" | base64 | tr -d '\n')
+
+  curl https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2026-10-21" \
+    -H "content-type: application/json" \
+    -d @- <<EOF
+  {
+    "model": "claude-opus-5-5",
+    "max_tokens": 1024,
+    "messages": [
+      {"role": "user", "content": [
+        {"type": "image", "source": {
+          "type": "base64",
+          "media_type": "image/jpeg",
+          "data": "$IMAGE_BASE64"
+        }},
+        {"type": "text", "text": "What is in the above image?"}
+      ]}
+    ]
+  }
+  EOF
 
   # Option 2: URL-referenced image
-  ant messages create <<'YAML'
-  model: claude-opus-5-5
-  max_tokens: 1024
-  messages:
-    - role: user
-      content:
-        - type: image
-          source:
-            type: url
-            url: https://platform.claude.com/docs/images/vision-example.jpg
-        - type: text
-          text: What is in the above image?
-  YAML
+  curl https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2026-10-21" \
+    -H "content-type: application/json" \
+    -d '{
+      "model": "claude-opus-5-5",
+      "max_tokens": 1024,
+      "messages": [
+        {"role": "user", "content": [
+          {"type": "image", "source": {
+            "type": "url",
+            "url": "https://platform.claude.com/docs/images/vision-example.jpg"
+          }},
+          {"type": "text", "text": "What is in the above image?"}
+        ]}
+      ]
+    }'
   ```
 </CodeGroup>
 
@@ -239,27 +310,27 @@ Claude can read both text and images in requests. You can supply images using th
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Stop reasons and fallback" icon="list" href="https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons?sdk_languages=cli">
+  <Card title="Stop reasons and fallback" icon="list" href="https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons?sdk_languages=curl">
     Handle each `stop_reason` value and decide what to do when a response ends.
   </Card>
 
-  <Card title="Tool use with Claude" icon="wrench" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=cli">
+  <Card title="Tool use with Claude" icon="wrench" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview?sdk_languages=curl">
     Give Claude tools to call external services and APIs from within the Messages API.
   </Card>
 
-  <Card title="Computer use tool" icon="computer" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=cli">
+  <Card title="Computer use tool" icon="computer" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool?sdk_languages=curl">
     Control desktop computer environments with the Messages API.
   </Card>
 
-  <Card title="Browser use tool" icon="browser" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=cli">
+  <Card title="Browser use tool" icon="browser" href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/browser-use-tool?sdk_languages=curl">
     Let Claude navigate, read, and interact with webpages in a browser you run.
   </Card>
 
-  <Card title="Structured outputs" icon="code-brackets" href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=cli">
+  <Card title="Structured outputs" icon="code-brackets" href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs?sdk_languages=curl">
     Get guaranteed, schema-validated JSON output from Claude.
   </Card>
 
-  <Card title="Task budgets" icon="gauge" href="https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=cli">
+  <Card title="Task budgets" icon="gauge" href="https://platform.claude.com/docs/en/build-with-claude/task-budgets?sdk_languages=curl">
     Set an advisory token budget across a full agentic loop with `output_config.task_budget`.
   </Card>
 </CardGroup>
@@ -274,11 +345,11 @@ Available
 
 ### Data handling
 
-[Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#feature-eligibility)
+[Data handling overview](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#feature-eligibility)
 
 | Item | Zero data retention | HIPAA |
 | ----- | ----- | ----- |
-| Status | Eligible (excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=cli#model-specific-data-retention-requirements)) | Eligible |
+| Status | Eligible (excludes [Covered Models](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention?sdk_languages=curl#model-specific-data-retention-requirements)) | Eligible |
 | Details | Standard API calls for generating Claude responses. | — |
 
 Applicable endpoints:

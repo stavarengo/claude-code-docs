@@ -69,7 +69,7 @@ Have these in place before you start:
 
 | You need | Details |
 | - | - |
-| Claude Code v2.1.195 or later | The `claude gateway` subcommand and the gateway sign-in flow ship in v2.1.195. Earlier public builds don't include them. Both the machine running the gateway server and each developer's machine must be on v2.1.195 or later; run `claude update` to get the latest release. The [Claude Platform on AWS upstream](./claude-apps-gateway-config.md#claude-platform-on-aws) requires Claude Code v2.1.198 or later on the gateway server. |
+| Claude Code v2.1.195 or later | The `claude gateway` subcommand and the gateway sign-in flow ship in v2.1.195. Both the machine running the gateway server and each developer's machine must be on v2.1.195 or later; run `claude update` to get the latest release. The [Claude Platform on AWS upstream](./claude-apps-gateway-config.md#claude-platform-on-aws) requires Claude Code v2.1.198 or later on the gateway server. |
 | OpenID Connect (OIDC) identity provider | Okta, Microsoft Entra ID, Google Workspace, Keycloak, or Dex, or any other OIDC-compliant IdP such as PingFederate. The gateway runs standard OIDC discovery and the authorization-code flow against it. SAML and LDAP aren't supported. |
 | PostgreSQL 11 or later | Backs the device sign-in flow and rate-limit counters. A managed PostgreSQL service works, including the smallest tier; see [which databases are supported](./claude-apps-gateway-deploy.md#postgres). With [spend limits](./claude-apps-gateway-spend-limits.md), it also holds durable spend, audit, and identity tables that should be backed up. TLS via `?sslmode=require` is recommended. PostgreSQL 11, 12, and 13 require Claude Code v2.1.290 or later on the gateway server. The PostgreSQL project no longer maintains those versions, so use a newer one where you can. |
 | Model upstream | Amazon Bedrock credentials, Claude Platform on AWS credentials, Google Cloud credentials, a Microsoft Foundry resource, or an Anthropic API key. Multiple upstreams are supported with failover. |
@@ -138,12 +138,12 @@ This config is enough for a working sign-in loop with the default Amazon Bedrock
 
 **4. Run it**
 
-Build a container image around the `claude` binary that meets the [image requirements](./claude-apps-gateway-deploy.md#container-image), then run it alongside Postgres. The Compose file references the image as `registry.example.com/claude-gateway:2.1.198`; substitute your own registry and image tag:
+Build a container image around the `claude` binary that meets the [image requirements](./claude-apps-gateway-deploy.md#container-image), then run it alongside Postgres. The Compose file references the image as `registry.example.com/claude-gateway:<version>`; substitute your own registry and image tag:
 
 ```yaml docker-compose.yaml theme={null}
 services:
   gateway:
-    image: registry.example.com/claude-gateway:2.1.198
+    image: registry.example.com/claude-gateway:<version>
     ports: ["8080:8080"]
     volumes: ["./gateway.yaml:/etc/claude/gateway.yaml:ro"]
     environment:
@@ -185,7 +185,7 @@ Watch stderr for the boot sequence. By default, log lines use the format `[gatew
 [gateway] 2026-06-10T17:03:21.512Z info claude gateway listening on http://0.0.0.0:8080
 ```
 
-The gateway also logs a warning that `access_control.allow_cidrs` is empty. That's expected here, because nothing limits which client addresses the gateway serves until you set an allow list. The [`access_control` reference](https://code.claude.com/docs/en/claude-apps-gateway-config#http-tuning) has the recommended ranges.
+The startup banner reminds you each time to keep the gateway on your private network. With this config, the gateway serves any client address. To limit which addresses it serves, set `access_control`; the [`access_control` reference](https://code.claude.com/docs/en/claude-apps-gateway-config#http-tuning) has the recommended ranges.
 
 If boot exits before the `claude gateway listening on` line, the last line of stderr names the problem:
 
