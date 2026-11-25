@@ -250,8 +250,8 @@ Each code below is the value of `error.details.error_code` in the response body.
 
 ```bash
 ant organization:federation:issuers create \
-  --issuer-url x \
-  --name x
+  --issuer-url https://token.actions.githubusercontent.com \
+  --name github-actions
 ```
 
 #### Response (200)

@@ -13,7 +13,7 @@ This guide walks you through opening a terminal, installing Claude Code, and you
 
 > [!NOTE]
 >
-> Don't want to use the terminal? The Claude Code desktop app lets you skip the terminal entirely. Download it for [macOS](https://claude.ai/api/desktop/darwin/universal/dmg/latest/redirect?utm_source=claude_code\&utm_medium=docs) or [Windows](https://claude.com/download?utm_source=claude_code\&utm_medium=docs), then see the [Desktop quickstart](./desktop-quickstart.md) to get started. On Linux, install the app with apt by following the [Linux install instructions](./desktop-linux.md).
+> Don't want to use the terminal? The Claude Code desktop app lets you skip the terminal entirely. Download it for [macOS](https://claude.ai/claude-code/desktop-download?platform=mac\&utm_source=claude_code\&utm_medium=docs) or [Windows](https://claude.ai/claude-code/desktop-download?platform=win\&utm_source=claude_code\&utm_medium=docs), then see the [Desktop quickstart](./desktop-quickstart.md) to get started. On Linux, install the app with apt by following the [Linux install instructions](./desktop-linux.md).
 
 ## Install Claude Code on macOS or Linux
 
@@ -66,22 +66,22 @@ Follow these steps to optionally install Git for Windows, set up PowerShell, and
 
 **1. Install Git for Windows (optional)**
 
-Git for Windows provides Git Bash, which enables the Bash tool. Without it, Claude Code uses PowerShell instead. You won't need to learn Git yourself.
+Git for Windows provides Git Bash, which enables the Bash tool. Without it, Claude Code uses PowerShell instead.
 
 If you don't already have it:
 
 1. Go to [git-scm.com/downloads/win](https://git-scm.com/downloads/win) and download the installer
-2. Run the installer. Click Next on each screen to accept the defaults. The installer has many screens, but you don't need to change anything.
+2. Run the installer. Click Next on each screen to accept the defaults.
 3. If it asks you to choose an editor, keep the default and click Next.
 4. When you see "Adjusting your PATH environment," keep the recommended option selected.
 
 > [!NOTE]
 >
-> Already have Git? You can skip this step. If you're not sure, install it anyway. Reinstalling won't cause problems.
+> Already have Git? You can skip this step. If you're not sure, install it anyway.
 
 **2. Open PowerShell**
 
-PowerShell is Windows' built-in terminal for typing commands. It comes pre-installed on every Windows computer.
+PowerShell is Windows' built-in terminal for typing commands.
 
 Press `Win + X` and select **Windows PowerShell** (or **Terminal**) from the menu. A window with a blinking cursor will appear. This is where you'll type commands.
 
@@ -135,7 +135,7 @@ Once logged in, you can start asking Claude questions about your code or anythin
 
 ## What's next?
 
-Once you see the Claude Code welcome screen, you're ready to go. You don't need to know how to code. Describe what you want in plain English, and Claude writes the code for you.
+Once you see the Claude Code welcome screen, you're ready to go. Describe what you want in plain English, and Claude writes the code for you.
 
 ### Build something
 
@@ -170,7 +170,7 @@ If you don't have a project yet, that's fine. Claude can help you start a new on
 You don't have to use the terminal. Claude Code is also available in:
 
 * [VS Code](./vs-code.md) and [JetBrains IDEs](./jetbrains.md) as editor extensions
-* The [desktop app](./desktop-quickstart.md), with no terminal required
+* The [desktop app](./desktop-quickstart.md)
 * The [web](./claude-code-on-the-web.md) at claude.ai/code for cloud sessions
 * [GitHub Actions](./github-actions.md) and [GitLab CI/CD](./gitlab-ci-cd.md) for automation
 

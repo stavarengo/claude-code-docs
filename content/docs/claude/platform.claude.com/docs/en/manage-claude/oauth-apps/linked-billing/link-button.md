@@ -1,24 +1,59 @@
 ---
-title: Branding samples
-url: https://platform.claude.com/docs/en/manage-claude/oauth-apps/branding-samples
-description: "A Link your Claude organization button for Linked billing: its HTML and CSS, colors, and the Claude logo."
+title: Link your Claude organization button
+url: https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/link-button
+description: Add the button that sends a customer from your product to Claude's approval page to start Linked billing.
+featureMetadata:
+  status: beta
+  betaHeader: user-profiles-billing-2026-10-01
+  supportedModels:
+    - claude-fable-5-2
+    - claude-mythos-5-2
+    - claude-fable-5-1
+    - claude-mythos-5-1
+    - claude-fable-5
+    - claude-mythos-5
+    - claude-mythos-preview
+    - claude-opus-5-5
+    - claude-opus-5
+    - claude-sonnet-5-5
+    - claude-sonnet-5
+    - claude-haiku-5-5
+    - claude-haiku-4-5-20251001
+    - claude-opus-4-8
+    - claude-opus-4-7
+    - claude-opus-4-6
+    - claude-sonnet-4-6
+    - claude-opus-4-5-20251101
+    - claude-sonnet-4-5-20250929
+  supportedPlatforms:
+    Claude API:
+      availability: beta
+      note: Only requests that send `billing_policy` need the beta header.
 ---
 
 <Warning>
   Claude Platform OAuth is a Beta Service: prerelease software provided under your agreement with Anthropic, such as the [Commercial Terms of Service](https://www.anthropic.com/legal/commercial-terms), and the [Service Specific Terms](https://www.anthropic.com/legal/service-specific-terms). Endpoints, parameters, and behavior can change during the beta. It might not be suitable for production use.
 </Warning>
 
-Add a **Link your Claude organization** button to a product that uses [Linked billing](https://platform.claude.com/docs/en/manage-claude/oauth-apps/organization-billing-connections?sdk_languages=cli). Put the button where your customers manage billing or integrations. When someone clicks it, your back end [starts the billing connection](https://platform.claude.com/docs/en/manage-claude/oauth-apps/organization-billing-connections?sdk_languages=cli#runtime-step-2).
+This page lists the HTML, CSS, colors, sizes, and logo of the **Link your Claude organization** button for [Linked billing](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing?sdk_languages=cli).
 
 <Frame caption="The button in light and dark">
   ![Link your Claude organization button, light and dark, with the Claude logo before its words](https://platform.claude.com/docs/images/claude-link-button.svg)
 </Frame>
 
-## Copy the button’s HTML and CSS
+## HTML and CSS
 
-Open **Button CSS** and put its `<style>` block in your page’s `<head>`, or move the rules inside it to your style sheet. Then, open **Sample HTML for the Link your Claude organization button** and put the link where you want the button. Change `/claude/billing/link` to the address on your back end that starts the connection.
+The only parts of the button’s look that you may change are its size and whether you use the light or the dark button. The font, the colors, and the logo’s size compared with the words stay as [Colors and sizes](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/link-button?sdk_languages=cli#colors) shows them.
 
-Together, the CSS and the HTML contain the logo and all of the button’s styles, so if your site has a Content Security Policy, you don’t need to add an Anthropic host to it.
+The button’s CSS and HTML fit into your page like this:
+
+* **CSS:** The `<style>` block from **Button CSS** goes in your page’s `<head>`. If your Content Security Policy doesn’t allow inline styles, its rules go in your style sheet instead.
+* **HTML:** The `<a>` element from **Sample HTML** goes where the button appears. It holds the logo, so the button needs no Anthropic host in your Content Security Policy.
+* **Route:** The element’s `href`, `/claude/billing/link` in the sample, points to your back end’s [route that starts the approval](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/link-and-bill-a-customer?sdk_languages=cli#send-them-to-approve).
+* **Dark button:** The `claude-button-dark` class, added beside `claude-button` on the element, gives the dark button.
+* **Size:** To resize the button, change only the `font-size` line in **Button CSS**, not the size inside the `font` line.
+
+For how you may use the Claude name and logo, see the [Linked Billing Beta Terms](https://www.anthropic.com/legal/linked-billing-terms).
 
 <Accordion title="Button CSS">
   ```html claude-button.html
@@ -83,7 +118,7 @@ Together, the CSS and the HTML contain the logo and all of the button’s styles
   ```
 </Accordion>
 
-<Accordion title="Sample HTML for the Link your Claude organization button">
+<Accordion title="Sample HTML">
   ```html link-your-claude-organization.html
   <a class="claude-button" href="/claude/billing/link">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
@@ -114,25 +149,40 @@ Together, the CSS and the HTML contain the logo and all of the button’s styles
     Link your Claude organization
   </a>
   ```
-
-  For the dark button, add the `claude-button-dark` class to the link.
 </Accordion>
 
-If your page starts the connection by submitting a form, use `<button type="submit" class="claude-button">` in place of the link. The same styles apply. A rule in your style sheet that styles every button inside a container can still restyle the button. Compare the result with the picture.
+If your route needs a form submission, such as a `POST`, use a `<button type="submit" class="claude-button">` inside a form in place of the `<a>` element. It holds the same logo and words. The form’s action is your route, and the same styles apply.
 
-## Colors
+A rule in your own style sheet, such as one for `.nav a`, can override the button’s styles. The button then doesn’t match the picture and the tables in [Colors and sizes](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/link-button?sdk_languages=cli#colors). To keep its design, write such a rule so that it skips elements with the `claude-button` class.
+
+## Colors and sizes
 
 | Part | Light button | Dark button |
 | ----- | ----- | ----- |
 | Background | `#FFFFFF` | `#141413` |
 | Text | `#141413` | `#FAF9F5` |
 | Border | `#87867F` | `#73726C` |
-| Background while the pointer is over the button | `#F5F4ED` | `#262624` |
+| Background on hover | `#F5F4ED` | `#262624` |
 | Logo | `#D97757` | `#D97757` |
 
-## Download the logo
+At the default font size of 14 pixels, on a page whose root font size is 16 pixels, the button has these sizes:
 
-To build the same button without HTML, for example in a mobile or desktop app, save the following file as `claude-logo.svg`. Use the colors in [Colors](https://platform.claude.com/docs/en/manage-claude/oauth-apps/branding-samples?sdk_languages=cli#button-colors), and hide the logo from screen readers, because the words already name the button.
+| Part | Size |
+| ----- | ----- |
+| Height | 40 pixels |
+| Padding | 8 pixels above and below, 12 pixels at the sides |
+| Corner radius | 8 pixels |
+| Border | 1 pixel |
+| Logo | 20 by 20 pixels |
+| Gap between the logo and the words | 10 pixels |
+| Text | 14 pixels, weight 500, in the system’s sans-serif font |
+| Focus outline | 2 pixels in the text color, 2 pixels out from the button, with a 2-pixel ring in the fill color around the button |
+
+Every size except the border and the focus outline scales with the button’s font size.
+
+## Logo file
+
+For a button built without HTML, such as in a mobile or desktop app, the logo is the following file, `claude-logo.svg`. That button takes the colors and sizes in [Colors and sizes](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/link-button?sdk_languages=cli#colors), scaled together as that section describes if you change its size. As in the sample HTML, hide the logo from screen readers in that button too, because the words already name it.
 
 <Accordion title="claude-logo.svg">
   <File filename="claude-logo.svg" size="sm">
@@ -166,3 +216,15 @@ To build the same button without HTML, for example in a mobile or desktop app, s
     ```
   </File>
 </Accordion>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="What your customers see" icon="browser" href="https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/what-your-customers-see?sdk_languages=cli">
+    The approval page, spend caps, and emails that your customers see, so that you can support them
+  </Card>
+
+  <Card title="Test and publish your app" icon="rocket" href="https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/test-and-publish?sdk_languages=cli">
+    Add test users, publish your app, and change or delete it
+  </Card>
+</CardGroup>

@@ -508,6 +508,63 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.ObjectMappers;
+import com.openai.models.CustomToolInputFormat;
+import com.openai.models.responses.*;
+import java.util.*;
+
+// Use your configured OpenAIClient named client.
+try {
+  String input =
+      "Add a cancel button next to the save button in app/page.tsx.\nCurrent file contents:\nexport default function Page() { return <button>Save</button>; }";
+  var first =
+      client
+          .responses()
+          .create(
+              ResponseCreateParams.builder()
+                  .model("gpt-5.3-codex")
+                  .input(input)
+                  .addTool(ApplyPatchTool.builder().build())
+                  .toolChoice(ToolChoiceOptions.REQUIRED)
+                  .parallelToolCalls(false)
+                  .build());
+  for (var item : first.output())
+    if (item.applyPatchCall().isPresent())
+      System.out.println(
+          ObjectMappers.jsonMapper()
+              .writeValueAsString(item.applyPatchCall().orElseThrow().operation()));
+  String grammar =
+      "\nstart: begin_patch hunk+ end_patch\nbegin_patch: \"*** Begin Patch\" LF\nend_patch: \"*** End Patch\" LF?\n\nhunk: add_hunk | delete_hunk | update_hunk\nadd_hunk: \"*** Add File: \" filename LF add_line+\ndelete_hunk: \"*** Delete File: \" filename LF\nupdate_hunk: \"*** Update File: \" filename LF change_move? change?\n\nfilename: /(.+)/\nadd_line: \"+\" /(.*)/ LF -> line\n\nchange_move: \"*** Move to: \" filename LF\nchange: (change_context | change_line)+ eof_line?\nchange_context: (\"@@\" | \"@@ \" /(.+)/) LF\nchange_line: (\"+\" | \"-\" | \" \") /(.*)/ LF\neof_line: \"*** End of File\" LF\n\n%import common.LF\n";
+  var second =
+      client
+          .responses()
+          .create(
+              ResponseCreateParams.builder()
+                  .model("gpt-5.3-codex")
+                  .input(input)
+                  .addTool(
+                      CustomTool.builder()
+                          .name("apply_patch")
+                          .description("Apply a patch to update files.")
+                          .format(
+                              CustomToolInputFormat.Grammar.builder()
+                                  .syntax(CustomToolInputFormat.Grammar.Syntax.LARK)
+                                  .definition(grammar)
+                                  .build())
+                          .build())
+                  .toolChoice(ToolChoiceOptions.REQUIRED)
+                  .parallelToolCalls(false)
+                  .build());
+  for (var item : second.output())
+    if (item.customToolCall().isPresent())
+      System.out.println(item.customToolCall().orElseThrow().input());
+} finally {
+  client.close();
+}
+```
+
 ```ruby
 require "openai"
 
@@ -789,6 +846,38 @@ func main() {
 	}
 	fmt.Println(promptToolUseDirective)
 }
+```
+
+```java
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Map;
+
+var gitTool =
+    Map.of(
+        "type",
+        "function",
+        "name",
+        "git",
+        "description",
+        "Execute a git command in the repository root. Accept a full git invocation or arguments after git.",
+        "parameters",
+        Map.of(
+            "type",
+            "object",
+            "properties",
+            Map.of(
+                "command",
+                Map.of("type", "string", "description", "The git command to execute."),
+                "timeout_sec",
+                Map.of("type", "integer", "minimum", 1, "maximum", 1800)),
+            "required",
+            List.of("command")));
+var tools = List.of(gitTool);
+String directive =
+    "- Strictly avoid raw `cmd`/terminal for Git operations. Use the dedicated `git` tool instead.";
+System.out.println(new ObjectMapper().writeValueAsString(tools));
+System.out.println(directive);
 ```
 
 ```csharp

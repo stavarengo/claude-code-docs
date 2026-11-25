@@ -210,7 +210,7 @@ Here are some of the ways you can use Claude Code:
 > * Message [Dispatch](./desktop.md#sessions-from-dispatch) a task from your phone and open the Desktop session it creates
 > * Start a long-running task on the [web](./claude-code-on-the-web.md) or the [Claude mobile app](./mobile.md), then pull it into your terminal with `claude --teleport`. Teleport requires a claude.ai subscription.
 > * Run `/desktop` to continue your current terminal session in the [Desktop app](./desktop.md), where you can review diffs visually. The `/desktop` handoff requires a claude.ai subscription. Available on macOS and x64 Windows.
-> * Route tasks from team chat: mention `@Claude` in [Slack](./slack.md) with a bug report and get a pull request back
+> * Route tasks from team chat on Team and Enterprise plans: mention `@Claude` in [Slack](https://claude.com/docs/claude-tag/overview) with a bug report and get a pull request back
 
 ## Use Claude Code everywhere
 
@@ -226,7 +226,7 @@ Beyond the [Terminal](./quickstart.md), [VS Code](./vs-code.md), [JetBrains](./j
 | Run Claude on a recurring schedule | [Cloud scheduled tasks](./routines.md) or [Desktop scheduled tasks](./desktop-scheduled-tasks.md) |
 | Automate PR reviews and issue triage | [GitHub Actions](./github-actions.md) or [GitLab CI/CD](./gitlab-ci-cd.md) |
 | Get automatic code review on every PR | [GitHub Code Review](./code-review.md) |
-| Route bug reports from Slack to pull requests | [Slack](./slack.md) |
+| Route bug reports from Slack to pull requests | [Claude Tag](https://claude.com/docs/claude-tag/overview), on Team and Enterprise plans |
 | Debug live web applications | [Chrome](./chrome.md) |
 | Build custom agents for your own workflows | [Agent SDK](./agent-sdk/overview.md) |
 

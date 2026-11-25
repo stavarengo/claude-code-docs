@@ -9,7 +9,9 @@ url: https://platform.claude.com/docs/en/api/cli/user_profiles/action_urls/creat
 
 **POST** `/v1/user_profiles/{user_profile_id}/action_urls`
 
-Create Action URL
+Create a link that sends the profile's end customer to the Verification Portal.
+
+See [Send an end customer a link to the Verification Portal](https://platform.claude.com/docs/en/manage-claude/user-profiles-verification-portal?sdk_languages=cli) for when to create the link and what the end customer sees.
 
 ## Parameters
 

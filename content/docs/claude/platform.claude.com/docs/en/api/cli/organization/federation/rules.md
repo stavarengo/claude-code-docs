@@ -244,10 +244,10 @@ Each code below is the value of `error.details.error_code` in the response body.
 
 ```bash
 ant organization:federation:rules create \
-  --issuer-id issuer_id \
+  --issuer-id fdis_01SDCCSbTxrXDpWc1phhtcfK \
   --match '{}' \
-  --name x \
-  --oauth-scope x \
+  --name prod-deploy-pipeline \
+  --oauth-scope workspace:developer \
   --target '{service_account_id: svac_01SDCCSbTxrXDpWc1phhtcfK, type: service_account}'
 ```
 
@@ -1452,7 +1452,7 @@ Each code below is the value of `error.details.error_code` in the response body.
 ```bash
 ant organization:federation:rules:workspaces add \
   --federation-rule-id federation_rule_id \
-  --workspace-id workspace_id
+  --workspace-id wrkspc_01JwQvzr7rXLA5AGx3HKfFUJ
 ```
 
 ##### Response (200)

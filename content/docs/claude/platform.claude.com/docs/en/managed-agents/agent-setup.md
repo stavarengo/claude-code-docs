@@ -46,7 +46,7 @@ Create the agent once as a reusable resource and reference it by ID each time yo
 | Field | Description |
 | ----- | ----- |
 | `name` | Required. A human-readable name for the agent. |
-| `model` | Required. The Claude [model](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli) that powers the agent. Accepts a model ID string or an object, for example `{"id": "claude-opus-5-5"}`. Claude 4.5 and later models are supported. The object form also accepts `speed`, `effort`, and `inference_geo` fields; see the tips under [Create an agent](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli#create-an-agent), [Effort levels](https://platform.claude.com/docs/en/build-with-claude/effort?sdk_languages=cli#effort-levels), and [Pin the inference geo](https://platform.claude.com/docs/en/managed-agents/agent-setup?sdk_languages=cli#pin-the-inference-geo). |
+| `model` | Required. The Claude model that powers the agent (see [Models overview](https://platform.claude.com/docs/en/models/overview?sdk_languages=cli)). Accepts a model ID string (for example, `"claude-opus-5-5"`) or an object (for example, `{"id": "claude-opus-5-5", "speed": "standard", "effort": "high", "inference_geo": "global"}`). |
 | `system` | A [system prompt](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices?sdk_languages=cli#give-claude-a-role) that defines the agent’s behavior and persona. The system prompt is distinct from [user messages](https://platform.claude.com/docs/en/managed-agents/reference?sdk_languages=cli#event-types), which should describe the work to be done. |
 | `tools` | The tools available to the agent. Combines [pre-built agent tools](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli), [MCP tools](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli), and [custom tools](https://platform.claude.com/docs/en/managed-agents/tools?sdk_languages=cli#custom-tools). |
 | `mcp_servers` | [MCP servers](https://platform.claude.com/docs/en/managed-agents/mcp-connector?sdk_languages=cli) that provide standardized third-party capabilities. |
@@ -167,6 +167,8 @@ The API checks an `inference_geo` pin against the workspace’s [`allowed_infere
 ## Update an agent
 
 Updating an agent generates a new version when the configuration changes. The `version` field is optional. Supply the version that you last read, and the update applies only if the agent is still at that version. Otherwise, the request returns a 409 error. Omit `version` to apply the update whatever the agent’s current version. In that case, if two updates set the same field or `metadata` key, the last write wins. The API rejects updates to archived agents.
+
+To move an agent off a retiring model, see [When a model is retired](https://platform.claude.com/docs/en/managed-agents/migration?sdk_languages=cli#when-a-model-is-retired).
 
 <CodeGroup defaultLanguage="CLI">
   <CodeGroupItem>

@@ -196,9 +196,11 @@ A few rules apply to the `fallbacks` list:
 * Entries are tried in order. Each must be distinct from the other entries and from the requested model.
 * Each entry must be one of the requested model’s permitted targets. With the beta header set, that list is published as `allowed_fallback_models` on the [model’s entry in the Models API](https://platform.claude.com/docs/en/api/beta/models/list?sdk_languages=cli).
 * Each entry names a `model` and can override `max_tokens`, `thinking`, `output_config`, and `speed` for that attempt only.
-* The request must be valid as a direct request to every model named. If a fallback model does not support a feature the request uses, the API rejects the request up front. Under the `2026-07-01` header, `thinking: {"type": "between_tools"}` is the exception: when a Claude Sonnet 5.5 request falls back to Claude Sonnet 5, the fallback attempt runs with `thinking: {"type": "disabled"}` and `display: "omitted"`. Under `2026-06-01`, set `thinking` on the Claude Sonnet 5 entry, or the request is rejected up front.
+* The request must be valid as a direct request to every model named, or the API rejects it up front. Under the `server-side-fallback-2026-07-01` header, the request’s `speed`, `output_config.effort`, `output_config.task_budget`, and `thinking` type are the exceptions. Where a fallback model doesn’t support one of those values, its attempt uses the model’s default.
+* When a Claude Sonnet 5.5 request with [`thinking: {"type": "between_tools"}`](https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli#turning-thinking-off) falls back to Claude Sonnet 5 under that header, the attempt runs with `thinking: {"type": "disabled"}` and `display: "omitted"` instead.
+* Under the `server-side-fallback-2026-06-01` header, a fallback model that doesn’t support the request’s `speed: "fast"` runs at standard speed. For an unsupported `thinking` or `output_config` value, set that whole field on the model’s entry.
 * As with the default mode, only a safety classifier decline triggers the fallback. A rate limit, overload, or server error on the requested model is returned to you as-is.
-* If a fallback model is rate limited or overloaded, the fallback attempt is not made and the preceding refusal is returned instead. The refusal’s `stop_details.recommended_model` then names a model to retry directly. Size the fallback model’s rate limits for the refusal volume you expect, or fallbacks degrade to refusals under load.
+* If a fallback model is rate limited or overloaded, the API returns the preceding refusal and tries no later entries. At a fast mode limit, the attempt can [run at standard speed](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#with-server-side-fallback) instead. The refusal’s `stop_details.recommended_model` names a model to retry directly. Size the fallback model’s rate limits for the refusals you expect.
 
 The response has the same shape in both modes: the model that served the turn appears in the top-level `model` field, a `fallback` content block marks the handoff, and `usage.iterations` records each attempt.
 
@@ -336,6 +338,8 @@ Pass `BetaRefusalFallbackMiddleware` to the client constructor, and share one `B
   </CodeGroupItem>
 </CodeGroup>
 
+For fast mode requests, use `null` for `speed` on each fallback entry, as [Fallback for fast mode requests](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#falling-back-from-fast-mode) shows.
+
 ### How it behaves
 
 * Retries walk your fallback list in order. A fallback model that itself refuses passes the request to the next entry.
@@ -361,7 +365,9 @@ Over raw HTTP or with custom retry logic, implement the pattern the middleware w
     Send the same request with `model` set to a fallback model, such as Claude Opus 4.8. If the refused request sent `thinking: {"type": "between_tools"}`, change `thinking` first: only Claude Sonnet 5.5 accepts that value, so omit `thinking` or set a value the fallback model accepts. [Server-side fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#server-side-fallback) under the `2026-07-01` header makes this change for you when it falls back to Claude Sonnet 5. Another model can normally serve a request that Claude Fable 5.2, Claude Fable 5.1, or Claude Fable 5 declines. How you handle the conversation history depends on whether you redeem a [fallback credit](https://platform.claude.com/docs/en/build-with-claude/fallback-credit?sdk_languages=cli):
 
     * **Not redeeming a credit:** you can leave the earlier `thinking` and `redacted_thinking` blocks in place or strip them to save input tokens. The fallback model normally can’t use them either way. Apart from Claude Mythos 5.2, no other model reads Claude Fable 5.2 blocks. Claude Fable 5.1 and Claude Mythos 5.1 [read Claude Fable 5.1 blocks](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking?sdk_languages=cli#switching-models), and so do Claude Fable 5.2 and Claude Mythos 5.2 on the Claude API and Claude Models on Google Cloud (Google managed). No other model reads them. Only those four models, Claude Fable 5, and Claude Mythos 5 read Claude Fable 5 blocks. The API drops any of these blocks that the fallback model can’t read. It also drops any Claude Opus 5.5 or Claude Sonnet 5.5 block that the fallback model can’t read (see [Switching models mid-conversation](https://platform.claude.com/docs/en/build-with-claude/preserved-thinking?sdk_languages=cli#switching-models)). A retry after a Claude Haiku 5.5 refusal is always in this case. On the Claude API and Claude Models on Google Cloud (Google managed), Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.2, and Claude Mythos 5.2 read Claude Haiku 5.5 blocks, so leave those blocks in place when you fall back to one of those models there. For a fallback model that can’t read them, the API drops them without billing them.
-    * **Redeeming a credit:** send the body unchanged, because redemption requires an exact match. The server handles the earlier model’s thinking blocks on a redemption, so do not strip them (see [Fields that must match the refused request](https://platform.claude.com/docs/en/build-with-claude/fallback-credit?sdk_languages=cli#reference)).
+    * **Redeeming a credit:** change only what [Fields that must match the refused request](https://platform.claude.com/docs/en/build-with-claude/fallback-credit?sdk_languages=cli#reference) allows, because redemption compares the two requests. Deleting `speed` keeps the credit. The server handles the earlier model’s thinking blocks on a redemption, so do not strip them.
+
+    Delete `speed` if it’s `"fast"`, as [With a manual retry](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#with-a-manual-retry) explains.
   </Step>
 
   <Step title="Stay on the fallback model">
@@ -370,6 +376,48 @@ Over raw HTTP or with custom retry logic, implement the pattern the middleware w
 </Steps>
 
 A manual retry writes the fallback model’s prompt cache in full, which costs more than reading an existing cache. [Fallback credit](https://platform.claude.com/docs/en/build-with-claude/fallback-credit?sdk_languages=cli) refunds that cost; redeem it on every retry you build yourself. A Claude Haiku 5.5 refusal carries no fallback credit, so a retry after one pays the full cost of writing the fallback model’s prompt cache.
+
+## Fallback for fast mode requests
+
+Which speed a fallback runs at, and what you set for [`speed`](https://platform.claude.com/docs/en/api/beta/messages/create?sdk_languages=cli#create.speed), depend on how you fall back.
+
+### With server-side fallback
+
+When fast mode requests fall back, each attempt runs, and is billed, at fast speed if you have [fast mode on its model](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=cli#feature-availability). Otherwise, or if its fast mode rate limit is reached, it’s tried at standard speed.
+
+A `speed` on the attempt’s `fallbacks` entry overrides this, so you know its speed in advance:
+
+* `null` runs that attempt at standard speed if the request sends the `server-side-fallback-2026-07-01` header.
+* `"fast"` runs that attempt at fast speed only. Where the model has no fast mode, the API rejects the whole request up front. If your fast mode limit on that model is 0, or you have reached it, you get the previous attempt’s refusal.
+
+With `fallbacks: "default"`, no entry can set `speed`, so name your models to control it.
+
+### With the SDK middleware
+
+Use `null`, not `"standard"`, for `speed` on each entry in your fallback list. An entry that leaves `speed` out retries at `"fast"`, which can fail with a 400 error.
+
+With this client, a fast mode request on Claude Opus 5.5 that is refused goes to Claude Opus 4.8 at standard speed:
+
+<CodeGroup exclude="shell">
+  <CodeGroupItem language="CLI">
+    The `ant` CLI doesn’t include the refusal-fallback middleware. Use [server-side fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#server-side-fallback) or [a manual retry](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback?sdk_languages=cli#manual-retry).
+  </CodeGroupItem>
+</CodeGroup>
+
+### With a manual retry
+
+Delete `speed` to retry at standard speed. Keep it only where the fallback model’s fast mode is available to you, with any beta header it needs.
+
+### Claude Models on Google Cloud (Google managed) and Microsoft Foundry
+
+For the SDK middleware and a manual retry:
+
+* On Claude Models on Google Cloud (Google managed), a standard-speed request with the `fast-mode-2026-02-01` beta header returns a 400 error. Don’t send it on the original request either: fast mode doesn’t need it there, and the middleware’s retry would send it again.
+* On Microsoft Foundry, [fast mode has its own model IDs](https://platform.claude.com/docs/en/build-with-claude/fast-mode?sdk_languages=cli#basic-usage). For each fallback, name a deployment of a model other than the refusing one, without `-fast`.
+
+### Which speed ran
+
+Read `usage.speed`. On a stream, it keeps the value from the first event. No field shows the speed of a fallback model that takes over later.
 
 ## Refusals in Message Batches
 

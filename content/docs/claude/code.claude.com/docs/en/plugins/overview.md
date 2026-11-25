@@ -42,7 +42,7 @@ For component types a plugin can hold, with an example of each, see [Plugin comp
 
 Skills, subagents, hooks, and MCP servers all work on their own, without a plugin. A skill you save in `~/.claude/skills/`, for example, is available in every project on your machine. To set one up on its own, see [Skills](../skills.md), [Subagents](../sub-agents.md), [Hooks](../hooks-guide.md), or [MCP](../mcp.md).
 
-Use a plugin when you want several skills, subagents, hooks, or MCP servers packaged as one unit. Install one to get a setup someone else built, with one command and updates from its marketplace. Make one to give your own setup to teammates, install it in many projects, or publish versioned releases.
+Use a plugin when you want several skills, subagents, hooks, or MCP servers packaged as one unit. Install one to get a setup someone else built, with one command and updates from its marketplace. Make one to share your own setup, install it in many projects, or publish versioned releases.
 
 ### What an enabled plugin adds to your sessions
 
@@ -122,6 +122,6 @@ Once you've installed or built a plugin, these pages cover what comes next:
 
 * **Share what you built**: [Publish and distribute a plugin](./publish.md), through your own marketplace or [Anthropic's directory](./publish.md#submit-to-anthropics-directory)
 * **Check whether it works and is used**: [Test plugins with evals](../plugin-evals.md) and [Measure plugin cost and usage](./measure.md)
-* **Run a marketplace for your team**: [Create a marketplace](./create-marketplace.md), then [Host and maintain a marketplace](./host-marketplace.md)
+* **Run a marketplace**: [Create a marketplace](./create-marketplace.md), then [Host and maintain a marketplace](./host-marketplace.md)
 * **Set plugin policy for an organization**: [Manage plugins for your organization](./org.md)
 * **Fix a problem**: [Troubleshoot plugins](./troubleshooting.md)

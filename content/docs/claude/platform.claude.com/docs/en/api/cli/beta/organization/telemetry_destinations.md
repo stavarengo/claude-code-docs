@@ -445,7 +445,7 @@ See the [OpenTelemetry export guide](https://platform.claude.com/docs/en/manage-
 
 ```bash
 ant beta:organization:telemetry-destinations create \
-  --endpoint-url x \
+  --endpoint-url https://gateway.example.com \
   --workspaces '{type: all}'
 ```
 

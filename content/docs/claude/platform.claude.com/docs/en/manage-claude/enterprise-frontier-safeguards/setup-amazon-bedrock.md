@@ -4,7 +4,7 @@ url: https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeg
 description: Find AWS's setup guide for Enterprise Frontier Safeguards on Amazon Bedrock.
 ---
 
-To use [Enterprise Frontier Safeguards](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/overview) (EFS) on Amazon Bedrock, you get access and set it up through AWS, not in the Claude Console. EFS on Bedrock is in beta.
+To use [Enterprise Frontier Safeguards](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/overview?sdk_languages=cli) (EFS) on Amazon Bedrock, you get access and set it up through AWS, not in the Claude Console. EFS on Bedrock is in beta.
 
 <Warning>
   EFS is only live once you connect your own Amazon S3 bucket, even if Bedrock already shows EFS as `enabled`. Until then, Bedrock stores copies of your prompts and responses in storage that AWS manages, and that setup isn’t EFS.

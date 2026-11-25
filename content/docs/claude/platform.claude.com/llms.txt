@@ -20,18 +20,18 @@ The latest version of each Anthropic SDK and of the ant CLI is at https://platfo
 
 The full documentation is available in the following languages on https://platform.claude.com/docs:
 
-- English (en) - 958 pages - /docs - Content included below
-- German (Deutsch) (de) - 357 pages - /docs/de - Visit website for content
-- Spanish (Español) (es) - 357 pages - /docs/es - Visit website for content
-- French (Français) (fr) - 357 pages - /docs/fr - Visit website for content
-- Italian (Italiano) (it) - 357 pages - /docs/it - Visit website for content
-- Japanese (日本語) (ja) - 357 pages - /docs/ja - Visit website for content
-- Korean (한국어) (ko) - 357 pages - /docs/ko - Visit website for content
-- Portuguese (Português) (pt-BR) - 357 pages - /docs/pt-BR - Visit website for content
-- Russian (Русский) (ru) - 357 pages - /docs/ru - Visit website for content
-- Chinese Simplified (简体中文) (zh-CN) - 357 pages - /docs/zh-CN - Visit website for content
-- Chinese Traditional (繁體中文) (zh-TW) - 357 pages - /docs/zh-TW - Visit website for content
-- Indonesian (Bahasa Indonesia) (id) - 357 pages - /docs/id - Visit website for content
+- English (en) - 965 pages - /docs - Content included below
+- German (Deutsch) (de) - 364 pages - /docs/de - Visit website for content
+- Spanish (Español) (es) - 364 pages - /docs/es - Visit website for content
+- French (Français) (fr) - 364 pages - /docs/fr - Visit website for content
+- Italian (Italiano) (it) - 364 pages - /docs/it - Visit website for content
+- Japanese (日本語) (ja) - 364 pages - /docs/ja - Visit website for content
+- Korean (한국어) (ko) - 364 pages - /docs/ko - Visit website for content
+- Portuguese (Português) (pt-BR) - 364 pages - /docs/pt-BR - Visit website for content
+- Russian (Русский) (ru) - 364 pages - /docs/ru - Visit website for content
+- Chinese Simplified (简体中文) (zh-CN) - 364 pages - /docs/zh-CN - Visit website for content
+- Chinese Traditional (繁體中文) (zh-TW) - 364 pages - /docs/zh-TW - Visit website for content
+- Indonesian (Bahasa Indonesia) (id) - 364 pages - /docs/id - Visit website for content
 
 ---
 
@@ -202,7 +202,7 @@ The full documentation is available in the following languages on https://platfo
 
 ### Admin
 
-- [Overview](https://platform.claude.com/docs/en/manage-claude/oauth-apps/overview.md) - Claude Platform OAuth (EAP)
+- [Overview](https://platform.claude.com/docs/en/manage-claude/oauth-apps/overview.md) - Claude Platform OAuth
 - [Overview](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/overview.md) - Enterprise Frontier Safeguards
 - [Overview](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/overview.md) - Security posture in the Compliance API
 - [Overview](https://platform.claude.com/docs/en/manage-claude/access-transparency.md) - Access Transparency
@@ -211,8 +211,6 @@ The full documentation is available in the following languages on https://platfo
 - [Analytics APIs](https://platform.claude.com/docs/en/manage-claude/analytics-api.md)
 - [API and data retention](https://platform.claude.com/docs/en/manage-claude/api-and-data-retention.md)
 - [App Attest](https://platform.claude.com/docs/en/manage-claude/app-attest.md) - App Attest for iOS and macOS apps
-- [App testing and review](https://platform.claude.com/docs/en/manage-claude/oauth-apps/app-review.md) - App testing and review (EAP)
-- [Branding samples](https://platform.claude.com/docs/en/manage-claude/oauth-apps/branding-samples.md) - Branding samples (EAP)
 - [Check events against results](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/check-events-against-results.md) - Check stored Security posture events against current results
 - [Claude Code Analytics API](https://platform.claude.com/docs/en/manage-claude/claude-code-analytics-api.md)
 - [Claude Tag API](https://platform.claude.com/docs/en/manage-claude/claude-tag-api.md)
@@ -236,12 +234,16 @@ The full documentation is available in the following languages on https://platfo
 - [Overview](https://platform.claude.com/docs/en/manage-claude/inference-hooks.md) - Inference hooks
 - [IP allowlisting (beta)](https://platform.claude.com/docs/en/manage-claude/ip-allowlist.md) - IP allowlisting
 - [Limit key to workspaces](https://platform.claude.com/docs/en/manage-claude/cmek-aws-kms-workspaces.md) - Limit an AWS KMS key to specific workspaces
-- [Linked billing](https://platform.claude.com/docs/en/manage-claude/oauth-apps/organization-billing-connections.md) - Linked billing (EAP)
+- [Link and bill a customer](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/link-and-bill-a-customer.md)
+- [Link button](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/link-button.md) - Link your Claude organization button
+- [Overview](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing.md) - Linked billing
+- [Errors](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/errors.md) - Linked billing errors
 - [Organizations, users, roles, groups, and settings](https://platform.claude.com/docs/en/manage-claude/compliance-org-data.md) - List organizations, users, roles, groups, and settings
 - [Manage](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/external-storage-manage.md) - Manage customer-owned storage
+- [Manage customers](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/manage-customers.md) - Manage linked customers
 - [Manage WIF with the Admin API](https://platform.claude.com/docs/en/manage-claude/wif-admin-api.md)
 - [Map events to OCSF](https://platform.claude.com/docs/en/manage-claude/compliance-security-posture/ocsf-mapping.md) - Map Security posture events to OCSF
-- [OAuth reference](https://platform.claude.com/docs/en/manage-claude/oauth-apps/oauth-reference.md) - OAuth reference (EAP)
+- [Endpoints and parameters](https://platform.claude.com/docs/en/manage-claude/oauth-apps/endpoints-and-parameters.md) - OAuth endpoints and parameters
 - [Overview](https://platform.claude.com/docs/en/manage-claude/opentelemetry.md) - OpenTelemetry tracing for the Claude API
 - [Organization webhooks (beta)](https://platform.claude.com/docs/en/manage-claude/organization-webhooks.md) - Organization webhooks
 - [Plugins API](https://platform.claude.com/docs/en/manage-claude/plugins-api.md)
@@ -267,11 +269,14 @@ The full documentation is available in the following languages on https://platfo
 - [Get Anthropic SDK spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/sdk.md) - Set up OpenTelemetry with the Anthropic SDK
 - [Get Claude API spans](https://platform.claude.com/docs/en/manage-claude/opentelemetry/api.md) - Set up OpenTelemetry with the Claude API
 - [Set up the Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api-access.md)
+- [Set up your app](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/set-up-your-app.md) - Set up your app for Linked billing
 - [Spend Limits API](https://platform.claude.com/docs/en/manage-claude/spend-limits-api.md)
+- [Test and publish](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/test-and-publish.md) - Test and publish your app
 - [Troubleshooting](https://platform.claude.com/docs/en/manage-claude/cmek-troubleshooting.md) - Troubleshoot CMEK
 - [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api.md)
 - [Usage and Cost API (legacy)](https://platform.claude.com/docs/en/manage-claude/usage-cost-api.md) - Usage and Cost API
 - [Use a key with EFS](https://platform.claude.com/docs/en/manage-claude/enterprise-frontier-safeguards/customer-managed-keys.md) - Use a customer-managed key
+- [Per-customer credentials](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/credential-for-each-customer.md) - Use a separate credential for each customer
 - [AWS](https://platform.claude.com/docs/en/manage-claude/wif-providers/aws.md) - Use WIF with AWS
 - [GitHub Actions](https://platform.claude.com/docs/en/manage-claude/wif-providers/github-actions.md) - Use WIF with GitHub Actions
 - [Google Cloud](https://platform.claude.com/docs/en/manage-claude/wif-providers/gcp.md) - Use WIF with Google Cloud
@@ -285,6 +290,7 @@ The full documentation is available in the following languages on https://platfo
 - [Coverage: Claude Enterprise](https://platform.claude.com/docs/en/manage-claude/cmek-coverage-claude-enterprise.md) - What CMEK covers on Claude Enterprise
 - [Coverage: Claude Platform](https://platform.claude.com/docs/en/manage-claude/cmek-coverage-claude-platform.md) - What CMEK covers on Claude Platform
 - [Rotate, disable, delete](https://platform.claude.com/docs/en/manage-claude/cmek-key-lifecycle.md) - What happens when you rotate, disable, or delete your encryption key
+- [What your customers see](https://platform.claude.com/docs/en/manage-claude/oauth-apps/linked-billing/what-your-customers-see.md)
 - [WIF reference](https://platform.claude.com/docs/en/manage-claude/wif-reference.md)
 - [Workload Identity Federation](https://platform.claude.com/docs/en/manage-claude/workload-identity-federation.md)
 - [Workspaces](https://platform.claude.com/docs/en/manage-claude/workspaces.md)
@@ -405,6 +411,7 @@ The full documentation is available in the following languages on https://platfo
 - [API versions](https://platform.claude.com/docs/en/api/versioning.md)
 - [Beta headers](https://platform.claude.com/docs/en/api/beta-headers.md)
 - [Errors](https://platform.claude.com/docs/en/api/errors.md) - Claude API errors
+- [Handle errors](https://platform.claude.com/docs/en/api/handle-errors.md)
 - [AWS IAM actions](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions.md) - IAM actions for Claude Platform on AWS
 - [Google Cloud IAM permissions](https://platform.claude.com/docs/en/api/claude-models-on-google-cloud-anthropic-managed-iam-permissions.md) - IAM permissions for Claude Models on Google Cloud (Anthropic managed)
 - [IP addresses](https://platform.claude.com/docs/en/api/ip-addresses.md)

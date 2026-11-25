@@ -4967,7 +4967,7 @@ Content type: `application/json`
 
   Set of 16 key-value pairs that can be attached to an object. This can be
   useful for storing additional information about the object in a structured
-  format, and querying for objects via API or the dashboard.
+  format.
 
   Keys are strings with a maximum length of 64 characters. Values are strings
   with a maximum length of 512 characters.
@@ -5167,7 +5167,7 @@ Content type: `application/json`
 
     - `"gpt-3.5-turbo-16k-0613"`
 
-  - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 20 more`
+  - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 24 more`
 
     - `"o1-pro"`
 
@@ -5214,6 +5214,14 @@ Content type: `application/json`
     - `"gpt-6-rosalind"`
 
     - `"gpt-6.2-astra-law"`
+
+    - `"gpt-6-astra-healthcare"`
+
+    - `"gpt-6.1-sol-healthcare"`
+
+    - `"gpt-6.2-astra-healthcare"`
+
+    - `"gpt-6.2-sol-healthcare"`
 
 - `moderation: optional object { model, policy }  or null`
 
@@ -11717,7 +11725,7 @@ Content type: `application/json`
 
     Set of 16 key-value pairs that can be attached to an object. This can be
     useful for storing additional information about the object in a structured
-    format, and querying for objects via API or the dashboard.
+    format.
 
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
@@ -11917,7 +11925,7 @@ Content type: `application/json`
 
       - `"gpt-3.5-turbo-16k-0613"`
 
-    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 20 more`
+    - `ResponsesOnlyModel = "o1-pro" or "o1-pro-2025-03-19" or "o3-pro" or 24 more`
 
       - `"o1-pro"`
 
@@ -11964,6 +11972,14 @@ Content type: `application/json`
       - `"gpt-6-rosalind"`
 
       - `"gpt-6.2-astra-law"`
+
+      - `"gpt-6-astra-healthcare"`
+
+      - `"gpt-6.1-sol-healthcare"`
+
+      - `"gpt-6.2-astra-healthcare"`
+
+      - `"gpt-6.2-sol-healthcare"`
 
   - `object: "response"`
 

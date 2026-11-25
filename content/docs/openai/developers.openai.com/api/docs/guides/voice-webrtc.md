@@ -38,7 +38,7 @@ With the default startup behavior, creating a WebRTC session with `POST /v1/live
 
 Save the server example in a new directory and set `OPENAI_API_KEY` in its environment. For TypeScript, use Node.js 22.6 or later, save the example as `server.ts`, and run `npm install openai express` followed by `npm pkg set type=module`. For Python, install `openai`. This example binds to `127.0.0.1`, accepts session requests from `http://localhost:3000`, and serves `index.html` from the directory where you run it.
 
-For Go, save the example as `main.go`, initialize a module with `go mod init live-demo`, and install `github.com/openai/openai-go/v3@v3.85.1` with `go get`. Run `go run .` with Go 1.26 or later. For Java, use Java 17 or later, add the Maven dependency `com.openai:openai-java:4.95.0`, and run the `LiveConnectionWebrtcExample` class. For Ruby 3.3 or later, install `openai` 0.110.0 and `webrick` with `gem install openai -v 0.110.0` and `gem install webrick`, save the example as `server.rb`, and run `ruby server.rb`.
+For Go, save the example as `main.go`, initialize a module with `go mod init live-demo`, and install `github.com/openai/openai-go/v3@v3.85.1` with `go get`. Run `go run .` with Go 1.26 or later. For Java, add the Maven dependency `com.openai:openai-java:4.95.0` and run the `LiveConnectionWebrtcExample` class. For Ruby 3.3 or later, install `openai` 0.110.0 and `webrick` with `gem install openai -v 0.110.0` and `gem install webrick`, save the example as `server.rb`, and run `ruby server.rb`.
 
 Choose a server language below; each variant serves `index.html` and the same `/api/session` endpoint on port 3000. Use an SDK version with Live support. Run only one variant at a time.
 
@@ -780,6 +780,85 @@ func handler(client openai.Client) http.Handler {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.realtime.*;
+import com.openai.models.realtime.calls.CallCreateParams;
+import com.sun.net.httpserver.HttpServer;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+
+var client = OpenAIOkHttpClient.fromEnv();
+
+// Authenticate your application's users before exposing this server publicly.
+var server = HttpServer.create(new InetSocketAddress("127.0.0.1", 3000), 0);
+server.createContext(
+    "/session",
+    exchange -> {
+      int status = 200;
+      byte[] body;
+      exchange.getResponseHeaders().set("Content-Type", "application/sdp");
+      try {
+        if (!exchange.getRequestMethod().equals("POST")) {
+          status = 405;
+          body = "Method not allowed".getBytes(StandardCharsets.UTF_8);
+        } else {
+          byte[] offer = exchange.getRequestBody().readNBytes(1024 * 1024 + 1);
+          if (offer.length > 1024 * 1024)
+            throw new IllegalArgumentException("SDP offer is too large");
+          try (var response =
+              client
+                  .realtime()
+                  .calls()
+                  .withRawResponse()
+                  .create(
+                      CallCreateParams.builder()
+                          .sdp(new String(offer, StandardCharsets.UTF_8))
+                          .session(
+                              RealtimeSessionCreateRequest.builder()
+                                  .model("gpt-realtime-2.1")
+                                  .audio(
+                                      RealtimeAudioConfig.builder()
+                                          .output(
+                                              RealtimeAudioConfigOutput.builder()
+                                                  .voice("marin")
+                                                  .build())
+                                          .build())
+                                  .build())
+                          .putAdditionalHeader("OpenAI-Safety-Identifier", "hashed-user-id")
+                          .build())) {
+            status = response.statusCode();
+            body = response.body().readAllBytes();
+            response.headers().values("Location").stream()
+                .findFirst()
+                .ifPresent(location -> exchange.getResponseHeaders().set("Location", location));
+          }
+        }
+      } catch (IllegalArgumentException error) {
+        status = 400;
+        body = "Invalid SDP offer".getBytes(StandardCharsets.UTF_8);
+      } catch (RuntimeException error) {
+        status = 502;
+        body = "Could not create session".getBytes(StandardCharsets.UTF_8);
+      }
+      if (status >= 400) exchange.getResponseHeaders().set("Content-Type", "text/plain");
+      exchange.sendResponseHeaders(status, body.length);
+      try (var output = exchange.getResponseBody()) {
+        output.write(body);
+      } finally {
+        exchange.close();
+      }
+    });
+Runtime.getRuntime()
+    .addShutdownHook(
+        new Thread(
+            () -> {
+              server.stop(0);
+              client.close();
+            }));
+server.start();
+```
+
 ```ruby
 require "openai"
 require "webrick"
@@ -969,6 +1048,76 @@ func handler(client openai.Client) http.Handler {
 	})
 	return mux
 }
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.ObjectMappers;
+import com.openai.models.realtime.*;
+import com.openai.models.realtime.clientsecrets.ClientSecretCreateParams;
+import com.sun.net.httpserver.HttpServer;
+import java.net.InetSocketAddress;
+import java.nio.charset.StandardCharsets;
+
+
+
+var client = OpenAIOkHttpClient.fromEnv();
+// Authenticate your application's users before exposing this server publicly.
+var server = HttpServer.create(new InetSocketAddress("127.0.0.1", 3000), 0);
+server.createContext(
+    "/token",
+    exchange -> {
+      int status = 200;
+      byte[] body;
+      try {
+        if (!exchange.getRequestMethod().equals("GET")) {
+          status = 405;
+          body = "{\"error\":\"Method not allowed\"}".getBytes(StandardCharsets.UTF_8);
+        } else {
+          var secret =
+              client
+                  .realtime()
+                  .clientSecrets()
+                  .create(
+                      ClientSecretCreateParams.builder()
+                          .putAdditionalHeader("OpenAI-Safety-Identifier", "hashed-user-id")
+                          .session(
+                              RealtimeSessionCreateRequest.builder()
+                                  .model("gpt-realtime-2.1")
+                                  .audio(
+                                      RealtimeAudioConfig.builder()
+                                          .output(
+                                              RealtimeAudioConfigOutput.builder()
+                                                  .voice("marin")
+                                                  .build())
+                                          .build())
+                                  .build())
+                          .build());
+          body = ObjectMappers.jsonMapper().writeValueAsBytes(secret);
+        }
+      } catch (RuntimeException error) {
+        status = 502;
+        body =
+            "{\"error\":\"Could not create client credential\"}"
+                .getBytes(StandardCharsets.UTF_8);
+      }
+      exchange.getResponseHeaders().set("Content-Type", "application/json");
+      exchange.getResponseHeaders().set("Cache-Control", "no-store");
+      exchange.sendResponseHeaders(status, body.length);
+      try (var output = exchange.getResponseBody()) {
+        output.write(body);
+      } finally {
+        exchange.close();
+      }
+    });
+Runtime.getRuntime()
+    .addShutdownHook(
+        new Thread(
+            () -> {
+              server.stop(0);
+              client.close();
+            }));
+server.start();
 ```
 
 ```ruby

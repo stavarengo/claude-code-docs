@@ -11,6 +11,15 @@
 View plans
 Contact sales
 
+This page covers setting up Amazon Bedrock for the Claude Code CLI and IDE extensions.
+
+> [!NOTE]
+>
+> To use Amazon Bedrock in the **Code** tab of the Claude Desktop app, you or your administrator configures the app:
+>
+> * **Your organization installed the app**: ask your administrator to [configure it for Amazon Bedrock](https://claude.com/docs/third-party/claude-desktop/bedrock)
+> * **You install the app yourself**: follow the [single-machine setup steps](https://claude.com/docs/third-party/claude-desktop/installation#single-machine-setup) and enter the [connection and model values for Amazon Bedrock](https://claude.com/docs/third-party/claude-desktop/bedrock#configure-the-app)
+
 ## Prerequisites
 
 Before configuring Claude Code with Amazon Bedrock, ensure you have:
@@ -637,4 +646,4 @@ To clear the error:
 * [Amazon Bedrock inference profiles](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html)
 * [Amazon Bedrock token burndown and quotas](https://docs.aws.amazon.com/bedrock/latest/userguide/quotas-token-burndown.html)
 * [Claude Code on Amazon Bedrock: Quick Setup Guide](https://builder.aws.com/content/2tXkZKrZzlrlu0KfH8gST5Dkppq/claude-code-on-amazon-bedrock-quick-setup-guide)
-* [Claude Code Monitoring Implementation (Amazon Bedrock)](https://github.com/aws-solutions-library-samples/guidance-for-claude-code-with-amazon-bedrock/blob/main/assets/docs/MONITORING.md)
+* [Claude Code Monitoring Implementation (Amazon Bedrock)](../../../raw.githubusercontent.com/aws-solutions-library-samples/guidance-for-claude-code-with-amazon-bedrock/refs/heads/main/assets/docs/MONITORING.md)

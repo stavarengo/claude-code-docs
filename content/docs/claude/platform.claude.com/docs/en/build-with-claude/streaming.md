@@ -100,6 +100,8 @@ event: error
 data: {"type": "error", "error": {"type": "overloaded_error", "message": "Overloaded"}}
 ```
 
+If you use the SDK, your code doesn’t receive this event. The SDK ends the stream, and the code that reads the stream gets an error instead. To handle it, see [Handle an error in a stream](https://platform.claude.com/docs/en/api/handle-errors?sdk_languages=cli#handle-an-error-in-a-stream).
+
 ### Other events
 
 In accordance with the [versioning policy](https://platform.claude.com/docs/en/api/versioning?sdk_languages=cli), new event types may be added, and your code should handle unknown event types gracefully.
@@ -520,10 +522,6 @@ For Claude 4.6 and later models, the same capture-and-resume strategy applies, b
 
   <Card title="Thinking" icon="brain" href="https://platform.claude.com/docs/en/build-with-claude/thinking?sdk_languages=cli">
     Stream thinking output with `thinking_delta` and `signature_delta` events.
-  </Card>
-
-  <Card title="Client SDKs" icon="code" href="https://platform.claude.com/docs/en/cli-sdks-libraries/overview?sdk_languages=cli">
-    Use the official SDKs, which handle streaming, accumulation, and reconnection for you.
   </Card>
 
   <Card title="Batch processing" icon="stack" href="https://platform.claude.com/docs/en/build-with-claude/batch-processing?sdk_languages=cli">

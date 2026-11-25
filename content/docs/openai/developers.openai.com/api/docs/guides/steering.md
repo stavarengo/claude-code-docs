@@ -10,7 +10,7 @@ Mid-turn steering is available with the GPT-6 model family over a WebSocket
 
 Steering does not rewrite output already sent to your application, undo earlier actions, or cancel tools that have already started.
 
-The Java example requires Java 17 or later. For connection setup and general transport behavior, see [WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode). For exact event definitions, see the [Responses WebSocket events reference](https://developers.openai.com/api/reference/resources/responses/websocket-events).
+For connection setup and general transport behavior, see [WebSocket mode](https://developers.openai.com/api/docs/guides/websocket-mode). For exact event definitions, see the [Responses WebSocket events reference](https://developers.openai.com/api/reference/resources/responses/websocket-events).
 
 ## Send a steering message
 

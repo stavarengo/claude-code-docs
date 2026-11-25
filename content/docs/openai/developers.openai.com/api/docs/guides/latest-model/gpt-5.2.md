@@ -842,6 +842,44 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.*;
+import java.util.ArrayList;
+import java.util.List;
+
+// Use your configured OpenAIClient named client.
+var message =
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Write a very long poem about a dog.")
+            .build());
+var response =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-5.2")
+                .inputOfResponse(List.of(message))
+                .build());
+var history = new ArrayList<ResponseInputItem>();
+history.add(message);
+response.output().stream()
+    .map(item -> JsonValue.from(item).convert(ResponseInputItem.class))
+    .forEach(history::add);
+var compaction =
+    client
+        .responses()
+        .compact(
+            ResponseCompactParams.builder()
+                .model("gpt-5.2")
+                .inputOfResponseInputItems(history)
+                .build());
+System.out.println(compaction.output());
+```
+
 ```ruby
 require "openai"
 

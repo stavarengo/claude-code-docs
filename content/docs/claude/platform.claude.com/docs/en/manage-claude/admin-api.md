@@ -12,20 +12,13 @@ The Admin API is available to Claude Console and Claude Enterprise organizations
 
 Claude Enterprise (claude.ai) organizations call the Admin API with a scoped API key created in claude.ai. From this page, only the members, invites, and [organization info](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli#accessing-organization-info) endpoints apply to them. Outside this page, they can also call the following APIs and endpoints:
 
-* The [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli), which is in beta, and the legacy [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api?sdk_languages=cli). Both take a key with the `read:analytics` scope.
+* The [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli), which is in beta and takes a key with the `read:analytics` scope.
 * Enterprise-only endpoints: groups, custom-role reads, and the [Spend Limits API](https://platform.claude.com/docs/en/manage-claude/spend-limits-api?sdk_languages=cli).
 * The [Plugins API](https://platform.claude.com/docs/en/manage-claude/plugins-api?sdk_languages=cli) and the [Claude Tag API](https://platform.claude.com/docs/en/manage-claude/claude-tag-api?sdk_languages=cli), which are Enterprise-only and in beta.
 
 For members, invites, groups, and custom roles, see [User management](https://platform.claude.com/docs/en/manage-claude/user-management?sdk_languages=cli).
 
-On [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), only these Admin API endpoints are available:
-
-* The workspace endpoints: create, get, list, update, and archive on `/v1/organizations/workspaces`.
-* The external key endpoints, for [CMEK](https://platform.claude.com/docs/en/manage-claude/cmek-claude-platform-on-aws?sdk_languages=cli): register, get, list, update, and delete on `/v1/organizations/external_keys`. There is no validate endpoint, because keys are validated when attached to a workspace.
-* The [telemetry destination endpoints](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions?sdk_languages=cli#telemetry-destinations).
-* The [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli) endpoints: `/v1/organizations/analytics/usage` and `/v1/organizations/analytics/cost`.
-
-Organization members, workspace members, invites, API keys, the legacy [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api?sdk_languages=cli), and the rate limit reports aren’t available on Claude Platform on AWS.
+[Cloud platforms](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli#cloud-platforms) lists the endpoints you can call on Claude Models on Google Cloud (Anthropic managed) and Claude Platform on AWS.
 
 ## Authentication
 
@@ -291,6 +284,28 @@ Retrieve audit and activity data for your organization with the [Compliance API]
 ## Organization webhooks
 
 Register webhook endpoints for events about enforcement actions on your organization’s user profiles with [organization webhooks](https://platform.claude.com/docs/en/manage-claude/organization-webhooks?sdk_languages=cli).
+
+## Cloud platforms
+
+On the following cloud platforms, send requests to the platform’s base URL. Use the platform’s credentials instead of the ones under [Authentication](https://platform.claude.com/docs/en/manage-claude/admin-api?sdk_languages=cli#authentication).
+
+On [Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli), only these Admin API endpoints are available:
+
+* The workspace endpoints: create, get, list, update, and archive on `/v1/organizations/workspaces`.
+* The external key endpoints, for [customer-managed encryption keys (CMEK)](https://platform.claude.com/docs/en/manage-claude/cmek-claude-platform-on-aws?sdk_languages=cli): register, get, list, update, and delete on `/v1/organizations/external_keys`. Attaching a key to a workspace validates it.
+* The [telemetry destination endpoints](https://platform.claude.com/docs/en/api/claude-platform-on-aws-iam-actions?sdk_languages=cli#telemetry-destinations).
+* The compliance settings endpoints, to read and change the [Compliance API](https://platform.claude.com/docs/en/manage-claude/compliance-api?sdk_languages=cli) setting: get and update on `/v1/organizations/compliance_settings`.
+* The [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli) endpoints, which are in beta: `/v1/organizations/analytics/usage` and `/v1/organizations/analytics/cost`.
+
+For the base URL and credentials, see [Making requests on Claude Platform on AWS](https://platform.claude.com/docs/en/build-with-claude/claude-platform-on-aws?sdk_languages=cli#making-requests).
+
+On [Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli), use the organization-level base URL that [Making requests on Claude Models on Google Cloud (Anthropic managed)](https://platform.claude.com/docs/en/build-with-claude/claude-models-on-google-cloud/anthropic-managed?sdk_languages=cli#making-requests) describes. You can call these Admin API endpoints:
+
+* The workspace endpoints: create, get, list, update, and archive on `/v1/organizations/workspaces`.
+* The [external key endpoints](https://platform.claude.com/docs/en/api/claude-models-on-google-cloud-anthropic-managed-iam-permissions?sdk_languages=cli#encryption-keys), for CMEK: create, get, list, update, and delete on `/v1/organizations/external_keys`. To verify and attach a key, follow [Set up CMEK with Google Cloud KMS](https://platform.claude.com/docs/en/manage-claude/cmek-google-cloud-kms?sdk_languages=cli#register-the-key-with-anthropic).
+* The [Usage and Cost Analytics API](https://platform.claude.com/docs/en/manage-claude/usage-cost-analytics-api?sdk_languages=cli) endpoints, which are in beta: `/v1/organizations/analytics/usage` and `/v1/organizations/analytics/cost`.
+* The usage endpoint of the legacy [Usage and Cost API](https://platform.claude.com/docs/en/manage-claude/usage-cost-api?sdk_languages=cli): `/v1/organizations/usage_report/messages`.
+* The [Rate Limits API](https://platform.claude.com/docs/en/manage-claude/rate-limits-api?sdk_languages=cli) endpoints that read limits: `GET /v1/organizations/rate_limits` and `GET /v1/organizations/workspaces/{workspace_id}/rate_limits`.
 
 ## Best practices
 

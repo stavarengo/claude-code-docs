@@ -1608,6 +1608,32 @@ func main() {
 }
 ```
 
+```java
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Map;
+
+String description =
+    "This is a custom utility that makes it more convenient to add, remove, move, or edit code files. `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as \"input\":\n\n%%bash\napply_patch <<\"EOF\"\n*** Begin Patch\n[YOUR_PATCH]\n*** End Patch\nEOF\n\nWhere [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.\n\n*** [ACTION] File: [path/to/file] -> ACTION can be one of Add, Update, or Delete.\nFor each snippet of code that needs to be changed, repeat the following:\n[context_before] -> See below for further instructions on context.\n- [old_code] -> Precede the old code with a minus sign.\n+ [new_code] -> Precede the new, replacement code with a plus sign.\n[context_after] -> See below for further instructions on context.\n\nFor instructions on [context_before] and [context_after]:\n- By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change\u2019s [context_after] lines in the second change\u2019s [context_before] lines.\n- If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:\n@@ class BaseClass\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\n- If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple `@@` statements to jump to the right context. For instance:\n\n@@ class BaseClass\n@@ \tdef method():\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\nNote, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as \"input\" to this function, in order to apply a patch, is shown below.\n\n%%bash\napply_patch <<\"EOF\"\n*** Begin Patch\n*** Update File: pygorithm/searching/binary_search.py\n@@ class BaseClass\n@@     def search():\n-          pass\n+          raise NotImplementedError()\n\n@@ class Subclass\n@@     def search():\n-          pass\n+          raise NotImplementedError()\n\n*** End Patch\nEOF\n";
+var tool =
+    Map.of(
+        "name",
+        "apply_patch",
+        "description",
+        description,
+        "parameters",
+        Map.of(
+            "type",
+            "object",
+            "properties",
+            Map.of(
+                "input",
+                Map.of("type", "string", "description", "The apply_patch command to execute.")),
+            "required",
+            List.of("input")));
+System.out.println(new ObjectMapper().writeValueAsString(tool));
+```
+
 ```csharp
 using System.ClientModel.Primitives;
 using OpenAI.Responses;
@@ -3213,6 +3239,15 @@ func main() {
 		panic(err)
 	}
 }
+````
+
+````java
+String searchReplace =
+    "\n    path/to/file.py\n    ```\n    >>>>>>> SEARCH\n    def search():\n        pass\n    =======\n    def search():\n       raise NotImplementedError()\n    <<<<<<< REPLACE\n    ";
+String pseudoXml =
+    "\n    `<edit>`\n    `<file>`\n    path/to/file.py\n    `</file>`\n    `<old_code>`\n    def search():\n        pass\n    `</old_code>`\n    `<new_code>`\n    def search():\n       raise NotImplementedError()\n    `</new_code>`\n    `</edit>`\n    ";
+System.out.println(searchReplace);
+System.out.println(pseudoXml);
 ````
 
 ````csharp

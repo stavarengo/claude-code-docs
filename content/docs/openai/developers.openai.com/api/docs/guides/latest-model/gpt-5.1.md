@@ -464,6 +464,22 @@ result := map[string]any{
 }
 ```
 
+```java
+import com.openai.core.ObjectMappers;
+import com.openai.models.responses.ResponseInputItem;
+
+var output =
+    ResponseInputItem.ApplyPatchCallOutput.builder()
+        .callId(callId)
+        .status(
+            success
+                ? ResponseInputItem.ApplyPatchCallOutput.Status.COMPLETED
+                : ResponseInputItem.ApplyPatchCallOutput.Status.FAILED)
+        .output(success ? "Patch applied successfully." : "Patch could not be applied.")
+        .build();
+System.out.println(ObjectMappers.jsonMapper().writeValueAsString(output));
+```
+
 ```csharp
 using System.ClientModel.Primitives;
 using OpenAI.Responses;
@@ -501,6 +517,16 @@ tools = [{"type": "shell"}]
 
 ```go
 tools := []responses.ToolUnionParam{{OfShell: &responses.FunctionShellToolParam{}}}
+```
+
+```java
+import com.openai.core.ObjectMappers;
+import com.openai.models.responses.Tool;
+import java.util.List;
+
+var tools =
+    List.of(Tool.ofShell(com.openai.models.responses.FunctionShellTool.builder().build()));
+System.out.println(ObjectMappers.jsonMapper().writeValueAsString(tools));
 ```
 
 ```ruby

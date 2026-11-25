@@ -21,7 +21,7 @@ Make sure you have:
 > These cases are covered on other pages:
 >
 > * **Never used a terminal before**: start with the [terminal guide](https://code.claude.com/docs/en/terminal-guide)
-> * **Want Claude Code somewhere other than the terminal**: Claude Code is also available on the [web](https://claude.ai/code), as a [desktop app](./desktop.md), in [VS Code](./vs-code.md) and [JetBrains IDEs](./jetbrains.md), in [Slack](./slack.md), and in CI/CD with [GitHub Actions](./github-actions.md) and [GitLab](./gitlab-ci-cd.md). See [all interfaces](./overview.md#use-claude-code-everywhere).
+> * **Want Claude Code somewhere other than the terminal**: Claude Code is also available on the [web](https://claude.ai/code), as a [desktop app](./desktop.md), in [VS Code](./vs-code.md) and [JetBrains IDEs](./jetbrains.md), and in CI/CD with [GitHub Actions](./github-actions.md) and [GitLab](./gitlab-ci-cd.md). See [all interfaces](./overview.md#use-claude-code-everywhere).
 
 ## Step 1: Install Claude Code
 
