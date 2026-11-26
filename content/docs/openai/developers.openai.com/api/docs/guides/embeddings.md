@@ -675,6 +675,89 @@ try (var csv =
 System.out.println(vectors.get(0));
 ```
 
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.VisualBasic.FileIO;
+
+namespace OpenAI.Docs.Examples.Embeddings.LoadSavedEmbeddingsSample;
+
+internal static class LoadSavedEmbeddings
+{
+
+internal static List<double[]> LoadVectors()
+    {
+        // Use the CSV saved by the review-embedding example.
+        List<double[]> vectors = [];
+        foreach (Dictionary<string, string> row in ReadCsv("output/embedded_1k_reviews.csv", "ada_embedding"))
+        {
+            double[] vector = DecodeVector(row["ada_embedding"]);
+            if (vectors.Count > 0 && vector.Length != vectors[0].Length)
+            {
+                throw new InvalidDataException("Embedding dimensions differ.");
+            }
+            vectors.Add(vector);
+        }
+        if (vectors.Count == 0)
+        {
+            throw new InvalidDataException("The CSV contains no embeddings.");
+        }
+
+        Console.WriteLine(JsonSerializer.Serialize(vectors[0]));
+        return vectors;
+    }
+    private static IEnumerable<Dictionary<string, string>> ReadCsv(string path, params string[] requiredColumns)
+    {
+        using TextFieldParser parser = new(path)
+        {
+            TextFieldType = FieldType.Delimited,
+            HasFieldsEnclosedInQuotes = true,
+            TrimWhiteSpace = false,
+        };
+        parser.SetDelimiters(",");
+        string[] headers = parser.ReadFields()
+            ?? throw new InvalidDataException("The CSV has no header.");
+        if (headers.Distinct(StringComparer.Ordinal).Count() != headers.Length
+            || requiredColumns.Any(column => !headers.Contains(column, StringComparer.Ordinal)))
+        {
+            throw new InvalidDataException("The CSV has duplicate headers or missing required columns.");
+        }
+
+        while (!parser.EndOfData)
+        {
+            string[] fields = parser.ReadFields()
+                ?? throw new InvalidDataException("The CSV record is missing.");
+            if (fields.Length != headers.Length)
+            {
+                throw new InvalidDataException($"CSV record near line {parser.LineNumber} has the wrong field count.");
+            }
+
+            Dictionary<string, string> row = new(StringComparer.Ordinal);
+            for (int i = 0; i < headers.Length; i++)
+            {
+                row.Add(headers[i], fields[i]);
+            }
+            yield return row;
+        }
+    }
+
+    private static double[] DecodeVector(string json)
+    {
+        double[] vector = JsonSerializer.Deserialize<double[]>(json)
+            ?? throw new InvalidDataException("An embedding is null.");
+        if (vector.Length == 0 || vector.Any(value => !double.IsFinite(value)))
+        {
+            throw new InvalidDataException("Embeddings must contain finite numbers and at least one dimension.");
+        }
+        return vector;
+    }
+}
+```
+
 ```ruby
 # standard:disable Lint/UselessAssignment -- Preserve named results for the next workflow step.
 require "csv"
@@ -3430,6 +3513,133 @@ static Map<String, double[]> averageBy(String[] groups, double[][] vectors) {
         for (int j = 0; j < sum.length; j++) sum[j] /= counts.get(group);
       });
   return sums;
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.VisualBasic.FileIO;
+
+namespace OpenAI.Docs.Examples.Embeddings.AverageUserAndProductEmbeddingsSample;
+
+internal static class AverageUserAndProductEmbeddings
+{
+
+// The included illustrative CSV has been retaining Score, UserId and ProductId
+    // beside each corresponding ada_embedding. The basic embedding producer has
+    // been writing only combined and ada_embedding to a different output file.
+    // Real-data preparation has been preserving these review fields when attaching
+    // each generated vector; this example has been reading that labeled schema.
+    internal static (Dictionary<string, double[]> Users, Dictionary<string, double[]> Products) AverageReviews()
+    {
+        // Preserve the user and product columns alongside each saved review vector.
+        List<Review> reviews = [];
+        foreach (Dictionary<string, string> row in ReadCsv(
+            "data/illustrative-review-embeddings.csv", "UserId", "ProductId", "ada_embedding"))
+        {
+            if (string.IsNullOrWhiteSpace(row["UserId"]) || string.IsNullOrWhiteSpace(row["ProductId"]))
+            {
+                throw new InvalidDataException("Each review needs a user ID and product ID.");
+            }
+            reviews.Add(new Review(row["UserId"], row["ProductId"], DecodeVector(row["ada_embedding"])));
+        }
+        if (reviews.Count == 0)
+        {
+            throw new InvalidDataException("The CSV contains no reviews.");
+        }
+
+        Dictionary<string, double[]> users = AverageBy(reviews, review => review.UserId);
+        Dictionary<string, double[]> products = AverageBy(reviews, review => review.ProductId);
+        Console.WriteLine(JsonSerializer.Serialize(users));
+        Console.WriteLine(JsonSerializer.Serialize(products));
+        return (users, products);
+    }
+    internal sealed record Review(string UserId, string ProductId, double[] Vector);
+
+    internal static Dictionary<string, double[]> AverageBy(
+        List<Review> reviews, Func<Review, string> groupKey)
+    {
+        int dimensions = reviews[0].Vector.Length;
+        Dictionary<string, double[]> means = new(StringComparer.Ordinal);
+        foreach (IGrouping<string, Review> group in reviews.GroupBy(groupKey, StringComparer.Ordinal))
+        {
+            double[] mean = new double[dimensions];
+            int count = 0;
+            foreach (Review review in group)
+            {
+                if (review.Vector.Length != dimensions)
+                {
+                    throw new InvalidDataException("Embedding dimensions differ.");
+                }
+                count++;
+                for (int dimension = 0; dimension < dimensions; dimension++)
+                {
+                    mean[dimension] += review.Vector[dimension];
+                    if (!double.IsFinite(mean[dimension]))
+                    {
+                        throw new InvalidDataException("The grouped sum exceeds the numeric range.");
+                    }
+                }
+            }
+            for (int dimension = 0; dimension < dimensions; dimension++)
+            {
+                mean[dimension] /= count;
+            }
+            means.Add(group.Key, mean);
+        }
+        return means;
+    }
+
+    private static IEnumerable<Dictionary<string, string>> ReadCsv(string path, params string[] requiredColumns)
+    {
+        using TextFieldParser parser = new(path)
+        {
+            TextFieldType = FieldType.Delimited,
+            HasFieldsEnclosedInQuotes = true,
+            TrimWhiteSpace = false,
+        };
+        parser.SetDelimiters(",");
+        string[] headers = parser.ReadFields()
+            ?? throw new InvalidDataException("The CSV has no header.");
+        if (headers.Distinct(StringComparer.Ordinal).Count() != headers.Length
+            || requiredColumns.Any(column => !headers.Contains(column, StringComparer.Ordinal)))
+        {
+            throw new InvalidDataException("The CSV has duplicate headers or missing required columns.");
+        }
+
+        while (!parser.EndOfData)
+        {
+            string[] fields = parser.ReadFields()
+                ?? throw new InvalidDataException("The CSV record is missing.");
+            if (fields.Length != headers.Length)
+            {
+                throw new InvalidDataException($"CSV record near line {parser.LineNumber} has the wrong field count.");
+            }
+
+            Dictionary<string, string> row = new(StringComparer.Ordinal);
+            for (int i = 0; i < headers.Length; i++)
+            {
+                row.Add(headers[i], fields[i]);
+            }
+            yield return row;
+        }
+    }
+
+    private static double[] DecodeVector(string json)
+    {
+        double[] vector = JsonSerializer.Deserialize<double[]>(json)
+            ?? throw new InvalidDataException("An embedding is null.");
+        if (vector.Length == 0 || vector.Any(value => !double.IsFinite(value)))
+        {
+            throw new InvalidDataException("Embeddings must contain finite numbers and at least one dimension.");
+        }
+        return vector;
+    }
 }
 ```
 

@@ -263,6 +263,22 @@ const sessionConfig = JSON.stringify({
 });
 ```
 
+```python
+session_config = {
+    "session": {
+        "type": "realtime",
+        "model": "gpt-realtime-2.1-mini",
+        "instructions": "Read the user's text aloud without adding commentary.",
+        "output_modalities": ["audio"],
+        "audio": {
+            "output": {
+                "voice": {"id": "voice_123abc"},
+            },
+        },
+    },
+}
+```
+
 ```go
 sessionConfig := map[string]any{
 	"session": map[string]any{
