@@ -455,6 +455,27 @@ For Ruby, run the installation commands in your project directory. Before runnin
 
 
 
+
+
+
+Use Go 1.26 or later and `playwright-go` v0.5200.1 from the [Go sample module](https://github.com/openai/developers-website/tree/main/src/content/platform/go-examples). Start at the repository root to install the driver and Chromium.
+
+```bash
+cd src/content/platform/go-examples
+go run github.com/playwright-community/playwright-go/cmd/playwright@v0.5200.1 install chromium
+```
+
+If Linux system libraries are missing, run the same versioned command with `install --with-deps chromium`. You need permission to install operating-system packages.
+
+Browser actions and screenshots belong inside the callback passed to `withBrowserPage`, before its cleanup.
+
+**Runtime helper requirement**
+
+The runtime helper requires a preinstalled matching driver and browser. It does not download them.
+
+
+
+
 Then launch a browser instance. Keep the browser and page alive while you run the remaining steps.
 
 
@@ -510,6 +531,62 @@ with sync_playwright() as p:
     page = browser.new_page(viewport={"width": 1280, "height": 720})
 ```
 
+```go
+import (
+	"errors"
+	"fmt"
+	"time"
+
+	"github.com/playwright-community/playwright-go"
+)
+
+// withBrowserPage owns the browser lifecycle around your application's page operations.
+// For example, the callback can call page.SetContent with application-owned HTML.
+func withBrowserPage(visit func(playwright.Page) error) (err error) {
+	// Runtime prerequisites must be installed separately; this sample never downloads browsers.
+	pw, err := playwright.Run()
+	if err != nil {
+		return err
+	}
+	defer func() { err = errors.Join(err, pw.Stop()) }()
+	browser, err := pw.Chromium.Launch(playwright.BrowserTypeLaunchOptions{
+		Headless: playwright.Bool(true), ChromiumSandbox: playwright.Bool(true),
+		Env: map[string]string{}, Timeout: playwright.Float(30000),
+		Args: []string{"--disable-extensions", "--disable-file-system"},
+	})
+	if err != nil {
+		return err
+	}
+	defer func() { err = errors.Join(err, browser.Close()) }()
+	deadlineResult := make(chan error, 1)
+	deadline := time.AfterFunc(5*time.Minute, func() {
+		deadlineResult <- errors.Join(fmt.Errorf("browser page lifetime exceeded five minutes"), browser.Close())
+	})
+	defer func() {
+		if !deadline.Stop() {
+			err = errors.Join(err, <-deadlineResult)
+		}
+	}()
+
+	context, err := browser.NewContext(playwright.BrowserNewContextOptions{
+		Viewport: &playwright.Size{
+			Width:  1280,
+			Height: 720,
+		},
+	})
+	if err != nil {
+		return err
+	}
+	defer func() { err = errors.Join(err, context.Close()) }()
+	page, err := context.NewPage()
+	if err != nil {
+		return err
+	}
+	page.SetDefaultTimeout(10000)
+	return visit(page)
+}
+```
+
 ```java
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -532,6 +609,57 @@ try (var playwright = Playwright.create();
 }
 
 
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+// Microsoft.Playwright 1.52.0 and its matching Chromium installation.
+
+static async Task CloseAtDeadlineAsync(IBrowser browser, CancellationToken cancellationToken)
+{
+    try { await Task.Delay(TimeSpan.FromMinutes(5), cancellationToken); }
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { return; }
+    await browser.CloseAsync();
+    throw new TimeoutException("Browser page lifetime exceeded five minutes.");
+}
+
+static BrowserTypeLaunchOptions CreateLaunchOptions() => new()
+{
+    Headless = true,
+    ChromiumSandbox = true,
+    Env = new Dictionary<string, string>(),
+    Timeout = 30_000,
+    Args = ["--disable-extensions", "--disable-file-system"],
+};
+
+static BrowserNewContextOptions CreateContextOptions() => new()
+{
+    ViewportSize = new() { Width = 1280, Height = 720 },
+};
+
+using IPlaywright playwright = await Playwright.CreateAsync();
+await using IBrowser browser = await playwright.Chromium.LaunchAsync(CreateLaunchOptions());
+await using IBrowserContext context = await browser.NewContextAsync(CreateContextOptions());
+using CancellationTokenSource lifetime = new();
+Task deadline = CloseAtDeadlineAsync(browser, lifetime.Token);
+try
+{
+    IPage page = await context.NewPageAsync();
+    page.SetDefaultTimeout(10_000);
+    // Subsequent browser actions and screenshots before cleanup.
+
+}
+finally
+{
+    await lifetime.CancelAsync();
+    await deadline;
+}
 ```
 
 ```ruby
@@ -706,6 +834,54 @@ class VM:
 vm = VM(display=":99", container_name="cua-image")
 ```
 
+```go
+import (
+	"bytes"
+	"context"
+	"fmt"
+	"os/exec"
+	"sort"
+	"time"
+)
+
+type VM struct {
+	Display       string
+	ContainerName string
+	Executions    int
+}
+
+// dockerExec preserves argument boundaries and returns stdout as bytes, including PNGs.
+func (vm *VM) dockerExec(executable string, arguments []string, environment map[string]string) ([]byte, error) {
+	args := []string{"exec"}
+	names := make([]string, 0, len(environment))
+	for name := range environment {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		args = append(args, "--env", name+"="+environment[name])
+	}
+	args = append(args, vm.ContainerName, executable)
+	args = append(args, arguments...)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	command := exec.CommandContext(ctx, "docker", args...)
+	var stderr bytes.Buffer
+	command.Stderr = &stderr
+	vm.Executions++
+	output, err := command.Output()
+	if err != nil {
+		return nil, fmt.Errorf("docker exec %s: %w: %s", executable, err, stderr.String())
+	}
+	return output, nil
+}
+
+func (vm *VM) xdotool(arguments ...string) error {
+	_, err := vm.dockerExec("xdotool", arguments, map[string]string{"DISPLAY": vm.Display})
+	return err
+}
+```
+
 ```java
 import com.openai.core.ObjectMappers;
 import java.nio.charset.StandardCharsets;
@@ -746,6 +922,94 @@ var process =
 
 static void xdotool(VM vm, String... arguments) throws Exception {
   dockerExec(vm.containerName(), "xdotool", List.of(arguments), Map.of("DISPLAY", vm.display()));
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+
+internal sealed record VM(string Display, string ContainerName)
+{
+    internal int Executions { get; set; }
+}
+
+internal static ProcessStartInfo CreateDockerStartInfo(
+    VM vm, string executable, IReadOnlyList<string> arguments,
+    IReadOnlyDictionary<string, string>? environment = null)
+{
+    ProcessStartInfo start = new("docker")
+    {
+        UseShellExecute = false,
+        RedirectStandardInput = true,
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+        StandardErrorEncoding = Encoding.UTF8,
+    };
+    start.ArgumentList.Add("exec");
+    if (environment is not null)
+    {
+        foreach ((string name, string value) in environment)
+        {
+            start.ArgumentList.Add("--env");
+            start.ArgumentList.Add($"{name}={value}");
+        }
+    }
+    start.ArgumentList.Add(vm.ContainerName);
+    start.ArgumentList.Add(executable);
+    foreach (string argument in arguments)
+    {
+        start.ArgumentList.Add(argument);
+    }
+    return start;
+}
+
+// ArgumentList avoids shell expansion; stdout remains binary throughout.
+internal static async Task<byte[]> DockerExecAsync(
+    VM vm, string executable, IReadOnlyList<string> arguments,
+    IReadOnlyDictionary<string, string>? environment = null)
+{
+    ProcessStartInfo start = CreateDockerStartInfo(vm, executable, arguments, environment);
+    using Process process = new() { StartInfo = start };
+    vm.Executions++;
+    if (!process.Start())
+    {
+        throw new InvalidOperationException("Could not start Docker.");
+    }
+    process.StandardInput.Close();
+    using CancellationTokenSource timeout = new(TimeSpan.FromSeconds(30));
+    using MemoryStream stdout = new();
+    try
+    {
+        Task copy = process.StandardOutput.BaseStream.CopyToAsync(stdout, timeout.Token);
+        Task<string> stderr = process.StandardError.ReadToEndAsync(timeout.Token);
+        await Task.WhenAll(copy, stderr, process.WaitForExitAsync(timeout.Token));
+        if (process.ExitCode != 0)
+        {
+            throw new InvalidOperationException($"docker exec {executable} failed ({process.ExitCode}): {await stderr}");
+        }
+        return stdout.ToArray();
+    }
+    finally
+    {
+        if (!process.HasExited)
+        {
+            process.Kill(entireProcessTree: true);
+        }
+        await process.WaitForExitAsync();
+    }
+}
+
+internal static async Task XdotoolAsync(VM vm, params string[] arguments)
+{
+    await DockerExecAsync(vm, "xdotool", arguments, new Dictionary<string, string> { ["DISPLAY"] = vm.Display });
 }
 ```
 
@@ -966,6 +1230,79 @@ def normalize_drag_path(path):
     return [(point.x, point.y) for point in path]
 ```
 
+```go
+import (
+	"fmt"
+
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/playwright-community/playwright-go"
+)
+
+func normalizeKey(key string) string {
+	switch key {
+	case "ENTER", "RETURN":
+		return "Enter"
+	case "ESC", "ESCAPE":
+		return "Escape"
+	case "TAB":
+		return "Tab"
+	case "SPACE":
+		return "Space"
+	case "BACKSPACE":
+		return "Backspace"
+	case "DELETE", "DEL":
+		return "Delete"
+	case "HOME":
+		return "Home"
+	case "END":
+		return "End"
+	case "PAGEUP":
+		return "PageUp"
+	case "PAGEDOWN":
+		return "PageDown"
+	case "UP", "ARROWUP":
+		return "ArrowUp"
+	case "DOWN", "ARROWDOWN":
+		return "ArrowDown"
+	case "LEFT", "ARROWLEFT":
+		return "ArrowLeft"
+	case "RIGHT", "ARROWRIGHT":
+		return "ArrowRight"
+	case "CTRL", "CONTROL":
+		return "Control"
+	case "SHIFT":
+		return "Shift"
+	case "ALT", "OPTION":
+		return "Alt"
+	case "META", "CMD", "COMMAND":
+		return "Meta"
+	default:
+		return key
+	}
+}
+
+func normalizeButton(button string) (playwright.MouseButton, error) {
+	switch button {
+	case "left":
+		return playwright.MouseButton("left"), nil
+	case "wheel":
+		return playwright.MouseButton("middle"), nil
+	case "right":
+		return playwright.MouseButton("right"), nil
+	default:
+		return "", fmt.Errorf("unsupported mouse button: %s", button)
+	}
+}
+
+func normalizeDragPath(path []responses.ComputerActionDragPath) [][2]int64 {
+	result := make([][2]int64, len(path))
+	for i, point := range path {
+		result[i] = [2]int64{point.X, point.Y}
+	}
+	return result
+}
+```
+
 ```java
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -1011,6 +1348,72 @@ static MouseButton normalizeButton(String button) {
 
 static List<List<Long>> normalizeDragPath(List<ComputerAction.Drag.Path> path) {
   return path.stream().map(point -> List.of(point.x(), point.y())).toList();
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+
+internal static string NormalizeKey(string key) => key switch
+{
+    "ENTER" or "RETURN" => "Enter",
+    "ESC" or "ESCAPE" => "Escape",
+    "TAB" => "Tab",
+    "SPACE" => "Space",
+    "BACKSPACE" => "Backspace",
+    "DELETE" or "DEL" => "Delete",
+    "HOME" => "Home",
+    "END" => "End",
+    "PAGEUP" => "PageUp",
+    "PAGEDOWN" => "PageDown",
+    "UP" or "ARROWUP" => "ArrowUp",
+    "DOWN" or "ARROWDOWN" => "ArrowDown",
+    "LEFT" or "ARROWLEFT" => "ArrowLeft",
+    "RIGHT" or "ARROWRIGHT" => "ArrowRight",
+    "CTRL" or "CONTROL" => "Control",
+    "SHIFT" => "Shift",
+    "ALT" or "OPTION" => "Alt",
+    "META" or "CMD" or "COMMAND" => "Meta",
+    _ => key,
+};
+
+internal static MouseButton NormalizeButton(string button) => button switch
+{
+    "left" => MouseButton.Left,
+    "wheel" => MouseButton.Middle,
+    "right" => MouseButton.Right,
+    _ => throw new ArgumentException($"Unsupported mouse button: {button}", nameof(button)),
+};
+
+internal static double[][] NormalizeDragPath(JsonElement path)
+{
+    if (path.ValueKind != JsonValueKind.Array)
+    {
+        throw new ArgumentException("A drag path must be an array.", nameof(path));
+    }
+    return path.EnumerateArray().Select(point =>
+    {
+        double[] coordinates = point.ValueKind switch
+        {
+            JsonValueKind.Array when point.GetArrayLength() >= 2 =>
+                [point[0].GetDouble(), point[1].GetDouble()],
+            JsonValueKind.Object =>
+                [point.GetProperty("x").GetDouble(), point.GetProperty("y").GetDouble()],
+            _ => throw new ArgumentException("Expected coordinate pairs or objects.", nameof(path)),
+        };
+        if (!coordinates.All(double.IsFinite))
+        {
+            throw new ArgumentException("Coordinates must be finite.", nameof(path));
+        }
+        return coordinates;
+    }).ToArray();
 }
 ```
 
@@ -1282,6 +1685,105 @@ def normalize_drag_path(path):
     return [(point.x, point.y) for point in path]
 ```
 
+```go
+import (
+	"github.com/openai/openai-go/v3/responses"
+	"math"
+)
+
+type InvalidInputError struct{ Message string }
+
+func (e *InvalidInputError) Error() string { return e.Message }
+
+func normalizeKey(key string) string {
+	switch key {
+	case "ENTER", "RETURN":
+		return "Return"
+	case "ESC", "ESCAPE":
+		return "Escape"
+	case "TAB":
+		return "Tab"
+	case "SPACE":
+		return "space"
+	case "BACKSPACE":
+		return "BackSpace"
+	case "DELETE", "DEL":
+		return "Delete"
+	case "HOME":
+		return "Home"
+	case "END":
+		return "End"
+	case "PAGEUP":
+		return "Page_Up"
+	case "PAGEDOWN":
+		return "Page_Down"
+	case "UP", "ARROWUP":
+		return "Up"
+	case "DOWN", "ARROWDOWN":
+		return "Down"
+	case "LEFT", "ARROWLEFT":
+		return "Left"
+	case "RIGHT", "ARROWRIGHT":
+		return "Right"
+	case "CTRL", "CONTROL":
+		return "ctrl"
+	case "SHIFT":
+		return "shift"
+	case "ALT", "OPTION":
+		return "alt"
+	case "META", "CMD", "COMMAND":
+		return "super"
+	default:
+		return key
+	}
+}
+
+func normalizeButton(button string) (int, error) {
+	switch button {
+	case "left":
+		return 1, nil
+	case "wheel":
+		return 2, nil
+	case "right":
+		return 3, nil
+	case "back":
+		return 8, nil
+	case "forward":
+		return 9, nil
+	default:
+		return 0, &InvalidInputError{"Unsupported mouse button: " + button}
+	}
+}
+
+func normalizeDragPath(path []responses.ComputerActionDragPath) [][2]int64 {
+	result := make([][2]int64, 0, len(path))
+	for _, point := range path {
+		result = append(result, [2]int64{point.X, point.Y})
+	}
+	return result
+}
+
+func scrollButtons(x, y int64) []int {
+	buttons := []int{}
+	for _, direction := range [][3]int64{{y, 4, 5}, {x, 6, 7}} {
+		delta := direction[0]
+		if delta == 0 {
+			continue
+		}
+		button := direction[2]
+		if delta < 0 {
+			button = direction[1]
+		}
+		// Python round and Java rint use ties-to-even (Go math.Round does not).
+		clicks := max(1, int(math.Abs(math.RoundToEven(float64(delta)/100))))
+		for i := 0; i < clicks; i++ {
+			buttons = append(buttons, int(button))
+		}
+	}
+	return buttons
+}
+```
+
 ```java
 import com.openai.core.ObjectMappers;
 import com.openai.models.responses.ComputerAction;
@@ -1338,6 +1840,79 @@ static List<Integer> scrollButtons(long x, long y) {
     for (int i = 0; i < clicks; i++) buttons.add(button);
   }
   return buttons;
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+
+internal sealed record Point(
+    [property: JsonPropertyName("x")] long X,
+    [property: JsonPropertyName("y")] long Y);
+
+internal static string NormalizeKey(string key) => key switch
+{
+    "ENTER" or "RETURN" => "Return",
+    "ESC" or "ESCAPE" => "Escape",
+    "TAB" => "Tab",
+    "SPACE" => "space",
+    "BACKSPACE" => "BackSpace",
+    "DELETE" or "DEL" => "Delete",
+    "HOME" => "Home",
+    "END" => "End",
+    "PAGEUP" => "Page_Up",
+    "PAGEDOWN" => "Page_Down",
+    "UP" or "ARROWUP" => "Up",
+    "DOWN" or "ARROWDOWN" => "Down",
+    "LEFT" or "ARROWLEFT" => "Left",
+    "RIGHT" or "ARROWRIGHT" => "Right",
+    "CTRL" or "CONTROL" => "ctrl",
+    "SHIFT" => "shift",
+    "ALT" or "OPTION" => "alt",
+    "META" or "CMD" or "COMMAND" => "super",
+    _ => key,
+};
+
+internal static int NormalizeButton(string button) => button switch
+{
+    "left" => 1,
+    "wheel" => 2,
+    "right" => 3,
+    "back" => 8,
+    "forward" => 9,
+    _ => throw new ArgumentException($"Unsupported mouse button: {button}", nameof(button)),
+};
+
+internal static long[][] NormalizeDragPath(IReadOnlyList<Point> path) =>
+    path.Select(point => new[] { point.X, point.Y }).ToArray();
+
+internal static List<int> ScrollButtons(long x, long y)
+{
+    List<int> buttons = [];
+    foreach ((long delta, int negative, int positive) in new[] { (y, 4, 5), (x, 6, 7) })
+    {
+        if (delta == 0)
+        {
+            continue;
+        }
+        int button = delta < 0 ? negative : positive;
+        // Match the Python reference's round-to-even behavior, including half steps.
+        int clicks = Math.Max(1, checked((int)Math.Abs(Math.Round(delta / 100.0, MidpointRounding.ToEven))));
+        for (int index = 0; index < clicks; index++)
+        {
+            buttons.Add(button);
+        }
+    }
+    return buttons;
 }
 ```
 
@@ -1575,6 +2150,160 @@ def handle_computer_actions(page, actions):
                 raise ValueError(f"Unsupported action: {action.type}")
 ```
 
+```go
+import (
+	"errors"
+	"fmt"
+	"strings"
+	"time"
+
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/playwright-community/playwright-go"
+)
+
+func normalizeKey(key string) string {
+	switch key {
+	case "ENTER", "RETURN":
+		return "Enter"
+	case "ESC", "ESCAPE":
+		return "Escape"
+	case "TAB":
+		return "Tab"
+	case "SPACE":
+		return "Space"
+	case "BACKSPACE":
+		return "Backspace"
+	case "DELETE", "DEL":
+		return "Delete"
+	case "HOME":
+		return "Home"
+	case "END":
+		return "End"
+	case "PAGEUP":
+		return "PageUp"
+	case "PAGEDOWN":
+		return "PageDown"
+	case "UP", "ARROWUP":
+		return "ArrowUp"
+	case "DOWN", "ARROWDOWN":
+		return "ArrowDown"
+	case "LEFT", "ARROWLEFT":
+		return "ArrowLeft"
+	case "RIGHT", "ARROWRIGHT":
+		return "ArrowRight"
+	case "CTRL", "CONTROL":
+		return "Control"
+	case "SHIFT":
+		return "Shift"
+	case "ALT", "OPTION":
+		return "Alt"
+	case "META", "CMD", "COMMAND":
+		return "Meta"
+	default:
+		return key
+	}
+}
+
+func normalizeButton(button string) (playwright.MouseButton, error) {
+	switch button {
+	case "left":
+		return playwright.MouseButton("left"), nil
+	case "wheel":
+		return playwright.MouseButton("middle"), nil
+	case "right":
+		return playwright.MouseButton("right"), nil
+	default:
+		return "", fmt.Errorf("unsupported mouse button: %s", button)
+	}
+}
+
+func normalizeDragPath(path []responses.ComputerActionDragPath) [][2]int64 {
+	result := make([][2]int64, len(path))
+	for i, point := range path {
+		result[i] = [2]int64{point.X, point.Y}
+	}
+	return result
+}
+
+func handleComputerActions(page playwright.Page, actions []responses.ComputerActionUnion) error {
+	for _, action := range actions {
+		var operation func() error
+		switch action.Type {
+		case "click":
+			button, err := normalizeButton(action.Button)
+			if err != nil {
+				return err
+			}
+			operation = func() error {
+				return page.Mouse().Click(float64(action.X), float64(action.Y), playwright.MouseClickOptions{Button: &button})
+			}
+		case "double_click":
+			operation = func() error { return page.Mouse().Dblclick(float64(action.X), float64(action.Y)) }
+		case "move":
+			operation = func() error { return page.Mouse().Move(float64(action.X), float64(action.Y)) }
+		case "drag":
+			path := normalizeDragPath(action.Path)
+			if len(path) < 2 {
+				return fmt.Errorf("drag requires at least two points")
+			}
+			operation = func() (err error) {
+				if err = page.Mouse().Move(float64(path[0][0]), float64(path[0][1])); err != nil {
+					return err
+				}
+				if err = page.Mouse().Down(); err != nil {
+					return err
+				}
+				defer func() { err = errors.Join(err, page.Mouse().Up()) }()
+				for _, point := range path[1:] {
+					if err = page.Mouse().Move(float64(point[0]), float64(point[1])); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "scroll":
+			operation = func() error {
+				if err := page.Mouse().Move(float64(action.X), float64(action.Y)); err != nil {
+					return err
+				}
+				return page.Mouse().Wheel(float64(action.ScrollX), float64(action.ScrollY))
+			}
+		case "keypress":
+			keys := make([]string, len(action.Keys))
+			for i, key := range action.Keys {
+				keys[i] = normalizeKey(key)
+			}
+			if len(keys) == 0 {
+				return fmt.Errorf("keypress requires at least one key")
+			}
+			if err := page.Keyboard().Press(strings.Join(keys, "+")); err != nil {
+				return err
+			}
+			continue
+		case "type":
+			if err := page.Keyboard().InsertText(action.Text); err != nil {
+				return err
+			}
+			continue
+		case "wait":
+			time.Sleep(2 * time.Second)
+			continue
+		case "screenshot":
+			continue // The caller captures the page after the batch.
+		default:
+			return fmt.Errorf("unsupported computer action: %s", action.Type)
+		}
+		if len(action.Keys) != 0 {
+			return fmt.Errorf("use the modifier-aware handler")
+		}
+		if err := operation(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+```
+
 ```java
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -1652,6 +2381,143 @@ static void handleComputerActions(Page page, List<ComputerAction> actions) {
     if (!keys.isEmpty()) throw new IllegalArgumentException("Use the modifier-aware handler");
     operation.run();
   }
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+
+internal static string NormalizeKey(string key) => key switch
+{
+    "ENTER" or "RETURN" => "Enter",
+    "ESC" or "ESCAPE" => "Escape",
+    "TAB" => "Tab",
+    "SPACE" => "Space",
+    "BACKSPACE" => "Backspace",
+    "DELETE" or "DEL" => "Delete",
+    "HOME" => "Home",
+    "END" => "End",
+    "PAGEUP" => "PageUp",
+    "PAGEDOWN" => "PageDown",
+    "UP" or "ARROWUP" => "ArrowUp",
+    "DOWN" or "ARROWDOWN" => "ArrowDown",
+    "LEFT" or "ARROWLEFT" => "ArrowLeft",
+    "RIGHT" or "ARROWRIGHT" => "ArrowRight",
+    "CTRL" or "CONTROL" => "Control",
+    "SHIFT" => "Shift",
+    "ALT" or "OPTION" => "Alt",
+    "META" or "CMD" or "COMMAND" => "Meta",
+    _ => key,
+};
+
+internal static MouseButton NormalizeButton(string button) => button switch
+{
+    "left" => MouseButton.Left,
+    "wheel" => MouseButton.Middle,
+    "right" => MouseButton.Right,
+    _ => throw new ArgumentException($"Unsupported mouse button: {button}", nameof(button)),
+};
+
+internal static long[][] NormalizeDragPath(JsonElement path) => path.EnumerateArray()
+    .Select(point => new[] { point.GetProperty("x").GetInt64(), point.GetProperty("y").GetInt64() })
+    .ToArray();
+
+// These JSON actions are application inputs, not missing OpenAI SDK types.
+internal static async Task HandleComputerActionsAsync(IPage page, IEnumerable<JsonElement> actions)
+{
+    foreach (JsonElement action in actions)
+    {
+        string type = action.GetProperty("type").GetString()
+            ?? throw new ArgumentException("Action type is required.");
+        string[] keys = action.TryGetProperty("keys", out JsonElement keyValues)
+            ? keyValues.EnumerateArray().Select(key => key.GetString()
+                ?? throw new ArgumentException("Keys must be strings.")).ToArray() : [];
+        Func<Task> operation;
+        switch (type)
+        {
+            case "click":
+                MouseButton button = NormalizeButton(action.GetProperty("button").GetString()
+                    ?? throw new ArgumentException("Button is required."));
+                operation = () => page.Mouse.ClickAsync(action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64(), new() { Button = button });
+                break;
+            case "double_click":
+                operation = () => page.Mouse.DblClickAsync(
+                    action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64());
+                break;
+            case "move":
+                operation = () => page.Mouse.MoveAsync(
+                    action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64());
+                break;
+            case "drag":
+                long[][] path = NormalizeDragPath(action.GetProperty("path"));
+                if (path.Length < 2) throw new ArgumentException("Drag requires at least two points.");
+                operation = async () =>
+                {
+                    await page.Mouse.MoveAsync(path[0][0], path[0][1]);
+                    await page.Mouse.DownAsync();
+                    Exception? operationError = null;
+                    try
+                    {
+                        foreach (long[] point in path.Skip(1)) await page.Mouse.MoveAsync(point[0], point[1]);
+                    }
+                    catch (Exception error)
+                    {
+                        operationError = error;
+                    }
+                    finally
+                    {
+                        try { await page.Mouse.UpAsync(); }
+                        catch (Exception releaseError)
+                        {
+                            operationError = operationError is null
+                                ? releaseError : new AggregateException(operationError, releaseError);
+                        }
+                    }
+                    if (operationError is not null) ExceptionDispatchInfo.Capture(operationError).Throw();
+                };
+                break;
+            case "scroll":
+                operation = async () =>
+                {
+                    await page.Mouse.MoveAsync(
+                        action.GetProperty("x").GetInt64(),
+                        action.GetProperty("y").GetInt64());
+                    await page.Mouse.WheelAsync(
+                        action.GetProperty("scroll_x").GetInt64(),
+                        action.GetProperty("scroll_y").GetInt64());
+                };
+                break;
+            case "keypress":
+                if (keys.Length == 0) throw new ArgumentException("Keypress requires at least one key.");
+                await page.Keyboard.PressAsync(string.Join("+", keys.Select(NormalizeKey)));
+                continue;
+            case "type":
+                await page.Keyboard.InsertTextAsync(action.GetProperty("text").GetString()
+                    ?? throw new ArgumentException("Text is required."));
+                continue;
+            case "wait":
+                await Task.Delay(TimeSpan.FromSeconds(2));
+                continue;
+            case "screenshot":
+                continue; // The caller captures the page after the batch.
+            default:
+                throw new ArgumentException($"Unsupported computer action: {type}");
+        }
+        if (keys.Length != 0) throw new ArgumentException("Use the modifier-aware handler.");
+        await operation();
+    }
 }
 ```
 
@@ -1945,6 +2811,121 @@ def handle_computer_actions(vm, actions):
                 raise ValueError(f"Unsupported action: {action.type}")
 ```
 
+```go
+import (
+	"errors"
+	"fmt"
+	"github.com/openai/openai-go/v3/responses"
+	"time"
+)
+
+func withModifiers(vm *VM, keys []string, operation func() error) (err error) {
+	pressed := []string{}
+	defer func() {
+		// Attempt every release even if one release fails, retaining the original failure.
+		for i := len(pressed) - 1; i >= 0; i-- {
+			if releaseErr := vm.xdotool("keyup", pressed[i]); releaseErr != nil {
+				err = errors.Join(err, releaseErr)
+			}
+		}
+	}()
+	for _, key := range keys {
+		normalized := normalizeKey(key)
+		pressed = append(pressed, normalized)
+		if err = vm.xdotool("keydown", normalized); err != nil {
+			return err
+		}
+	}
+	return operation()
+}
+
+func handleComputerActions(vm *VM, actions responses.ComputerActionList) error {
+	for _, action := range actions {
+		var operation func() error
+		switch action.Type {
+		case "click":
+			button, err := normalizeButton(action.Button)
+			if err != nil {
+				return err
+			}
+			operation = func() error {
+				return vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y), "click", fmt.Sprint(button))
+			}
+		case "double_click":
+			operation = func() error {
+				return vm.xdotool(
+					"mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y),
+					"click", "--repeat", "2", "--delay", "100", "1",
+				)
+			}
+		case "move":
+			operation = func() error { return vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y)) }
+		case "drag":
+			path := normalizeDragPath(action.Path)
+			if len(path) < 2 {
+				return &InvalidInputError{"Drag requires at least two points"}
+			}
+			operation = func() (err error) {
+				if err = vm.xdotool("mousemove", "--sync", fmt.Sprint(path[0][0]), fmt.Sprint(path[0][1])); err != nil {
+					return err
+				}
+				defer func() { err = errors.Join(err, vm.xdotool("mouseup", "1")) }()
+				if err = vm.xdotool("mousedown", "1"); err != nil {
+					return err
+				}
+				for _, point := range path[1:] {
+					if err = vm.xdotool("mousemove", "--sync", fmt.Sprint(point[0]), fmt.Sprint(point[1])); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "scroll":
+			operation = func() error {
+				if err := vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y)); err != nil {
+					return err
+				}
+				for _, button := range scrollButtons(action.ScrollX, action.ScrollY) {
+					if err := vm.xdotool("click", fmt.Sprint(button)); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "keypress":
+			if len(action.Keys) == 0 {
+				return &InvalidInputError{"Keypress requires keys"}
+			}
+			// Keydown/up provides finally-based release for combinations, too.
+			if err := withModifiers(vm, action.Keys, func() error { return nil }); err != nil {
+				return err
+			}
+			continue
+		case "type":
+			if err := vm.xdotool("type", "--clearmodifiers", "--", action.Text); err != nil {
+				return err
+			}
+			continue
+		case "wait":
+			time.Sleep(2 * time.Second)
+			continue
+		case "screenshot":
+			// The caller captures once after the batch, including screenshot-only batches.
+			continue
+		default:
+			return &InvalidInputError{"Unsupported computer action: " + action.Type}
+		}
+		if len(action.Keys) != 0 {
+			return &InvalidInputError{"Use the modifier-aware handler"}
+		}
+		if err := operation(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+```
+
 ```java
 import com.openai.core.ObjectMappers;
 import com.openai.models.responses.ComputerAction;
@@ -2053,6 +3034,202 @@ static void handleComputerActions(VM vm, List<ComputerAction> actions) throws Ex
     operation.run();
   }
 }
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+
+// Application-owned host messages, independent of the OpenAI SDK computer-tool surface.
+internal sealed record ComputerAction
+{
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
+    [JsonPropertyName("button")]
+    public string Button { get; init; } = "";
+    [JsonPropertyName("x")]
+    public long X { get; init; }
+    [JsonPropertyName("y")]
+    public long Y { get; init; }
+    [JsonPropertyName("keys")]
+    public string[] Keys { get; init; } = [];
+    [JsonPropertyName("path")]
+    public Point[] Path { get; init; } = [];
+    [JsonPropertyName("scroll_x")]
+    public long ScrollX { get; init; }
+    [JsonPropertyName("scroll_y")]
+    public long ScrollY { get; init; }
+    [JsonPropertyName("text")]
+    public string Text { get; init; } = "";
+}
+
+internal static async Task WithModifiersAsync(VM vm, IReadOnlyList<string> keys, Func<Task> operation)
+{
+    List<string> pressed = [];
+    List<Exception> failures = [];
+    try
+    {
+        foreach (string key in keys)
+        {
+            string normalized = NormalizeKey(key);
+            // A failed process may already have sent the keydown; release that key, too.
+            pressed.Add(normalized);
+            await XdotoolAsync(vm, "keydown", normalized);
+        }
+        await operation();
+    }
+    catch (Exception error)
+    {
+        failures.Add(error);
+    }
+    finally
+    {
+        for (int index = pressed.Count - 1; index >= 0; index--)
+        {
+            try
+            {
+                await XdotoolAsync(vm, "keyup", pressed[index]);
+            }
+            catch (Exception error)
+            {
+                failures.Add(error);
+            }
+        }
+    }
+    if (failures.Count == 1)
+    {
+        ExceptionDispatchInfo.Capture(failures[0]).Throw();
+    }
+    if (failures.Count > 1)
+    {
+        throw new AggregateException(failures);
+    }
+}
+
+internal static async Task HandleComputerActionsAsync(VM vm, IReadOnlyList<ComputerAction> actions)
+{
+    foreach (ComputerAction action in actions)
+    {
+        Func<Task> operation;
+        switch (action.Type)
+        {
+            case "click":
+                int button = NormalizeButton(action.Button);
+                operation = () => XdotoolAsync(
+                    vm,
+                    "mousemove",
+                    "--sync",
+                    Number(action.X),
+                    Number(action.Y),
+                    "click",
+                    Number(button));
+                break;
+            case "double_click":
+                operation = () => XdotoolAsync(
+                    vm,
+                    "mousemove",
+                    "--sync",
+                    Number(action.X),
+                    Number(action.Y),
+                    "click",
+                    "--repeat",
+                    "2",
+                    "--delay",
+                    "100",
+                    "1");
+                break;
+            case "move":
+                operation = () => XdotoolAsync(vm, "mousemove", "--sync", Number(action.X), Number(action.Y));
+                break;
+            case "drag":
+                long[][] path = NormalizeDragPath(action.Path);
+                if (path.Length < 2)
+                {
+                    throw new ArgumentException("Drag requires at least two points.", nameof(actions));
+                }
+                operation = async () =>
+                {
+                    await XdotoolAsync(vm, "mousemove", "--sync", Number(path[0][0]), Number(path[0][1]));
+                    Exception? primaryFailure = null;
+                    try
+                    {
+                        await XdotoolAsync(vm, "mousedown", "1");
+                        foreach (long[] point in path.Skip(1))
+                        {
+                            await XdotoolAsync(vm, "mousemove", "--sync", Number(point[0]), Number(point[1]));
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        primaryFailure = error;
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            await XdotoolAsync(vm, "mouseup", "1");
+                        }
+                        catch (Exception releaseFailure)
+                        {
+                            primaryFailure = primaryFailure is null
+                                ? releaseFailure
+                                : new AggregateException(primaryFailure, releaseFailure);
+                        }
+                    }
+                    if (primaryFailure is not null)
+                    {
+                        ExceptionDispatchInfo.Capture(primaryFailure).Throw();
+                    }
+                };
+                break;
+            case "scroll":
+                operation = async () =>
+                {
+                    await XdotoolAsync(vm, "mousemove", "--sync", Number(action.X), Number(action.Y));
+                    foreach (int scrollButton in ScrollButtons(action.ScrollX, action.ScrollY))
+                    {
+                        await XdotoolAsync(vm, "click", Number(scrollButton));
+                    }
+                };
+                break;
+            case "keypress":
+                if (action.Keys.Length == 0)
+                {
+                    throw new ArgumentException("Keypress requires keys.", nameof(actions));
+                }
+                await WithModifiersAsync(vm, action.Keys, () => Task.CompletedTask);
+                continue;
+            case "type":
+                await XdotoolAsync(vm, "type", "--clearmodifiers", "--", action.Text);
+                continue;
+            case "wait":
+                await Task.Delay(TimeSpan.FromSeconds(2));
+                continue;
+            case "screenshot":
+                // Capture once after the action batch, in the caller.
+                continue;
+            default:
+                throw new ArgumentException($"Unsupported computer action: {action.Type}", nameof(actions));
+        }
+        if (action.Keys.Length != 0)
+        {
+            throw new ArgumentException("Use the modifier-aware handler.", nameof(actions));
+        }
+        await operation();
+    }
+}
+
+private static string Number(long value) => value.ToString(CultureInfo.InvariantCulture);
 ```
 
 ```ruby
@@ -2335,6 +3512,182 @@ def handle_computer_actions(page, actions):
                 raise ValueError(f"Unsupported action: {action.type}")
 ```
 
+```go
+import (
+	"errors"
+	"fmt"
+	"strings"
+	"time"
+
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/playwright-community/playwright-go"
+)
+
+func normalizeKey(key string) string {
+	switch key {
+	case "ENTER", "RETURN":
+		return "Enter"
+	case "ESC", "ESCAPE":
+		return "Escape"
+	case "TAB":
+		return "Tab"
+	case "SPACE":
+		return "Space"
+	case "BACKSPACE":
+		return "Backspace"
+	case "DELETE", "DEL":
+		return "Delete"
+	case "HOME":
+		return "Home"
+	case "END":
+		return "End"
+	case "PAGEUP":
+		return "PageUp"
+	case "PAGEDOWN":
+		return "PageDown"
+	case "UP", "ARROWUP":
+		return "ArrowUp"
+	case "DOWN", "ARROWDOWN":
+		return "ArrowDown"
+	case "LEFT", "ARROWLEFT":
+		return "ArrowLeft"
+	case "RIGHT", "ARROWRIGHT":
+		return "ArrowRight"
+	case "CTRL", "CONTROL":
+		return "Control"
+	case "SHIFT":
+		return "Shift"
+	case "ALT", "OPTION":
+		return "Alt"
+	case "META", "CMD", "COMMAND":
+		return "Meta"
+	default:
+		return key
+	}
+}
+
+func normalizeButton(button string) (playwright.MouseButton, error) {
+	switch button {
+	case "left":
+		return playwright.MouseButton("left"), nil
+	case "wheel":
+		return playwright.MouseButton("middle"), nil
+	case "right":
+		return playwright.MouseButton("right"), nil
+	default:
+		return "", fmt.Errorf("unsupported mouse button: %s", button)
+	}
+}
+
+func normalizeDragPath(path []responses.ComputerActionDragPath) [][2]int64 {
+	result := make([][2]int64, len(path))
+	for i, point := range path {
+		result[i] = [2]int64{point.X, point.Y}
+	}
+	return result
+}
+
+// withModifiers releases every successfully pressed key, even after an error.
+func withModifiers(page playwright.Page, keys []string, operation func() error) (err error) {
+	pressed := make([]string, 0, len(keys))
+	defer func() {
+		for i := len(pressed) - 1; i >= 0; i-- {
+			err = errors.Join(err, page.Keyboard().Up(pressed[i]))
+		}
+	}()
+	for _, key := range keys {
+		key = normalizeKey(key)
+		if err = page.Keyboard().Down(key); err != nil {
+			return err
+		}
+		pressed = append(pressed, key)
+	}
+	return operation()
+}
+
+func handleComputerActions(page playwright.Page, actions []responses.ComputerActionUnion) error {
+	for _, action := range actions {
+		var operation func() error
+		switch action.Type {
+		case "click":
+			button, err := normalizeButton(action.Button)
+			if err != nil {
+				return err
+			}
+			operation = func() error {
+				return page.Mouse().Click(
+					float64(action.X), float64(action.Y),
+					playwright.MouseClickOptions{Button: &button},
+				)
+			}
+		case "double_click":
+			operation = func() error {
+				return page.Mouse().Dblclick(float64(action.X), float64(action.Y))
+			}
+		case "move":
+			operation = func() error {
+				return page.Mouse().Move(float64(action.X), float64(action.Y))
+			}
+		case "drag":
+			path := normalizeDragPath(action.Path)
+			if len(path) < 2 {
+				return fmt.Errorf("drag requires at least two points")
+			}
+			operation = func() (err error) {
+				if err = page.Mouse().Move(float64(path[0][0]), float64(path[0][1])); err != nil {
+					return err
+				}
+				if err = page.Mouse().Down(); err != nil {
+					return err
+				}
+				defer func() { err = errors.Join(err, page.Mouse().Up()) }()
+				for _, point := range path[1:] {
+					if err = page.Mouse().Move(float64(point[0]), float64(point[1])); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "scroll":
+			operation = func() error {
+				if err := page.Mouse().Move(float64(action.X), float64(action.Y)); err != nil {
+					return err
+				}
+				return page.Mouse().Wheel(float64(action.ScrollX), float64(action.ScrollY))
+			}
+		case "keypress":
+			keys := make([]string, len(action.Keys))
+			for i, key := range action.Keys {
+				keys[i] = normalizeKey(key)
+			}
+			if len(keys) == 0 {
+				return fmt.Errorf("keypress requires at least one key")
+			}
+			if err := page.Keyboard().Press(strings.Join(keys, "+")); err != nil {
+				return err
+			}
+			continue
+		case "type":
+			if err := page.Keyboard().InsertText(action.Text); err != nil {
+				return err
+			}
+			continue
+		case "wait":
+			time.Sleep(2 * time.Second)
+			continue
+		case "screenshot":
+			continue // The caller captures the page after the batch.
+		default:
+			return fmt.Errorf("unsupported computer action: %s", action.Type)
+		}
+		if err := withModifiers(page, action.Keys, operation); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+```
+
 ```java
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -2426,6 +3779,173 @@ static void handleComputerActions(Page page, List<ComputerAction> actions) {
     } else throw new IllegalArgumentException("Unsupported computer action");
     withModifiers(page, keys, operation);
   }
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+
+internal static string NormalizeKey(string key) => key switch
+{
+    "ENTER" or "RETURN" => "Enter",
+    "ESC" or "ESCAPE" => "Escape",
+    "TAB" => "Tab",
+    "SPACE" => "Space",
+    "BACKSPACE" => "Backspace",
+    "DELETE" or "DEL" => "Delete",
+    "HOME" => "Home",
+    "END" => "End",
+    "PAGEUP" => "PageUp",
+    "PAGEDOWN" => "PageDown",
+    "UP" or "ARROWUP" => "ArrowUp",
+    "DOWN" or "ARROWDOWN" => "ArrowDown",
+    "LEFT" or "ARROWLEFT" => "ArrowLeft",
+    "RIGHT" or "ARROWRIGHT" => "ArrowRight",
+    "CTRL" or "CONTROL" => "Control",
+    "SHIFT" => "Shift",
+    "ALT" or "OPTION" => "Alt",
+    "META" or "CMD" or "COMMAND" => "Meta",
+    _ => key,
+};
+
+internal static MouseButton NormalizeButton(string button) => button switch
+{
+    "left" => MouseButton.Left,
+    "wheel" => MouseButton.Middle,
+    "right" => MouseButton.Right,
+    _ => throw new ArgumentException($"Unsupported mouse button: {button}", nameof(button)),
+};
+
+internal static long[][] NormalizeDragPath(JsonElement path) => path.EnumerateArray()
+    .Select(point => new[] { point.GetProperty("x").GetInt64(), point.GetProperty("y").GetInt64() })
+    .ToArray();
+
+internal static async Task WithModifiersAsync(IPage page, IReadOnlyList<string> keys, Func<Task> operation)
+{
+    List<string> pressed = [];
+    List<Exception> failures = [];
+    try
+    {
+        foreach (string key in keys)
+        {
+            string normalized = NormalizeKey(key);
+            await page.Keyboard.DownAsync(normalized);
+            pressed.Add(normalized);
+        }
+        await operation();
+    }
+    catch (Exception error)
+    {
+        failures.Add(error);
+    }
+    finally
+    {
+        // Attempt every release, preserving both operation and cleanup errors.
+        for (int i = pressed.Count - 1; i >= 0; i--)
+        {
+            try { await page.Keyboard.UpAsync(pressed[i]); }
+            catch (Exception error) { failures.Add(error); }
+        }
+    }
+    if (failures.Count != 0) throw new AggregateException(failures);
+}
+
+// These JSON actions are application inputs, not missing OpenAI SDK types.
+internal static async Task HandleComputerActionsAsync(IPage page, IEnumerable<JsonElement> actions)
+{
+    foreach (JsonElement action in actions)
+    {
+        string type = action.GetProperty("type").GetString()
+            ?? throw new ArgumentException("Action type is required.");
+        string[] keys = action.TryGetProperty("keys", out JsonElement keyValues)
+            && keyValues.ValueKind != JsonValueKind.Null
+            ? keyValues.EnumerateArray().Select(key => key.GetString()
+                ?? throw new ArgumentException("Keys must be strings.")).ToArray() : [];
+        Func<Task> operation;
+        switch (type)
+        {
+            case "click":
+                MouseButton button = NormalizeButton(action.GetProperty("button").GetString()
+                    ?? throw new ArgumentException("Button is required."));
+                operation = () => page.Mouse.ClickAsync(action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64(), new() { Button = button });
+                break;
+            case "double_click":
+                operation = () => page.Mouse.DblClickAsync(
+                    action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64());
+                break;
+            case "move":
+                operation = () => page.Mouse.MoveAsync(
+                    action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64());
+                break;
+            case "drag":
+                long[][] path = NormalizeDragPath(action.GetProperty("path"));
+                if (path.Length < 2) throw new ArgumentException("Drag requires at least two points.");
+                operation = async () =>
+                {
+                    await page.Mouse.MoveAsync(path[0][0], path[0][1]);
+                    await page.Mouse.DownAsync();
+                    Exception? operationError = null;
+                    try
+                    {
+                        foreach (long[] point in path.Skip(1)) await page.Mouse.MoveAsync(point[0], point[1]);
+                    }
+                    catch (Exception error)
+                    {
+                        operationError = error;
+                    }
+                    finally
+                    {
+                        try { await page.Mouse.UpAsync(); }
+                        catch (Exception releaseError)
+                        {
+                            operationError = operationError is null
+                                ? releaseError : new AggregateException(operationError, releaseError);
+                        }
+                    }
+                    if (operationError is not null) ExceptionDispatchInfo.Capture(operationError).Throw();
+                };
+                break;
+            case "scroll":
+                operation = async () =>
+                {
+                    await page.Mouse.MoveAsync(
+                        action.GetProperty("x").GetInt64(),
+                        action.GetProperty("y").GetInt64());
+                    await page.Mouse.WheelAsync(
+                        action.GetProperty("scroll_x").GetInt64(),
+                        action.GetProperty("scroll_y").GetInt64());
+                };
+                break;
+            case "keypress":
+                if (keys.Length == 0) throw new ArgumentException("Keypress requires at least one key.");
+                await page.Keyboard.PressAsync(string.Join("+", keys.Select(NormalizeKey)));
+                continue;
+            case "type":
+                await page.Keyboard.InsertTextAsync(action.GetProperty("text").GetString()
+                    ?? throw new ArgumentException("Text is required."));
+                continue;
+            case "wait":
+                await Task.Delay(TimeSpan.FromSeconds(2));
+                continue;
+            case "screenshot":
+                continue; // The caller captures the page after the batch.
+            default:
+                throw new ArgumentException($"Unsupported computer action: {type}");
+        }
+        await WithModifiersAsync(page, keys, operation);
+    }
 }
 ```
 
@@ -2753,6 +4273,118 @@ def handle_computer_actions(vm, actions):
                 raise ValueError(f"Unsupported action: {action.type}")
 ```
 
+```go
+import (
+	"errors"
+	"fmt"
+	"github.com/openai/openai-go/v3/responses"
+	"time"
+)
+
+func withModifiers(vm *VM, keys []string, operation func() error) (err error) {
+	pressed := []string{}
+	defer func() {
+		// Attempt every release even if one release fails, retaining the original failure.
+		for i := len(pressed) - 1; i >= 0; i-- {
+			if releaseErr := vm.xdotool("keyup", pressed[i]); releaseErr != nil {
+				err = errors.Join(err, releaseErr)
+			}
+		}
+	}()
+	for _, key := range keys {
+		normalized := normalizeKey(key)
+		pressed = append(pressed, normalized)
+		if err = vm.xdotool("keydown", normalized); err != nil {
+			return err
+		}
+	}
+	return operation()
+}
+
+func handleComputerActions(vm *VM, actions responses.ComputerActionList) error {
+	for _, action := range actions {
+		var operation func() error
+		switch action.Type {
+		case "click":
+			button, err := normalizeButton(action.Button)
+			if err != nil {
+				return err
+			}
+			operation = func() error {
+				return vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y), "click", fmt.Sprint(button))
+			}
+		case "double_click":
+			operation = func() error {
+				return vm.xdotool(
+					"mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y),
+					"click", "--repeat", "2", "--delay", "100", "1",
+				)
+			}
+		case "move":
+			operation = func() error { return vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y)) }
+		case "drag":
+			path := normalizeDragPath(action.Path)
+			if len(path) < 2 {
+				return &InvalidInputError{"Drag requires at least two points"}
+			}
+			operation = func() (err error) {
+				if err = vm.xdotool("mousemove", "--sync", fmt.Sprint(path[0][0]), fmt.Sprint(path[0][1])); err != nil {
+					return err
+				}
+				defer func() { err = errors.Join(err, vm.xdotool("mouseup", "1")) }()
+				if err = vm.xdotool("mousedown", "1"); err != nil {
+					return err
+				}
+				for _, point := range path[1:] {
+					if err = vm.xdotool("mousemove", "--sync", fmt.Sprint(point[0]), fmt.Sprint(point[1])); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "scroll":
+			operation = func() error {
+				if err := vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y)); err != nil {
+					return err
+				}
+				for _, button := range scrollButtons(action.ScrollX, action.ScrollY) {
+					if err := vm.xdotool("click", fmt.Sprint(button)); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "keypress":
+			if len(action.Keys) == 0 {
+				return &InvalidInputError{"Keypress requires keys"}
+			}
+			// Keydown/up provides finally-based release for combinations, too.
+			if err := withModifiers(vm, action.Keys, func() error { return nil }); err != nil {
+				return err
+			}
+			continue
+		case "type":
+			if err := vm.xdotool("type", "--clearmodifiers", "--", action.Text); err != nil {
+				return err
+			}
+			continue
+		case "wait":
+			time.Sleep(2 * time.Second)
+			continue
+		case "screenshot":
+			// The caller captures once after the batch, including screenshot-only batches.
+			continue
+		default:
+			return &InvalidInputError{"Unsupported computer action: " + action.Type}
+		}
+		if err := withModifiers(vm, action.Keys, operation); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+```
+
 ```java
 import com.openai.core.ObjectMappers;
 import com.openai.models.responses.ComputerAction;
@@ -2875,6 +4507,198 @@ static void handleComputerActions(VM vm, List<ComputerAction> actions) throws Ex
     withModifiers(vm, keys, operation);
   }
 }
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+
+// Application-owned host messages, independent of the OpenAI SDK computer-tool surface.
+internal sealed record ComputerAction
+{
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
+    [JsonPropertyName("button")]
+    public string Button { get; init; } = "";
+    [JsonPropertyName("x")]
+    public long X { get; init; }
+    [JsonPropertyName("y")]
+    public long Y { get; init; }
+    [JsonPropertyName("keys")]
+    public string[] Keys { get; init; } = [];
+    [JsonPropertyName("path")]
+    public Point[] Path { get; init; } = [];
+    [JsonPropertyName("scroll_x")]
+    public long ScrollX { get; init; }
+    [JsonPropertyName("scroll_y")]
+    public long ScrollY { get; init; }
+    [JsonPropertyName("text")]
+    public string Text { get; init; } = "";
+}
+
+internal static async Task WithModifiersAsync(VM vm, IReadOnlyList<string> keys, Func<Task> operation)
+{
+    List<string> pressed = [];
+    List<Exception> failures = [];
+    try
+    {
+        foreach (string key in keys)
+        {
+            string normalized = NormalizeKey(key);
+            // A failed process may already have sent the keydown; release that key, too.
+            pressed.Add(normalized);
+            await XdotoolAsync(vm, "keydown", normalized);
+        }
+        await operation();
+    }
+    catch (Exception error)
+    {
+        failures.Add(error);
+    }
+    finally
+    {
+        for (int index = pressed.Count - 1; index >= 0; index--)
+        {
+            try
+            {
+                await XdotoolAsync(vm, "keyup", pressed[index]);
+            }
+            catch (Exception error)
+            {
+                failures.Add(error);
+            }
+        }
+    }
+    if (failures.Count == 1)
+    {
+        ExceptionDispatchInfo.Capture(failures[0]).Throw();
+    }
+    if (failures.Count > 1)
+    {
+        throw new AggregateException(failures);
+    }
+}
+
+internal static async Task HandleComputerActionsAsync(VM vm, IReadOnlyList<ComputerAction> actions)
+{
+    foreach (ComputerAction action in actions)
+    {
+        Func<Task> operation;
+        switch (action.Type)
+        {
+            case "click":
+                int button = NormalizeButton(action.Button);
+                operation = () => XdotoolAsync(
+                    vm,
+                    "mousemove",
+                    "--sync",
+                    Number(action.X),
+                    Number(action.Y),
+                    "click",
+                    Number(button));
+                break;
+            case "double_click":
+                operation = () => XdotoolAsync(
+                    vm,
+                    "mousemove",
+                    "--sync",
+                    Number(action.X),
+                    Number(action.Y),
+                    "click",
+                    "--repeat",
+                    "2",
+                    "--delay",
+                    "100",
+                    "1");
+                break;
+            case "move":
+                operation = () => XdotoolAsync(vm, "mousemove", "--sync", Number(action.X), Number(action.Y));
+                break;
+            case "drag":
+                long[][] path = NormalizeDragPath(action.Path);
+                if (path.Length < 2)
+                {
+                    throw new ArgumentException("Drag requires at least two points.", nameof(actions));
+                }
+                operation = async () =>
+                {
+                    await XdotoolAsync(vm, "mousemove", "--sync", Number(path[0][0]), Number(path[0][1]));
+                    Exception? primaryFailure = null;
+                    try
+                    {
+                        await XdotoolAsync(vm, "mousedown", "1");
+                        foreach (long[] point in path.Skip(1))
+                        {
+                            await XdotoolAsync(vm, "mousemove", "--sync", Number(point[0]), Number(point[1]));
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        primaryFailure = error;
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            await XdotoolAsync(vm, "mouseup", "1");
+                        }
+                        catch (Exception releaseFailure)
+                        {
+                            primaryFailure = primaryFailure is null
+                                ? releaseFailure
+                                : new AggregateException(primaryFailure, releaseFailure);
+                        }
+                    }
+                    if (primaryFailure is not null)
+                    {
+                        ExceptionDispatchInfo.Capture(primaryFailure).Throw();
+                    }
+                };
+                break;
+            case "scroll":
+                operation = async () =>
+                {
+                    await XdotoolAsync(vm, "mousemove", "--sync", Number(action.X), Number(action.Y));
+                    foreach (int scrollButton in ScrollButtons(action.ScrollX, action.ScrollY))
+                    {
+                        await XdotoolAsync(vm, "click", Number(scrollButton));
+                    }
+                };
+                break;
+            case "keypress":
+                if (action.Keys.Length == 0)
+                {
+                    throw new ArgumentException("Keypress requires keys.", nameof(actions));
+                }
+                await WithModifiersAsync(vm, action.Keys, () => Task.CompletedTask);
+                continue;
+            case "type":
+                await XdotoolAsync(vm, "type", "--clearmodifiers", "--", action.Text);
+                continue;
+            case "wait":
+                await Task.Delay(TimeSpan.FromSeconds(2));
+                continue;
+            case "screenshot":
+                // Capture once after the action batch, in the caller.
+                continue;
+            default:
+                throw new ArgumentException($"Unsupported computer action: {action.Type}", nameof(actions));
+        }
+        await WithModifiersAsync(vm, action.Keys, operation);
+    }
+}
+
+private static string Number(long value) => value.ToString(CultureInfo.InvariantCulture);
 ```
 
 ```ruby
@@ -3327,6 +5151,15 @@ def capture_screenshot(page):
     return page.screenshot(type="png")
 ```
 
+```go
+import "github.com/playwright-community/playwright-go"
+
+func captureScreenshot(page playwright.Page) ([]byte, error) {
+	format := playwright.ScreenshotType("png")
+	return page.Screenshot(playwright.PageScreenshotOptions{Type: &format})
+}
+```
+
 ```java
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -3339,6 +5172,19 @@ import java.util.*;
 static byte[] captureScreenshot(Page page) {
   return page.screenshot(new Page.ScreenshotOptions().setType(ScreenshotType.PNG));
 }
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+
+internal static Task<byte[]> CaptureScreenshotAsync(IPage page) =>
+    page.ScreenshotAsync(new() { Type = ScreenshotType.Png });
 ```
 
 ```ruby
@@ -3381,6 +5227,29 @@ def capture_screenshot(vm):
     )
 ```
 
+```go
+import (
+	"bytes"
+	"fmt"
+	"image/png"
+)
+
+func captureScreenshot(vm *VM) ([]byte, error) {
+	data, err := vm.dockerExec(
+		"import",
+		[]string{"-window", "root", "png:-"},
+		map[string]string{"DISPLAY": vm.Display},
+	)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := png.DecodeConfig(bytes.NewReader(data)); err != nil {
+		return nil, fmt.Errorf("invalid screenshot PNG: %w", err)
+	}
+	return data, nil
+}
+```
+
 ```java
 import com.openai.core.ObjectMappers;
 import java.nio.file.*;
@@ -3395,6 +5264,21 @@ static byte[] captureScreenshot(VM vm) throws Exception {
       List.of("-window", "root", "png:-"),
       Map.of("DISPLAY", vm.display()));
 }
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+
+internal static Task<byte[]> CaptureScreenshotAsync(VM vm) => DockerExecAsync(
+    vm, "import", ["-window", "root", "png:-"],
+    new Dictionary<string, string> { ["DISPLAY"] = vm.Display });
 ```
 
 ```ruby

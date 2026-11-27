@@ -3359,6 +3359,46 @@ static int countChatMessageTokens(List<Map<String, String>> messages) {
 }
 ```
 
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.ML.Tokenizers;
+
+// This estimate uses cl100k_base and gpt-3.5-turbo-0613 message framing.
+// Other models, tools, and multimodal inputs need different accounting.
+static int CountChatMessageTokens(IReadOnlyList<Dictionary<string, string>> messages)
+{
+    ArgumentNullException.ThrowIfNull(messages);
+    TiktokenTokenizer encoding = TiktokenTokenizer.CreateForEncoding("cl100k_base");
+    int tokens = 3; // Final assistant reply overhead.
+    checked
+    {
+        foreach (Dictionary<string, string> message in messages)
+        {
+            tokens += 3; // Per-message framing.
+            foreach (KeyValuePair<string, string> field in message)
+            {
+                tokens += encoding.CountTokens(field.Value);
+                if (field.Key == "name")
+                {
+                    tokens += 1;
+                }
+            }
+        }
+    }
+    return tokens;
+}
+
+Dictionary<string, string>[] messages =
+[
+    new() { ["role"] = "user", ["content"] = "Hi" },
+];
+Console.WriteLine(CountChatMessageTokens(messages));
+```
+
 ```ruby
 require "tiktoken_ruby"
 
@@ -3569,6 +3609,80 @@ static int countChatMessageTokens(List<Map<String, String>> messages) {
   }
   return tokens;
 }
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.ML.Tokenizers;
+
+// This estimate uses cl100k_base and gpt-3.5-turbo-0613 message framing.
+// Other models, tools, and multimodal inputs need different accounting.
+static int CountChatMessageTokens(IReadOnlyList<Dictionary<string, string>> messages)
+{
+    ArgumentNullException.ThrowIfNull(messages);
+    TiktokenTokenizer encoding = TiktokenTokenizer.CreateForEncoding("cl100k_base");
+    int tokens = 3; // Final assistant reply overhead.
+    checked
+    {
+        foreach (Dictionary<string, string> message in messages)
+        {
+            tokens += 3; // Per-message framing.
+            foreach (KeyValuePair<string, string> field in message)
+            {
+                tokens += encoding.CountTokens(field.Value);
+                if (field.Key == "name")
+                {
+                    tokens += 1;
+                }
+            }
+        }
+    }
+    return tokens;
+}
+
+Dictionary<string, string>[] messages =
+[
+    new()
+    {
+        ["role"] = "system",
+        ["content"] = "You are a helpful, pattern-following assistant that translates corporate jargon into plain English.",
+    },
+    new()
+    {
+        ["role"] = "system",
+        ["name"] = "example_user",
+        ["content"] = "New synergies will help drive top-line growth.",
+    },
+    new()
+    {
+        ["role"] = "system",
+        ["name"] = "example_assistant",
+        ["content"] = "Things working well together will increase revenue.",
+    },
+    new()
+    {
+        ["role"] = "system",
+        ["name"] = "example_user",
+        ["content"] = "Let's circle back when we have more bandwidth to touch base on opportunities for increased leverage.",
+    },
+    new()
+    {
+        ["role"] = "system",
+        ["name"] = "example_assistant",
+        ["content"] = "Let's talk later when we're less busy about how to do better.",
+    },
+    new()
+    {
+        ["role"] = "user",
+        ["content"] = "This late pivot means we don't have time to boil the ocean for the client deliverable.",
+    },
+];
+int promptTokens = CountChatMessageTokens(messages);
+Console.WriteLine($"{promptTokens} prompt tokens counted.");
 ```
 
 ```ruby
@@ -21718,6 +21832,27 @@ For Ruby, run the installation commands in your project directory. Before runnin
 
 
 
+
+
+
+Use Go 1.26 or later and `playwright-go` v0.5200.1 from the [Go sample module](https://github.com/openai/developers-website/tree/main/src/content/platform/go-examples). Start at the repository root to install the driver and Chromium.
+
+```bash
+cd src/content/platform/go-examples
+go run github.com/playwright-community/playwright-go/cmd/playwright@v0.5200.1 install chromium
+```
+
+If Linux system libraries are missing, run the same versioned command with `install --with-deps chromium`. You need permission to install operating-system packages.
+
+Browser actions and screenshots belong inside the callback passed to `withBrowserPage`, before its cleanup.
+
+**Runtime helper requirement**
+
+The runtime helper requires a preinstalled matching driver and browser. It does not download them.
+
+
+
+
 Then launch a browser instance. Keep the browser and page alive while you run the remaining steps.
 
 
@@ -21773,6 +21908,62 @@ with sync_playwright() as p:
     page = browser.new_page(viewport={"width": 1280, "height": 720})
 ```
 
+```go
+import (
+	"errors"
+	"fmt"
+	"time"
+
+	"github.com/playwright-community/playwright-go"
+)
+
+// withBrowserPage owns the browser lifecycle around your application's page operations.
+// For example, the callback can call page.SetContent with application-owned HTML.
+func withBrowserPage(visit func(playwright.Page) error) (err error) {
+	// Runtime prerequisites must be installed separately; this sample never downloads browsers.
+	pw, err := playwright.Run()
+	if err != nil {
+		return err
+	}
+	defer func() { err = errors.Join(err, pw.Stop()) }()
+	browser, err := pw.Chromium.Launch(playwright.BrowserTypeLaunchOptions{
+		Headless: playwright.Bool(true), ChromiumSandbox: playwright.Bool(true),
+		Env: map[string]string{}, Timeout: playwright.Float(30000),
+		Args: []string{"--disable-extensions", "--disable-file-system"},
+	})
+	if err != nil {
+		return err
+	}
+	defer func() { err = errors.Join(err, browser.Close()) }()
+	deadlineResult := make(chan error, 1)
+	deadline := time.AfterFunc(5*time.Minute, func() {
+		deadlineResult <- errors.Join(fmt.Errorf("browser page lifetime exceeded five minutes"), browser.Close())
+	})
+	defer func() {
+		if !deadline.Stop() {
+			err = errors.Join(err, <-deadlineResult)
+		}
+	}()
+
+	context, err := browser.NewContext(playwright.BrowserNewContextOptions{
+		Viewport: &playwright.Size{
+			Width:  1280,
+			Height: 720,
+		},
+	})
+	if err != nil {
+		return err
+	}
+	defer func() { err = errors.Join(err, context.Close()) }()
+	page, err := context.NewPage()
+	if err != nil {
+		return err
+	}
+	page.SetDefaultTimeout(10000)
+	return visit(page)
+}
+```
+
 ```java
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -21795,6 +21986,57 @@ try (var playwright = Playwright.create();
 }
 
 
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+// Microsoft.Playwright 1.52.0 and its matching Chromium installation.
+
+static async Task CloseAtDeadlineAsync(IBrowser browser, CancellationToken cancellationToken)
+{
+    try { await Task.Delay(TimeSpan.FromMinutes(5), cancellationToken); }
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { return; }
+    await browser.CloseAsync();
+    throw new TimeoutException("Browser page lifetime exceeded five minutes.");
+}
+
+static BrowserTypeLaunchOptions CreateLaunchOptions() => new()
+{
+    Headless = true,
+    ChromiumSandbox = true,
+    Env = new Dictionary<string, string>(),
+    Timeout = 30_000,
+    Args = ["--disable-extensions", "--disable-file-system"],
+};
+
+static BrowserNewContextOptions CreateContextOptions() => new()
+{
+    ViewportSize = new() { Width = 1280, Height = 720 },
+};
+
+using IPlaywright playwright = await Playwright.CreateAsync();
+await using IBrowser browser = await playwright.Chromium.LaunchAsync(CreateLaunchOptions());
+await using IBrowserContext context = await browser.NewContextAsync(CreateContextOptions());
+using CancellationTokenSource lifetime = new();
+Task deadline = CloseAtDeadlineAsync(browser, lifetime.Token);
+try
+{
+    IPage page = await context.NewPageAsync();
+    page.SetDefaultTimeout(10_000);
+    // Subsequent browser actions and screenshots before cleanup.
+
+}
+finally
+{
+    await lifetime.CancelAsync();
+    await deadline;
+}
 ```
 
 ```ruby
@@ -21969,6 +22211,54 @@ class VM:
 vm = VM(display=":99", container_name="cua-image")
 ```
 
+```go
+import (
+	"bytes"
+	"context"
+	"fmt"
+	"os/exec"
+	"sort"
+	"time"
+)
+
+type VM struct {
+	Display       string
+	ContainerName string
+	Executions    int
+}
+
+// dockerExec preserves argument boundaries and returns stdout as bytes, including PNGs.
+func (vm *VM) dockerExec(executable string, arguments []string, environment map[string]string) ([]byte, error) {
+	args := []string{"exec"}
+	names := make([]string, 0, len(environment))
+	for name := range environment {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		args = append(args, "--env", name+"="+environment[name])
+	}
+	args = append(args, vm.ContainerName, executable)
+	args = append(args, arguments...)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	command := exec.CommandContext(ctx, "docker", args...)
+	var stderr bytes.Buffer
+	command.Stderr = &stderr
+	vm.Executions++
+	output, err := command.Output()
+	if err != nil {
+		return nil, fmt.Errorf("docker exec %s: %w: %s", executable, err, stderr.String())
+	}
+	return output, nil
+}
+
+func (vm *VM) xdotool(arguments ...string) error {
+	_, err := vm.dockerExec("xdotool", arguments, map[string]string{"DISPLAY": vm.Display})
+	return err
+}
+```
+
 ```java
 import com.openai.core.ObjectMappers;
 import java.nio.charset.StandardCharsets;
@@ -22009,6 +22299,94 @@ var process =
 
 static void xdotool(VM vm, String... arguments) throws Exception {
   dockerExec(vm.containerName(), "xdotool", List.of(arguments), Map.of("DISPLAY", vm.display()));
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+
+internal sealed record VM(string Display, string ContainerName)
+{
+    internal int Executions { get; set; }
+}
+
+internal static ProcessStartInfo CreateDockerStartInfo(
+    VM vm, string executable, IReadOnlyList<string> arguments,
+    IReadOnlyDictionary<string, string>? environment = null)
+{
+    ProcessStartInfo start = new("docker")
+    {
+        UseShellExecute = false,
+        RedirectStandardInput = true,
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+        StandardErrorEncoding = Encoding.UTF8,
+    };
+    start.ArgumentList.Add("exec");
+    if (environment is not null)
+    {
+        foreach ((string name, string value) in environment)
+        {
+            start.ArgumentList.Add("--env");
+            start.ArgumentList.Add($"{name}={value}");
+        }
+    }
+    start.ArgumentList.Add(vm.ContainerName);
+    start.ArgumentList.Add(executable);
+    foreach (string argument in arguments)
+    {
+        start.ArgumentList.Add(argument);
+    }
+    return start;
+}
+
+// ArgumentList avoids shell expansion; stdout remains binary throughout.
+internal static async Task<byte[]> DockerExecAsync(
+    VM vm, string executable, IReadOnlyList<string> arguments,
+    IReadOnlyDictionary<string, string>? environment = null)
+{
+    ProcessStartInfo start = CreateDockerStartInfo(vm, executable, arguments, environment);
+    using Process process = new() { StartInfo = start };
+    vm.Executions++;
+    if (!process.Start())
+    {
+        throw new InvalidOperationException("Could not start Docker.");
+    }
+    process.StandardInput.Close();
+    using CancellationTokenSource timeout = new(TimeSpan.FromSeconds(30));
+    using MemoryStream stdout = new();
+    try
+    {
+        Task copy = process.StandardOutput.BaseStream.CopyToAsync(stdout, timeout.Token);
+        Task<string> stderr = process.StandardError.ReadToEndAsync(timeout.Token);
+        await Task.WhenAll(copy, stderr, process.WaitForExitAsync(timeout.Token));
+        if (process.ExitCode != 0)
+        {
+            throw new InvalidOperationException($"docker exec {executable} failed ({process.ExitCode}): {await stderr}");
+        }
+        return stdout.ToArray();
+    }
+    finally
+    {
+        if (!process.HasExited)
+        {
+            process.Kill(entireProcessTree: true);
+        }
+        await process.WaitForExitAsync();
+    }
+}
+
+internal static async Task XdotoolAsync(VM vm, params string[] arguments)
+{
+    await DockerExecAsync(vm, "xdotool", arguments, new Dictionary<string, string> { ["DISPLAY"] = vm.Display });
 }
 ```
 
@@ -22229,6 +22607,79 @@ def normalize_drag_path(path):
     return [(point.x, point.y) for point in path]
 ```
 
+```go
+import (
+	"fmt"
+
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/playwright-community/playwright-go"
+)
+
+func normalizeKey(key string) string {
+	switch key {
+	case "ENTER", "RETURN":
+		return "Enter"
+	case "ESC", "ESCAPE":
+		return "Escape"
+	case "TAB":
+		return "Tab"
+	case "SPACE":
+		return "Space"
+	case "BACKSPACE":
+		return "Backspace"
+	case "DELETE", "DEL":
+		return "Delete"
+	case "HOME":
+		return "Home"
+	case "END":
+		return "End"
+	case "PAGEUP":
+		return "PageUp"
+	case "PAGEDOWN":
+		return "PageDown"
+	case "UP", "ARROWUP":
+		return "ArrowUp"
+	case "DOWN", "ARROWDOWN":
+		return "ArrowDown"
+	case "LEFT", "ARROWLEFT":
+		return "ArrowLeft"
+	case "RIGHT", "ARROWRIGHT":
+		return "ArrowRight"
+	case "CTRL", "CONTROL":
+		return "Control"
+	case "SHIFT":
+		return "Shift"
+	case "ALT", "OPTION":
+		return "Alt"
+	case "META", "CMD", "COMMAND":
+		return "Meta"
+	default:
+		return key
+	}
+}
+
+func normalizeButton(button string) (playwright.MouseButton, error) {
+	switch button {
+	case "left":
+		return playwright.MouseButton("left"), nil
+	case "wheel":
+		return playwright.MouseButton("middle"), nil
+	case "right":
+		return playwright.MouseButton("right"), nil
+	default:
+		return "", fmt.Errorf("unsupported mouse button: %s", button)
+	}
+}
+
+func normalizeDragPath(path []responses.ComputerActionDragPath) [][2]int64 {
+	result := make([][2]int64, len(path))
+	for i, point := range path {
+		result[i] = [2]int64{point.X, point.Y}
+	}
+	return result
+}
+```
+
 ```java
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -22274,6 +22725,72 @@ static MouseButton normalizeButton(String button) {
 
 static List<List<Long>> normalizeDragPath(List<ComputerAction.Drag.Path> path) {
   return path.stream().map(point -> List.of(point.x(), point.y())).toList();
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+
+internal static string NormalizeKey(string key) => key switch
+{
+    "ENTER" or "RETURN" => "Enter",
+    "ESC" or "ESCAPE" => "Escape",
+    "TAB" => "Tab",
+    "SPACE" => "Space",
+    "BACKSPACE" => "Backspace",
+    "DELETE" or "DEL" => "Delete",
+    "HOME" => "Home",
+    "END" => "End",
+    "PAGEUP" => "PageUp",
+    "PAGEDOWN" => "PageDown",
+    "UP" or "ARROWUP" => "ArrowUp",
+    "DOWN" or "ARROWDOWN" => "ArrowDown",
+    "LEFT" or "ARROWLEFT" => "ArrowLeft",
+    "RIGHT" or "ARROWRIGHT" => "ArrowRight",
+    "CTRL" or "CONTROL" => "Control",
+    "SHIFT" => "Shift",
+    "ALT" or "OPTION" => "Alt",
+    "META" or "CMD" or "COMMAND" => "Meta",
+    _ => key,
+};
+
+internal static MouseButton NormalizeButton(string button) => button switch
+{
+    "left" => MouseButton.Left,
+    "wheel" => MouseButton.Middle,
+    "right" => MouseButton.Right,
+    _ => throw new ArgumentException($"Unsupported mouse button: {button}", nameof(button)),
+};
+
+internal static double[][] NormalizeDragPath(JsonElement path)
+{
+    if (path.ValueKind != JsonValueKind.Array)
+    {
+        throw new ArgumentException("A drag path must be an array.", nameof(path));
+    }
+    return path.EnumerateArray().Select(point =>
+    {
+        double[] coordinates = point.ValueKind switch
+        {
+            JsonValueKind.Array when point.GetArrayLength() >= 2 =>
+                [point[0].GetDouble(), point[1].GetDouble()],
+            JsonValueKind.Object =>
+                [point.GetProperty("x").GetDouble(), point.GetProperty("y").GetDouble()],
+            _ => throw new ArgumentException("Expected coordinate pairs or objects.", nameof(path)),
+        };
+        if (!coordinates.All(double.IsFinite))
+        {
+            throw new ArgumentException("Coordinates must be finite.", nameof(path));
+        }
+        return coordinates;
+    }).ToArray();
 }
 ```
 
@@ -22545,6 +23062,105 @@ def normalize_drag_path(path):
     return [(point.x, point.y) for point in path]
 ```
 
+```go
+import (
+	"github.com/openai/openai-go/v3/responses"
+	"math"
+)
+
+type InvalidInputError struct{ Message string }
+
+func (e *InvalidInputError) Error() string { return e.Message }
+
+func normalizeKey(key string) string {
+	switch key {
+	case "ENTER", "RETURN":
+		return "Return"
+	case "ESC", "ESCAPE":
+		return "Escape"
+	case "TAB":
+		return "Tab"
+	case "SPACE":
+		return "space"
+	case "BACKSPACE":
+		return "BackSpace"
+	case "DELETE", "DEL":
+		return "Delete"
+	case "HOME":
+		return "Home"
+	case "END":
+		return "End"
+	case "PAGEUP":
+		return "Page_Up"
+	case "PAGEDOWN":
+		return "Page_Down"
+	case "UP", "ARROWUP":
+		return "Up"
+	case "DOWN", "ARROWDOWN":
+		return "Down"
+	case "LEFT", "ARROWLEFT":
+		return "Left"
+	case "RIGHT", "ARROWRIGHT":
+		return "Right"
+	case "CTRL", "CONTROL":
+		return "ctrl"
+	case "SHIFT":
+		return "shift"
+	case "ALT", "OPTION":
+		return "alt"
+	case "META", "CMD", "COMMAND":
+		return "super"
+	default:
+		return key
+	}
+}
+
+func normalizeButton(button string) (int, error) {
+	switch button {
+	case "left":
+		return 1, nil
+	case "wheel":
+		return 2, nil
+	case "right":
+		return 3, nil
+	case "back":
+		return 8, nil
+	case "forward":
+		return 9, nil
+	default:
+		return 0, &InvalidInputError{"Unsupported mouse button: " + button}
+	}
+}
+
+func normalizeDragPath(path []responses.ComputerActionDragPath) [][2]int64 {
+	result := make([][2]int64, 0, len(path))
+	for _, point := range path {
+		result = append(result, [2]int64{point.X, point.Y})
+	}
+	return result
+}
+
+func scrollButtons(x, y int64) []int {
+	buttons := []int{}
+	for _, direction := range [][3]int64{{y, 4, 5}, {x, 6, 7}} {
+		delta := direction[0]
+		if delta == 0 {
+			continue
+		}
+		button := direction[2]
+		if delta < 0 {
+			button = direction[1]
+		}
+		// Python round and Java rint use ties-to-even (Go math.Round does not).
+		clicks := max(1, int(math.Abs(math.RoundToEven(float64(delta)/100))))
+		for i := 0; i < clicks; i++ {
+			buttons = append(buttons, int(button))
+		}
+	}
+	return buttons
+}
+```
+
 ```java
 import com.openai.core.ObjectMappers;
 import com.openai.models.responses.ComputerAction;
@@ -22601,6 +23217,79 @@ static List<Integer> scrollButtons(long x, long y) {
     for (int i = 0; i < clicks; i++) buttons.add(button);
   }
   return buttons;
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+
+internal sealed record Point(
+    [property: JsonPropertyName("x")] long X,
+    [property: JsonPropertyName("y")] long Y);
+
+internal static string NormalizeKey(string key) => key switch
+{
+    "ENTER" or "RETURN" => "Return",
+    "ESC" or "ESCAPE" => "Escape",
+    "TAB" => "Tab",
+    "SPACE" => "space",
+    "BACKSPACE" => "BackSpace",
+    "DELETE" or "DEL" => "Delete",
+    "HOME" => "Home",
+    "END" => "End",
+    "PAGEUP" => "Page_Up",
+    "PAGEDOWN" => "Page_Down",
+    "UP" or "ARROWUP" => "Up",
+    "DOWN" or "ARROWDOWN" => "Down",
+    "LEFT" or "ARROWLEFT" => "Left",
+    "RIGHT" or "ARROWRIGHT" => "Right",
+    "CTRL" or "CONTROL" => "ctrl",
+    "SHIFT" => "shift",
+    "ALT" or "OPTION" => "alt",
+    "META" or "CMD" or "COMMAND" => "super",
+    _ => key,
+};
+
+internal static int NormalizeButton(string button) => button switch
+{
+    "left" => 1,
+    "wheel" => 2,
+    "right" => 3,
+    "back" => 8,
+    "forward" => 9,
+    _ => throw new ArgumentException($"Unsupported mouse button: {button}", nameof(button)),
+};
+
+internal static long[][] NormalizeDragPath(IReadOnlyList<Point> path) =>
+    path.Select(point => new[] { point.X, point.Y }).ToArray();
+
+internal static List<int> ScrollButtons(long x, long y)
+{
+    List<int> buttons = [];
+    foreach ((long delta, int negative, int positive) in new[] { (y, 4, 5), (x, 6, 7) })
+    {
+        if (delta == 0)
+        {
+            continue;
+        }
+        int button = delta < 0 ? negative : positive;
+        // Match the Python reference's round-to-even behavior, including half steps.
+        int clicks = Math.Max(1, checked((int)Math.Abs(Math.Round(delta / 100.0, MidpointRounding.ToEven))));
+        for (int index = 0; index < clicks; index++)
+        {
+            buttons.Add(button);
+        }
+    }
+    return buttons;
 }
 ```
 
@@ -22838,6 +23527,160 @@ def handle_computer_actions(page, actions):
                 raise ValueError(f"Unsupported action: {action.type}")
 ```
 
+```go
+import (
+	"errors"
+	"fmt"
+	"strings"
+	"time"
+
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/playwright-community/playwright-go"
+)
+
+func normalizeKey(key string) string {
+	switch key {
+	case "ENTER", "RETURN":
+		return "Enter"
+	case "ESC", "ESCAPE":
+		return "Escape"
+	case "TAB":
+		return "Tab"
+	case "SPACE":
+		return "Space"
+	case "BACKSPACE":
+		return "Backspace"
+	case "DELETE", "DEL":
+		return "Delete"
+	case "HOME":
+		return "Home"
+	case "END":
+		return "End"
+	case "PAGEUP":
+		return "PageUp"
+	case "PAGEDOWN":
+		return "PageDown"
+	case "UP", "ARROWUP":
+		return "ArrowUp"
+	case "DOWN", "ARROWDOWN":
+		return "ArrowDown"
+	case "LEFT", "ARROWLEFT":
+		return "ArrowLeft"
+	case "RIGHT", "ARROWRIGHT":
+		return "ArrowRight"
+	case "CTRL", "CONTROL":
+		return "Control"
+	case "SHIFT":
+		return "Shift"
+	case "ALT", "OPTION":
+		return "Alt"
+	case "META", "CMD", "COMMAND":
+		return "Meta"
+	default:
+		return key
+	}
+}
+
+func normalizeButton(button string) (playwright.MouseButton, error) {
+	switch button {
+	case "left":
+		return playwright.MouseButton("left"), nil
+	case "wheel":
+		return playwright.MouseButton("middle"), nil
+	case "right":
+		return playwright.MouseButton("right"), nil
+	default:
+		return "", fmt.Errorf("unsupported mouse button: %s", button)
+	}
+}
+
+func normalizeDragPath(path []responses.ComputerActionDragPath) [][2]int64 {
+	result := make([][2]int64, len(path))
+	for i, point := range path {
+		result[i] = [2]int64{point.X, point.Y}
+	}
+	return result
+}
+
+func handleComputerActions(page playwright.Page, actions []responses.ComputerActionUnion) error {
+	for _, action := range actions {
+		var operation func() error
+		switch action.Type {
+		case "click":
+			button, err := normalizeButton(action.Button)
+			if err != nil {
+				return err
+			}
+			operation = func() error {
+				return page.Mouse().Click(float64(action.X), float64(action.Y), playwright.MouseClickOptions{Button: &button})
+			}
+		case "double_click":
+			operation = func() error { return page.Mouse().Dblclick(float64(action.X), float64(action.Y)) }
+		case "move":
+			operation = func() error { return page.Mouse().Move(float64(action.X), float64(action.Y)) }
+		case "drag":
+			path := normalizeDragPath(action.Path)
+			if len(path) < 2 {
+				return fmt.Errorf("drag requires at least two points")
+			}
+			operation = func() (err error) {
+				if err = page.Mouse().Move(float64(path[0][0]), float64(path[0][1])); err != nil {
+					return err
+				}
+				if err = page.Mouse().Down(); err != nil {
+					return err
+				}
+				defer func() { err = errors.Join(err, page.Mouse().Up()) }()
+				for _, point := range path[1:] {
+					if err = page.Mouse().Move(float64(point[0]), float64(point[1])); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "scroll":
+			operation = func() error {
+				if err := page.Mouse().Move(float64(action.X), float64(action.Y)); err != nil {
+					return err
+				}
+				return page.Mouse().Wheel(float64(action.ScrollX), float64(action.ScrollY))
+			}
+		case "keypress":
+			keys := make([]string, len(action.Keys))
+			for i, key := range action.Keys {
+				keys[i] = normalizeKey(key)
+			}
+			if len(keys) == 0 {
+				return fmt.Errorf("keypress requires at least one key")
+			}
+			if err := page.Keyboard().Press(strings.Join(keys, "+")); err != nil {
+				return err
+			}
+			continue
+		case "type":
+			if err := page.Keyboard().InsertText(action.Text); err != nil {
+				return err
+			}
+			continue
+		case "wait":
+			time.Sleep(2 * time.Second)
+			continue
+		case "screenshot":
+			continue // The caller captures the page after the batch.
+		default:
+			return fmt.Errorf("unsupported computer action: %s", action.Type)
+		}
+		if len(action.Keys) != 0 {
+			return fmt.Errorf("use the modifier-aware handler")
+		}
+		if err := operation(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+```
+
 ```java
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -22915,6 +23758,143 @@ static void handleComputerActions(Page page, List<ComputerAction> actions) {
     if (!keys.isEmpty()) throw new IllegalArgumentException("Use the modifier-aware handler");
     operation.run();
   }
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+
+internal static string NormalizeKey(string key) => key switch
+{
+    "ENTER" or "RETURN" => "Enter",
+    "ESC" or "ESCAPE" => "Escape",
+    "TAB" => "Tab",
+    "SPACE" => "Space",
+    "BACKSPACE" => "Backspace",
+    "DELETE" or "DEL" => "Delete",
+    "HOME" => "Home",
+    "END" => "End",
+    "PAGEUP" => "PageUp",
+    "PAGEDOWN" => "PageDown",
+    "UP" or "ARROWUP" => "ArrowUp",
+    "DOWN" or "ARROWDOWN" => "ArrowDown",
+    "LEFT" or "ARROWLEFT" => "ArrowLeft",
+    "RIGHT" or "ARROWRIGHT" => "ArrowRight",
+    "CTRL" or "CONTROL" => "Control",
+    "SHIFT" => "Shift",
+    "ALT" or "OPTION" => "Alt",
+    "META" or "CMD" or "COMMAND" => "Meta",
+    _ => key,
+};
+
+internal static MouseButton NormalizeButton(string button) => button switch
+{
+    "left" => MouseButton.Left,
+    "wheel" => MouseButton.Middle,
+    "right" => MouseButton.Right,
+    _ => throw new ArgumentException($"Unsupported mouse button: {button}", nameof(button)),
+};
+
+internal static long[][] NormalizeDragPath(JsonElement path) => path.EnumerateArray()
+    .Select(point => new[] { point.GetProperty("x").GetInt64(), point.GetProperty("y").GetInt64() })
+    .ToArray();
+
+// These JSON actions are application inputs, not missing OpenAI SDK types.
+internal static async Task HandleComputerActionsAsync(IPage page, IEnumerable<JsonElement> actions)
+{
+    foreach (JsonElement action in actions)
+    {
+        string type = action.GetProperty("type").GetString()
+            ?? throw new ArgumentException("Action type is required.");
+        string[] keys = action.TryGetProperty("keys", out JsonElement keyValues)
+            ? keyValues.EnumerateArray().Select(key => key.GetString()
+                ?? throw new ArgumentException("Keys must be strings.")).ToArray() : [];
+        Func<Task> operation;
+        switch (type)
+        {
+            case "click":
+                MouseButton button = NormalizeButton(action.GetProperty("button").GetString()
+                    ?? throw new ArgumentException("Button is required."));
+                operation = () => page.Mouse.ClickAsync(action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64(), new() { Button = button });
+                break;
+            case "double_click":
+                operation = () => page.Mouse.DblClickAsync(
+                    action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64());
+                break;
+            case "move":
+                operation = () => page.Mouse.MoveAsync(
+                    action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64());
+                break;
+            case "drag":
+                long[][] path = NormalizeDragPath(action.GetProperty("path"));
+                if (path.Length < 2) throw new ArgumentException("Drag requires at least two points.");
+                operation = async () =>
+                {
+                    await page.Mouse.MoveAsync(path[0][0], path[0][1]);
+                    await page.Mouse.DownAsync();
+                    Exception? operationError = null;
+                    try
+                    {
+                        foreach (long[] point in path.Skip(1)) await page.Mouse.MoveAsync(point[0], point[1]);
+                    }
+                    catch (Exception error)
+                    {
+                        operationError = error;
+                    }
+                    finally
+                    {
+                        try { await page.Mouse.UpAsync(); }
+                        catch (Exception releaseError)
+                        {
+                            operationError = operationError is null
+                                ? releaseError : new AggregateException(operationError, releaseError);
+                        }
+                    }
+                    if (operationError is not null) ExceptionDispatchInfo.Capture(operationError).Throw();
+                };
+                break;
+            case "scroll":
+                operation = async () =>
+                {
+                    await page.Mouse.MoveAsync(
+                        action.GetProperty("x").GetInt64(),
+                        action.GetProperty("y").GetInt64());
+                    await page.Mouse.WheelAsync(
+                        action.GetProperty("scroll_x").GetInt64(),
+                        action.GetProperty("scroll_y").GetInt64());
+                };
+                break;
+            case "keypress":
+                if (keys.Length == 0) throw new ArgumentException("Keypress requires at least one key.");
+                await page.Keyboard.PressAsync(string.Join("+", keys.Select(NormalizeKey)));
+                continue;
+            case "type":
+                await page.Keyboard.InsertTextAsync(action.GetProperty("text").GetString()
+                    ?? throw new ArgumentException("Text is required."));
+                continue;
+            case "wait":
+                await Task.Delay(TimeSpan.FromSeconds(2));
+                continue;
+            case "screenshot":
+                continue; // The caller captures the page after the batch.
+            default:
+                throw new ArgumentException($"Unsupported computer action: {type}");
+        }
+        if (keys.Length != 0) throw new ArgumentException("Use the modifier-aware handler.");
+        await operation();
+    }
 }
 ```
 
@@ -23208,6 +24188,121 @@ def handle_computer_actions(vm, actions):
                 raise ValueError(f"Unsupported action: {action.type}")
 ```
 
+```go
+import (
+	"errors"
+	"fmt"
+	"github.com/openai/openai-go/v3/responses"
+	"time"
+)
+
+func withModifiers(vm *VM, keys []string, operation func() error) (err error) {
+	pressed := []string{}
+	defer func() {
+		// Attempt every release even if one release fails, retaining the original failure.
+		for i := len(pressed) - 1; i >= 0; i-- {
+			if releaseErr := vm.xdotool("keyup", pressed[i]); releaseErr != nil {
+				err = errors.Join(err, releaseErr)
+			}
+		}
+	}()
+	for _, key := range keys {
+		normalized := normalizeKey(key)
+		pressed = append(pressed, normalized)
+		if err = vm.xdotool("keydown", normalized); err != nil {
+			return err
+		}
+	}
+	return operation()
+}
+
+func handleComputerActions(vm *VM, actions responses.ComputerActionList) error {
+	for _, action := range actions {
+		var operation func() error
+		switch action.Type {
+		case "click":
+			button, err := normalizeButton(action.Button)
+			if err != nil {
+				return err
+			}
+			operation = func() error {
+				return vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y), "click", fmt.Sprint(button))
+			}
+		case "double_click":
+			operation = func() error {
+				return vm.xdotool(
+					"mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y),
+					"click", "--repeat", "2", "--delay", "100", "1",
+				)
+			}
+		case "move":
+			operation = func() error { return vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y)) }
+		case "drag":
+			path := normalizeDragPath(action.Path)
+			if len(path) < 2 {
+				return &InvalidInputError{"Drag requires at least two points"}
+			}
+			operation = func() (err error) {
+				if err = vm.xdotool("mousemove", "--sync", fmt.Sprint(path[0][0]), fmt.Sprint(path[0][1])); err != nil {
+					return err
+				}
+				defer func() { err = errors.Join(err, vm.xdotool("mouseup", "1")) }()
+				if err = vm.xdotool("mousedown", "1"); err != nil {
+					return err
+				}
+				for _, point := range path[1:] {
+					if err = vm.xdotool("mousemove", "--sync", fmt.Sprint(point[0]), fmt.Sprint(point[1])); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "scroll":
+			operation = func() error {
+				if err := vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y)); err != nil {
+					return err
+				}
+				for _, button := range scrollButtons(action.ScrollX, action.ScrollY) {
+					if err := vm.xdotool("click", fmt.Sprint(button)); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "keypress":
+			if len(action.Keys) == 0 {
+				return &InvalidInputError{"Keypress requires keys"}
+			}
+			// Keydown/up provides finally-based release for combinations, too.
+			if err := withModifiers(vm, action.Keys, func() error { return nil }); err != nil {
+				return err
+			}
+			continue
+		case "type":
+			if err := vm.xdotool("type", "--clearmodifiers", "--", action.Text); err != nil {
+				return err
+			}
+			continue
+		case "wait":
+			time.Sleep(2 * time.Second)
+			continue
+		case "screenshot":
+			// The caller captures once after the batch, including screenshot-only batches.
+			continue
+		default:
+			return &InvalidInputError{"Unsupported computer action: " + action.Type}
+		}
+		if len(action.Keys) != 0 {
+			return &InvalidInputError{"Use the modifier-aware handler"}
+		}
+		if err := operation(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+```
+
 ```java
 import com.openai.core.ObjectMappers;
 import com.openai.models.responses.ComputerAction;
@@ -23316,6 +24411,202 @@ static void handleComputerActions(VM vm, List<ComputerAction> actions) throws Ex
     operation.run();
   }
 }
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+
+// Application-owned host messages, independent of the OpenAI SDK computer-tool surface.
+internal sealed record ComputerAction
+{
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
+    [JsonPropertyName("button")]
+    public string Button { get; init; } = "";
+    [JsonPropertyName("x")]
+    public long X { get; init; }
+    [JsonPropertyName("y")]
+    public long Y { get; init; }
+    [JsonPropertyName("keys")]
+    public string[] Keys { get; init; } = [];
+    [JsonPropertyName("path")]
+    public Point[] Path { get; init; } = [];
+    [JsonPropertyName("scroll_x")]
+    public long ScrollX { get; init; }
+    [JsonPropertyName("scroll_y")]
+    public long ScrollY { get; init; }
+    [JsonPropertyName("text")]
+    public string Text { get; init; } = "";
+}
+
+internal static async Task WithModifiersAsync(VM vm, IReadOnlyList<string> keys, Func<Task> operation)
+{
+    List<string> pressed = [];
+    List<Exception> failures = [];
+    try
+    {
+        foreach (string key in keys)
+        {
+            string normalized = NormalizeKey(key);
+            // A failed process may already have sent the keydown; release that key, too.
+            pressed.Add(normalized);
+            await XdotoolAsync(vm, "keydown", normalized);
+        }
+        await operation();
+    }
+    catch (Exception error)
+    {
+        failures.Add(error);
+    }
+    finally
+    {
+        for (int index = pressed.Count - 1; index >= 0; index--)
+        {
+            try
+            {
+                await XdotoolAsync(vm, "keyup", pressed[index]);
+            }
+            catch (Exception error)
+            {
+                failures.Add(error);
+            }
+        }
+    }
+    if (failures.Count == 1)
+    {
+        ExceptionDispatchInfo.Capture(failures[0]).Throw();
+    }
+    if (failures.Count > 1)
+    {
+        throw new AggregateException(failures);
+    }
+}
+
+internal static async Task HandleComputerActionsAsync(VM vm, IReadOnlyList<ComputerAction> actions)
+{
+    foreach (ComputerAction action in actions)
+    {
+        Func<Task> operation;
+        switch (action.Type)
+        {
+            case "click":
+                int button = NormalizeButton(action.Button);
+                operation = () => XdotoolAsync(
+                    vm,
+                    "mousemove",
+                    "--sync",
+                    Number(action.X),
+                    Number(action.Y),
+                    "click",
+                    Number(button));
+                break;
+            case "double_click":
+                operation = () => XdotoolAsync(
+                    vm,
+                    "mousemove",
+                    "--sync",
+                    Number(action.X),
+                    Number(action.Y),
+                    "click",
+                    "--repeat",
+                    "2",
+                    "--delay",
+                    "100",
+                    "1");
+                break;
+            case "move":
+                operation = () => XdotoolAsync(vm, "mousemove", "--sync", Number(action.X), Number(action.Y));
+                break;
+            case "drag":
+                long[][] path = NormalizeDragPath(action.Path);
+                if (path.Length < 2)
+                {
+                    throw new ArgumentException("Drag requires at least two points.", nameof(actions));
+                }
+                operation = async () =>
+                {
+                    await XdotoolAsync(vm, "mousemove", "--sync", Number(path[0][0]), Number(path[0][1]));
+                    Exception? primaryFailure = null;
+                    try
+                    {
+                        await XdotoolAsync(vm, "mousedown", "1");
+                        foreach (long[] point in path.Skip(1))
+                        {
+                            await XdotoolAsync(vm, "mousemove", "--sync", Number(point[0]), Number(point[1]));
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        primaryFailure = error;
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            await XdotoolAsync(vm, "mouseup", "1");
+                        }
+                        catch (Exception releaseFailure)
+                        {
+                            primaryFailure = primaryFailure is null
+                                ? releaseFailure
+                                : new AggregateException(primaryFailure, releaseFailure);
+                        }
+                    }
+                    if (primaryFailure is not null)
+                    {
+                        ExceptionDispatchInfo.Capture(primaryFailure).Throw();
+                    }
+                };
+                break;
+            case "scroll":
+                operation = async () =>
+                {
+                    await XdotoolAsync(vm, "mousemove", "--sync", Number(action.X), Number(action.Y));
+                    foreach (int scrollButton in ScrollButtons(action.ScrollX, action.ScrollY))
+                    {
+                        await XdotoolAsync(vm, "click", Number(scrollButton));
+                    }
+                };
+                break;
+            case "keypress":
+                if (action.Keys.Length == 0)
+                {
+                    throw new ArgumentException("Keypress requires keys.", nameof(actions));
+                }
+                await WithModifiersAsync(vm, action.Keys, () => Task.CompletedTask);
+                continue;
+            case "type":
+                await XdotoolAsync(vm, "type", "--clearmodifiers", "--", action.Text);
+                continue;
+            case "wait":
+                await Task.Delay(TimeSpan.FromSeconds(2));
+                continue;
+            case "screenshot":
+                // Capture once after the action batch, in the caller.
+                continue;
+            default:
+                throw new ArgumentException($"Unsupported computer action: {action.Type}", nameof(actions));
+        }
+        if (action.Keys.Length != 0)
+        {
+            throw new ArgumentException("Use the modifier-aware handler.", nameof(actions));
+        }
+        await operation();
+    }
+}
+
+private static string Number(long value) => value.ToString(CultureInfo.InvariantCulture);
 ```
 
 ```ruby
@@ -23598,6 +24889,182 @@ def handle_computer_actions(page, actions):
                 raise ValueError(f"Unsupported action: {action.type}")
 ```
 
+```go
+import (
+	"errors"
+	"fmt"
+	"strings"
+	"time"
+
+	"github.com/openai/openai-go/v3/responses"
+	"github.com/playwright-community/playwright-go"
+)
+
+func normalizeKey(key string) string {
+	switch key {
+	case "ENTER", "RETURN":
+		return "Enter"
+	case "ESC", "ESCAPE":
+		return "Escape"
+	case "TAB":
+		return "Tab"
+	case "SPACE":
+		return "Space"
+	case "BACKSPACE":
+		return "Backspace"
+	case "DELETE", "DEL":
+		return "Delete"
+	case "HOME":
+		return "Home"
+	case "END":
+		return "End"
+	case "PAGEUP":
+		return "PageUp"
+	case "PAGEDOWN":
+		return "PageDown"
+	case "UP", "ARROWUP":
+		return "ArrowUp"
+	case "DOWN", "ARROWDOWN":
+		return "ArrowDown"
+	case "LEFT", "ARROWLEFT":
+		return "ArrowLeft"
+	case "RIGHT", "ARROWRIGHT":
+		return "ArrowRight"
+	case "CTRL", "CONTROL":
+		return "Control"
+	case "SHIFT":
+		return "Shift"
+	case "ALT", "OPTION":
+		return "Alt"
+	case "META", "CMD", "COMMAND":
+		return "Meta"
+	default:
+		return key
+	}
+}
+
+func normalizeButton(button string) (playwright.MouseButton, error) {
+	switch button {
+	case "left":
+		return playwright.MouseButton("left"), nil
+	case "wheel":
+		return playwright.MouseButton("middle"), nil
+	case "right":
+		return playwright.MouseButton("right"), nil
+	default:
+		return "", fmt.Errorf("unsupported mouse button: %s", button)
+	}
+}
+
+func normalizeDragPath(path []responses.ComputerActionDragPath) [][2]int64 {
+	result := make([][2]int64, len(path))
+	for i, point := range path {
+		result[i] = [2]int64{point.X, point.Y}
+	}
+	return result
+}
+
+// withModifiers releases every successfully pressed key, even after an error.
+func withModifiers(page playwright.Page, keys []string, operation func() error) (err error) {
+	pressed := make([]string, 0, len(keys))
+	defer func() {
+		for i := len(pressed) - 1; i >= 0; i-- {
+			err = errors.Join(err, page.Keyboard().Up(pressed[i]))
+		}
+	}()
+	for _, key := range keys {
+		key = normalizeKey(key)
+		if err = page.Keyboard().Down(key); err != nil {
+			return err
+		}
+		pressed = append(pressed, key)
+	}
+	return operation()
+}
+
+func handleComputerActions(page playwright.Page, actions []responses.ComputerActionUnion) error {
+	for _, action := range actions {
+		var operation func() error
+		switch action.Type {
+		case "click":
+			button, err := normalizeButton(action.Button)
+			if err != nil {
+				return err
+			}
+			operation = func() error {
+				return page.Mouse().Click(
+					float64(action.X), float64(action.Y),
+					playwright.MouseClickOptions{Button: &button},
+				)
+			}
+		case "double_click":
+			operation = func() error {
+				return page.Mouse().Dblclick(float64(action.X), float64(action.Y))
+			}
+		case "move":
+			operation = func() error {
+				return page.Mouse().Move(float64(action.X), float64(action.Y))
+			}
+		case "drag":
+			path := normalizeDragPath(action.Path)
+			if len(path) < 2 {
+				return fmt.Errorf("drag requires at least two points")
+			}
+			operation = func() (err error) {
+				if err = page.Mouse().Move(float64(path[0][0]), float64(path[0][1])); err != nil {
+					return err
+				}
+				if err = page.Mouse().Down(); err != nil {
+					return err
+				}
+				defer func() { err = errors.Join(err, page.Mouse().Up()) }()
+				for _, point := range path[1:] {
+					if err = page.Mouse().Move(float64(point[0]), float64(point[1])); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "scroll":
+			operation = func() error {
+				if err := page.Mouse().Move(float64(action.X), float64(action.Y)); err != nil {
+					return err
+				}
+				return page.Mouse().Wheel(float64(action.ScrollX), float64(action.ScrollY))
+			}
+		case "keypress":
+			keys := make([]string, len(action.Keys))
+			for i, key := range action.Keys {
+				keys[i] = normalizeKey(key)
+			}
+			if len(keys) == 0 {
+				return fmt.Errorf("keypress requires at least one key")
+			}
+			if err := page.Keyboard().Press(strings.Join(keys, "+")); err != nil {
+				return err
+			}
+			continue
+		case "type":
+			if err := page.Keyboard().InsertText(action.Text); err != nil {
+				return err
+			}
+			continue
+		case "wait":
+			time.Sleep(2 * time.Second)
+			continue
+		case "screenshot":
+			continue // The caller captures the page after the batch.
+		default:
+			return fmt.Errorf("unsupported computer action: %s", action.Type)
+		}
+		if err := withModifiers(page, action.Keys, operation); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+```
+
 ```java
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -23689,6 +25156,173 @@ static void handleComputerActions(Page page, List<ComputerAction> actions) {
     } else throw new IllegalArgumentException("Unsupported computer action");
     withModifiers(page, keys, operation);
   }
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+
+internal static string NormalizeKey(string key) => key switch
+{
+    "ENTER" or "RETURN" => "Enter",
+    "ESC" or "ESCAPE" => "Escape",
+    "TAB" => "Tab",
+    "SPACE" => "Space",
+    "BACKSPACE" => "Backspace",
+    "DELETE" or "DEL" => "Delete",
+    "HOME" => "Home",
+    "END" => "End",
+    "PAGEUP" => "PageUp",
+    "PAGEDOWN" => "PageDown",
+    "UP" or "ARROWUP" => "ArrowUp",
+    "DOWN" or "ARROWDOWN" => "ArrowDown",
+    "LEFT" or "ARROWLEFT" => "ArrowLeft",
+    "RIGHT" or "ARROWRIGHT" => "ArrowRight",
+    "CTRL" or "CONTROL" => "Control",
+    "SHIFT" => "Shift",
+    "ALT" or "OPTION" => "Alt",
+    "META" or "CMD" or "COMMAND" => "Meta",
+    _ => key,
+};
+
+internal static MouseButton NormalizeButton(string button) => button switch
+{
+    "left" => MouseButton.Left,
+    "wheel" => MouseButton.Middle,
+    "right" => MouseButton.Right,
+    _ => throw new ArgumentException($"Unsupported mouse button: {button}", nameof(button)),
+};
+
+internal static long[][] NormalizeDragPath(JsonElement path) => path.EnumerateArray()
+    .Select(point => new[] { point.GetProperty("x").GetInt64(), point.GetProperty("y").GetInt64() })
+    .ToArray();
+
+internal static async Task WithModifiersAsync(IPage page, IReadOnlyList<string> keys, Func<Task> operation)
+{
+    List<string> pressed = [];
+    List<Exception> failures = [];
+    try
+    {
+        foreach (string key in keys)
+        {
+            string normalized = NormalizeKey(key);
+            await page.Keyboard.DownAsync(normalized);
+            pressed.Add(normalized);
+        }
+        await operation();
+    }
+    catch (Exception error)
+    {
+        failures.Add(error);
+    }
+    finally
+    {
+        // Attempt every release, preserving both operation and cleanup errors.
+        for (int i = pressed.Count - 1; i >= 0; i--)
+        {
+            try { await page.Keyboard.UpAsync(pressed[i]); }
+            catch (Exception error) { failures.Add(error); }
+        }
+    }
+    if (failures.Count != 0) throw new AggregateException(failures);
+}
+
+// These JSON actions are application inputs, not missing OpenAI SDK types.
+internal static async Task HandleComputerActionsAsync(IPage page, IEnumerable<JsonElement> actions)
+{
+    foreach (JsonElement action in actions)
+    {
+        string type = action.GetProperty("type").GetString()
+            ?? throw new ArgumentException("Action type is required.");
+        string[] keys = action.TryGetProperty("keys", out JsonElement keyValues)
+            && keyValues.ValueKind != JsonValueKind.Null
+            ? keyValues.EnumerateArray().Select(key => key.GetString()
+                ?? throw new ArgumentException("Keys must be strings.")).ToArray() : [];
+        Func<Task> operation;
+        switch (type)
+        {
+            case "click":
+                MouseButton button = NormalizeButton(action.GetProperty("button").GetString()
+                    ?? throw new ArgumentException("Button is required."));
+                operation = () => page.Mouse.ClickAsync(action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64(), new() { Button = button });
+                break;
+            case "double_click":
+                operation = () => page.Mouse.DblClickAsync(
+                    action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64());
+                break;
+            case "move":
+                operation = () => page.Mouse.MoveAsync(
+                    action.GetProperty("x").GetInt64(),
+                    action.GetProperty("y").GetInt64());
+                break;
+            case "drag":
+                long[][] path = NormalizeDragPath(action.GetProperty("path"));
+                if (path.Length < 2) throw new ArgumentException("Drag requires at least two points.");
+                operation = async () =>
+                {
+                    await page.Mouse.MoveAsync(path[0][0], path[0][1]);
+                    await page.Mouse.DownAsync();
+                    Exception? operationError = null;
+                    try
+                    {
+                        foreach (long[] point in path.Skip(1)) await page.Mouse.MoveAsync(point[0], point[1]);
+                    }
+                    catch (Exception error)
+                    {
+                        operationError = error;
+                    }
+                    finally
+                    {
+                        try { await page.Mouse.UpAsync(); }
+                        catch (Exception releaseError)
+                        {
+                            operationError = operationError is null
+                                ? releaseError : new AggregateException(operationError, releaseError);
+                        }
+                    }
+                    if (operationError is not null) ExceptionDispatchInfo.Capture(operationError).Throw();
+                };
+                break;
+            case "scroll":
+                operation = async () =>
+                {
+                    await page.Mouse.MoveAsync(
+                        action.GetProperty("x").GetInt64(),
+                        action.GetProperty("y").GetInt64());
+                    await page.Mouse.WheelAsync(
+                        action.GetProperty("scroll_x").GetInt64(),
+                        action.GetProperty("scroll_y").GetInt64());
+                };
+                break;
+            case "keypress":
+                if (keys.Length == 0) throw new ArgumentException("Keypress requires at least one key.");
+                await page.Keyboard.PressAsync(string.Join("+", keys.Select(NormalizeKey)));
+                continue;
+            case "type":
+                await page.Keyboard.InsertTextAsync(action.GetProperty("text").GetString()
+                    ?? throw new ArgumentException("Text is required."));
+                continue;
+            case "wait":
+                await Task.Delay(TimeSpan.FromSeconds(2));
+                continue;
+            case "screenshot":
+                continue; // The caller captures the page after the batch.
+            default:
+                throw new ArgumentException($"Unsupported computer action: {type}");
+        }
+        await WithModifiersAsync(page, keys, operation);
+    }
 }
 ```
 
@@ -24016,6 +25650,118 @@ def handle_computer_actions(vm, actions):
                 raise ValueError(f"Unsupported action: {action.type}")
 ```
 
+```go
+import (
+	"errors"
+	"fmt"
+	"github.com/openai/openai-go/v3/responses"
+	"time"
+)
+
+func withModifiers(vm *VM, keys []string, operation func() error) (err error) {
+	pressed := []string{}
+	defer func() {
+		// Attempt every release even if one release fails, retaining the original failure.
+		for i := len(pressed) - 1; i >= 0; i-- {
+			if releaseErr := vm.xdotool("keyup", pressed[i]); releaseErr != nil {
+				err = errors.Join(err, releaseErr)
+			}
+		}
+	}()
+	for _, key := range keys {
+		normalized := normalizeKey(key)
+		pressed = append(pressed, normalized)
+		if err = vm.xdotool("keydown", normalized); err != nil {
+			return err
+		}
+	}
+	return operation()
+}
+
+func handleComputerActions(vm *VM, actions responses.ComputerActionList) error {
+	for _, action := range actions {
+		var operation func() error
+		switch action.Type {
+		case "click":
+			button, err := normalizeButton(action.Button)
+			if err != nil {
+				return err
+			}
+			operation = func() error {
+				return vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y), "click", fmt.Sprint(button))
+			}
+		case "double_click":
+			operation = func() error {
+				return vm.xdotool(
+					"mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y),
+					"click", "--repeat", "2", "--delay", "100", "1",
+				)
+			}
+		case "move":
+			operation = func() error { return vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y)) }
+		case "drag":
+			path := normalizeDragPath(action.Path)
+			if len(path) < 2 {
+				return &InvalidInputError{"Drag requires at least two points"}
+			}
+			operation = func() (err error) {
+				if err = vm.xdotool("mousemove", "--sync", fmt.Sprint(path[0][0]), fmt.Sprint(path[0][1])); err != nil {
+					return err
+				}
+				defer func() { err = errors.Join(err, vm.xdotool("mouseup", "1")) }()
+				if err = vm.xdotool("mousedown", "1"); err != nil {
+					return err
+				}
+				for _, point := range path[1:] {
+					if err = vm.xdotool("mousemove", "--sync", fmt.Sprint(point[0]), fmt.Sprint(point[1])); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "scroll":
+			operation = func() error {
+				if err := vm.xdotool("mousemove", "--sync", fmt.Sprint(action.X), fmt.Sprint(action.Y)); err != nil {
+					return err
+				}
+				for _, button := range scrollButtons(action.ScrollX, action.ScrollY) {
+					if err := vm.xdotool("click", fmt.Sprint(button)); err != nil {
+						return err
+					}
+				}
+				return nil
+			}
+		case "keypress":
+			if len(action.Keys) == 0 {
+				return &InvalidInputError{"Keypress requires keys"}
+			}
+			// Keydown/up provides finally-based release for combinations, too.
+			if err := withModifiers(vm, action.Keys, func() error { return nil }); err != nil {
+				return err
+			}
+			continue
+		case "type":
+			if err := vm.xdotool("type", "--clearmodifiers", "--", action.Text); err != nil {
+				return err
+			}
+			continue
+		case "wait":
+			time.Sleep(2 * time.Second)
+			continue
+		case "screenshot":
+			// The caller captures once after the batch, including screenshot-only batches.
+			continue
+		default:
+			return &InvalidInputError{"Unsupported computer action: " + action.Type}
+		}
+		if err := withModifiers(vm, action.Keys, operation); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+```
+
 ```java
 import com.openai.core.ObjectMappers;
 import com.openai.models.responses.ComputerAction;
@@ -24138,6 +25884,198 @@ static void handleComputerActions(VM vm, List<ComputerAction> actions) throws Ex
     withModifiers(vm, keys, operation);
   }
 }
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+
+// Application-owned host messages, independent of the OpenAI SDK computer-tool surface.
+internal sealed record ComputerAction
+{
+    [JsonPropertyName("type")]
+    public required string Type { get; init; }
+    [JsonPropertyName("button")]
+    public string Button { get; init; } = "";
+    [JsonPropertyName("x")]
+    public long X { get; init; }
+    [JsonPropertyName("y")]
+    public long Y { get; init; }
+    [JsonPropertyName("keys")]
+    public string[] Keys { get; init; } = [];
+    [JsonPropertyName("path")]
+    public Point[] Path { get; init; } = [];
+    [JsonPropertyName("scroll_x")]
+    public long ScrollX { get; init; }
+    [JsonPropertyName("scroll_y")]
+    public long ScrollY { get; init; }
+    [JsonPropertyName("text")]
+    public string Text { get; init; } = "";
+}
+
+internal static async Task WithModifiersAsync(VM vm, IReadOnlyList<string> keys, Func<Task> operation)
+{
+    List<string> pressed = [];
+    List<Exception> failures = [];
+    try
+    {
+        foreach (string key in keys)
+        {
+            string normalized = NormalizeKey(key);
+            // A failed process may already have sent the keydown; release that key, too.
+            pressed.Add(normalized);
+            await XdotoolAsync(vm, "keydown", normalized);
+        }
+        await operation();
+    }
+    catch (Exception error)
+    {
+        failures.Add(error);
+    }
+    finally
+    {
+        for (int index = pressed.Count - 1; index >= 0; index--)
+        {
+            try
+            {
+                await XdotoolAsync(vm, "keyup", pressed[index]);
+            }
+            catch (Exception error)
+            {
+                failures.Add(error);
+            }
+        }
+    }
+    if (failures.Count == 1)
+    {
+        ExceptionDispatchInfo.Capture(failures[0]).Throw();
+    }
+    if (failures.Count > 1)
+    {
+        throw new AggregateException(failures);
+    }
+}
+
+internal static async Task HandleComputerActionsAsync(VM vm, IReadOnlyList<ComputerAction> actions)
+{
+    foreach (ComputerAction action in actions)
+    {
+        Func<Task> operation;
+        switch (action.Type)
+        {
+            case "click":
+                int button = NormalizeButton(action.Button);
+                operation = () => XdotoolAsync(
+                    vm,
+                    "mousemove",
+                    "--sync",
+                    Number(action.X),
+                    Number(action.Y),
+                    "click",
+                    Number(button));
+                break;
+            case "double_click":
+                operation = () => XdotoolAsync(
+                    vm,
+                    "mousemove",
+                    "--sync",
+                    Number(action.X),
+                    Number(action.Y),
+                    "click",
+                    "--repeat",
+                    "2",
+                    "--delay",
+                    "100",
+                    "1");
+                break;
+            case "move":
+                operation = () => XdotoolAsync(vm, "mousemove", "--sync", Number(action.X), Number(action.Y));
+                break;
+            case "drag":
+                long[][] path = NormalizeDragPath(action.Path);
+                if (path.Length < 2)
+                {
+                    throw new ArgumentException("Drag requires at least two points.", nameof(actions));
+                }
+                operation = async () =>
+                {
+                    await XdotoolAsync(vm, "mousemove", "--sync", Number(path[0][0]), Number(path[0][1]));
+                    Exception? primaryFailure = null;
+                    try
+                    {
+                        await XdotoolAsync(vm, "mousedown", "1");
+                        foreach (long[] point in path.Skip(1))
+                        {
+                            await XdotoolAsync(vm, "mousemove", "--sync", Number(point[0]), Number(point[1]));
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        primaryFailure = error;
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            await XdotoolAsync(vm, "mouseup", "1");
+                        }
+                        catch (Exception releaseFailure)
+                        {
+                            primaryFailure = primaryFailure is null
+                                ? releaseFailure
+                                : new AggregateException(primaryFailure, releaseFailure);
+                        }
+                    }
+                    if (primaryFailure is not null)
+                    {
+                        ExceptionDispatchInfo.Capture(primaryFailure).Throw();
+                    }
+                };
+                break;
+            case "scroll":
+                operation = async () =>
+                {
+                    await XdotoolAsync(vm, "mousemove", "--sync", Number(action.X), Number(action.Y));
+                    foreach (int scrollButton in ScrollButtons(action.ScrollX, action.ScrollY))
+                    {
+                        await XdotoolAsync(vm, "click", Number(scrollButton));
+                    }
+                };
+                break;
+            case "keypress":
+                if (action.Keys.Length == 0)
+                {
+                    throw new ArgumentException("Keypress requires keys.", nameof(actions));
+                }
+                await WithModifiersAsync(vm, action.Keys, () => Task.CompletedTask);
+                continue;
+            case "type":
+                await XdotoolAsync(vm, "type", "--clearmodifiers", "--", action.Text);
+                continue;
+            case "wait":
+                await Task.Delay(TimeSpan.FromSeconds(2));
+                continue;
+            case "screenshot":
+                // Capture once after the action batch, in the caller.
+                continue;
+            default:
+                throw new ArgumentException($"Unsupported computer action: {action.Type}", nameof(actions));
+        }
+        await WithModifiersAsync(vm, action.Keys, operation);
+    }
+}
+
+private static string Number(long value) => value.ToString(CultureInfo.InvariantCulture);
 ```
 
 ```ruby
@@ -24590,6 +26528,15 @@ def capture_screenshot(page):
     return page.screenshot(type="png")
 ```
 
+```go
+import "github.com/playwright-community/playwright-go"
+
+func captureScreenshot(page playwright.Page) ([]byte, error) {
+	format := playwright.ScreenshotType("png")
+	return page.Screenshot(playwright.PageScreenshotOptions{Type: &format})
+}
+```
+
 ```java
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.*;
@@ -24602,6 +26549,19 @@ import java.util.*;
 static byte[] captureScreenshot(Page page) {
   return page.screenshot(new Page.ScreenshotOptions().setType(ScreenshotType.PNG));
 }
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Playwright;
+
+internal static Task<byte[]> CaptureScreenshotAsync(IPage page) =>
+    page.ScreenshotAsync(new() { Type = ScreenshotType.Png });
 ```
 
 ```ruby
@@ -24644,6 +26604,29 @@ def capture_screenshot(vm):
     )
 ```
 
+```go
+import (
+	"bytes"
+	"fmt"
+	"image/png"
+)
+
+func captureScreenshot(vm *VM) ([]byte, error) {
+	data, err := vm.dockerExec(
+		"import",
+		[]string{"-window", "root", "png:-"},
+		map[string]string{"DISPLAY": vm.Display},
+	)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := png.DecodeConfig(bytes.NewReader(data)); err != nil {
+		return nil, fmt.Errorf("invalid screenshot PNG: %w", err)
+	}
+	return data, nil
+}
+```
+
 ```java
 import com.openai.core.ObjectMappers;
 import java.nio.file.*;
@@ -24658,6 +26641,21 @@ static byte[] captureScreenshot(VM vm) throws Exception {
       List.of("-window", "root", "png:-"),
       Map.of("DISPLAY", vm.display()));
 }
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+
+internal static Task<byte[]> CaptureScreenshotAsync(VM vm) => DockerExecAsync(
+    vm, "import", ["-window", "root", "png:-"],
+    new Dictionary<string, string> { ["DISPLAY"] = vm.Display });
 ```
 
 ```ruby
@@ -66496,6 +68494,64 @@ try {
   closed.await();
 } finally {
   server.closeGracefully();
+}
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using ModelContextProtocol.Server;
+
+HostApplicationBuilder builder = Host.CreateApplicationBuilder();
+// Stdout is reserved for MCP messages, including during host startup.
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(options => options.LogToStandardErrorThreshold = LogLevel.Trace);
+builder.Services
+    .AddMcpServer(options =>
+    {
+        options.ServerInfo = new() { Name = "customer-lookup", Version = "1.0.0" };
+    })
+    .WithStdioServerTransport()
+    .WithTools<CustomerLookupTools>();
+
+using IHost host = builder.Build();
+await host.RunAsync();
+
+[McpServerToolType]
+public sealed class CustomerLookupTools
+{
+    // Example data only; replace this collection with your customer data source.
+    private static readonly Dictionary<string, Customer> Customers =
+        new Dictionary<string, Customer>(StringComparer.Ordinal)
+        {
+            ["123"] = new("Example Customer", "pro"),
+        };
+
+    // The parameter name is the public MCP schema key.
+#pragma warning disable CA1707
+    [McpServerTool(Name = "get_customer")]
+    [Description("Look up a customer in the example data.")]
+    public static string GetCustomer(
+        [Description("The customer ID to look up.")] string customer_id
+    )
+    {
+        ArgumentNullException.ThrowIfNull(customer_id);
+        Customers.TryGetValue(customer_id, out Customer? customer);
+        return JsonSerializer.Serialize(new { customer });
+    }
+
+#pragma warning restore CA1707
+
+    private sealed record Customer(
+        [property: System.Text.Json.Serialization.JsonPropertyName("name")] string Name,
+        [property: System.Text.Json.Serialization.JsonPropertyName("plan")] string Plan
+    );
 }
 ```
 
@@ -114614,6 +116670,164 @@ static String readOutput(Path path) throws Exception {
 }
 ```
 
+```csharp
+using System.Diagnostics;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.Json;
+
+namespace OpenAI.Docs.Examples.Tools.ShellExecutor;
+
+internal static class ShellExecutor
+{
+    internal static async Task RunAsync()
+    {
+        // Linux host with util-linux setsid and /bin/sh installed. Only run commands
+        // approved by the application. Process groups are not a security sandbox.
+        string[] arguments = Environment.GetCommandLineArgs().Skip(1).ToArray();
+        // The project runner adds its selector before this sample's arguments.
+        if (arguments is ["tools-shell-executor", ..])
+        {
+            arguments = arguments[1..];
+        }
+        if (arguments.Length > 2)
+        {
+            throw new ArgumentException("Expected [command] [timeoutSeconds].");
+        }
+        string command = arguments.Length > 0 ? arguments[0] : "printf shell-executor-ready";
+        double timeoutSeconds = arguments.Length > 1
+            ? double.Parse(arguments[1], CultureInfo.InvariantCulture) : 1.0;
+        Console.WriteLine(JsonSerializer.Serialize(await ExecuteAsync(command, timeoutSeconds)));
+    }
+    internal static async Task<ShellResult> ExecuteAsync(string command, double timeoutSeconds = 1.0)
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            throw new PlatformNotSupportedException("This executor requires Linux process groups.");
+        }
+        ArgumentNullException.ThrowIfNull(command);
+        if (!double.IsFinite(timeoutSeconds) || timeoutSeconds <= 0 || timeoutSeconds > 86400)
+        {
+            throw new ArgumentOutOfRangeException(nameof(timeoutSeconds), "Use 0 < timeout <= 86400 seconds.");
+        }
+
+        ProcessStartInfo start = new("setsid")
+        {
+            UseShellExecute = false,
+            RedirectStandardInput = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8,
+        };
+        // ArgumentList preserves the whole command, including shell quotes, as one argument.
+        start.ArgumentList.Add("/bin/sh");
+        start.ArgumentList.Add("-c");
+        start.ArgumentList.Add(command);
+        using Process process = Process.Start(start)
+            ?? throw new InvalidOperationException("Unable to start setsid.");
+        process.StandardInput.Close();
+
+        TaskCompletionSource<bool> outputLimit = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        // Drain both pipes concurrently so a full stderr pipe cannot deadlock stdout.
+        Task<string> stdout = DrainAsync(process.StandardOutput, outputLimit);
+        Task<string> stderr = DrainAsync(process.StandardError, outputLimit);
+        Task exited = process.WaitForExitAsync();
+        Task finished = Task.WhenAll(exited, stdout, stderr);
+        using CancellationTokenSource deadlineCancellation = new();
+        Task deadline = Task.Delay(TimeSpan.FromSeconds(timeoutSeconds), deadlineCancellation.Token);
+        bool timedOut;
+        bool exceededOutput;
+        try
+        {
+            Task winner = await Task.WhenAny(finished, deadline, outputLimit.Task);
+            timedOut = winner == deadline;
+            exceededOutput = outputLimit.Task.IsCompleted;
+        }
+        finally
+        {
+            await deadlineCancellation.CancelAsync();
+            // Clean up even when the shell exits first: descendants can retain its
+            // pipes, or can close them and continue running in the background.
+            // The process tree handles startup before setsid has created the group.
+            try
+            {
+                if (!process.HasExited)
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+            }
+            catch (InvalidOperationException) when (process.HasExited)
+            {
+                // The process exited between the check and Kill.
+            }
+            finally
+            {
+                KillGroup(process.Id);
+            }
+            await exited;
+        }
+
+        // A child deliberately creating another session escapes the owned group.
+        // Bound pipe cleanup as well; use an OS sandbox for adversarial commands.
+        try
+        {
+            await finished.WaitAsync(TimeSpan.FromSeconds(2));
+        }
+        catch (TimeoutException)
+        {
+            throw new IOException("A process outside the owned group retained an output pipe.");
+        }
+        return new ShellResult(await stdout, await stderr,
+            timedOut ? -1 : exceededOutput ? 1 : process.ExitCode, timedOut);
+    }
+
+    private static async Task<string> DrainAsync(StreamReader reader, TaskCompletionSource<bool> limit)
+    {
+        const int maximumCharacters = 1024 * 1024;
+        StringBuilder captured = new();
+        char[] buffer = new char[4096];
+        int count;
+        while ((count = await reader.ReadAsync(buffer.AsMemory())) != 0)
+        {
+            int retained = Math.Min(count, maximumCharacters - captured.Length);
+            captured.Append(buffer, 0, retained);
+            if (retained != count)
+            {
+                limit.TrySetResult(true);
+            }
+        }
+        return captured.ToString();
+    }
+
+    private static void KillGroup(int processId)
+    {
+        const int noSuchProcess = 3;
+        if (Kill(-processId, 9) != 0)
+        {
+            int error = Marshal.GetLastPInvokeError();
+            if (error != noSuchProcess)
+            {
+                throw new System.ComponentModel.Win32Exception(error, "Unable to terminate the owned process group.");
+            }
+        }
+    }
+
+    // DllImport keeps this standalone example usable without enabling unsafe compilation.
+#pragma warning disable SYSLIB1054
+    [DllImport("libc", EntryPoint = "kill", SetLastError = true)]
+    private static extern int Kill(int processId, int signal);
+#pragma warning restore SYSLIB1054
+
+    internal sealed record ShellResult(
+        [property: System.Text.Json.Serialization.JsonPropertyName("stdout")] string Stdout,
+        [property: System.Text.Json.Serialization.JsonPropertyName("stderr")] string Stderr,
+        [property: System.Text.Json.Serialization.JsonPropertyName("exit_code")] int ExitCode,
+        [property: System.Text.Json.Serialization.JsonPropertyName("timed_out")] bool TimedOut);
+}
+```
+
 ```ruby
 require "open3"
 
@@ -140190,6 +142404,319 @@ try {
 javax.imageio.ImageIO.write(image, "png", Path.of("local-plot.png").toFile());
 ```
 
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.VisualBasic.FileIO;
+
+// The included illustrative CSV has been retaining Score, UserId and ProductId
+// beside each corresponding ada_embedding. The basic embedding producer has
+// been writing only combined and ada_embedding to a different output file.
+// Real-data preparation has been preserving these review fields when attaching
+// each generated vector; this example has been reading that labeled schema.
+
+var (matrix, scores) = ReadReviews("data/illustrative-review-embeddings.csv");
+// Exact t-SNE uses all pairwise affinities. Its quadratic cost is suitable
+// for this 1,000-review tutorial, rather than very large datasets.
+double[][] points = FitTsne(matrix, perplexity: 15, seed: 42, learningRate: 200);
+
+WritePlot(points, scores, "local-plot.svg");
+
+static double[][] FitTsne(double[][] matrix, double perplexity, int seed, double learningRate)
+{
+    int n = matrix.Length;
+    if (perplexity < 1 || n <= perplexity || !double.IsFinite(perplexity) ||
+        learningRate <= 0 || !double.IsFinite(learningRate))
+    {
+        throw new ArgumentException("Perplexity must be at least one and smaller than the row count; learning rate must be positive and finite.");
+    }
+
+    double[,] probabilities = JointProbabilities(matrix, perplexity);
+    Random random = new(seed);
+    double[][] points = Enumerable.Range(0, n).Select(_ => new[]
+    {
+        Gaussian(random) * 1e-4, Gaussian(random) * 1e-4,
+    }).ToArray();
+    double[,] velocity = new double[n, 2];
+    double[,] gains = new double[n, 2];
+    for (int i = 0; i < n; i++)
+    {
+        gains[i, 0] = gains[i, 1] = 1;
+    }
+
+    double[,] numerators = new double[n, n];
+    double[,] gradient = new double[n, 2];
+    for (int iteration = 0; iteration < 1000; iteration++)
+    {
+        Array.Clear(gradient);
+        double normalization = 0;
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i + 1; j < n; j++)
+            {
+                double dx = points[i][0] - points[j][0];
+                double dy = points[i][1] - points[j][1];
+                double numerator = 1 / (1 + dx * dx + dy * dy);
+                numerators[i, j] = numerator;
+                normalization += 2 * numerator;
+            }
+        }
+
+        if (!double.IsFinite(normalization) || normalization <= 0)
+        {
+            throw new InvalidOperationException("The t-SNE affinity normalization is not finite and positive.");
+        }
+
+        // Student-t affinities and the exact gradient of KL(P || Q).
+        // Early exaggeration and momentum follow the common t-SNE schedule.
+        double exaggeration = iteration < 250 ? 12 : 1;
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i + 1; j < n; j++)
+            {
+                double numerator = numerators[i, j];
+                double q = numerator / normalization;
+                double factor = 4 * (exaggeration * probabilities[i, j] - q) * numerator;
+                for (int d = 0; d < 2; d++)
+                {
+                    double contribution = factor * (points[i][d] - points[j][d]);
+                    gradient[i, d] += contribution;
+                    gradient[j, d] -= contribution;
+                }
+            }
+        }
+
+        double momentum = iteration < 250 ? 0.5 : 0.8;
+        for (int i = 0; i < n; i++)
+        {
+            for (int d = 0; d < 2; d++)
+            {
+                gains[i, d] = Math.Sign(gradient[i, d]) != Math.Sign(velocity[i, d])
+                    ? gains[i, d] + 0.2 : Math.Max(0.01, gains[i, d] * 0.8);
+                velocity[i, d] = momentum * velocity[i, d] - learningRate * gains[i, d] * gradient[i, d];
+                points[i][d] += velocity[i, d];
+                if (!double.IsFinite(points[i][d]))
+                {
+                    throw new InvalidOperationException("The t-SNE optimization produced nonfinite coordinates.");
+                }
+            }
+        }
+
+        for (int d = 0; d < 2; d++)
+        {
+            double center = points.Average(point => point[d]);
+            foreach (double[] point in points)
+            {
+                point[d] -= center;
+            }
+        }
+    }
+
+    return points;
+}
+
+// Binary-search a Gaussian precision per input vector until each conditional
+// distribution has entropy log(perplexity), then symmetrize over both directions.
+static double[,] JointProbabilities(double[][] matrix, double perplexity)
+{
+    int n = matrix.Length;
+    double[,] conditional = new double[n, n];
+    double targetEntropy = Math.Log(perplexity);
+    for (int i = 0; i < n; i++)
+    {
+        double[] distances = new double[n];
+        double minimum = double.PositiveInfinity;
+        for (int j = 0; j < n; j++)
+        {
+            if (i == j)
+            {
+                continue;
+            }
+
+            double distance = 0;
+            for (int d = 0; d < matrix[i].Length; d++)
+            {
+                double delta = matrix[i][d] - matrix[j][d];
+                distance += delta * delta;
+            }
+
+            if (!double.IsFinite(distance))
+            {
+                throw new InvalidDataException("Embedding distances overflowed; rescale the input.");
+            }
+
+            distances[j] = distance;
+            minimum = Math.Min(minimum, distance);
+        }
+
+        // Subtract the nearest distance before exponentiation to avoid
+        // underflow of every affinity when the Gaussian is very narrow.
+        double beta = 1, lower = 0, upper = double.PositiveInfinity;
+        bool converged = false;
+        for (int attempt = 0; attempt < 100; attempt++)
+        {
+            double total = 0;
+            for (int j = 0; j < n; j++)
+            {
+                conditional[i, j] = i == j ? 0 : Math.Exp(-beta * (distances[j] - minimum));
+                total += conditional[i, j];
+            }
+
+            double entropy = 0;
+            for (int j = 0; j < n; j++)
+            {
+                conditional[i, j] /= total;
+                double p = conditional[i, j];
+                if (p > 0)
+                {
+                    entropy -= p * Math.Log(p);
+                }
+            }
+
+            double error = entropy - targetEntropy;
+            if (Math.Abs(error) < 1e-5)
+            {
+                converged = true;
+                break;
+            }
+
+            if (error > 0)
+            {
+                lower = beta;
+                beta = double.IsPositiveInfinity(upper) ? beta * 2 : (beta + upper) / 2;
+            }
+            else
+            {
+                upper = beta;
+                beta = (beta + lower) / 2;
+            }
+        }
+
+        if (!converged)
+        {
+            throw new InvalidDataException("Cannot achieve perplexity 15 for these distances; inspect duplicate or degenerate embeddings.");
+        }
+    }
+
+    double[,] joint = new double[n, n];
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            joint[i, j] = joint[j, i] = (conditional[i, j] + conditional[j, i]) / (2 * n);
+        }
+    }
+
+    return joint;
+}
+
+static double Gaussian(Random random)
+{
+    double radius = Math.Sqrt(-2 * Math.Log(1 - random.NextDouble()));
+    return radius * Math.Cos(2 * Math.PI * random.NextDouble());
+}
+
+static void WritePlot(double[][] points, int[] scores, string path)
+{
+    // SVG keeps the plot portable across Linux, macOS, and Windows without
+    // a platform-specific graphics package. Preserve labels in the artifact.
+    System.Xml.Linq.XNamespace svg = "http://www.w3.org/2000/svg";
+    System.Xml.Linq.XElement image = new(svg + "svg",
+        new System.Xml.Linq.XAttribute("width", 640),
+        new System.Xml.Linq.XAttribute("height", 480),
+        new System.Xml.Linq.XAttribute("viewBox", "0 0 640 480"),
+        new System.Xml.Linq.XElement(svg + "title", "Review embeddings colored by score"),
+        new System.Xml.Linq.XElement(svg + "rect",
+            new System.Xml.Linq.XAttribute("width", 640),
+            new System.Xml.Linq.XAttribute("height", 480),
+            new System.Xml.Linq.XAttribute("fill", "white")));
+    string[] palette = ["#e41a1c", "#ff7f00", "#d4af00", "#00a6ca", "#238b45"];
+    double minX = points.Min(point => point[0]), maxX = points.Max(point => point[0]);
+    double minY = points.Min(point => point[1]), maxY = points.Max(point => point[1]);
+    for (int i = 0; i < points.Length; i++)
+    {
+        double x = 20 + 600 * (points[i][0] - minX) / Math.Max(1e-12, maxX - minX);
+        double y = 440 - 400 * (points[i][1] - minY) / Math.Max(1e-12, maxY - minY);
+        image.Add(new System.Xml.Linq.XElement(svg + "circle",
+            new System.Xml.Linq.XAttribute("cx", x.ToString("R", CultureInfo.InvariantCulture)),
+            new System.Xml.Linq.XAttribute("cy", y.ToString("R", CultureInfo.InvariantCulture)),
+            new System.Xml.Linq.XAttribute("r", 3),
+            new System.Xml.Linq.XAttribute("fill", palette[scores[i] - 1]),
+            new System.Xml.Linq.XAttribute("data-score", scores[i]),
+            new System.Xml.Linq.XAttribute("data-review", i)));
+    }
+
+    for (int rating = 1; rating <= 5; rating++)
+    {
+        image.Add(new System.Xml.Linq.XElement(svg + "text",
+            new System.Xml.Linq.XAttribute("x", 20 + (rating - 1) * 120),
+            new System.Xml.Linq.XAttribute("y", 470),
+            new System.Xml.Linq.XAttribute("fill", palette[rating - 1]),
+            new System.Xml.Linq.XAttribute("font-size", 14),
+            $"Score {rating}"));
+    }
+
+    new System.Xml.Linq.XDocument(image).Save(path);
+}
+
+// Read the CSV produced by the review-embedding workflow. TextFieldParser
+// handles quoted JSON vectors, commas, escaped quotes, and multiline reviews.
+static (double[][] Vectors, int[] Scores) ReadReviews(string path)
+{
+    using TextFieldParser csv = new(path);
+    csv.TextFieldType = FieldType.Delimited;
+    csv.SetDelimiters(",");
+    csv.HasFieldsEnclosedInQuotes = true;
+    string[] header = csv.ReadFields() ?? throw new InvalidDataException("The CSV is empty.");
+    int embeddingColumn = Array.IndexOf(header, "ada_embedding");
+    int scoreColumn = Array.IndexOf(header, "Score");
+    if (embeddingColumn < 0 || scoreColumn < 0)
+    {
+        throw new InvalidDataException("Expected ada_embedding and Score columns.");
+    }
+
+    List<double[]> vectors = [];
+    List<int> scores = [];
+    while (!csv.EndOfData)
+    {
+        string[] row = csv.ReadFields() ?? throw new InvalidDataException("Missing CSV row.");
+        if (row.Length != header.Length)
+        {
+            throw new InvalidDataException("The CSV row does not match its header.");
+        }
+
+        double[] vector = JsonSerializer.Deserialize<double[]>(row[embeddingColumn])
+            ?? throw new InvalidDataException("A review has no embedding.");
+        if (vector.Length == 0 || vector.Any(value => !double.IsFinite(value)) ||
+            (vectors.Count > 0 && vector.Length != vectors[0].Length))
+        {
+            throw new InvalidDataException("Embeddings must be finite vectors of equal nonzero length.");
+        }
+
+        int score = int.Parse(row[scoreColumn], CultureInfo.InvariantCulture);
+        if (score is < 1 or > 5)
+        {
+            throw new InvalidDataException("Review scores must be integers from 1 through 5.");
+        }
+
+        vectors.Add(vector);
+        scores.Add(score);
+    }
+
+    if (vectors.Count == 0)
+    {
+        throw new InvalidDataException("The CSV has no reviews.");
+    }
+
+    return (vectors.ToArray(), scores.ToArray());
+}
+```
+
 ```ruby
 require "csv"
 require "json"
@@ -140445,6 +142972,111 @@ System.out.println("Test examples: " + xTest.length);
 
 ```
 
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.VisualBasic.FileIO;
+
+var (yTrain, yTest, xTrain, xTest) = SplitDataset();
+
+// The included illustrative CSV has been retaining Score, UserId and ProductId
+// beside each corresponding ada_embedding. The basic embedding producer has
+// been writing only combined and ada_embedding to a different output file.
+// Real-data preparation has been preserving these review fields when attaching
+// each generated vector; this example has been reading that labeled schema.
+static (int[] Train, int[] Test, double[][] TrainVectors, double[][] TestVectors) SplitDataset()
+{
+    List<double[]> vectors = [];
+    List<int> scores = [];
+    foreach (Dictionary<string, string> row in ReadCsv(
+        "data/illustrative-review-embeddings.csv", "ada_embedding", "Score"))
+    {
+        double[] vector = DecodeVector(row["ada_embedding"]);
+        if (vectors.Count > 0 && vector.Length != vectors[0].Length)
+        {
+            throw new InvalidDataException("Embedding dimensions differ.");
+        }
+        int score = int.Parse(row["Score"], NumberStyles.Integer, CultureInfo.InvariantCulture);
+        vectors.Add(vector);
+        scores.Add(score);
+    }
+    if (vectors.Count < 2)
+    {
+        throw new InvalidDataException("Splitting requires at least two reviews.");
+    }
+
+    // Shuffle row indices once to preserve vector/score alignment.
+    // Seed 42 is repeatable in this .NET runtime, not identical to Python's permutation.
+    int[] indices = Enumerable.Range(0, vectors.Count).ToArray();
+    Random random = new(42);
+    for (int i = indices.Length - 1; i > 0; i--)
+    {
+        int j = random.Next(i + 1);
+        (indices[i], indices[j]) = (indices[j], indices[i]);
+    }
+    int testSize = (int)Math.Ceiling(vectors.Count * 0.2);
+    int[] testIndices = indices[..testSize];
+    int[] trainIndices = indices[testSize..];
+    double[][] xTrain = trainIndices.Select(index => vectors[index]).ToArray();
+    double[][] xTest = testIndices.Select(index => vectors[index]).ToArray();
+    int[] yTrain = trainIndices.Select(index => scores[index]).ToArray();
+    int[] yTest = testIndices.Select(index => scores[index]).ToArray();
+    Console.WriteLine($"Training examples: {xTrain.Length}");
+    Console.WriteLine($"Test examples: {xTest.Length}");
+    return (yTrain, yTest, xTrain, xTest);
+}
+static IEnumerable<Dictionary<string, string>> ReadCsv(string path, params string[] requiredColumns)
+{
+    using TextFieldParser parser = new(path)
+    {
+        TextFieldType = FieldType.Delimited,
+        HasFieldsEnclosedInQuotes = true,
+        TrimWhiteSpace = false,
+    };
+    parser.SetDelimiters(",");
+    string[] headers = parser.ReadFields()
+        ?? throw new InvalidDataException("The CSV has no header.");
+    if (headers.Distinct(StringComparer.Ordinal).Count() != headers.Length
+        || requiredColumns.Any(column => !headers.Contains(column, StringComparer.Ordinal)))
+    {
+        throw new InvalidDataException("The CSV has duplicate headers or missing required columns.");
+    }
+
+    while (!parser.EndOfData)
+    {
+        string[] fields = parser.ReadFields()
+            ?? throw new InvalidDataException("The CSV record is missing.");
+        if (fields.Length != headers.Length)
+        {
+            throw new InvalidDataException($"CSV record near line {parser.LineNumber} has the wrong field count.");
+        }
+
+        Dictionary<string, string> row = new(StringComparer.Ordinal);
+        for (int i = 0; i < headers.Length; i++)
+        {
+            row.Add(headers[i], fields[i]);
+        }
+        yield return row;
+    }
+}
+
+static double[] DecodeVector(string json)
+{
+    double[] vector = JsonSerializer.Deserialize<double[]>(json)
+        ?? throw new InvalidDataException("An embedding is null.");
+    if (vector.Length == 0 || vector.Any(value => !double.IsFinite(value)))
+    {
+        throw new InvalidDataException("Embeddings must contain finite numbers and at least one dimension.");
+    }
+    return vector;
+}
+```
+
 ```ruby
 vectors = rows.map { |row| row.fetch("ada_embedding") }
 scores = rows.map { |row| Integer(row.fetch("Score")) }
@@ -140694,6 +143326,207 @@ var test = DataFrame.of(xTest, columns);
 var predictions = new ArrayList<Number>();
 for (int i = 0; i < test.nrow(); i++) predictions.add(forest.predict(test.get(i)));
 System.out.println(predictions);
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.VisualBasic.FileIO;
+
+// The included illustrative CSV has been retaining Score, UserId and ProductId
+// beside each corresponding ada_embedding. The basic embedding producer has
+// been writing only combined and ada_embedding to a different output file.
+// Real-data preparation has been preserving these review fields when attaching
+// each generated vector; this example has been reading that labeled schema.
+
+var (vectors, scores) = ReadReviews("data/illustrative-review-embeddings.csv");
+var (trainIndices, testIndices) = Split(vectors.Length, testFraction: 0.2, seed: 42);
+double[][] xTrain = trainIndices.Select(i => vectors[i]).ToArray();
+int[] yTrain = trainIndices.Select(i => scores[i]).ToArray();
+double[][] xTest = testIndices.Select(i => vectors[i]).ToArray();
+int[] yTest = testIndices.Select(i => scores[i]).ToArray();
+Node[] forest = FitForest(xTrain, yTrain);
+double[] predictions = Predict(forest, xTest);
+double meanSquaredError = predictions.Zip(yTest)
+    .Average(pair => Math.Pow(pair.First - pair.Second, 2));
+Console.WriteLine(JsonSerializer.Serialize(predictions));
+
+static Node[] FitForest(double[][] xTrain, int[] yTrain)
+{
+    Random random = new(42);
+    return Enumerable.Range(0, 100).Select(treeIndex =>
+    {
+        int[] bootstrap = Enumerable.Range(0, xTrain.Length)
+            .Select(rowIndex => random.Next(xTrain.Length)).ToArray();
+        return GrowTree(xTrain, yTrain, bootstrap, random);
+    }).ToArray();
+}
+
+static double[] Predict(Node[] forest, double[][] vectors) =>
+    vectors.Select(row => forest.Average(tree => Leaf(tree, row).Value)).ToArray();
+
+
+static Node Leaf(Node tree, double[] row)
+{
+    while (tree.Feature >= 0)
+    {
+        tree = row[tree.Feature] <= tree.Threshold ? tree.Left! : tree.Right!;
+    }
+
+    return tree;
+}
+
+// Bootstrap CART trees: search exact thresholds between distinct feature
+// values. The split criterion is the sum of squared residuals.
+static Node GrowTree(double[][] x, int[] y, int[] rows, Random random)
+{
+    double mean = rows.Average(row => (double)y[row]);
+    if (rows.Length < 2 || rows.All(row => y[row] == y[rows[0]]))
+    {
+        return new Node { Value = mean };
+    }
+
+    int[] features = Enumerable.Range(0, x[0].Length).ToArray();
+    random.Shuffle(features);
+    int featureCount = features.Length;
+    int bestFeature = -1;
+    double bestThreshold = 0;
+    double bestLoss = double.PositiveInfinity;
+    // If all randomly selected features are constant, inspect further
+    // features until at least one valid partition has been found.
+    for (int f = 0; f < features.Length && (f < featureCount || bestFeature < 0); f++)
+    {
+        int feature = features[f];
+        int[] ordered = rows.OrderBy(row => x[row][feature]).ToArray();
+        double leftSum = 0, leftSquaredSum = 0;
+        double rightSum = rows.Sum(row => (double)y[row]);
+        double rightSquaredSum = rows.Sum(row => (double)y[row] * y[row]);
+        for (int split = 1; split < ordered.Length; split++)
+        {
+            int score = y[ordered[split - 1]];
+            leftSum += score;
+            rightSum -= score;
+            leftSquaredSum += score * score;
+            rightSquaredSum -= score * score;
+            double lower = x[ordered[split - 1]][feature];
+            double upper = x[ordered[split]][feature];
+            if (lower == upper)
+            {
+                continue;
+            }
+
+            int rightCount = ordered.Length - split;
+            double loss = leftSquaredSum - leftSum * leftSum / split
+                + rightSquaredSum - rightSum * rightSum / rightCount;
+            if (loss < bestLoss)
+            {
+                bestLoss = loss;
+                bestFeature = feature;
+                // A rounded midpoint must remain strictly below upper.
+                bestThreshold = lower / 2 + upper / 2;
+                if (bestThreshold >= upper)
+                {
+                    bestThreshold = lower;
+                }
+            }
+        }
+    }
+
+    if (bestFeature < 0)
+    {
+        return new Node { Value = mean };
+    }
+
+    int[] left = rows.Where(row => x[row][bestFeature] <= bestThreshold).ToArray();
+    int[] right = rows.Where(row => x[row][bestFeature] > bestThreshold).ToArray();
+    return new Node
+    {
+        Feature = bestFeature,
+        Threshold = bestThreshold,
+        Left = GrowTree(x, y, left, random),
+        Right = GrowTree(x, y, right, random),
+    };
+}
+
+static (int[] Train, int[] Test) Split(int count, double testFraction, int seed)
+{
+    int testCount = (int)Math.Ceiling(count * testFraction);
+    if (testCount < 1 || testCount >= count)
+    {
+        throw new ArgumentException("Provide enough reviews for nonempty training and test sets.", nameof(count));
+    }
+
+    int[] indices = Enumerable.Range(0, count).ToArray();
+    Random random = new(seed);
+    random.Shuffle(indices);
+    return (indices[testCount..], indices[..testCount]);
+}
+
+// Read the CSV produced by the review-embedding workflow. TextFieldParser
+// handles quoted JSON vectors, commas, escaped quotes, and multiline reviews.
+static (double[][] Vectors, int[] Scores) ReadReviews(string path)
+{
+    using TextFieldParser csv = new(path);
+    csv.TextFieldType = FieldType.Delimited;
+    csv.SetDelimiters(",");
+    csv.HasFieldsEnclosedInQuotes = true;
+    string[] header = csv.ReadFields() ?? throw new InvalidDataException("The CSV is empty.");
+    int embeddingColumn = Array.IndexOf(header, "ada_embedding");
+    int scoreColumn = Array.IndexOf(header, "Score");
+    if (embeddingColumn < 0 || scoreColumn < 0)
+    {
+        throw new InvalidDataException("Expected ada_embedding and Score columns.");
+    }
+
+    List<double[]> vectors = [];
+    List<int> scores = [];
+    while (!csv.EndOfData)
+    {
+        string[] row = csv.ReadFields() ?? throw new InvalidDataException("Missing CSV row.");
+        if (row.Length != header.Length)
+        {
+            throw new InvalidDataException("The CSV row does not match its header.");
+        }
+
+        double[] vector = JsonSerializer.Deserialize<double[]>(row[embeddingColumn])
+            ?? throw new InvalidDataException("A review has no embedding.");
+        if (vector.Length == 0 || vector.Any(value => !double.IsFinite(value)) ||
+            (vectors.Count > 0 && vector.Length != vectors[0].Length))
+        {
+            throw new InvalidDataException("Embeddings must be finite vectors of equal nonzero length.");
+        }
+
+        int score = int.Parse(row[scoreColumn], CultureInfo.InvariantCulture);
+        if (score is < 1 or > 5)
+        {
+            throw new InvalidDataException("Review scores must be integers from 1 through 5.");
+        }
+
+        vectors.Add(vector);
+        scores.Add(score);
+    }
+
+    if (vectors.Count == 0)
+    {
+        throw new InvalidDataException("The CSV has no reviews.");
+    }
+
+    return (vectors.ToArray(), scores.ToArray());
+}
+
+sealed class Node
+{
+    internal int Feature { get; init; } = -1;
+    internal double Threshold { get; init; }
+    internal double Value { get; init; }
+    internal Node? Left { get; init; }
+    internal Node? Right { get; init; }
+}
 ```
 
 ```ruby
@@ -140974,6 +143807,211 @@ var test = DataFrame.of(xTest, columns);
 var predictions = new ArrayList<Number>();
 for (int i = 0; i < test.nrow(); i++) predictions.add(forest.predict(test.get(i)));
 System.out.println(predictions);
+```
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.VisualBasic.FileIO;
+
+// The included illustrative CSV has been retaining Score, UserId and ProductId
+// beside each corresponding ada_embedding. The basic embedding producer has
+// been writing only combined and ada_embedding to a different output file.
+// Real-data preparation has been preserving these review fields when attaching
+// each generated vector; this example has been reading that labeled schema.
+
+var (vectors, scores) = ReadReviews("data/illustrative-review-embeddings.csv");
+var (trainIndices, testIndices) = Split(vectors.Length, testFraction: 0.2, seed: 42);
+double[][] xTrain = trainIndices.Select(i => vectors[i]).ToArray();
+int[] yTrain = trainIndices.Select(i => scores[i]).ToArray();
+double[][] xTest = testIndices.Select(i => vectors[i]).ToArray();
+int[] yTest = testIndices.Select(i => scores[i]).ToArray();
+Node[] forest = FitForest(xTrain, yTrain);
+int[] classes = yTrain.Distinct().Order().ToArray();
+int[] predictions = Predict(forest, xTest, classes);
+double accuracy = predictions.Zip(yTest).Count(pair => pair.First == pair.Second) / (double)yTest.Length;
+Console.WriteLine(JsonSerializer.Serialize(predictions));
+
+static Node[] FitForest(double[][] xTrain, int[] yTrain)
+{
+    Random random = new(42);
+    return Enumerable.Range(0, 100).Select(treeIndex =>
+    {
+        int[] bootstrap = Enumerable.Range(0, xTrain.Length)
+            .Select(rowIndex => random.Next(xTrain.Length)).ToArray();
+        return GrowTree(xTrain, yTrain, bootstrap, random);
+    }).ToArray();
+}
+
+// Average the fitted multiclass leaf probabilities, then choose the largest.
+static int[] Predict(Node[] forest, double[][] vectors, int[] classes) =>
+    vectors.Select(row => classes.MaxBy(label =>
+        forest.Sum(tree => Leaf(tree, row).Probabilities[label - 1]))).ToArray();
+
+
+static Node Leaf(Node tree, double[] row)
+{
+    while (tree.Feature >= 0)
+    {
+        tree = row[tree.Feature] <= tree.Threshold ? tree.Left! : tree.Right!;
+    }
+
+    return tree;
+}
+
+// Bootstrap CART trees: search exact thresholds between distinct feature
+// values. The split criterion is weighted multiclass Gini impurity.
+static Node GrowTree(double[][] x, int[] y, int[] rows, Random random)
+{
+    double[] counts = new double[5];
+    foreach (int row in rows)
+    {
+        counts[y[row] - 1]++;
+    }
+
+    if (rows.Length < 2 || rows.All(row => y[row] == y[rows[0]]))
+    {
+        return new Node { Probabilities = counts.Select(count => count / rows.Length).ToArray() };
+    }
+
+    int[] features = Enumerable.Range(0, x[0].Length).ToArray();
+    random.Shuffle(features);
+    int featureCount = Math.Max(1, (int)Math.Sqrt(features.Length));
+    int bestFeature = -1;
+    double bestThreshold = 0;
+    double bestLoss = double.PositiveInfinity;
+    // If all randomly selected features are constant, inspect further
+    // features until at least one valid partition has been found.
+    for (int f = 0; f < features.Length && (f < featureCount || bestFeature < 0); f++)
+    {
+        int feature = features[f];
+        int[] ordered = rows.OrderBy(row => x[row][feature]).ToArray();
+        double[] leftCounts = new double[5];
+        double[] rightCounts = (double[])counts.Clone();
+        for (int split = 1; split < ordered.Length; split++)
+        {
+            int score = y[ordered[split - 1]];
+            leftCounts[score - 1]++;
+            rightCounts[score - 1]--;
+            double lower = x[ordered[split - 1]][feature];
+            double upper = x[ordered[split]][feature];
+            if (lower == upper)
+            {
+                continue;
+            }
+
+            int rightCount = ordered.Length - split;
+            double loss = split - leftCounts.Sum(count => count * count) / split
+                + rightCount - rightCounts.Sum(count => count * count) / rightCount;
+            if (loss < bestLoss)
+            {
+                bestLoss = loss;
+                bestFeature = feature;
+                // A rounded midpoint must remain strictly below upper.
+                bestThreshold = lower / 2 + upper / 2;
+                if (bestThreshold >= upper)
+                {
+                    bestThreshold = lower;
+                }
+            }
+        }
+    }
+
+    if (bestFeature < 0)
+    {
+        return new Node { Probabilities = counts.Select(count => count / rows.Length).ToArray() };
+    }
+
+    int[] left = rows.Where(row => x[row][bestFeature] <= bestThreshold).ToArray();
+    int[] right = rows.Where(row => x[row][bestFeature] > bestThreshold).ToArray();
+    return new Node
+    {
+        Feature = bestFeature,
+        Threshold = bestThreshold,
+        Left = GrowTree(x, y, left, random),
+        Right = GrowTree(x, y, right, random),
+    };
+}
+
+static (int[] Train, int[] Test) Split(int count, double testFraction, int seed)
+{
+    int testCount = (int)Math.Ceiling(count * testFraction);
+    if (testCount < 1 || testCount >= count)
+    {
+        throw new ArgumentException("Provide enough reviews for nonempty training and test sets.", nameof(count));
+    }
+
+    int[] indices = Enumerable.Range(0, count).ToArray();
+    Random random = new(seed);
+    random.Shuffle(indices);
+    return (indices[testCount..], indices[..testCount]);
+}
+
+// Read the CSV produced by the review-embedding workflow. TextFieldParser
+// handles quoted JSON vectors, commas, escaped quotes, and multiline reviews.
+static (double[][] Vectors, int[] Scores) ReadReviews(string path)
+{
+    using TextFieldParser csv = new(path);
+    csv.TextFieldType = FieldType.Delimited;
+    csv.SetDelimiters(",");
+    csv.HasFieldsEnclosedInQuotes = true;
+    string[] header = csv.ReadFields() ?? throw new InvalidDataException("The CSV is empty.");
+    int embeddingColumn = Array.IndexOf(header, "ada_embedding");
+    int scoreColumn = Array.IndexOf(header, "Score");
+    if (embeddingColumn < 0 || scoreColumn < 0)
+    {
+        throw new InvalidDataException("Expected ada_embedding and Score columns.");
+    }
+
+    List<double[]> vectors = [];
+    List<int> scores = [];
+    while (!csv.EndOfData)
+    {
+        string[] row = csv.ReadFields() ?? throw new InvalidDataException("Missing CSV row.");
+        if (row.Length != header.Length)
+        {
+            throw new InvalidDataException("The CSV row does not match its header.");
+        }
+
+        double[] vector = JsonSerializer.Deserialize<double[]>(row[embeddingColumn])
+            ?? throw new InvalidDataException("A review has no embedding.");
+        if (vector.Length == 0 || vector.Any(value => !double.IsFinite(value)) ||
+            (vectors.Count > 0 && vector.Length != vectors[0].Length))
+        {
+            throw new InvalidDataException("Embeddings must be finite vectors of equal nonzero length.");
+        }
+
+        int score = int.Parse(row[scoreColumn], CultureInfo.InvariantCulture);
+        if (score is < 1 or > 5)
+        {
+            throw new InvalidDataException("Review scores must be integers from 1 through 5.");
+        }
+
+        vectors.Add(vector);
+        scores.Add(score);
+    }
+
+    if (vectors.Count == 0)
+    {
+        throw new InvalidDataException("The CSV has no reviews.");
+    }
+
+    return (vectors.ToArray(), scores.ToArray());
+}
+
+sealed class Node
+{
+    internal int Feature { get; init; } = -1;
+    internal double Threshold { get; init; }
+    internal double[] Probabilities { get; init; } = new double[5];
+    internal Node? Left { get; init; }
+    internal Node? Right { get; init; }
+}
 ```
 
 ```ruby
@@ -141863,6 +144901,185 @@ var clusters = KMeans.fit(matrix, 4);
 System.out.println(Arrays.toString(clusters.y));
 ```
 
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.VisualBasic.FileIO;
+
+// The included illustrative CSV has been retaining Score, UserId and ProductId
+// beside each corresponding ada_embedding. The basic embedding producer has
+// been writing only combined and ada_embedding to a different output file.
+// Real-data preparation has been preserving these review fields when attaching
+// each generated vector; this example has been reading that labeled schema.
+
+var (matrix, _) = ReadReviews("data/illustrative-review-embeddings.csv");
+var (labels, centers) = FitKMeans(matrix, clusterCount: 4, seed: 42);
+Console.WriteLine(JsonSerializer.Serialize(labels));
+
+// K-means++ initialization followed by Lloyd's algorithm, with squared
+// Euclidean distance and explicit recovery of empty clusters.
+static (int[] Labels, double[][] Centers) FitKMeans(
+    double[][] matrix, int clusterCount, int seed)
+{
+    if (matrix.Length < clusterCount || clusterCount < 1)
+    {
+        throw new ArgumentException("Provide at least one row per cluster.", nameof(matrix));
+    }
+
+    Random random = new(seed);
+    List<double[]> centers = [(double[])matrix[random.Next(matrix.Length)].Clone()];
+    while (centers.Count < clusterCount)
+    {
+        double[] distances = matrix.Select(row => centers.Min(center => SquaredDistance(row, center))).ToArray();
+        double total = distances.Sum();
+        if (!double.IsFinite(total) || total <= 0)
+        {
+            throw new ArgumentException("Provide at least four distinct, bounded embeddings.", nameof(matrix));
+        }
+
+        double target = random.NextDouble() * total;
+        int chosen = 0;
+        while (chosen < distances.Length - 1 && target >= distances[chosen])
+        {
+            target -= distances[chosen++];
+        }
+
+        centers.Add((double[])matrix[chosen].Clone());
+    }
+
+    int[] labels = Enumerable.Repeat(-1, matrix.Length).ToArray();
+    for (int iteration = 0; iteration < 1000; iteration++)
+    {
+        bool changed = false;
+        int[] counts = new int[clusterCount];
+        double[][] sums = Enumerable.Range(0, clusterCount).Select(_ => new double[matrix[0].Length]).ToArray();
+        for (int i = 0; i < matrix.Length; i++)
+        {
+            int closest = Enumerable.Range(0, clusterCount)
+                .MinBy(cluster => SquaredDistance(matrix[i], centers[cluster]));
+            changed |= labels[i] != closest;
+            labels[i] = closest;
+            counts[closest]++;
+        }
+
+        // Move the worst represented member of a nonsingleton cluster to
+        // each empty cluster. Recompute means from these exact assignments.
+        for (int empty = 0; empty < clusterCount; empty++)
+        {
+            if (counts[empty] != 0)
+            {
+                continue;
+            }
+
+            int moved = Enumerable.Range(0, matrix.Length)
+                .Where(i => counts[labels[i]] > 1)
+                .MaxBy(i => SquaredDistance(matrix[i], centers[labels[i]]));
+            counts[labels[moved]]--;
+            labels[moved] = empty;
+            counts[empty]++;
+            changed = true;
+        }
+
+        for (int i = 0; i < matrix.Length; i++)
+        {
+            for (int d = 0; d < matrix[i].Length; d++)
+            {
+                sums[labels[i]][d] += matrix[i][d];
+            }
+        }
+
+        for (int cluster = 0; cluster < clusterCount; cluster++)
+        {
+            for (int d = 0; d < matrix[0].Length; d++)
+            {
+                centers[cluster][d] = sums[cluster][d] / counts[cluster];
+            }
+        }
+
+        if (!changed)
+        {
+            return (labels, centers.ToArray());
+        }
+    }
+
+    throw new InvalidOperationException("K-means did not converge within 1000 iterations.");
+}
+
+static double SquaredDistance(double[] a, double[] b)
+{
+    double distance = 0;
+    for (int d = 0; d < a.Length; d++)
+    {
+        double delta = a[d] - b[d];
+        distance += delta * delta;
+    }
+
+    if (!double.IsFinite(distance))
+    {
+        throw new InvalidDataException("Embedding distances overflowed; rescale the input.");
+    }
+
+    return distance;
+}
+
+// Read the CSV produced by the review-embedding workflow. TextFieldParser
+// handles quoted JSON vectors, commas, escaped quotes, and multiline reviews.
+static (double[][] Vectors, int[] Scores) ReadReviews(string path)
+{
+    using TextFieldParser csv = new(path);
+    csv.TextFieldType = FieldType.Delimited;
+    csv.SetDelimiters(",");
+    csv.HasFieldsEnclosedInQuotes = true;
+    string[] header = csv.ReadFields() ?? throw new InvalidDataException("The CSV is empty.");
+    int embeddingColumn = Array.IndexOf(header, "ada_embedding");
+    int scoreColumn = Array.IndexOf(header, "Score");
+    if (embeddingColumn < 0 || scoreColumn < 0)
+    {
+        throw new InvalidDataException("Expected ada_embedding and Score columns.");
+    }
+
+    List<double[]> vectors = [];
+    List<int> scores = [];
+    while (!csv.EndOfData)
+    {
+        string[] row = csv.ReadFields() ?? throw new InvalidDataException("Missing CSV row.");
+        if (row.Length != header.Length)
+        {
+            throw new InvalidDataException("The CSV row does not match its header.");
+        }
+
+        double[] vector = JsonSerializer.Deserialize<double[]>(row[embeddingColumn])
+            ?? throw new InvalidDataException("A review has no embedding.");
+        if (vector.Length == 0 || vector.Any(value => !double.IsFinite(value)) ||
+            (vectors.Count > 0 && vector.Length != vectors[0].Length))
+        {
+            throw new InvalidDataException("Embeddings must be finite vectors of equal nonzero length.");
+        }
+
+        int score = int.Parse(row[scoreColumn], CultureInfo.InvariantCulture);
+        if (score is < 1 or > 5)
+        {
+            throw new InvalidDataException("Review scores must be integers from 1 through 5.");
+        }
+
+        vectors.Add(vector);
+        scores.Add(score);
+    }
+
+    if (vectors.Count == 0)
+    {
+        throw new InvalidDataException("The CSV has no reviews.");
+    }
+
+    return (vectors.ToArray(), scores.ToArray());
+}
+```
+
 ```ruby
 require "rumale/clustering"
 
@@ -141953,6 +145170,25 @@ System.out.println(ENCODING.countTokens("tiktoken is great!"));
 static final com.knuddels.jtokkit.api.Encoding ENCODING =
     com.knuddels.jtokkit.Encodings.newDefaultEncodingRegistry()
         .getEncoding(com.knuddels.jtokkit.api.EncodingType.CL100K_BASE);
+```
+
+```csharp
+using System;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.ML.Tokenizers;
+
+static int NumberOfTokens(string text, string encodingName)
+{
+    ArgumentNullException.ThrowIfNull(text);
+    ArgumentException.ThrowIfNullOrWhiteSpace(encodingName);
+    TiktokenTokenizer encoding = TiktokenTokenizer.CreateForEncoding(encodingName);
+    return encoding.CountTokens(text);
+}
+
+int tokens = NumberOfTokens("tiktoken is great!", "cl100k_base");
+Console.WriteLine(tokens);
 ```
 
 ```ruby
@@ -151195,7 +154431,7 @@ OpenAI provides an API helper for the Java programming language. You can include
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.113.0</version>
+  <version>4.114.0</version>
 </dependency>
 ```
 
@@ -154023,7 +157259,7 @@ OpenAI provides an API helper for the Java programming language. You can include
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.113.0</version>
+  <version>4.114.0</version>
 </dependency>
 ```
 
@@ -157261,6 +160497,33 @@ static List<String> hyperlinks(String html) {
 }
 ```
 
+```csharp
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using HtmlAgilityPack;
+
+// Paste the four C# steps into Program.cs in a .NET 10 console project.
+// Add the parser with: dotnet add package HtmlAgilityPack --version 1.11.71
+
+const int MaxPages = 100;
+const int MaxRedirects = 5;
+const int MaxPageBytes = 1_048_576;
+const int MaxLinksPerPage = 2_000;
+
+// Redirects are checked before sending another request. TLS uses normal OS trust.
+static HttpClient CreateClient() => new(new HttpClientHandler
+{
+    AllowAutoRedirect = false,
+    UseCookies = false,
+    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+})
+{
+    Timeout = TimeSpan.FromSeconds(10)
+};
+```
+
 ```ruby
 require "net/http"
 require "uri"
@@ -157508,6 +160771,102 @@ static List<String> getHyperlinks(URI url) throws Exception {
 }
 ```
 
+```csharp
+static async Task<IReadOnlyList<string>> GetHyperlinksAsync(
+    HttpClient client, Uri url, HtmlDocument? fetchedDocument = null)
+{
+    // Reuse the already fetched HTML when calling this helper from a crawl.
+    if (fetchedDocument is not null) return Hyperlinks(fetchedDocument);
+    HtmlPage? page = await FetchHtmlAsync(client, url, url);
+    return page is null ? [] : Hyperlinks(page.Document);
+}
+
+static string[] Hyperlinks(HtmlDocument document) =>
+    document.DocumentNode.Descendants("a")
+        .Where(node => node.Attributes["href"] is not null)
+        .Take(MaxLinksPerPage)
+        .Select(node => HtmlEntity.DeEntitize(node.GetAttributeValue("href", "")))
+        .ToArray();
+
+static async Task<HtmlPage?> FetchHtmlAsync(
+    HttpClient client, Uri initial, Uri origin, HashSet<string>? fetched = null)
+{
+    Uri current = initial;
+    HashSet<string> redirects = new(StringComparer.Ordinal);
+    using CancellationTokenSource deadline = new(TimeSpan.FromSeconds(10));
+    for (int hop = 0; hop <= MaxRedirects; hop++)
+    {
+        if (!SameAuthority(origin, current))
+        {
+            Console.Error.WriteLine($"Skipping redirect outside the same-authority boundary: {current}");
+            return null;
+        }
+        if (!redirects.Add(current.AbsoluteUri))
+        {
+            Console.Error.WriteLine($"Skipping redirect loop: {current}");
+            return null;
+        }
+        // Shared across the traversal, so redirect targets are fetched only once.
+        if (fetched is not null && !fetched.Add(current.AbsoluteUri))
+        {
+            return null;
+        }
+        using HttpRequestMessage request = new(HttpMethod.Get, current);
+        using HttpResponseMessage response = await client.SendAsync(
+            request, HttpCompletionOption.ResponseHeadersRead, deadline.Token);
+        int status = (int)response.StatusCode;
+        if (status is 301 or 302 or 303 or 307 or 308)
+        {
+            Uri? location = response.Headers.Location;
+            Uri? target = location is null ? null : ResolveLink(current, location.OriginalString);
+            if (hop == MaxRedirects || target is null)
+            {
+                Console.Error.WriteLine($"Skipping invalid redirect or redirect limit: {current}");
+                return null;
+            }
+            current = target;
+            continue;
+        }
+        if (response.StatusCode != HttpStatusCode.OK)
+        {
+            Console.Error.WriteLine($"Skipping HTTP {status}: {current}");
+            return null;
+        }
+        if (!string.Equals(response.Content.Headers.ContentType?.MediaType,
+            "text/html", StringComparison.OrdinalIgnoreCase))
+        {
+            Console.Error.WriteLine($"Skipping non-HTML content: {current}");
+            return null;
+        }
+        if (response.Content.Headers.ContentLength is > MaxPageBytes)
+        {
+            throw new InvalidDataException($"HTML page exceeds {MaxPageBytes} bytes: {current}");
+        }
+        await using Stream input = await response.Content.ReadAsStreamAsync(deadline.Token);
+        using MemoryStream body = new();
+        byte[] buffer = new byte[8192];
+        int count;
+        while ((count = await input.ReadAsync(buffer.AsMemory(), deadline.Token)) != 0)
+        {
+            if (body.Length + count > MaxPageBytes)
+            {
+                throw new InvalidDataException($"HTML page exceeds {MaxPageBytes} bytes: {current}");
+            }
+            body.Write(buffer, 0, count);
+        }
+        string? charset = response.Content.Headers.ContentType?.CharSet?.Trim('"');
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        Encoding encoding = string.IsNullOrWhiteSpace(charset) ? Encoding.UTF8 : Encoding.GetEncoding(charset);
+        body.Position = 0;
+        using StreamReader reader = new(body, encoding, detectEncodingFromByteOrderMarks: true);
+        HtmlDocument document = new();
+        document.LoadHtml(await reader.ReadToEndAsync(deadline.Token));
+        return new HtmlPage(current, document);
+    }
+    throw new InvalidOperationException("Unreachable redirect state.");
+}
+```
+
 ```ruby
 def fetch_page(url, local_domain = nil)
   uri = URI.parse(url)
@@ -157663,6 +161022,61 @@ static Set<URI> domainHyperlinks(String domain, URI url, List<String> hrefs) {
     }
   }
   return links;
+}
+```
+
+```csharp
+static async Task<IReadOnlyList<string>> GetDomainHyperlinksAsync(
+    HttpClient client, Uri origin, Uri url, IReadOnlyList<string>? fetchedHyperlinks = null)
+{
+    if (!SameAuthority(origin, url))
+    {
+        throw new ArgumentException("The page must have the same authority as the crawl origin.", nameof(url));
+    }
+    if (fetchedHyperlinks is not null)
+        return DomainHyperlinks(origin, url, fetchedHyperlinks).Select(link => link.AbsoluteUri).ToArray();
+    HtmlPage? page = await FetchHtmlAsync(client, url, origin);
+    return page is null ? [] : DomainHyperlinks(origin, page.Url, Hyperlinks(page.Document))
+        .Select(link => link.AbsoluteUri).ToArray();
+}
+
+static List<Uri> DomainHyperlinks(Uri origin, Uri page, IEnumerable<string> hrefs)
+{
+    HashSet<string> seen = new(StringComparer.Ordinal);
+    List<Uri> links = [];
+    foreach (string href in hrefs)
+    {
+        string reference = href.Trim();
+        if (reference.Length == 0 || reference.StartsWith('#'))
+        {
+            continue;
+        }
+        Uri? link = ResolveLink(page, reference);
+        if (link is not null && SameAuthority(origin, link) && seen.Add(link.AbsoluteUri))
+        {
+            links.Add(link);
+        }
+    }
+    return links;
+}
+
+static bool SameAuthority(Uri origin, Uri candidate) =>
+    candidate.IsAbsoluteUri && candidate.Scheme is "http" or "https"
+    && candidate.UserInfo.Length == 0
+    && string.Equals(origin.Authority, candidate.Authority, StringComparison.OrdinalIgnoreCase);
+
+static Uri? ResolveLink(Uri page, string reference)
+{
+    // System.Uri preserves the current path for query-only references.
+    if (!Uri.TryCreate(page, reference, out Uri? resolved)
+        || resolved.Scheme is not ("http" or "https") || resolved.UserInfo.Length != 0)
+    {
+        return null;
+    }
+    // Slice the escaped absolute URI so query escapes keep their identity.
+    string absolute = resolved.AbsoluteUri;
+    int fragment = absolute.IndexOf('#', StringComparison.Ordinal);
+    return fragment < 0 ? resolved : new Uri(absolute[..fragment]);
 }
 ```
 
@@ -158086,6 +161500,142 @@ static void crawl(URI initial) throws Exception {
 }
 ```
 
+```csharp
+// Replace this with a website you own or have permission to crawl.
+Uri start = new("https://example.com/");
+using HttpClient client = CreateClient();
+IReadOnlyList<LinkObservation> observations = await CrawlAsync(client, start);
+
+static async Task<IReadOnlyList<LinkObservation>> CrawlAsync(HttpClient client, Uri start)
+{
+    List<LinkObservation> observations = [];
+    if (!SameAuthority(start, start))
+    {
+        throw new ArgumentException("Use an HTTP or HTTPS URL without embedded credentials.", nameof(start));
+    }
+    start = new UriBuilder(start) { Fragment = "" }.Uri;
+    string directory = Path.Combine("text", OutputDirectoryName(start));
+    Directory.CreateDirectory(directory);
+    Directory.CreateDirectory("processed");
+    Queue<Uri> queue = new();
+    queue.Enqueue(start);
+    HashSet<string> scheduled = new(StringComparer.Ordinal) { start.AbsoluteUri };
+    HashSet<string> fetched = new(StringComparer.Ordinal);
+    int saved = 0;
+    while (queue.TryDequeue(out Uri? url))
+    {
+        HtmlPage? page = await FetchHtmlAsync(client, url, start, fetched);
+        if (page is null)
+        {
+            continue;
+        }
+        // Redirect aliases can share a final page; FetchHtmlAsync deduplicates requests.
+        string path = Path.Combine(directory, PageFilename(page.Url));
+        await File.WriteAllTextAsync(path, VisibleText(page.Document.DocumentNode), new UTF8Encoding(false));
+        Console.WriteLine(page.Url.AbsoluteUri);
+        saved++;
+        IReadOnlyList<string> hyperlinks = await GetHyperlinksAsync(client, page.Url, page.Document);
+        IReadOnlyList<string> domainHyperlinks = await GetDomainHyperlinksAsync(client, start, page.Url, hyperlinks);
+        observations.Add(new(page.Url, hyperlinks, domainHyperlinks));
+        foreach (string address in domainHyperlinks)
+        {
+            Uri link = new(address);
+            if (scheduled.Contains(link.AbsoluteUri))
+            {
+                continue;
+            }
+            if (scheduled.Count == MaxPages)
+            {
+                Console.Error.WriteLine($"Crawl limited to {MaxPages} scheduled pages.");
+                break;
+            }
+            scheduled.Add(link.AbsoluteUri);
+            queue.Enqueue(link);
+        }
+    }
+    Console.Error.WriteLine($"Saved {saved} HTML pages.");
+    return observations;
+}
+
+static string OutputDirectoryName(Uri origin)
+{
+    string host = origin.IdnHost;
+    bool ordinaryHost = origin.IsDefaultPort && host.Length <= 200
+        && host.All(character => char.IsAsciiLetterOrDigit(character) || character is '.' or '-')
+        && !host.EndsWith('.')
+        && !Regex.IsMatch(host, @"^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    // Keep the guide's text/example.com layout; ports, IPv6 and device names use ASCII.
+    return ordinaryHost ? host : "site-" + Convert.ToHexString(
+        SHA256.HashData(Encoding.UTF8.GetBytes(origin.Authority))).ToLowerInvariant();
+}
+
+static string PageFilename(Uri url)
+{
+    string digest = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(url.AbsoluteUri)))
+        .ToLowerInvariant();
+    string suffix = "#" + digest + ".txt";
+    string readable = Uri.UnescapeDataString(url.Authority + url.AbsolutePath);
+    StringBuilder prefix = new();
+    int bytes = 0;
+    // Windows reserves device basenames even before an extension, such as con.example.
+    if (Regex.IsMatch(readable, @"^(con|prn|aux|nul|com[1-9¹²³]|lpt[1-9¹²³])(?:\.|$)",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+    {
+        prefix.Append('_');
+        bytes++;
+    }
+    foreach (Rune rune in readable.EnumerateRunes())
+    {
+        bool invalid = rune.Value < 32 || rune.Value is '/' or '\\' or ':' or '*' or '?' or '"' or '<' or '>' or '|';
+        string part = invalid ? "_" : rune.ToString();
+        int length = Encoding.UTF8.GetByteCount(part);
+        if (bytes + length > 255 - suffix.Length)
+        {
+            break;
+        }
+        prefix.Append(part);
+        bytes += length;
+    }
+    return prefix.ToString() + suffix;
+}
+
+static string VisibleText(HtmlNode root)
+{
+    StringBuilder text = new();
+    AppendText(root, text);
+    return Regex.Replace(HtmlEntity.DeEntitize(text.ToString()), @"\s+", " ").Trim();
+}
+
+static void AppendText(HtmlNode node, StringBuilder text)
+{
+    if (node.Name is "script" or "style" || node.NodeType == HtmlNodeType.Comment)
+    {
+        return;
+    }
+    if (node.NodeType == HtmlNodeType.Text)
+    {
+        text.Append(node.InnerText);
+        return;
+    }
+    bool block = node.Name is "address" or "article" or "aside" or "blockquote" or "br"
+        or "dd" or "div" or "dl" or "dt" or "fieldset" or "figcaption" or "figure"
+        or "footer" or "form" or "h1" or "h2" or "h3" or "h4" or "h5" or "h6"
+        or "header" or "hr" or "li" or "main" or "nav" or "ol" or "p" or "pre"
+        or "section" or "table" or "td" or "th" or "tr" or "ul";
+    if (block) text.Append(' ');
+    foreach (HtmlNode child in node.ChildNodes)
+    {
+        AppendText(child, text);
+    }
+    if (block) text.Append(' ');
+}
+internal sealed record LinkObservation(
+    Uri Url, IReadOnlyList<string> Hyperlinks, IReadOnlyList<string> DomainHyperlinks);
+
+sealed record HtmlPage(Uri Url, HtmlDocument Document);
+```
+
 ```ruby
 def crawl(full_url)
   initial = URI.parse(full_url)
@@ -158458,73 +162008,96 @@ try (var writer =
 ```
 
 ```csharp
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-namespace OpenAI.Docs.Examples.TutorialCrawlWebsiteEmbeddings.BuildScrapedDataframe;
+// Use the same origin and working directory as the crawler.
+Uri origin = new("https://example.com/");
+string workingDirectory = ".";
 
-internal static class BuildScrapedDataframeSample
+string domain = origin.Authority;
+List<Dictionary<string, string>> rows = [];
+string[] files = Directory.GetFiles(Path.Combine(workingDirectory, "text", OutputDirectoryName(origin)), "*.txt");
+Array.Sort(files, StringComparer.Ordinal);
+foreach (string file in files)
 {
-    internal static async Task RunAsync()
-    {
-        // Replace this illustrative domain with the domain used by the crawler.
-        string domain = new Uri("https://example.com/").Authority;
-        List<Dictionary<string, string>> rows = [];
-        string[] files = Directory.GetFiles(Path.Combine("text", domain), "*.txt");
-        Array.Sort(files, StringComparer.Ordinal);
-        foreach (string file in files)
-        {
-            string title = TitleFromFilename(Path.GetFileName(file), domain);
-            string text = RemoveNewlines(await File.ReadAllTextAsync(file));
-            rows.Add(new() { ["fname"] = title, ["text"] = title + ". " + text });
-        }
-
-        Directory.CreateDirectory("processed");
-        using (StreamWriter output = new("processed/scraped.csv", false, new UTF8Encoding(false)))
-        {
-            await output.WriteLineAsync("id,fname,text");
-            for (int index = 0; index < rows.Count; index++)
-            {
-                await output.WriteLineAsync(string.Join(",", index.ToString(CultureInfo.InvariantCulture),
-                    QuoteCsv(rows[index]["fname"]), QuoteCsv(rows[index]["text"])));
-            }
-        }
-
+    string title = TitleFromFilename(Path.GetFileName(file), domain);
+    string text = RemoveNewlines(await File.ReadAllTextAsync(file));
+    rows.Add(new() { ["fname"] = title, ["text"] = title + ". " + text });
 }
-    internal static string TitleFromFilename(string filename, string domain)
-    {
-        string title = Regex.Replace(Path.GetFileNameWithoutExtension(filename), "#[0-9a-f]{64}$", "");
-        if (title.StartsWith(domain + "_", StringComparison.Ordinal))
-        {
-            title = title[(domain.Length + 1)..];
-        }
-        else if (title == domain)
-        {
-            title = "index";
-        }
-        if (title.Length == 0)
-        {
-            title = "index";
-        }
-        return title.Replace("-", " ", StringComparison.Ordinal)
-            .Replace("_", " ", StringComparison.Ordinal)
-            .Replace("#update", "", StringComparison.Ordinal);
-    }
 
-    private static string QuoteCsv(string value) => "\"" + value.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
-
-    internal static string RemoveNewlines(string text)
+Directory.CreateDirectory(Path.Combine(workingDirectory, "processed"));
+using (StreamWriter output = new(Path.Combine(workingDirectory, "processed", "scraped.csv"), false, new UTF8Encoding(false)))
+{
+    await output.WriteLineAsync("id,fname,text");
+    for (int index = 0; index < rows.Count; index++)
     {
-        ArgumentNullException.ThrowIfNull(text);
-        return Regex.Replace(
-            text.Replace("\r\n", " ", StringComparison.Ordinal)
-                .Replace("\r", " ", StringComparison.Ordinal)
-                .Replace("\n", " ", StringComparison.Ordinal)
-                .Replace(@"\n", " ", StringComparison.Ordinal),
-            " {2,}", " ");
+        await output.WriteLineAsync(string.Join(",", index.ToString(CultureInfo.InvariantCulture),
+            QuoteCsv(rows[index]["fname"]), QuoteCsv(rows[index]["text"])));
     }
+}
+
+static string OutputDirectoryName(Uri origin)
+{
+    string host = origin.IdnHost;
+    bool ordinaryHost = origin.IsDefaultPort && host.Length <= 200
+        && host.All(character => char.IsAsciiLetterOrDigit(character) || character is '.' or '-')
+        && !host.EndsWith('.')
+        && !Regex.IsMatch(host, @"^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    // Match the crawler's portable folder, preserving text/example.com for ordinary DNS.
+    return ordinaryHost ? host : "site-" + Convert.ToHexString(
+        SHA256.HashData(Encoding.UTF8.GetBytes(origin.Authority))).ToLowerInvariant();
+}
+
+static string TitleFromFilename(string filename, string domain)
+{
+    // PageFilename replaces these authority characters before writing the file.
+    domain = Regex.Replace(domain, @"[\x00-\x1f/\\:*?""<>|]", "_");
+    string title = Regex.Replace(Path.GetFileNameWithoutExtension(filename), "#[0-9a-f]{64}$", "");
+    // Remove only the crawler's Windows-device escape for this authority.
+    if (Regex.IsMatch(domain, @"^(con|prn|aux|nul|com[1-9¹²³]|lpt[1-9¹²³])(?:\.|$)",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)
+        && title.StartsWith("_" + domain, StringComparison.Ordinal))
+    {
+        title = title[1..];
+    }
+    if (title.StartsWith(domain + "_", StringComparison.Ordinal))
+    {
+        title = title[(domain.Length + 1)..];
+    }
+    else if (title == domain)
+    {
+        title = "index";
+    }
+    if (title.Length == 0)
+    {
+        title = "index";
+    }
+    return title.Replace("-", " ", StringComparison.Ordinal)
+        .Replace("_", " ", StringComparison.Ordinal)
+        .Replace("#update", "", StringComparison.Ordinal);
+}
+
+static string QuoteCsv(string value) => "\"" + value.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
+
+static string RemoveNewlines(string text)
+{
+    ArgumentNullException.ThrowIfNull(text);
+    return Regex.Replace(
+        text.Replace("\r\n", " ", StringComparison.Ordinal)
+            .Replace("\r", " ", StringComparison.Ordinal)
+            .Replace("\n", " ", StringComparison.Ordinal)
+            .Replace(@"\n", " ", StringComparison.Ordinal),
+        " {2,}", " ");
 }
 ```
 
@@ -158774,6 +162347,87 @@ static int histogram(List<Integer> counts) throws Exception {
   }
   javax.imageio.ImageIO.write(image, "png", Path.of("local-plot.png").toFile());
   return bins.values().stream().mapToInt(Integer::intValue).sum();
+}
+```
+
+```csharp
+using System.Text.Json;
+using Microsoft.ML.Tokenizers;
+using Microsoft.VisualBasic.FileIO;
+
+var (counts, total) = SaveTokenHistogram();
+
+static (int[] Counts, int Total) SaveTokenHistogram()
+{
+    List<string> texts = ReadColumn("processed/scraped.csv", "text");
+    int[] counts = texts.Select(CountTokens).ToArray();
+    int total = SaveHistogram(counts);
+    return (counts, total);
+}
+
+
+static int CountTokens(string text) => TokenCounter.Encoding.CountTokens(text);
+
+static int SaveHistogram(IReadOnlyList<int> counts)
+{
+    // Exact integer token counts form the bins; every row contributes once.
+    var bins = counts.GroupBy(count => count).OrderBy(group => group.Key).ToArray();
+    ScottPlot.Bar[] bars = bins.Select(group => new ScottPlot.Bar
+    {
+        Position = group.Key,
+        Value = group.Count()
+    }).ToArray();
+    ScottPlot.Plot plot = new();
+    if (bins.Length > 0)
+    {
+        plot.Add.Bars(bars);
+    }
+    plot.Title("Token count distribution");
+    plot.XLabel("Tokens per text");
+    plot.YLabel("Number of texts");
+    plot.Axes.Bottom.Min = -1;
+    plot.Axes.Left.Min = 0;
+    plot.SavePng("token-histogram.png", 640, 400);
+    return bins.Sum(group => group.Count());
+}
+
+// TextFieldParser handles quoted commas, escaped quotes, and multiline fields.
+// Empty physical lines are ignored; quoted empty fields remain values.
+static List<string> ReadColumn(string path, string column)
+{
+    using TextFieldParser parser = new(path, System.Text.Encoding.UTF8, true)
+    {
+        TextFieldType = FieldType.Delimited,
+        HasFieldsEnclosedInQuotes = true,
+        TrimWhiteSpace = false
+    };
+    parser.SetDelimiters(",");
+    string[] header = parser.ReadFields() ?? throw new InvalidDataException("Missing CSV header.");
+    if (header.Distinct(StringComparer.Ordinal).Count() != header.Length)
+    {
+        throw new InvalidDataException("Duplicate CSV column.");
+    }
+    int columnIndex = Array.IndexOf(header, column);
+    if (columnIndex < 0)
+    {
+        throw new InvalidDataException($"Missing CSV column: {column}.");
+    }
+    List<string> values = [];
+    while (!parser.EndOfData)
+    {
+        string[] fields = parser.ReadFields() ?? throw new InvalidDataException("Missing CSV record.");
+        if (fields.Length != header.Length)
+        {
+            throw new InvalidDataException("CSV record length differs from its header.");
+        }
+        values.Add(fields[columnIndex]);
+    }
+    return values;
+}
+// The data package supplies this cached vocabulary without a network request.
+static class TokenCounter
+{
+    internal static readonly TiktokenTokenizer Encoding = TiktokenTokenizer.CreateForEncoding("cl100k_base");
 }
 ```
 
@@ -159078,6 +162732,108 @@ static List<String> splitIntoMany(String text, int maxTokens) {
 }
 ```
 
+```csharp
+using System.Globalization;
+using System.Text;
+using System.Text.Json;
+using Microsoft.ML.Tokenizers;
+using Microsoft.VisualBasic.FileIO;
+
+List<string> texts = ReadColumn("processed/scraped.csv", "text");
+List<string> chunks = texts.SelectMany(text => SplitIntoMany(text, 500)).ToList();
+Directory.CreateDirectory("processed");
+using (StreamWriter output = new("processed/chunks.csv", false, new UTF8Encoding(false)))
+{
+    await output.WriteLineAsync("text,n_tokens");
+    foreach (string chunk in chunks)
+    {
+        string quoted = "\"" + chunk.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
+        await output.WriteLineAsync(quoted + "," + CountTokens(chunk).ToString(CultureInfo.InvariantCulture));
+    }
+}
+// The embedding producer can consume the same chunks without CSV parsing.
+await File.WriteAllTextAsync("processed/chunks.json", JsonSerializer.Serialize(chunks));
+
+static int CountTokens(string text) => TokenCounter.Encoding.CountTokens(text);
+
+static List<string> SplitIntoMany(string text, int maxTokens)
+{
+    ArgumentNullException.ThrowIfNull(text);
+    ArgumentOutOfRangeException.ThrowIfLessThan(maxTokens, 1);
+    List<string> chunks = [];
+    if (string.IsNullOrWhiteSpace(text))
+    {
+        return chunks;
+    }
+    string chunk = "";
+    string[] sentences = text.Split(". ", StringSplitOptions.None);
+    for (int index = 0; index < sentences.Length; index++)
+    {
+        string sentence = sentences[index] + (index < sentences.Length - 1 ? "." : "");
+        if (CountTokens(sentence) > maxTokens)
+        {
+            throw new ArgumentException("Split the overlong sentence before chunking.", nameof(text));
+        }
+        string candidate = chunk.Length == 0 ? sentence : chunk + " " + sentence;
+        // Recount the complete candidate, including separators, at every step.
+        if (CountTokens(candidate) > maxTokens)
+        {
+            chunks.Add(chunk);
+            chunk = sentence;
+        }
+        else
+        {
+            chunk = candidate;
+        }
+    }
+    if (chunk.Length > 0)
+    {
+        chunks.Add(chunk);
+    }
+    return chunks;
+}
+
+// TextFieldParser handles quoted commas, escaped quotes, and multiline fields.
+// Empty physical lines are ignored; quoted empty fields remain values.
+static List<string> ReadColumn(string path, string column)
+{
+    using TextFieldParser parser = new(path, System.Text.Encoding.UTF8, true)
+    {
+        TextFieldType = FieldType.Delimited,
+        HasFieldsEnclosedInQuotes = true,
+        TrimWhiteSpace = false
+    };
+    parser.SetDelimiters(",");
+    string[] header = parser.ReadFields() ?? throw new InvalidDataException("Missing CSV header.");
+    if (header.Distinct(StringComparer.Ordinal).Count() != header.Length)
+    {
+        throw new InvalidDataException("Duplicate CSV column.");
+    }
+    int columnIndex = Array.IndexOf(header, column);
+    if (columnIndex < 0)
+    {
+        throw new InvalidDataException($"Missing CSV column: {column}.");
+    }
+    List<string> values = [];
+    while (!parser.EndOfData)
+    {
+        string[] fields = parser.ReadFields() ?? throw new InvalidDataException("Missing CSV record.");
+        if (fields.Length != header.Length)
+        {
+            throw new InvalidDataException("CSV record length differs from its header.");
+        }
+        values.Add(fields[columnIndex]);
+    }
+    return values;
+}
+
+// The data package supplies this cached vocabulary without a network request.
+static class TokenCounter
+{
+    internal static readonly TiktokenTokenizer Encoding = TiktokenTokenizer.CreateForEncoding("cl100k_base");
+}
+```
+
 ```ruby
 require "csv"
 require "json"
@@ -159280,6 +163036,87 @@ static int histogram(List<Integer> counts) throws Exception {
   }
   javax.imageio.ImageIO.write(image, "png", Path.of("local-plot.png").toFile());
   return bins.values().stream().mapToInt(Integer::intValue).sum();
+}
+```
+
+```csharp
+using System.Text.Json;
+using Microsoft.ML.Tokenizers;
+using Microsoft.VisualBasic.FileIO;
+
+var (counts, total) = SaveTokenHistogram();
+
+static (int[] Counts, int Total) SaveTokenHistogram()
+{
+    List<string> texts = ReadColumn("processed/chunks.csv", "text");
+    int[] counts = texts.Select(CountTokens).ToArray();
+    int total = SaveHistogram(counts);
+    return (counts, total);
+}
+
+
+static int CountTokens(string text) => TokenCounter.Encoding.CountTokens(text);
+
+static int SaveHistogram(IReadOnlyList<int> counts)
+{
+    // Exact integer token counts form the bins; every row contributes once.
+    var bins = counts.GroupBy(count => count).OrderBy(group => group.Key).ToArray();
+    ScottPlot.Bar[] bars = bins.Select(group => new ScottPlot.Bar
+    {
+        Position = group.Key,
+        Value = group.Count()
+    }).ToArray();
+    ScottPlot.Plot plot = new();
+    if (bins.Length > 0)
+    {
+        plot.Add.Bars(bars);
+    }
+    plot.Title("Token count distribution");
+    plot.XLabel("Tokens per text");
+    plot.YLabel("Number of texts");
+    plot.Axes.Bottom.Min = -1;
+    plot.Axes.Left.Min = 0;
+    plot.SavePng("token-histogram.png", 640, 400);
+    return bins.Sum(group => group.Count());
+}
+
+// TextFieldParser handles quoted commas, escaped quotes, and multiline fields.
+// Empty physical lines are ignored; quoted empty fields remain values.
+static List<string> ReadColumn(string path, string column)
+{
+    using TextFieldParser parser = new(path, System.Text.Encoding.UTF8, true)
+    {
+        TextFieldType = FieldType.Delimited,
+        HasFieldsEnclosedInQuotes = true,
+        TrimWhiteSpace = false
+    };
+    parser.SetDelimiters(",");
+    string[] header = parser.ReadFields() ?? throw new InvalidDataException("Missing CSV header.");
+    if (header.Distinct(StringComparer.Ordinal).Count() != header.Length)
+    {
+        throw new InvalidDataException("Duplicate CSV column.");
+    }
+    int columnIndex = Array.IndexOf(header, column);
+    if (columnIndex < 0)
+    {
+        throw new InvalidDataException($"Missing CSV column: {column}.");
+    }
+    List<string> values = [];
+    while (!parser.EndOfData)
+    {
+        string[] fields = parser.ReadFields() ?? throw new InvalidDataException("Missing CSV record.");
+        if (fields.Length != header.Length)
+        {
+            throw new InvalidDataException("CSV record length differs from its header.");
+        }
+        values.Add(fields[columnIndex]);
+    }
+    return values;
+}
+// The data package supplies this cached vocabulary without a network request.
+static class TokenCounter
+{
+    internal static readonly TiktokenTokenizer Encoding = TiktokenTokenizer.CreateForEncoding("cl100k_base");
 }
 ```
 
